@@ -4,6 +4,7 @@ import br.ufcg.spg.bean.Tuple;
 import br.ufcg.spg.database.EditDao;
 import br.ufcg.spg.edit.Edit;
 import br.ufcg.spg.git.GitUtils;
+import br.ufcg.spg.main.MainArguments;
 
 import com.google.common.io.Files;
 
@@ -29,10 +30,9 @@ public class ExpUtils {
    * @return projects 
    */
   public static List<Tuple<String, String>> getProjects() {
-    //final String[] projects = {"ant", "hive", "drill", "gson", "ExoPlayer", "giraph", "error-prone", "guava", "maven", "truth"};
-    //final String[] projects = {"ant"};//{"ant", "drill", "error-prone", "guava", "maven", "truth"};
     try {
-      final List<String> projects = Files.readLines(new File("projects.txt"), 
+      String projectsFile = MainArguments.getInstance().getProjects();
+      final List<String> projects = Files.readLines(new File(projectsFile), 
           Charset.defaultCharset());
       final List<Tuple<String, String>> projs = defineProjects(projects);
       return projs;

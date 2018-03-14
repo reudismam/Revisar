@@ -4,6 +4,8 @@ import br.ufcg.spg.bean.Tuple;
 import br.ufcg.spg.exp.ExpUtils;
 import br.ufcg.spg.main.command.ExtractConcreteEditsCommand;
 import br.ufcg.spg.main.command.ICommand;
+import br.ufcg.spg.technique.Technique;
+
 import java.util.List;
 
 /**
@@ -20,10 +22,35 @@ public class Main {
       menu();
       return;
     }
-    if (args[0].equals("-e")) {
-      final List<Tuple<String, String>> projects = ExpUtils.getProjects();
-      final ICommand command = new ExtractConcreteEditsCommand(projects);
-      command.execute();
+    for (int i = 0; i < args.length; i++) {
+      String arg = args[i];
+      if (arg.equals("-e")) {
+        if (args.length <= i + 1) {
+          System.out.println("Error: please, specify a project.");
+        } else {
+          String projects = args[i + 1];
+          MainArguments.getInstance().setProjects(projects);
+        }
+        final List<Tuple<String, String>> projects = ExpUtils.getProjects();
+        final ICommand command = new ExtractConcreteEditsCommand(projects);
+        command.execute();
+      }
+      if (arg.equals("-c")) {
+        System.out.println("CLUSTERING EDITS.");
+        Technique.clusterEdits();
+      }
+      if (arg.equals("-t")) {
+        System.out.println("LEARNING TRANSFORATIONS");
+        Technique.translateEdits();
+      }
+      if (arg.equals("-tid")) {
+        if (args.length <= i + 1) {
+          System.out.println("Error, please, specify the id of the cluster");
+        } else {
+          String clusterId = args[i + 1];
+          Technique.translateEdits(clusterId);
+        }
+      }
     }
   }
   

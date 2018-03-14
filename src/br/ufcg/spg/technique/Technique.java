@@ -101,9 +101,9 @@ public final class Technique {
   
   /**
    * Translate edits for a specific cluster.
-   * @param clusterLabel cluster label
+   * @param clusterId cluster id
    */
-  public static void translateEdits(final String clusterLabel) {
-    TransformationUtils.transformations(clusterLabel);
+  public static void translateEdits(final String clusterId) {
+    TransformationUtils.transformations(clusterId);
   }
 }
