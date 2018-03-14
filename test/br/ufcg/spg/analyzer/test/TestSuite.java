@@ -117,6 +117,9 @@ public class TestSuite {
     }
   }
  
+  /**
+   * Gets e-mails.
+   */
   public void getEmails() throws IOException, NoHeadException, GitAPIException {
     final List<String> emails = ExpUtils.allEmails();
     ExpUtils.saveEmails(emails, "email.txt");

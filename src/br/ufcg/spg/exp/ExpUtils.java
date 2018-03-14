@@ -5,6 +5,8 @@ import br.ufcg.spg.database.EditDao;
 import br.ufcg.spg.edit.Edit;
 import br.ufcg.spg.git.GitUtils;
 
+import com.google.common.io.Files;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -16,22 +18,27 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.NoHeadException;
-
-import com.google.common.io.Files;
 
 public class ExpUtils {
   
   /**
    * Gets projects.
-   * @return projects
+   * @return projects 
    */
   public static List<Tuple<String, String>> getProjects() {
-    final String[] projects = {"ant", "hive", "drill", "gson", "ExoPlayer", "giraph", "error-prone", "guava", "maven", "truth"};
+    //final String[] projects = {"ant", "hive", "drill", "gson", "ExoPlayer", "giraph", "error-prone", "guava", "maven", "truth"};
     //final String[] projects = {"ant"};//{"ant", "drill", "error-prone", "guava", "maven", "truth"};
-    final List<Tuple<String, String>> projs = defineProjects(projects);
-    return projs;
+    try {
+      final List<String> projects = Files.readLines(new File("projects.txt"), 
+          Charset.defaultCharset());
+      final List<Tuple<String, String>> projs = defineProjects(projects);
+      return projs;
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
   
   /**
@@ -84,10 +91,10 @@ public class ExpUtils {
     writer.close();
   }
   
-  private static List<Tuple<String, String>> defineProjects(final String[] projects) {
+  private static List<Tuple<String, String>> defineProjects(final List<String> projects) {
     final List<Tuple<String, String>> projs = new ArrayList<>();
-    for (int i = 0; i < projects.length; i++) {
-      final Tuple<String, String> tuple = new Tuple<>(projects[i], null);
+    for (int i = 0; i < projects.size(); i++) {
+      final Tuple<String, String> tuple = new Tuple<>(projects.get(i), null);
       projs.add(tuple);
     }
     //projs.get(0).setItem2("ee47fa6e1a3828f7f52d4c3a8307074603e70740");
@@ -111,6 +118,11 @@ public class ExpUtils {
     return remainPj;
   }
   
+  /**
+   * Gets the log of a project.
+   * @param pname name of the project
+   * @return list of commit ids
+   */
   public static List<String> getLogs(final String pname) throws IOException {
     // files to be analyzed
     final String projectFolderDst = "../Projects/" + pname  + "/";
