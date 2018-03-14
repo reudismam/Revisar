@@ -41,6 +41,9 @@ public class CommitFile implements Comparable<CommitFile> {
    */
   @Override
   public boolean equals(final Object obj) {
+    if (obj == null) {
+      return false;
+    }
     final CommitFile other = (CommitFile) obj;
     if (!this.getCommit().equals(other.getCommit())) {
       return false;

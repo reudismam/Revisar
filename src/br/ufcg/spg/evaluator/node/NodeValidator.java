@@ -1,7 +1,7 @@
 package br.ufcg.spg.evaluator.node;
 
 import br.ufcg.spg.analyzer.util.AnalyzerUtil;
-import br.ufcg.spg.tree.ATreeUtils;
+import br.ufcg.spg.tree.RevisarTreeUtils;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 
@@ -12,7 +12,7 @@ public class NodeValidator {
    * @return validity of the node
    */
   public static boolean isValidNode(String template) {
-    String root = ATreeUtils.root(template);
+    String root = RevisarTreeUtils.root(template);
     if (root.equals(AnalyzerUtil.getLabel(ASTNode.IMPORT_DECLARATION))) {
       return false;
     }

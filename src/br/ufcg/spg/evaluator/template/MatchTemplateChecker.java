@@ -8,8 +8,8 @@ import br.ufcg.spg.cluster.UnifierCluster;
 import br.ufcg.spg.edit.Edit;
 import br.ufcg.spg.equation.EquationUtils;
 import br.ufcg.spg.match.Match;
-import br.ufcg.spg.tree.AParser;
-import br.ufcg.spg.tree.ATree;
+import br.ufcg.spg.tree.RevisarTreeParser;
+import br.ufcg.spg.tree.RevisarTree;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -91,12 +91,12 @@ public class MatchTemplateChecker implements ITemplateChecker {
     //Gets hash id and value of destination nodes.
     final Map<String, String> dstAuMatches = getUnifierMatching(dstTemplate, dstAu);
     //Gets  hash id and value tree of destination nodes.
-    final Map<String, ATree<String>> abstracted = getAbstractionMapping(dstTemplate, dstAuMatches);
+    final Map<String, RevisarTree<String>> abstracted = getAbstractionMapping(dstTemplate, dstAuMatches);
     //checks that all abstracted variables from destination is present on source.
-    final Map<String, ATree<String>> srcMapping = getStringTreeMapping(srcTemplate);
-    final Map<String, ATree<String>> dstMapping = getStringTreeMapping(dstTemplate);
+    final Map<String, RevisarTree<String>> srcMapping = getStringTreeMapping(srcTemplate);
+    final Map<String, RevisarTree<String>> dstMapping = getStringTreeMapping(dstTemplate);
     final HashSet<String> dstNodes = getNodes(dstEdit, dstAu);
-    final Map<String, ATree<String>> srcDstMapping = new Hashtable<>();
+    final Map<String, RevisarTree<String>> srcDstMapping = new Hashtable<>();
     for (final String str: dstNodes) {
       if (!srcMapping.containsKey(str)) {
         return null;
@@ -104,18 +104,18 @@ public class MatchTemplateChecker implements ITemplateChecker {
       srcDstMapping.put(str, dstMapping.get(str));
     }
     final Map<String, String> srcUniMatching = getUnifierMatching(srcTemplate, srcAu);
-    final Map<String, ATree<String>> varMatching = getVariableMatching(abstracted, srcDstMapping);
+    final Map<String, RevisarTree<String>> varMatching = getVariableMatching(abstracted, srcDstMapping);
     final List<Match> matches = getMatches2(srcUniMatching, dstAuMatches);
     return matches;
   }
 
   private List<Match> getMatches(final Map<String, String> srcUniMatching, 
-      final Map<String, ATree<String>> varMatching) {
+      final Map<String, RevisarTree<String>> varMatching) {
     final List<Match> matches = new ArrayList<>();
     for (final Entry<String, String> srcEntry  : srcUniMatching.entrySet()) {
       final String srcKey = srcEntry.getKey();
       final String srcValue = srcEntry.getValue();
-      for (final Entry<String, ATree<String>> dstEntry: varMatching.entrySet()) {
+      for (final Entry<String, RevisarTree<String>> dstEntry: varMatching.entrySet()) {
         final String dstKey = dstEntry.getKey();
         final String dstValue = EquationUtils.convertToEq(dstEntry.getValue());
         if (srcValue.equals(dstValue)) {
@@ -152,14 +152,14 @@ public class MatchTemplateChecker implements ITemplateChecker {
    * @param srcDstMapping source destination mapping.
    * @return destination variable matching.
    */
-  private Map<String, ATree<String>> getVariableMatching(
-      final Map<String, ATree<String>> abstracted,
-      final Map<String, ATree<String>> srcDstMapping) {
-    final Map<String, ATree<String>> variableMatching = new Hashtable<>();
-    for (final Entry<String, ATree<String>> entry : srcDstMapping.entrySet()) {
-      final ATree<String> value = entry.getValue();
-      for (final Entry<String, ATree<String>> abs : abstracted.entrySet()) {
-        final ATree<String> absValue = abs.getValue();
+  private Map<String, RevisarTree<String>> getVariableMatching(
+      final Map<String, RevisarTree<String>> abstracted,
+      final Map<String, RevisarTree<String>> srcDstMapping) {
+    final Map<String, RevisarTree<String>> variableMatching = new Hashtable<>();
+    for (final Entry<String, RevisarTree<String>> entry : srcDstMapping.entrySet()) {
+      final RevisarTree<String> value = entry.getValue();
+      for (final Entry<String, RevisarTree<String>> abs : abstracted.entrySet()) {
+        final RevisarTree<String> absValue = abs.getValue();
         if (isIntersect(value, absValue)) {
           variableMatching.put(abs.getKey(), value);
         }
@@ -168,13 +168,13 @@ public class MatchTemplateChecker implements ITemplateChecker {
     return variableMatching;
   }
 
-  private Map<String, ATree<String>> getAbstractionMapping(final String template, 
+  private Map<String, RevisarTree<String>> getAbstractionMapping(final String template, 
       final Map<String, String> unifierMatching) {
-    final Map<String, ATree<String>> abstracted = new Hashtable<>();
-    final ATree<String> absTemplate = AParser.parser(template);
-    final List<ATree<String>> dstTreeNodes = AnalyzerUtil.getNodes(absTemplate); 
+    final Map<String, RevisarTree<String>> abstracted = new Hashtable<>();
+    final RevisarTree<String> absTemplate = RevisarTreeParser.parser(template);
+    final List<RevisarTree<String>> dstTreeNodes = AnalyzerUtil.getNodes(absTemplate); 
     for (final Entry<String, String> entry: unifierMatching.entrySet()) {
-      for (final ATree<String> dstNode : dstTreeNodes) {
+      for (final RevisarTree<String> dstNode : dstTreeNodes) {
         final String absNode = EquationUtils.convertToEq(dstNode);
         final String key = entry.getKey();
         final String value = entry.getValue();
@@ -208,7 +208,7 @@ public class MatchTemplateChecker implements ITemplateChecker {
    * @param root root node
    * @param toVerify to verify node
    */
-  private boolean isIntersect(final ATree<String> root, final ATree<String> toVerify) {
+  private boolean isIntersect(final RevisarTree<String> root, final RevisarTree<String> toVerify) {
     return isStartInside(root, toVerify) || isStartInside(toVerify, root);
   }
   
@@ -217,7 +217,7 @@ public class MatchTemplateChecker implements ITemplateChecker {
    * @param root root node.
    * @param toVerify to verify.
    */
-  private boolean isStartInside(final ATree<String> root, final ATree<String> toVerify) {
+  private boolean isStartInside(final RevisarTree<String> root, final RevisarTree<String> toVerify) {
     final int toVerifyStart = toVerify.getPos();
     final int rootStart = root.getPos();
     final int rootEnd = root.getEnd();
@@ -229,11 +229,11 @@ public class MatchTemplateChecker implements ITemplateChecker {
    * @param edit edit.
    * @return mapping between and tree.
    */
-  private Map<String, ATree<String>> getStringTreeMapping(final String template) {
-    final Map<String, ATree<String>> srcNodes = new Hashtable<>();
-    final ATree<String> srcTemplate = AParser.parser(template);
-    final List<ATree<String>> srcTreeNodes = AnalyzerUtil.getNodes(srcTemplate);
-    for (final ATree<String> variable : srcTreeNodes) {
+  private Map<String, RevisarTree<String>> getStringTreeMapping(final String template) {
+    final Map<String, RevisarTree<String>> srcNodes = new Hashtable<>();
+    final RevisarTree<String> srcTemplate = RevisarTreeParser.parser(template);
+    final List<RevisarTree<String>> srcTreeNodes = AnalyzerUtil.getNodes(srcTemplate);
+    for (final RevisarTree<String> variable : srcTreeNodes) {
       final String srcStr = EquationUtils.convertToEq(variable);
       srcNodes.put(srcStr, variable);
     }

@@ -19,13 +19,15 @@ import br.ufcg.spg.expression.ExpressionManager;
 import br.ufcg.spg.git.CommitUtils;
 import br.ufcg.spg.git.GitUtils;
 import br.ufcg.spg.imports.Import;
-import br.ufcg.spg.matcher.AbstractMatchCalculator;
-import br.ufcg.spg.matcher.PositionMatchCalculator;
+import br.ufcg.spg.matcher.IMatcher;
+import br.ufcg.spg.matcher.PositionNodeMatcher;
+import br.ufcg.spg.matcher.calculator.AbstractMatchCalculator;
+import br.ufcg.spg.matcher.calculator.NodeMatchCalculator;
 import br.ufcg.spg.parser.JParser;
 import br.ufcg.spg.project.ProjectAnalyzer;
 import br.ufcg.spg.project.ProjectInfo;
 import br.ufcg.spg.source.SourceUtils;
-import br.ufcg.spg.tree.ATree;
+import br.ufcg.spg.tree.RevisarTree;
 import br.ufcg.spg.util.PrintUtils;
 
 import com.github.gumtreediff.actions.model.Action;
@@ -175,7 +177,8 @@ public class EditPairCalculator {
         final ITree srcNode = beforeafter.getItem1();
         final ITree dstNode = beforeafter.getItem2();
         // get ASTNode in compilation unit
-        final AbstractMatchCalculator srcMa = new PositionMatchCalculator(srcNode);
+        IMatcher<ASTNode> srcMatcher = new PositionNodeMatcher(srcNode);
+        final AbstractMatchCalculator<ASTNode> srcMa = new NodeMatchCalculator(srcMatcher);
         final ASTNode srcAstNode = srcMa.getNode(unitSrc);
         final ITree ctxSrc = unchagedContext(srcPath, diff.getSrc(), diff.getDst(), 
             srcNode, dstNode,
@@ -183,13 +186,16 @@ public class EditPairCalculator {
         final boolean isSingleLineSrc = SourceUtils.isSingleLine(unitSrc, ctxSrc.getPos(), 
             ctxSrc.getEndPos());
         // get ASTNode for node with unchanged context in compilation unit
-        final AbstractMatchCalculator fsrcMa = new PositionMatchCalculator(ctxSrc);
+        final IMatcher<ASTNode> fsrcMatcher = new PositionNodeMatcher(ctxSrc);
+        final AbstractMatchCalculator<ASTNode> fsrcMa = new NodeMatchCalculator(fsrcMatcher);
         final ASTNode fixedSrc = fsrcMa.getNode(unitSrc);
         // get ASTNode for fixedDst
-        final AbstractMatchCalculator dstMa = new PositionMatchCalculator(dstNode);
+        final IMatcher<ASTNode> dstMatcher = new PositionNodeMatcher(dstNode);
+        final AbstractMatchCalculator<ASTNode> dstMa = new NodeMatchCalculator(dstMatcher);
         final ASTNode dstAstNode = dstMa.getNode(unitDst);
         final ITree ctxDst = mappings.getDst(ctxSrc);
-        final AbstractMatchCalculator fdstMa = new PositionMatchCalculator(ctxDst);
+        final IMatcher<ASTNode> fdstMatcher = new PositionNodeMatcher(ctxDst);
+        final AbstractMatchCalculator<ASTNode> fdstMa = new NodeMatchCalculator(fdstMatcher);
         final ASTNode fixedDst = fdstMa.getNode(unitDst);
         final boolean isSingleLineDst = SourceUtils.isSingleLine(unitDst, ctxDst.getPos(), 
             ctxDst.getEndPos());
@@ -253,11 +259,11 @@ public class EditPairCalculator {
    */
   private static void configDcap(final Edit edit, final AntiUnifier antiUnifier) 
       throws JustificationException, IOException, ControlledException {
-    final ATree<String> srcTreeD3 = DcapCalculator.dcap(antiUnifier, 3);
+    final RevisarTree<String> srcTreeD3 = DcapCalculator.dcap(antiUnifier, 3);
     final String srcDcapD3 = PrintUtils.prettyPrint(srcTreeD3);
-    final ATree<String> srcTreeD2 = DcapCalculator.dcap(antiUnifier, 2);
+    final RevisarTree<String> srcTreeD2 = DcapCalculator.dcap(antiUnifier, 2);
     final String srcDcapD2 = PrintUtils.prettyPrint(srcTreeD2);
-    final ATree<String> srcTreeD1 = DcapCalculator.dcap(antiUnifier, 1);
+    final RevisarTree<String> srcTreeD1 = DcapCalculator.dcap(antiUnifier, 1);
     final String srcDcapD1 = PrintUtils.prettyPrint(srcTreeD1);
     edit.setDcap3(srcDcapD3);
     edit.setDcap2(srcDcapD2);

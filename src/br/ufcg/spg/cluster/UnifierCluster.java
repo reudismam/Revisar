@@ -16,7 +16,7 @@ import br.ufcg.spg.equation.EquationUtils;
 import br.ufcg.spg.evaluator.ClusterValidator;
 import br.ufcg.spg.evaluator.node.NodeValidator;
 import br.ufcg.spg.transformation.TransformationUtils;
-import br.ufcg.spg.tree.ATree;
+import br.ufcg.spg.tree.RevisarTree;
 import br.ufcg.spg.util.PrintUtils;
 
 import java.io.IOException;
@@ -320,7 +320,7 @@ public final class UnifierCluster {
    * @return cost of unifying two trees
    */
   private static double computerAddCost(final AntiUnifier root) {
-    final ATree<String> atree = root.toATree();
+    final RevisarTree<String> atree = root.toATree();
     final String output = PrintUtils.prettyPrint(atree);
     if (output.contains("LARGER")) {
       return Double.POSITIVE_INFINITY;

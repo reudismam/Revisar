@@ -2,6 +2,8 @@ package br.ufcg.spg.main;
 
 public class MainArguments {
   private String projects;
+  private String projectFolder;
+  
   private static MainArguments instance;
   
   private MainArguments() {
@@ -23,5 +25,13 @@ public class MainArguments {
 
   public void setProjects(String projects) {
     this.projects = projects;
+  }
+
+  public String getProjectFolder() {
+    return projectFolder;
+  }
+
+  public void setProjectFolder(String projectFolder) {
+    this.projectFolder = projectFolder;
   }
 }

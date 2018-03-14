@@ -1,9 +1,9 @@
 package br.ufcg.spg.constraint.rule;
 
-import br.ufcg.spg.matcher.AbstractMatchCalculator;
-import br.ufcg.spg.matcher.EvaluatorMatchCalculator;
-import br.ufcg.spg.search.evaluator.IEvaluator;
-import br.ufcg.spg.search.evaluator.KindEvaluator;
+import br.ufcg.spg.matcher.IMatcher;
+import br.ufcg.spg.matcher.KindNodeMatcher;
+import br.ufcg.spg.matcher.calculator.AbstractMatchCalculator;
+import br.ufcg.spg.matcher.calculator.NodeMatchCalculator;
 
 import java.util.List;
 import org.eclipse.jdt.core.dom.ASTNode;
@@ -23,8 +23,8 @@ public class Rule13 extends RuleBase {
       return false;
     }
     final ITypeBinding typeBinding = methodType.getReturnType();
-    final IEvaluator returnEval = new KindEvaluator(ASTNode.RETURN_STATEMENT);
-    final AbstractMatchCalculator mcal = new EvaluatorMatchCalculator(returnEval);
+    final IMatcher<ASTNode> returnMatcher = new KindNodeMatcher(ASTNode.RETURN_STATEMENT);
+    final AbstractMatchCalculator<ASTNode> mcal = new NodeMatchCalculator(returnMatcher);
     final List<ASTNode> returnStms = mcal.getNodes(methodDcl);
     for (final ASTNode ast : returnStms) {
       final ReturnStatement rstm = (ReturnStatement) ast;

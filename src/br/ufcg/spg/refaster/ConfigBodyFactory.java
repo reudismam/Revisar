@@ -1,6 +1,7 @@
 package br.ufcg.spg.refaster;
 
 import br.ufcg.spg.expression.ExpressionManager;
+import br.ufcg.spg.refaster.config.ReturnStatementConfig;
 
 import java.util.List;
 
@@ -18,13 +19,14 @@ import org.eclipse.jdt.core.dom.TypeParameter;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
 public class ConfigBodyFactory {
+  
   /**
    * Factory class.
    */
-  public static IConfigBody getConfigBody(final ASTNode node, final List<ASTNode> nodes, final ASTNode template, 
-      final MethodDeclaration method, 
-      final ReturnStatement reStatement, 
-      final AST ast) {
+  public static IConfigBody getConfigBody(
+      final ReturnStatementConfig rconf, final ASTNode template,
+      final ReturnStatement reStatement, final AST ast) {
+    final MethodDeclaration method = rconf.getMethod();
     final Expression srcExpression = ExpressionManager.expression(template);
     IConfigBody config;
     if (srcExpression != null) {
@@ -43,6 +45,8 @@ public class ConfigBodyFactory {
       config = new VariableDeclarationFragmentBodyConfig(template, method, ast);
       return config;
     }
+    ASTNode node = rconf.getTarget();
+    List<ASTNode> nodes = rconf.getNodes();
     if (node instanceof SimpleType) {
       config = new TypeBodyConfig(node, nodes, template, method, reStatement, ast);
       return config;

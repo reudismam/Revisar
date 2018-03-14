@@ -3,9 +3,9 @@ package br.ufcg.spg.evaluator.template;
 import br.ufcg.spg.analyzer.util.AnalyzerUtil;
 import br.ufcg.spg.edit.Edit;
 import br.ufcg.spg.equation.EquationUtils;
-import br.ufcg.spg.tree.AParser;
-import br.ufcg.spg.tree.ATree;
-import br.ufcg.spg.tree.ATreeUtils;
+import br.ufcg.spg.tree.RevisarTreeParser;
+import br.ufcg.spg.tree.RevisarTree;
+import br.ufcg.spg.tree.RevisarTreeUtils;
 
 import java.io.IOException;
 import java.util.List;
@@ -55,7 +55,7 @@ public class MethodInvocationTemplateChecker implements IValidationTemplateRule 
         return true;
       }
       final String template = srcEdit.getTemplate();
-      final ATree<String> tree = AParser.parser(template);
+      final RevisarTree<String> tree = RevisarTreeParser.parser(template);
       //The name of the method is the second children on the children list.
       final String mname = EquationUtils.convertToEq(tree.getChildren().get(0));
       if (methodName == null) {
@@ -74,7 +74,7 @@ public class MethodInvocationTemplateChecker implements IValidationTemplateRule 
    */ 
   private boolean isRootMethodInvocation(final Edit edit) {
     final String template = edit.getTemplate();
-    final String root = ATreeUtils.root(template);
+    final String root = RevisarTreeUtils.root(template);
     return root.equals(AnalyzerUtil.getLabel(ASTNode.METHOD_INVOCATION));
   }
 }

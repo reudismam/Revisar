@@ -123,7 +123,8 @@ public final class AntiUnificationUtils {
     targetNodesUpper.add(fixedSrcList.get(fst));
     targetNodesUpper.add(fixedSrcList.get(snd));
     // compute template
-    final AntiUnifier template = AntiUnificationUtils.maxContext(targetNodes, targetNodesUpper, true);
+    final AntiUnifier template = AntiUnificationUtils.maxContext(
+        targetNodes, targetNodesUpper, true);
     final AntiUnifier root = AnalyzerUtil.getRoot(template);
     if (root == null) {
       System.out.println("A transformation could not be learned!");
@@ -153,7 +154,8 @@ public final class AntiUnificationUtils {
       final List<Object> children = AnalyzerUtil.getChildren(parent);
       final List<ASTNode> normalizedChildren = AnalyzerUtil.normalize(children);
       final int index = normalizedChildren.indexOf(tree);
-      final List<ASTNode> subList = normalizedChildren.subList(index + 1, normalizedChildren.size());
+      final List<ASTNode> subList = normalizedChildren.subList(index + 1, 
+          normalizedChildren.size());
       if (!subList.isEmpty()) {
         right.add(subList);
       }
@@ -202,7 +204,8 @@ public final class AntiUnificationUtils {
    * @param upperNodes upper trees.
    * @return true if any tree contains fixed context
    */
-  public static boolean someIncludeUpper(final List<ASTNode> trees, final List<ASTNode> upperNodes) {
+  public static boolean someIncludeUpper(final List<ASTNode> trees, 
+      final List<ASTNode> upperNodes) {
     if (trees.isEmpty()) {
       throw new UnsupportedOperationException("Trees could not be null.");
     }

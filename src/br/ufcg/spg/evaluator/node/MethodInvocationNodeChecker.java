@@ -2,9 +2,9 @@ package br.ufcg.spg.evaluator.node;
 
 import br.ufcg.spg.analyzer.util.AnalyzerUtil;
 import br.ufcg.spg.equation.EquationUtils;
-import br.ufcg.spg.tree.AParser;
-import br.ufcg.spg.tree.ATree;
-import br.ufcg.spg.tree.ATreeUtils;
+import br.ufcg.spg.tree.RevisarTreeParser;
+import br.ufcg.spg.tree.RevisarTree;
+import br.ufcg.spg.tree.RevisarTreeUtils;
 
 import java.io.IOException;
 import java.util.List;
@@ -93,7 +93,7 @@ public class MethodInvocationNodeChecker implements IValidationNodeRule {
       if (!isRootMethodInvocation(template)) {
         return true;
       }
-      final ATree<String> tree = AParser.parser(template);
+      final RevisarTree<String> tree = RevisarTreeParser.parser(template);
       //The name of the method is the second children on the children list.
       final String mname = EquationUtils.convertToEq(tree.getChildren().get(1));
       if (methodName == null) {
@@ -116,7 +116,7 @@ public class MethodInvocationNodeChecker implements IValidationNodeRule {
   }
   
   private boolean isRootMethodInvocation(String template) {
-    final String root = ATreeUtils.root(template);
+    final String root = RevisarTreeUtils.root(template);
     return root.equals(AnalyzerUtil.getLabel(ASTNode.IMPORT_DECLARATION));
   }
 }

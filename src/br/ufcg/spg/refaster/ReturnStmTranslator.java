@@ -1,22 +1,24 @@
 package br.ufcg.spg.refaster;
 
-import br.ufcg.spg.bean.CommitFile;
 import br.ufcg.spg.bean.Tuple;
 import br.ufcg.spg.diff.DiffCalculator;
 import br.ufcg.spg.diff.DiffTreeContext;
 import br.ufcg.spg.edit.EditUtils;
 import br.ufcg.spg.git.CommitUtils;
-import br.ufcg.spg.matcher.AbstractMatchCalculator;
-import br.ufcg.spg.matcher.EvaluatorMatchCalculator;
-import br.ufcg.spg.matcher.PositionMatchCalculator;
+import br.ufcg.spg.matcher.IMatcher;
+import br.ufcg.spg.matcher.PositionNodeMatcher;
+import br.ufcg.spg.matcher.PositionTreeMatcher;
+import br.ufcg.spg.matcher.ValueNodeMatcher;
+import br.ufcg.spg.matcher.calculator.AbstractMatchCalculator;
+import br.ufcg.spg.matcher.calculator.NodeMatchCalculator;
+import br.ufcg.spg.matcher.calculator.TreeMatchCalculator;
 import br.ufcg.spg.parser.JParser;
-import br.ufcg.spg.project.ProjectInfo;
 import br.ufcg.spg.project.Version;
+import br.ufcg.spg.refaster.config.ReturnStatementConfig;
+import br.ufcg.spg.refaster.config.TransformationConfigObject;
 import br.ufcg.spg.replacement.Replacement;
 import br.ufcg.spg.replacement.ReplacementUtils;
-import br.ufcg.spg.search.evaluator.IEvaluator;
-import br.ufcg.spg.search.evaluator.ValueEvaluator;
-
+import com.github.gumtreediff.matchers.Matcher;
 import com.github.gumtreediff.tree.ITree;
 import com.github.gumtreediff.tree.TreeContext;
 
@@ -38,55 +40,74 @@ import org.eclipse.jgit.api.errors.NoFilepatternException;
 import org.eclipse.text.edits.TextEdit;
 
 public class ReturnStmTranslator {
+  
   /**
    * Configures return statement.
-   * 
-   * @param nodei
-   *          source node
-   * @param nodej
-   *          destination node
-   * @param srcList
-   *          nodes to be replaced
-   * @param refasterRule
-   *          Refaster rule to be adapted
-   * @param ba
-   *          before method and after after method
    * @return before and after method with return type configured.
    */
   public static Tuple<MethodDeclaration, MethodDeclaration> config(
-      final Tuple<CommitFile, ASTNode> nodei,
-      final Tuple<CommitFile, ASTNode> nodej, final List<Replacement<ASTNode>> srcList,
-      final List<Replacement<ASTNode>> dstList, final CompilationUnit refasterRule,
-      final Tuple<MethodDeclaration, MethodDeclaration> ba, 
-      final DiffCalculator diff, final CompilationUnit dstCu, 
-      final ProjectInfo  pi) throws BadLocationException, 
+      final TransformationConfigObject config) throws BadLocationException, 
       IOException, NoFilepatternException, GitAPIException {
-    MethodDeclaration before = ba.getItem1();
-    MethodDeclaration after = ba.getItem2();
-    final Tuple<List<ASTNode>, List<ASTNode>> bas = ReplacementUtils
-        .mapping(srcList, dstList, diff, dstCu);
+    final Tuple<List<ASTNode>, List<ASTNode>> bas = ReplacementUtils.mapping(config);
     final List<ASTNode> befores = bas.getItem1();
     final List<ASTNode> afters = bas.getItem2();
-    before = addReturnStatement(nodei, befores, srcList, refasterRule, 
-        before, pi.getSrcVersion(), pi);
-    after = addReturnStatement(nodej, afters, srcList, refasterRule, after, pi.getDstVersion(), pi);
+    ReturnStatementConfig bconfig = getReturnStatementConfig(
+        config.getCommit(), config.getPath(),
+        config.getNodeSrc(), config.getSrcList(),
+        config.getBa().getItem1(), config.getPi().getSrcVersion(), 
+        config, befores);
+    ReturnStatementConfig aconfig = getReturnStatementConfig(
+        config.getCommit(), config.getPath(),
+        config.getNodeDst(), config.getDstList(),
+        config.getBa().getItem2(), config.getPi().getDstVersion(), 
+        config, afters);
+    MethodDeclaration before = addReturnStatement(bconfig);
+    MethodDeclaration after = addReturnStatement(aconfig);
     return new Tuple<>(before, after);
   }
+
+  /**
+   * Create a return statement configuration.
+   * @param target target node
+   * @param targetList nodes in target.
+   * @param m method in Refaster rule
+   * @param version source or target version
+   * @param config configuration
+   * @param nodes list of nodes.
+   */
+  private static ReturnStatementConfig getReturnStatementConfig(
+      final String commit, final String path,
+      ASTNode target, List<Replacement<ASTNode>> targetList, 
+      MethodDeclaration m, Version version, 
+      TransformationConfigObject config, final List<ASTNode> nodes) {
+    ReturnStatementConfig rconfig = new ReturnStatementConfig();
+    rconfig.setCommit(commit);
+    rconfig.setPath(path);
+    rconfig.setTarget(target);
+    rconfig.setNodes(nodes);
+    rconfig.setTargetList(targetList);
+    rconfig.setRefasterRule(config.getRefasterRule());
+    rconfig.setMethod(m);
+    rconfig.setVersion(version);
+    rconfig.setPi(config.getPi());
+    return rconfig;
+  }
   
-  private static MethodDeclaration addReturnStatement(
-      final Tuple<CommitFile, ASTNode> target, final List<ASTNode> nodes,
-      final List<Replacement<ASTNode>> targetList, final CompilationUnit refasterRule, 
-      MethodDeclaration method, final Version version, final ProjectInfo pi) 
+  /**
+   * Add a return statement to a method body.
+   * @param rconf return statement configuration.
+   */
+  private static MethodDeclaration addReturnStatement(ReturnStatementConfig rconf) 
           throws BadLocationException, IOException, NoFilepatternException, GitAPIException {
-    final AST ast = refasterRule.getAST();
-    final ASTNode template = getTemplate(target, nodes, targetList, version, pi);
+    final AST ast = rconf.getRefasterRule().getAST();
+    final ASTNode template = getTemplate(rconf);
     if (template == null) {
-      return method;
+      return rconf.getMethod();
     }
-    ReturnStatement reStatement = (ReturnStatement) method.getBody().statements().get(0);
-    reStatement = (ReturnStatement) ASTNode.copySubtree(ast, reStatement);
-    final IConfigBody body = ConfigBodyFactory.getConfigBody(target.getItem2(), nodes,  template, method, reStatement, ast);
-    method = body.config();
+    ReturnStatement rstm = (ReturnStatement) rconf.getMethod().getBody().statements().get(0);
+    rstm = (ReturnStatement) ASTNode.copySubtree(ast, rstm);
+    final IConfigBody body = ConfigBodyFactory.getConfigBody(rconf, template, rstm, ast);
+    MethodDeclaration method = body.config();
     return method;
   }
   
@@ -105,53 +126,81 @@ public class ReturnStmTranslator {
    * @param document
    *          document that will be edited.
    */
-  private static ASTNode getTemplate(final Tuple<CommitFile, ASTNode> target, final List<ASTNode> unifieds,
-      final List<Replacement<ASTNode>> targetList, final Version version, 
-      final ProjectInfo pi) 
+  private static ASTNode getTemplate(final ReturnStatementConfig rconfig) 
           throws BadLocationException, IOException, NoFilepatternException, GitAPIException {
-    final String commit = target.getItem1().getCommit();
-    CommitUtils.checkoutIfDiffer(commit, pi);
-    final String file = target.getItem1().getFilePath();
+    final String commit = rconfig.getCommit();
+    CommitUtils.checkoutIfDiffer(commit, rconfig.getPi());
+    final String file = rconfig.getPath();
     final AST ast = AST.newAST(AST.JLS8);
-    final List<ASTNode> names = new ArrayList<ASTNode>();
-    final List<ASTNode> targets = new ArrayList<>();
-    for (int i = 0; i < unifieds.size(); i++) {
-      final ASTNode node = unifieds.get(i);
-      if (node == null) {
-        continue;
-      }
-      final SimpleName name = ast.newSimpleName("v_" + i);
-      final IEvaluator evaluator = new ValueEvaluator(node.toString());
-      final AbstractMatchCalculator mcal = new EvaluatorMatchCalculator(evaluator);
-      final List<ASTNode> nodes = mcal.getNodes(target.getItem2());
-      for (final ASTNode nodek : nodes) {
-        names.add(name);
-        targets.add(nodek);
-      }
-    }
-    final String [] sources = version.getSource();
-    final String [] classpath = version.getClasspath();
-    final Document document = rewrite(file, targets, names, sources, classpath);
+    final Tuple<List<ASTNode>, List<ASTNode>> holeAndSubstutings = 
+        getHolesAndSubstutingTrees(rconfig.getTarget(), rconfig.getNodes(), ast);
+    List<ASTNode> holeVariables = holeAndSubstutings.getItem1(); 
+    List<ASTNode> substutings = holeAndSubstutings.getItem2();
+    final Document document = rewrite(file, substutings, holeVariables, rconfig.getVersion());
     final String srcModified = document.get();
     final Tuple<TreeContext, TreeContext> baEdit = EditUtils.beforeAfterCxt(file, srcModified);
-    final Tuple<CompilationUnit, CompilationUnit> cunit = EditUtils.beforeAfter(file, srcModified, version);
+    final Tuple<CompilationUnit, CompilationUnit> cunit = 
+        EditUtils.beforeAfter(file, srcModified, rconfig.getVersion());
     final DiffCalculator diff = new DiffTreeContext(baEdit.getItem1(), baEdit.getItem2());
     diff.diff();
     final ITree srcTree = diff.getSrc().getRoot();
     final ITree dstTree = diff.getDst().getRoot();
-    AbstractMatchCalculator mcalc = new PositionMatchCalculator(target.getItem2());
+    IMatcher<ITree> match = new PositionTreeMatcher(rconfig.getTarget());
+    AbstractMatchCalculator<ITree> mcalc = new TreeMatchCalculator(match);
     final ITree srcTarget = mcalc.getNode(srcTree);
-    final com.github.gumtreediff.matchers.Matcher matcher = diff.getMatcher();
+    final Matcher matcher = diff.getMatcher();
     final ITree dstMatch = matcher.getMappings().getDst(srcTarget);
     if (dstMatch == null) {
-      System.out.println("DEBUG: COULD NOT FIND MATCH FOR: " + srcTarget);
+      System.out.println("DEBUG: could not find match for: " + srcTarget);
       return null;
     }
-    mcalc = new PositionMatchCalculator(dstMatch);
+    match = new PositionTreeMatcher(dstMatch);
+    mcalc = new TreeMatchCalculator(match);
     final ITree dstTarget = mcalc.getNode(dstTree);
-    mcalc = new PositionMatchCalculator(dstTarget);
-    final ASTNode dstAstNode = mcalc.getNode(cunit.getItem2());
+    IMatcher<ASTNode> nodematch = new PositionNodeMatcher(dstTarget);
+    AbstractMatchCalculator<ASTNode> nodecalc = new NodeMatchCalculator(nodematch);
+    final ASTNode dstAstNode = nodecalc.getNode(cunit.getItem2());
     return dstAstNode;
+  }
+
+  /**
+   * Gets substituting trees associated to each role.
+   * @param target target tree.
+   * @param substitutingTrees substituting trees.
+   * @param ast abstract syntax tree being edited
+   * @param names to store the name of the hole variables.
+   */
+  private static Tuple<List<ASTNode>, List<ASTNode>> getHolesAndSubstutingTrees(
+      final ASTNode target,
+      final List<ASTNode> substitutingTrees, final AST ast) {
+    final List<ASTNode> holeVariables = new ArrayList<ASTNode>();
+    final List<ASTNode> targets = new ArrayList<>();
+    for (int i = 0; i < substitutingTrees.size(); i++) {
+      final ASTNode node = substitutingTrees.get(i);
+      if (node == null) {
+        continue;
+      }
+      //create a variable
+      final SimpleName holeVariable = ast.newSimpleName("v_" + i);
+      //nodes associated to the variable
+      List<ASTNode> nodes = getNodesSameName(target, node.toString());
+      for (final ASTNode nodek : nodes) {
+        holeVariables.add(holeVariable);
+        targets.add(nodek);
+      }
+    }
+    return new Tuple<>(targets, holeVariables);
+  }
+  
+  /**
+   * Get nodes with same name.
+   * @param target target where the nodes will be searched for.
+   * @param nodeContent content of the node to be searched for.
+   */
+  private static List<ASTNode> getNodesSameName(final ASTNode target, final String nodeContent) {
+    final IMatcher<ASTNode> match = new ValueNodeMatcher(nodeContent);
+    final AbstractMatchCalculator<ASTNode> mcal = new NodeMatchCalculator(match);
+    return mcal.getNodes(target);
   }
   
   /**
@@ -169,20 +218,23 @@ public class ReturnStmTranslator {
    * @param document
    *          - document that will be edited.
    */
-  private static Document rewrite(final String file, final List<ASTNode> sources, final List<ASTNode> names, final String[] javaSources,
-      final String[] classpath) throws BadLocationException {
+  private static Document rewrite(final String file, final List<ASTNode> substutings, 
+      final List<ASTNode> holeVariables, final Version version) throws BadLocationException {
+    final String [] sources = version.getSource();
+    final String [] classpath = version.getClasspath();
     final JParser srcParser = new JParser();
-    final CompilationUnit root = srcParser.parseWithDocument(file, javaSources, classpath);
+    final CompilationUnit root = srcParser.parseWithDocument(file, sources, classpath);
     final Document document = srcParser.getDocument();
     final ASTRewrite rewriter = ASTRewrite.create(root.getAST());
     root.recordModifications();
-    // Edit the source code
-    for (int i = 0; i < sources.size(); i++) {
-      final ASTNode source = sources.get(i);
-      final ASTNode name = names.get(i);
-      final AbstractMatchCalculator mcalc = new PositionMatchCalculator(source);
+    // edit the source code
+    for (int i = 0; i < substutings.size(); i++) {
+      final ASTNode source = substutings.get(i);
+      final ASTNode holeVariable = holeVariables.get(i);
+      IMatcher<ASTNode> match = new PositionNodeMatcher(source);
+      final AbstractMatchCalculator<ASTNode> mcalc = new NodeMatchCalculator(match);
       final ASTNode srcTargetNode = mcalc.getNode(root);
-      rewriter.replace(srcTargetNode, name, null);
+      rewriter.replace(srcTargetNode, holeVariable, null);
     }
     final TextEdit edit = rewriter.rewriteAST(document, null);
     edit.apply(document);

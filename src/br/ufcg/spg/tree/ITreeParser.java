@@ -15,11 +15,11 @@ public class ITreeParser {
    * @param node - node
    * @return parsed ant-unification
    */
-  public static ATree<Tuple<ASTNode, String>> parse(final ATree<String> unifier, final ASTNode node) {
+  public static RevisarTree<Tuple<ASTNode, String>> parse(final RevisarTree<String> unifier, final ASTNode node) {
     final String value = "\n" + PrintUtils.prettyPrint(unifier);
     final Tuple<ASTNode, String> t = new Tuple<>(node, value);
-    final ATree<Tuple<ASTNode, String>> tree = new ATree<Tuple<ASTNode, String>>(t);
-    final List<ATree<String>> auChildren = unifier.getChildren();
+    final RevisarTree<Tuple<ASTNode, String>> tree = new RevisarTree<Tuple<ASTNode, String>>(t);
+    final List<RevisarTree<String>> auChildren = unifier.getChildren();
     if (auChildren.isEmpty()) {
       return tree;
     }
@@ -30,8 +30,8 @@ public class ITreeParser {
     }
     for (int i = 0; i < children.size(); i++) {
       final ASTNode childNode = children.get(i);
-      final ATree<String> childAtree = auChildren.get(i);
-      final ATree<Tuple<ASTNode, String>> parsedChild = parse(childAtree, childNode);
+      final RevisarTree<String> childAtree = auChildren.get(i);
+      final RevisarTree<Tuple<ASTNode, String>> parsedChild = parse(childAtree, childNode);
       tree.addChild(parsedChild);
     }
     return tree;

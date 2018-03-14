@@ -19,7 +19,7 @@ public class ParameterTranslator {
   /**
    * Configure parameter.
    * @param targetList target list
-   * @param refasterRule refaster rule current
+   * @param refasterRule Refaster rule current
    * @param ba before and after node
    * @return new before and after version with parameters modified.
    */

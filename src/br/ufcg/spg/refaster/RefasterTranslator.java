@@ -1,22 +1,22 @@
 package br.ufcg.spg.refaster;
 
-import br.ufcg.spg.bean.CommitFile;
 import br.ufcg.spg.bean.Tuple;
 import br.ufcg.spg.cluster.Cluster;
 import br.ufcg.spg.diff.DiffCalculator;
 import br.ufcg.spg.diff.DiffPath;
 import br.ufcg.spg.edit.Edit;
 import br.ufcg.spg.git.CommitUtils;
-import br.ufcg.spg.matcher.AbstractMatchCalculator;
-import br.ufcg.spg.matcher.EvaluatorMatchCalculator;
-import br.ufcg.spg.matcher.PositionMatchCalculator;
+import br.ufcg.spg.matcher.IMatcher;
+import br.ufcg.spg.matcher.KindNodeMatcher;
+import br.ufcg.spg.matcher.PositionNodeMatcher;
+import br.ufcg.spg.matcher.calculator.AbstractMatchCalculator;
+import br.ufcg.spg.matcher.calculator.NodeMatchCalculator;
 import br.ufcg.spg.parser.JParser;
 import br.ufcg.spg.project.ProjectAnalyzer;
 import br.ufcg.spg.project.ProjectInfo;
+import br.ufcg.spg.refaster.config.TransformationConfigObject;
 import br.ufcg.spg.replacement.Replacement;
 import br.ufcg.spg.replacement.ReplacementUtils;
-import br.ufcg.spg.search.evaluator.KindEvaluator;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -30,6 +30,9 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.NoFilepatternException;
+import org.eclipse.jgit.errors.AmbiguousObjectException;
+import org.eclipse.jgit.errors.IncorrectObjectTypeException;
+import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.text.edits.TextEdit;
 
 public class RefasterTranslator {
@@ -41,7 +44,7 @@ public class RefasterTranslator {
       throws BadLocationException, IOException, JavaModelException, 
       IllegalArgumentException, NoFilepatternException, GitAPIException {
     final JParser refasterRuleParser = new JParser();
-    final String refasterFile = "src/br/ufcg/spg/refaster/RefasterTemplate.java";
+    final String refasterFile = RefasterConstants.RefasterPath;
     final CompilationUnit rule = refasterRuleParser.parseWithDocument(refasterFile);
     final Document document = refasterRuleParser.getDocument();
     // Learn before and after method
@@ -92,36 +95,83 @@ public class RefasterTranslator {
       final Cluster srcCluster, final CompilationUnit rule)
       throws BadLocationException, IOException, NoFilepatternException, GitAPIException {
     final Cluster dstCluster = srcCluster.getDst();
+    //gets only first location, since other locations
+    //follow the same template
     final Edit srcEdit = srcCluster.getNodes().get(0);
     final Edit dstEdit = dstCluster.getNodes().get(0);
-    final ProjectInfo pi = ProjectAnalyzer.project(srcEdit);
-    final String commit = dstEdit.getCommit();
-    CommitUtils.checkoutIfDiffer(commit, pi);
-    final DiffCalculator diff = new DiffPath(srcEdit.getPath(), dstEdit.getPath());
-    diff.diff();
+    final ProjectInfo pi = checkoutIfDiffer(srcEdit);
     final CompilationUnit dstUnit = JParser.parse(dstEdit.getPath(), pi.getDstVersion());
     final CompilationUnit srcUnit = JParser.parse(srcEdit.getPath(), pi.getSrcVersion());
-    AbstractMatchCalculator mcalc = new PositionMatchCalculator(
-        srcEdit.getStartPos(), srcEdit.getEndPos());
-    final ASTNode nodei = mcalc.getNode(srcUnit);
-    mcalc = new PositionMatchCalculator(dstEdit.getStartPos(), dstEdit.getEndPos());
-    final ASTNode nodej = mcalc.getNode(dstUnit);
-    final Tuple<CommitFile, ASTNode> srcNode = new Tuple<>(
-        new CommitFile(srcEdit.getCommit(), srcEdit.getPath()), nodei);
-    final Tuple<CommitFile, ASTNode> dstNode = new Tuple<>(
-        new CommitFile(dstEdit.getCommit(), dstEdit.getPath()), nodej);
+    IMatcher<ASTNode> srcMatch = new PositionNodeMatcher(srcEdit.getStartPos(), srcEdit.getEndPos());
+    AbstractMatchCalculator<ASTNode> mcalc = new NodeMatchCalculator(srcMatch);
+    final ASTNode srcNode = mcalc.getNode(srcUnit);
+    IMatcher<ASTNode> dstMatch = new PositionNodeMatcher(dstEdit.getStartPos(), dstEdit.getEndPos());
+    mcalc = new NodeMatchCalculator(dstMatch);
+    final ASTNode dstNode = mcalc.getNode(dstUnit);
     Tuple<MethodDeclaration, MethodDeclaration> ba = getBeforeAfterMethod(rule);
     final String srcAu = srcCluster.getAu();
     final String dstAu = dstCluster.getAu();    
     final List<Replacement<ASTNode>> src = ReplacementUtils.replacements(srcEdit, srcAu, srcUnit);
     final List<Replacement<ASTNode>> dst = ReplacementUtils.replacements(dstEdit, dstAu, dstUnit);
     // Return statement
-    ba = ReturnTypeTranslator.config(nodei, nodej, rule, ba);
+    ba = ReturnTypeTranslator.config(srcNode, dstNode, rule, ba);
     // Add parameters
     ba = ParameterTranslator.config(src, rule, ba);
     // Replace method body
-    ba = ReturnStmTranslator.config(srcNode, dstNode, src, dst, rule, ba, diff, dstUnit, pi);
+    final DiffCalculator diff = new DiffPath(srcEdit.getPath(), dstEdit.getPath());
+    diff.diff();
+    String commit = dstEdit.getCommit();
+    String filePath = dstEdit.getPath();
+    TransformationConfigObject config = configTransformationObject(
+        commit, filePath, rule, pi, 
+        dstUnit, srcNode, dstNode, ba, src, dst, diff);
+    ba = ReturnStmTranslator.config(config);
     return ba;
+  }
+
+  /**
+   * Setup transformation configuration object.
+   */
+  private static TransformationConfigObject configTransformationObject(
+      final String commit, 
+      final String path,
+      final CompilationUnit rule, 
+      final ProjectInfo pi,
+      final CompilationUnit dstUnit, 
+      final ASTNode srcNode, 
+      final ASTNode dstNode,
+      Tuple<MethodDeclaration, MethodDeclaration> ba, 
+      final List<Replacement<ASTNode>> src,
+      final List<Replacement<ASTNode>> dst, 
+      final DiffCalculator diff) {
+    TransformationConfigObject config = new TransformationConfigObject();
+    config.setCommit(commit);
+    config.setPath(path);
+    config.setNodeSrc(srcNode);
+    config.setNodeDst(dstNode);
+    config.setSrcList(src);
+    config.setDstList(dst);
+    config.setRefasterRule(rule);
+    config.setBa(ba);
+    config.setDiff(diff);
+    config.setDstCu(dstUnit);
+    config.setPi(pi);
+    return config;
+  }
+
+  /**
+   * Checkout if folder where project is located contain a different commit.
+   * @param srcEdit source edit
+   */
+  private static ProjectInfo checkoutIfDiffer(final Edit srcEdit) 
+      throws MissingObjectException, IncorrectObjectTypeException,
+      AmbiguousObjectException, IOException, 
+      NoFilepatternException, GitAPIException {
+    final Edit dstEdit = srcEdit.getDst();
+    final ProjectInfo pi = ProjectAnalyzer.project(srcEdit);
+    final String commit = dstEdit.getCommit();
+    CommitUtils.checkoutIfDiffer(commit, pi);
+    return pi;
   }
   
   /**
@@ -133,8 +183,8 @@ public class RefasterTranslator {
    */
   private static Tuple<MethodDeclaration, MethodDeclaration> getBeforeAfterMethod(
       final CompilationUnit refasterRule) {
-    final KindEvaluator evaluator = new KindEvaluator(ASTNode.METHOD_DECLARATION);
-    final AbstractMatchCalculator mcal = new EvaluatorMatchCalculator(evaluator);
+    final KindNodeMatcher evaluator = new KindNodeMatcher(ASTNode.METHOD_DECLARATION);
+    final AbstractMatchCalculator<ASTNode> mcal = new NodeMatchCalculator(evaluator);
     final List<ASTNode> nodes = mcal.getNodes(refasterRule);
     final MethodDeclaration before = (MethodDeclaration) nodes.get(0);
     final MethodDeclaration after = (MethodDeclaration) nodes.get(1);

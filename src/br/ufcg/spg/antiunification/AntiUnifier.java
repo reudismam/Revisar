@@ -2,8 +2,8 @@ package br.ufcg.spg.antiunification;
 
 import at.jku.risc.stout.urauc.algo.AntiUnifyProblem.VariableWithHedges;
 
-import br.ufcg.spg.tree.AParser;
-import br.ufcg.spg.tree.ATree;
+import br.ufcg.spg.tree.RevisarTree;
+import br.ufcg.spg.tree.RevisarTreeParser;
 import br.ufcg.spg.util.PrintUtils;
 
 import java.util.ArrayList;
@@ -58,7 +58,8 @@ public class AntiUnifier {
    * @param value anti-unification value
    */
   public AntiUnifier(final String value) {
-    final AntiUnificationData newAu = new AntiUnificationData(value, new ArrayList<VariableWithHedges>());
+    final AntiUnificationData newAu = new AntiUnificationData(
+        value, new ArrayList<VariableWithHedges>());
     this.value = newAu;
   }
 
@@ -185,7 +186,7 @@ public class AntiUnifier {
    */
   @Override
   public String toString() {
-    final ATree<String> atree = toATree();
+    final RevisarTree<String> atree = toATree();
     final String output = PrintUtils.prettyPrint(atree);
     return output;
   }
@@ -222,8 +223,8 @@ public class AntiUnifier {
    * Converts this ant-unification to a tree.
    * @return the tree version of the ant-unification
    */
-  public ATree<String> toATree() {
-    final ATree<String> tree = AParser.parser(this.getValue().getUnifier());
+  public RevisarTree<String> toATree() {
+    final RevisarTree<String> tree = RevisarTreeParser.parser(this.getValue().getUnifier());
     if (left != null && left.getValue() != null) {
       tree.getChildren().add(left.toATree());
     }

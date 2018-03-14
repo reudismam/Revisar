@@ -5,8 +5,8 @@ import at.jku.risc.stout.urauc.data.Hedge;
 import at.jku.risc.stout.urauc.data.atom.Variable;
 
 import br.ufcg.spg.antiunification.AntiUnifier;
-import br.ufcg.spg.tree.AParser;
-import br.ufcg.spg.tree.ATree;
+import br.ufcg.spg.tree.RevisarTreeParser;
+import br.ufcg.spg.tree.RevisarTree;
 
 import java.util.HashSet;
 import java.util.List;
@@ -27,8 +27,8 @@ public class AntiUnifierDistanceUtils {
     for (final VariableWithHedges var : root.getValue().getVariables()) {
       final Hedge left = var.getLeft();
       final Hedge right = var.getRight();
-      final ATree<String> treeLeft = AParser.parser(left.toString());
-      final ATree<String> treeRight = AParser.parser(right.toString());
+      final RevisarTree<String> treeLeft = RevisarTreeParser.parser(left.toString());
+      final RevisarTree<String> treeRight = RevisarTreeParser.parser(right.toString());
       final int sizeLeft = DistUtil.computeSize(treeLeft);
       final int sizeRight = DistUtil.computeSize(treeRight);
       distUnification += sizeLeft + sizeRight;

@@ -1,29 +1,47 @@
-# README #
+# Overview #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+<p style="text-align: justify;">
+Code analyzers such as ErrorProne and FindBugs detect code patterns symptomatic of bugs, performance issues, or bad style. These tools express patterns as quick fixes that detect and rewrite unwanted code patterns. However, it is hard to come up with new quick fixes and decide which ones are useful and frequently appear in real code. We propose to rely on the collective wisdom of programmers and learn quick fixes from revision histories in software repositories. We propose Revisar, a tool for discovering common Java edit patterns in code repositories. Given code repositories and their revision histories, Revisar (i) identifies code edits from revisions, (ii) clusters edits into sets that can be described using an edit pattern, (iii) compiles, when possible, the edit patterns into executable plugins for the Google's ErrorProne tool. The patterns can then be inspected by the designers of code analyzers. We ran Revisar on nine popular GitHub projects, and it discovered 920 edit patterns across projects. We then acted as designers of code analyzers, inspected the most common 381 patterns and classified 32 as quick fixes. To assess the quality of the quick fixes, we performed a survey with 164 programmers from 124 projects, showing the 10 edit patterns that appeared in most projects. Programmers supported 9 (90%) patterns. We submitted 20 pull requests applying our patterns to 9 projects and, at the time of the writing, programmers supported 17 (85%) and accepted 10 of them.
+</p>
 
-### What is this repository for? ###
+[Reudismam Rolim](http://www.dsc.ufcg.edu.br/~spg/reudismam/), [Gustavo Soares](https://gustavoasoares.github.io/), [Rohit Gheyi](http://www.dsc.ufcg.edu.br/~rohit/), [Loris D'Antoni](http://pages.cs.wisc.edu/~loris/)
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+This paper is available on [here](https://arxiv.org/abs/1803.03806).
 
-### How do I get set up? ###
+## Setting up ##
+To run Revisar, it is needed the following steps:
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+1. Install [PostgreSQL]( https://www.postgresql.org/). After installing this data management system, open PgAdmin and create a database named AUDb. Create a user postgres and provide the password 12345. Revisar stores its data in a database and requires this specific configuration.
+2. Clone the project that will be analyzed to a folder (e.g., Projects). See the file [sh/clone.sh](sh/clone.sh) for an example of how to do that.
 
-### Contribution guidelines ###
+## Running Revisar ##
+Revisar can be found in the folder /binary. Revisar is available as a jar file.
+To run revisar, perform the following commands on cmd.
+```sh
+> java -jar .\revisar.jar <options> <args>
+```
+Where options can be the following:
+### -e ###
+Use -e option to extract concrete edits. In this case, it is needed to provide a .txt with the names of the projects to be analyzed, and the name of the folder where these projects are located. For instance, use the following command to extract the edits from the projects specified in the projects.txt file, which are located in the Projects/ folder.
+```sh
+> java -jar .\revisar.jar -e projects.txt Projects/
+```
 
-* Writing tests
-* Code review
-* Other guidelines
+### -c ###
+Use -c option to cluster concrete edits. 
+```sh
+> java -jar .\revisar.jar -c
+```
 
-### Who do I talk to? ###
+### -t ###
+Use -t option learn transformation for all identified clusters. The transformation will be generated to a folder cluster at the same level of the folder that contains the source code of the projects.
+```sh
+> java -jar .\revisar.jar -t
+```
 
-* Repo owner or admin
-* Other community or team contact
+### -tid ###
+
+Use -tid option to learn a transformation for a specific cluster. We need to provide the id of the cluster.
+```sh
+> java -jar .\revisar.jar -tid 123456
+```

@@ -3,8 +3,8 @@ package br.ufcg.spg.antiunification.dist;
 import at.jku.risc.stout.urauc.algo.AntiUnifyProblem.VariableWithHedges;
 import at.jku.risc.stout.urauc.data.Hedge;
 import br.ufcg.spg.antiunification.AntiUnifier;
-import br.ufcg.spg.tree.AParser;
-import br.ufcg.spg.tree.ATree;
+import br.ufcg.spg.tree.RevisarTreeParser;
+import br.ufcg.spg.tree.RevisarTree;
 
 import java.util.List;
 
@@ -21,7 +21,7 @@ public abstract class DistanceCalculator {
     int distUnification = 0;
     for (final VariableWithHedges var : root.getValue().getVariables()) {
       final Hedge hedge = getUnifier(var);
-      final ATree<String> tree = AParser.parser(hedge.toString());
+      final RevisarTree<String> tree = RevisarTreeParser.parser(hedge.toString());
       final int size = DistUtil.computeSize(tree);
       distUnification += size;
     }

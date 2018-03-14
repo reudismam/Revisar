@@ -7,12 +7,14 @@ import br.ufcg.spg.cluster.Cluster;
 import br.ufcg.spg.cluster.UnifierCluster;
 import br.ufcg.spg.config.TechniqueConfig;
 import br.ufcg.spg.database.ClusterDao;
+import br.ufcg.spg.database.DependenceDao;
 import br.ufcg.spg.database.EditDao;
 import br.ufcg.spg.dependence.DependenceUtils;
 import br.ufcg.spg.edit.Edit;
 import br.ufcg.spg.edit.EditStorage;
 import br.ufcg.spg.exp.ExpUtils;
 import br.ufcg.spg.log.TimeLogger;
+import br.ufcg.spg.main.MainArguments;
 import br.ufcg.spg.technique.Technique;
 import br.ufcg.spg.technique.TechniqueUtils;
 import br.ufcg.spg.transformation.TransformationUtils;
@@ -37,6 +39,7 @@ public class TestSuite {
   
   @Test
   public void exp() throws IOException, JustificationException, ControlledException, CoreException {
+    configMainArguments();
     final TechniqueConfig config = TechniqueConfig.getInstance();
     config.setAllCommits(true);
     config.setEditsToAnalyze(100);
@@ -44,10 +47,17 @@ public class TestSuite {
     final List<Tuple<String, String>> projects = ExpUtils.getProjects();
     testBaseTableExpProjects(projects);
   }
+
+  private void configMainArguments() {
+    final MainArguments arguments = MainArguments.getInstance();
+    arguments.setProjects("projects.txt");
+    arguments.setProjectFolder("../Projects");
+  }
   
   @Test
   public void exp_Cluster() 
       throws IOException, JustificationException, ControlledException, CoreException {
+    configMainArguments();
     Technique.clusterEdits();
     Technique.translateEdits();
     System.out.println("END.");
@@ -58,12 +68,14 @@ public class TestSuite {
       throws MissingObjectException, IncorrectObjectTypeException, 
       AmbiguousObjectException, IOException, ExecutionException,
       NoFilepatternException, GitAPIException {
+    configMainArguments();
     DependenceUtils.dependences();
   }
   
   @Test
   public void exp_Translate() 
       throws IOException, JustificationException, ControlledException, CoreException {
+    configMainArguments();
     Technique.translateEdits();
     System.out.println("END.");
   }
@@ -78,6 +90,7 @@ public class TestSuite {
   @Test
   public void test_d_cap() 
       throws IOException, JustificationException, ControlledException, CoreException {
+    configMainArguments();
     final ClusterDao dao = ClusterDao.getInstance();
     final List<Cluster> clusters = dao.getSrcEdits("113406");
     final Cluster cluster = clusters.get(0);
@@ -100,10 +113,13 @@ public class TestSuite {
   }
   
   @Test
-  public void get_all_commits_cluster() {
+  public void exp_learn_dependence_clusters() {
+    configMainArguments();
     final ClusterDao dao = ClusterDao.getInstance();
     final List<String> commits = dao.getAllCommitsClusters();
-    final String lastCommit = "1447e596aa13ca3441f24a8e163f4a255c5a7e23";
+    DependenceDao dependenceDao = DependenceDao.getInstance();
+    final Edit edit = dependenceDao.lastDependence();
+    final String lastCommit = edit.getCommit();
     final int index = commits.indexOf(lastCommit);
     final double size = commits.size();
     for (int i = index + 1; i < commits.size(); i++) {

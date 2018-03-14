@@ -77,12 +77,20 @@ public class ExpUtils {
     return new ArrayList<>(emails);
   }
   
+  /**
+   * Shuffle a list.
+   */
   public static List<String> shuffleList(final List<String> list) {
     final long seed = 15485863;
     Collections.shuffle(list, new Random(seed));
     return list;
   }
   
+  /**
+   * Save list of e-mails.
+   * @param list of e-mails.
+   * @param fileName file name.
+   */
   public static void saveEmails(final List<String> list, final String fileName) throws IOException {
     final FileWriter writer = new FileWriter(fileName); 
     for (final String str: list) {
@@ -97,7 +105,6 @@ public class ExpUtils {
       final Tuple<String, String> tuple = new Tuple<>(projects.get(i), null);
       projs.add(tuple);
     }
-    //projs.get(0).setItem2("ee47fa6e1a3828f7f52d4c3a8307074603e70740");
     final Edit lastEdit = EditDao.getInstance().getLastEdit();
     if (lastEdit == null) {
       return projs;
@@ -125,7 +132,8 @@ public class ExpUtils {
    */
   public static List<String> getLogs(final String pname) throws IOException {
     // files to be analyzed
-    final String projectFolderDst = "../Projects/" + pname  + "/";
+    String projectFolder = MainArguments.getInstance().getProjectFolder();
+    final String projectFolderDst = projectFolder + pname  + "/";
     final GitUtils analyzer = new GitUtils();
     List<String> log = null;
     //checkout the default branch

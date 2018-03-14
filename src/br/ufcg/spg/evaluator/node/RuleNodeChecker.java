@@ -2,8 +2,10 @@ package br.ufcg.spg.evaluator.node;
 
 import br.ufcg.spg.compile.CompilerUtils;
 import br.ufcg.spg.edit.Edit;
-import br.ufcg.spg.matcher.AbstractMatchCalculator;
-import br.ufcg.spg.matcher.PositionMatchCalculator;
+import br.ufcg.spg.matcher.IMatcher;
+import br.ufcg.spg.matcher.PositionNodeMatcher;
+import br.ufcg.spg.matcher.calculator.AbstractMatchCalculator;
+import br.ufcg.spg.matcher.calculator.NodeMatchCalculator;
 import br.ufcg.spg.project.ProjectAnalyzer;
 import br.ufcg.spg.project.ProjectInfo;
 import br.ufcg.spg.project.Version;
@@ -56,8 +58,9 @@ public final class RuleNodeChecker implements INodeChecker {
         final String commit = dstEdit.getCommit();
         final Version srcVersion = pi.getSrcVersion();
         final CompilationUnit srcUnit = CompilerUtils.getCunit(srcEdit, commit, srcVersion, pi);
-        final AbstractMatchCalculator mcalc = new PositionMatchCalculator(srcEdit.getStartPos(), 
+        final IMatcher<ASTNode> matcher = new PositionNodeMatcher(srcEdit.getStartPos(), 
             srcEdit.getEndPos());
+        final AbstractMatchCalculator<ASTNode> mcalc = new NodeMatchCalculator(matcher);
         final ASTNode node = mcalc.getNode(srcUnit);
         nodes.add(node);
       }

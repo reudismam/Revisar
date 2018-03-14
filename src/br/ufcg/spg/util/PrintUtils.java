@@ -1,7 +1,7 @@
 package br.ufcg.spg.util;
 
 import br.ufcg.spg.antiunification.AntiUnifier;
-import br.ufcg.spg.tree.ATree;
+import br.ufcg.spg.tree.RevisarTree;
 import io.bretty.console.tree.TreeNodeConverter;
 import io.bretty.console.tree.TreePrinter;
 
@@ -19,16 +19,16 @@ public class PrintUtils {
    * @param atree
    *          ATree to be printed.
    */
-  public static String prettyPrint(ATree<String> atree) {
-    ATree<String> root = atree;
-    TreeNodeConverter<ATree<String>> converter = new TreeNodeConverter<ATree<String>>() {
+  public static String prettyPrint(RevisarTree<String> atree) {
+    RevisarTree<String> root = atree;
+    TreeNodeConverter<RevisarTree<String>> converter = new TreeNodeConverter<RevisarTree<String>>() {
       @Override
-      public String name(ATree<String> tree) {
+      public String name(RevisarTree<String> tree) {
         return tree.getValue();
       }
 
       @Override
-      public List<? extends ATree<String>> children(ATree<String> au) {
+      public List<? extends RevisarTree<String>> children(RevisarTree<String> au) {
         return au.getChildren();
       }
     };
@@ -43,7 +43,7 @@ public class PrintUtils {
    *          - ant-unification
    */
   private static String prettyPrintATree(AntiUnifier au) {
-    ATree<String> atree = au.toATree();
+    RevisarTree<String> atree = au.toATree();
     String output = prettyPrint(atree);
     return output;
   }

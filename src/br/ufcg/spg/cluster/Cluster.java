@@ -1,8 +1,8 @@
 package br.ufcg.spg.cluster;
 
 import br.ufcg.spg.edit.Edit;
-import br.ufcg.spg.tree.AParser;
-import br.ufcg.spg.tree.ATree;
+import br.ufcg.spg.tree.RevisarTreeParser;
+import br.ufcg.spg.tree.RevisarTree;
 import br.ufcg.spg.util.PrintUtils;
 
 import java.util.ArrayList;
@@ -133,7 +133,7 @@ public class Cluster {
   @Override
   public String toString() {
     final StringBuilder result = new StringBuilder(30);
-    final ATree<String> atree = AParser.parser(au);
+    final RevisarTree<String> atree = RevisarTreeParser.parser(au);
     final String output =  PrintUtils.prettyPrint(atree);
     result.append(getLabel()).append('\n').append(output)
     .append("\nList of nodes ").append(nodes.size()).append(":\n");

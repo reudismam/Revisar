@@ -1,8 +1,8 @@
 package br.ufcg.spg.template;
 
 import br.ufcg.spg.equation.EquationUtils;
-import br.ufcg.spg.tree.AParser;
-import br.ufcg.spg.tree.ATree;
+import br.ufcg.spg.tree.RevisarTreeParser;
+import br.ufcg.spg.tree.RevisarTree;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,16 +17,16 @@ public class TemplateUtils {
    * @param toRemove nodes to be removed.
    * @return the type information
    */
-  private static ATree<String> remove(final ATree<String> au, final List<String> toRemove) {
+  private static RevisarTree<String> remove(final RevisarTree<String> au, final List<String> toRemove) {
     if (au.getChildren().isEmpty()) {
       if (!containsAny(au.getValue(), toRemove)) {
         return au;
       }
       return null;
     }
-    final ATree<String> newAu = new ATree<String>(au.getValue());
-    for (final ATree<String> aui : au.getChildren()) {
-      final ATree<String> rau = remove(aui, toRemove);
+    final RevisarTree<String> newAu = new RevisarTree<String>(au.getValue());
+    for (final RevisarTree<String> aui : au.getChildren()) {
+      final RevisarTree<String> rau = remove(aui, toRemove);
       if (rau != null) {
         newAu.getChildren().add(rau);
       }
@@ -41,15 +41,15 @@ public class TemplateUtils {
    *          ant-unification
    * @return the type information
    */
-  public static ATree<String> removeType(final ATree<String> au) {
+  public static RevisarTree<String> removeType(final RevisarTree<String> au) {
     final List<String> list = new ArrayList<>();
     list.add("type_");
     return remove(au, list);
   }
   
   public static String removeType(final String template) {
-    final ATree<String> atree = AParser.parser(template);
-    final ATree<String> atreeplain = TemplateUtils.removeType(atree);
+    final RevisarTree<String> atree = RevisarTreeParser.parser(template);
+    final RevisarTree<String> atreeplain = TemplateUtils.removeType(atree);
     final String srcEq = EquationUtils.convertToEq(atreeplain);
     return srcEq;
   }
@@ -61,7 +61,7 @@ public class TemplateUtils {
    *          ant-unification
    * @return the type information
    */
-  public static ATree<String> removeName(final ATree<String> au) {
+  public static RevisarTree<String> removeName(final RevisarTree<String> au) {
     final List<String> list = new ArrayList<>();
     list.add("name_");
     return remove(au, list);
@@ -69,8 +69,8 @@ public class TemplateUtils {
   
   
   public static String removeName(final String template) {
-    final ATree<String> atree = AParser.parser(template);
-    final ATree<String> atreeplain = TemplateUtils.removeName(atree);
+    final RevisarTree<String> atree = RevisarTreeParser.parser(template);
+    final RevisarTree<String> atreeplain = TemplateUtils.removeName(atree);
     final String srcEq = EquationUtils.convertToEq(atreeplain);
     return srcEq;
   }
@@ -82,15 +82,15 @@ public class TemplateUtils {
    *          ant-unification
    * @return the type information
    */
-  public static ATree<String> removeAll(final ATree<String> au) {
+  public static RevisarTree<String> removeAll(final RevisarTree<String> au) {
     final List<String> list = new ArrayList<>();
     list.add("name_");
     return remove(au, list);
   }
   
   public static String removeAll(final String template) {
-    final ATree<String> atree = AParser.parser(template);
-    final ATree<String> atreeplain = TemplateUtils.removeAll(atree);
+    final RevisarTree<String> atree = RevisarTreeParser.parser(template);
+    final RevisarTree<String> atreeplain = TemplateUtils.removeAll(atree);
     final String srcEq = EquationUtils.convertToEq(atreeplain);
     return srcEq;
   }

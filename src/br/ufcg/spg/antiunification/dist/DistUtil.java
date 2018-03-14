@@ -1,12 +1,12 @@
 package br.ufcg.spg.antiunification.dist;
 
-import br.ufcg.spg.tree.ATree;
+import br.ufcg.spg.tree.RevisarTree;
 
 public class DistUtil {
   /**
    * Converts a ASTNode to an anti-unification equation.
    */
-  public static int computeSize(final ATree<String> au) {
+  public static int computeSize(final RevisarTree<String> au) {
     if (au.getChildren().isEmpty()) {
       return 1;
     }

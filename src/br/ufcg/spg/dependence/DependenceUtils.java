@@ -13,11 +13,18 @@ import br.ufcg.spg.exp.ExpUtils;
 import br.ufcg.spg.git.CommitUtils;
 import br.ufcg.spg.git.GitUtils;
 import br.ufcg.spg.imports.Import;
-import br.ufcg.spg.matcher.AbstractMatchCalculator;
-import br.ufcg.spg.matcher.PositionMatchCalculator;
+import br.ufcg.spg.matcher.IMatcher;
+import br.ufcg.spg.matcher.KindNodeMatcher;
+import br.ufcg.spg.matcher.PositionNodeMatcher;
+import br.ufcg.spg.matcher.PositionRevisarTreeMatcher;
+import br.ufcg.spg.matcher.calculator.AbstractMatchCalculator;
+import br.ufcg.spg.matcher.calculator.NodeMatchCalculator;
+import br.ufcg.spg.matcher.calculator.RevisarTreeMatchCalculator;
 import br.ufcg.spg.project.ProjectAnalyzer;
 import br.ufcg.spg.project.ProjectInfo;
 import br.ufcg.spg.project.Version;
+import br.ufcg.spg.tree.RevisarTree;
+import br.ufcg.spg.tree.RevisarTreeUtils;
 
 import com.github.gumtreediff.matchers.MappingStore;
 import com.github.gumtreediff.tree.ITree;
@@ -35,6 +42,7 @@ import java.util.concurrent.ExecutionException;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.SimplePropertyDescriptor;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.NoFilepatternException;
 import org.eclipse.jgit.errors.AmbiguousObjectException;
@@ -76,41 +84,40 @@ public class DependenceUtils {
    */
   public static List<ASTNode> dependences(final Edit srcEdit) 
       throws IOException, ExecutionException, NoFilepatternException, GitAPIException {
-    //final List<Tuple<String, ITree>> imports = ImportUtils.imports(srcEdit);
     final Edit dstEdit = srcEdit.getDst();
-    //final EditDao editDao = EditDao.getInstance();
     final List<Import> imports = dstEdit.getImports();
+    //dst text and location where srcEdit goes to in the dst tree.
     final Tuple<String, Tuple<Integer, Integer>> edit = edit(srcEdit, srcEdit.getDst(), imports);
     final String after = edit.getItem1();
-    final ProjectInfo pi = ProjectAnalyzer.project(srcEdit);
     //checkout the commit if current commit differs.
+    final ProjectInfo pi = ProjectAnalyzer.project(srcEdit);
     CommitUtils.checkoutIfDiffer(dstEdit.getCommit(), pi);
+    //before and after node.
     final String srcFile = srcEdit.getPath();
     final Tuple<CompilationUnit, CompilationUnit> baEdit = 
         EditUtils.beforeAfter(srcFile, after, pi.getSrcVersion());
     final CompilationUnit srcRoot = baEdit.getItem1();
+    //identify broken constraints in source code..
     List<ASTNode> errorsSrc = ConstraintUtils.constraints(srcRoot);
-    final AbstractMatchCalculator mcal = new PositionMatchCalculator(srcEdit.getStartPos(), 
+    final IMatcher<ASTNode> srcMatcher = new PositionNodeMatcher(srcEdit.getStartPos(), 
         srcEdit.getEndPos());
+    final AbstractMatchCalculator<ASTNode> mcal = new NodeMatchCalculator(srcMatcher);
     final ASTNode srcNode = mcal.getNode(srcRoot);
     errorsSrc = removeIntersect(errorsSrc, srcNode);
-    final Tuple<Integer, Integer> loc = edit.getItem2();
+    final Tuple<Integer, Integer> locationDst = edit.getItem2();
     final CompilationUnit dstRoot = baEdit.getItem2();
-    final AbstractMatchCalculator mcalc = 
-        new PositionMatchCalculator(loc.getItem1(), loc.getItem2());
+    final IMatcher<ASTNode> positionMatcher = new PositionNodeMatcher(
+        locationDst.getItem1(), locationDst.getItem2());
+    final AbstractMatchCalculator<ASTNode> mcalc = new NodeMatchCalculator(positionMatcher);
     final ASTNode mappedDstNode = mcalc.getNode(dstRoot);
     if (mappedDstNode == null) {
       return new ArrayList<ASTNode>();
     }
-    List<ASTNode> errorsDst = ConstraintUtils.constraints(dstRoot);
-    errorsDst = removeIntersect(errorsDst, mappedDstNode);
-    System.out.println(errorsSrc.size() + " : " + errorsDst.size());
-    final Tuple<TreeContext, TreeContext> baTreeEdit = EditUtils.beforeAfterCxt(srcFile, after);
-    final TreeContext src = baTreeEdit.getItem1();
-    final TreeContext dst = baTreeEdit.getItem2();
-    final DiffCalculator diff = new DiffTreeContext(src, dst);
-    diff.diff();
-    final List<ASTNode> mapped = mapped(errorsDst, srcRoot, dstRoot, diff);
+    //identify broken constraints in target code.
+    List<ASTNode> dstErrors = ConstraintUtils.constraints(dstRoot);
+    dstErrors = removeIntersect(dstErrors, mappedDstNode);
+    System.out.println(errorsSrc.size() + " : " + dstErrors.size());
+    final List<ASTNode> mapped = mapped(dstErrors, srcRoot, dstRoot);
     final List<ASTNode> diffs = diffs(errorsSrc, mapped);
     return diffs;
   }
@@ -126,8 +133,8 @@ public class DependenceUtils {
       dependence.setNodes(new ArrayList<>());
       final List<Edit> value = graph.get(key);
       for (final Edit edit : value) {
-        if(!dependence.getNodes().contains(edit)) {
-           dependence.addNode(edit);
+        if (!dependence.getNodes().contains(edit)) {
+          dependence.addNode(edit);
         }
       }
       final DependenceDao dao = DependenceDao.getInstance();
@@ -221,7 +228,9 @@ public class DependenceUtils {
       final Version srcVersion = pi.getSrcVersion();
       final String commit = t.getCommit();
       final CompilationUnit cu = CompilerUtils.getCunit(t, commit, pi.getSrcVersion(), pi);
-      final AbstractMatchCalculator mcal = new PositionMatchCalculator(t.getStartPos(), t.getEndPos());//new IndexMatchCalculator(t.getIndex());
+      final IMatcher<ASTNode> matcher = new PositionNodeMatcher(t.getStartPos(), 
+          t.getEndPos());
+      final AbstractMatchCalculator<ASTNode> mcal = new NodeMatchCalculator(matcher);
       final ASTNode n = mcal.getNode(cu);
       if (n != null && intersect(node, n)) {
         return t;
@@ -258,10 +267,16 @@ public class DependenceUtils {
     return equals;
   }
 
-  private static List<ASTNode> removeIntersect(final List<ASTNode> errorsSrc, final ASTNode srcNode) {
+  /**
+   * Removes constraints of node that intersect with specified node.
+   * @param errorsSrc nodes to be analyzed.
+   * @param target node.
+   */
+  private static List<ASTNode> removeIntersect(final List<ASTNode> errorsSrc, 
+      final ASTNode targetNode) {
     final List<ASTNode> nodes = new ArrayList<ASTNode>();
     for (final ASTNode node : errorsSrc) {
-      if (!intersect(srcNode, node)) {
+      if (!intersect(targetNode, node)) {
         nodes.add(node);
       }
     }
@@ -283,27 +298,36 @@ public class DependenceUtils {
    * @param mappings
    *          mappings.
    */
-  private static List<ASTNode> mapped(final List<ASTNode> dstNodes, final ASTNode srcRoot, final ASTNode dstAstRoot,
-      final DiffCalculator diff) {
+  private static List<ASTNode> mapped(final List<ASTNode> dstNodes, 
+      final ASTNode srcRoot, final ASTNode dstRoot) {
     final List<ASTNode> result = new ArrayList<>();
-    final MappingStore mappings = diff.getMatcher().getMappings();
-    final ITree dstRoot = diff.getDst().getRoot();
+    RevisarTree<ASTNode> srcrtree = RevisarTreeUtils.convertToRevisarTree(srcRoot);
+    RevisarTree<ASTNode> dstrtree = RevisarTreeUtils.convertToRevisarTree(dstRoot);
     for (final ASTNode dstNode : dstNodes) {
-      AbstractMatchCalculator mcalc = new PositionMatchCalculator(dstNode);
-      final ITree tree = mcalc.getNode(dstRoot);
-      mcalc = new PositionMatchCalculator(dstNode);
-      final ASTNode astNode = mcalc.getNode(dstAstRoot);
-      final ITree srcTree = mappings.getSrc(tree);
-      if (srcTree == null) {
-        System.out.println("Cannot find the match node destination node: " + astNode);
-        continue;
+      IMatcher<RevisarTree<ASTNode>> match = new PositionRevisarTreeMatcher<ASTNode>(dstNode);
+      final AbstractMatchCalculator<RevisarTree<ASTNode>> mcalc = 
+          new RevisarTreeMatchCalculator<ASTNode>(match);
+      final RevisarTree<ASTNode> rtree = mcalc.getNode(dstrtree);
+      if (rtree == null) {
+        System.out.println();
       }
-      mcalc = new PositionMatchCalculator(srcTree);
-      final ASTNode srcNode = mcalc.getNode(srcRoot);
-      result.add(srcNode);
+      final ArrayList<Integer> path = RevisarTreeUtils.getPathToRoot(rtree);
+      IMatcher<ASTNode> importMatch = new KindNodeMatcher(ASTNode.IMPORT_DECLARATION);
+      AbstractMatchCalculator<ASTNode> importcalc = new NodeMatchCalculator(importMatch);
+      List<ASTNode> srcImports = importcalc.getNodes(srcRoot);
+      List<ASTNode> dstImports = importcalc.getNodes(dstRoot);
+      //needed since dst imports may differ from previous version.
+      if (!path.isEmpty()) {
+        path.set(0, path.get(0) - (dstImports.size() - srcImports.size()));
+      }
+      final RevisarTree<ASTNode> srcNode = RevisarTreeUtils.getNodeFromPath(srcrtree, path);
+      result.add(srcNode.getValue());
     }
     return result;
   }
+  
+  
+  
 
   /**
    * gets the diff between the constraint of the before and after version.
@@ -352,11 +376,16 @@ public class DependenceUtils {
     final String dstFilePath = dstEdit.getPath();
     final ProjectInfo pi =  ProjectAnalyzer.project(srcEdit);
     final String srcCommit = dstEdit.getCommit();
-    final CompilationUnit srcCu = CompilerUtils.getCunit(srcEdit, srcCommit, pi.getSrcVersion(), pi);
-    final CompilationUnit dstCu = CompilerUtils.getCunit(dstEdit, dstEdit.getCommit(), pi.getDstVersion(), pi);
-    AbstractMatchCalculator mcal = new PositionMatchCalculator(srcEdit.getStartPos(), srcEdit.getEndPos());//new IndexMatchCalculator(srcEdit.getIndex());
+    final CompilationUnit srcCu = CompilerUtils.getCunit(srcEdit, 
+        srcCommit, pi.getSrcVersion(), pi);
+    final CompilationUnit dstCu = CompilerUtils.getCunit(dstEdit, 
+        dstEdit.getCommit(), pi.getDstVersion(), pi);
+    IMatcher<ASTNode> matcher = new PositionNodeMatcher(srcEdit.getStartPos(), 
+        srcEdit.getEndPos());
+    AbstractMatchCalculator<ASTNode> mcal = new NodeMatchCalculator(matcher);
     final ASTNode srcNode = mcal.getNode(srcCu);
-    mcal = new PositionMatchCalculator(dstEdit.getStartPos(), dstEdit.getEndPos());//new IndexMatchCalculator(dstEdit.getIndex());
+    matcher = new PositionNodeMatcher(dstEdit.getStartPos(), dstEdit.getEndPos());
+    mcal = new NodeMatchCalculator(matcher);
     final ASTNode dstNode = mcal.getNode(dstCu);
     String srcContent = "";
     String dstContent = "";
@@ -378,16 +407,14 @@ public class DependenceUtils {
     int start = beforeEdit.length();
     String result = beforeEdit + change + afterEdit;
     for (final Import ttree : imports) {
-      //final ITree tree = ttree.getItem2();
       final int i = result.indexOf("import");
       final String b = result.substring(0, i);
       final String c = ttree.getText() + '\n';
-      //final String c = dstContent.substring(tree.getPos(), tree.getEndPos()) + "\n";
       final String a = result.substring(i, result.length());
       result = b + c + a;
       start += c.length();
     }
-    final Tuple<Integer, Integer> location = new Tuple<Integer, Integer>(start, start + change.length());
+    final Tuple<Integer, Integer> location = new Tuple<>(start, start + change.length());
     return new Tuple<String, Tuple<Integer, Integer>>(result, location);
   }
 

@@ -6,13 +6,18 @@ import br.ufcg.spg.compile.CompilerUtils;
 import br.ufcg.spg.diff.DiffCalculator;
 import br.ufcg.spg.diff.DiffUtils;
 import br.ufcg.spg.edit.Edit;
-import br.ufcg.spg.matcher.AbstractMatchCalculator;
-import br.ufcg.spg.matcher.PositionMatchCalculator;
+import br.ufcg.spg.matcher.IMatcher;
+import br.ufcg.spg.matcher.PositionNodeMatcher;
+import br.ufcg.spg.matcher.PositionTreeMatcher;
+import br.ufcg.spg.matcher.calculator.AbstractMatchCalculator;
+import br.ufcg.spg.matcher.calculator.NodeMatchCalculator;
+import br.ufcg.spg.matcher.calculator.TreeMatchCalculator;
 import br.ufcg.spg.project.ProjectInfo;
 import br.ufcg.spg.project.Version;
+import br.ufcg.spg.refaster.config.TransformationConfigObject;
 import br.ufcg.spg.template.TemplateUtils;
-import br.ufcg.spg.tree.AParser;
-import br.ufcg.spg.tree.ATree;
+import br.ufcg.spg.tree.RevisarTreeParser;
+import br.ufcg.spg.tree.RevisarTree;
 import br.ufcg.spg.tree.ITreeParser;
 
 import com.github.gumtreediff.tree.ITree;
@@ -43,8 +48,9 @@ public class ReplacementUtils {
   public static List<Replacement<ASTNode>> replacements(final Edit edit, final String au, 
       final CompilationUnit unit) 
       throws IOException, NoFilepatternException, GitAPIException {
-    final AbstractMatchCalculator mcalc = new PositionMatchCalculator(edit.getStartPos(), 
+    IMatcher<ASTNode> matcher = new PositionNodeMatcher(edit.getStartPos(), 
         edit.getEndPos());
+    final AbstractMatchCalculator<ASTNode> mcalc = new NodeMatchCalculator(matcher);
     final ASTNode node = mcalc.getNode(unit);
     final Map<String, List<ASTNode>> map = getAbstractionMap(au, node);
     final List<Replacement<ASTNode>> targetList = new ArrayList<>();
@@ -75,12 +81,12 @@ public class ReplacementUtils {
   }
   
   private static Map<String, List<ASTNode>> getAbstractionMap(final String clAu, final ASTNode node) {
-    final ATree<String> template = AParser.parser(clAu);
-    final ATree<String> au = TemplateUtils.removeAll(template);
-    final ATree<Tuple<ASTNode, String>> parsed = ITreeParser.parse(au, node);
-    final List<ATree<Tuple<ASTNode, String>>> nodes = AnalyzerUtil.getNodes(parsed);
+    final RevisarTree<String> template = RevisarTreeParser.parser(clAu);
+    final RevisarTree<String> au = TemplateUtils.removeAll(template);
+    final RevisarTree<Tuple<ASTNode, String>> parsed = ITreeParser.parse(au, node);
+    final List<RevisarTree<Tuple<ASTNode, String>>> nodes = AnalyzerUtil.getNodes(parsed);
     final Map<String, List<ASTNode>> map = new Hashtable<>();
-    for (final ATree<Tuple<ASTNode, String>> tuple : nodes) {
+    for (final RevisarTree<Tuple<ASTNode, String>> tuple : nodes) {
       final ASTNode astNode = tuple.getValue().getItem1();
       final String item1 = tuple.getValue().getItem2();
       final Pattern pattern = Pattern.compile(REGEX);
@@ -100,24 +106,24 @@ public class ReplacementUtils {
    * Gets before and after lists.
    */
   public static Tuple<List<ASTNode>, List<ASTNode>> mapping(
-      final List<Replacement<ASTNode>> src, final List<Replacement<ASTNode>> dst, 
-      final DiffCalculator diff, final CompilationUnit dstCu) {
+      final TransformationConfigObject config) {
     final List<ASTNode> befores = new ArrayList<>();
     final List<ASTNode> afters = new ArrayList<>();
-    addNodePairsBasedOnGumTree(src, diff, dstCu, befores, afters);
-    addNodePairsBasedOnStructure(src, dst, befores, afters);
+    addConcreteEditsGumTree(config.getSrcList(), config.getDiff(), 
+        config.getDstCu(), befores, afters);
+    addConcreteEditsStructure(config.getSrcList(), config.getDstList(), befores, afters);
     return new Tuple<List<ASTNode>, List<ASTNode>>(befores, afters);
   }
 
   /**
-   * Adds pairs of edits based on node structure.
+   * Add concrete edits based on node structure.
    * @param src source replacement
    * @param diff destination replacement
    * @param dstCu destination compilation unit
    * @param befores list of nodes abstracted for before version
    * @param afters list of nodes abstracted for after version
    */
-  private static void addNodePairsBasedOnStructure(final List<Replacement<ASTNode>> src,
+  private static void addConcreteEditsStructure(final List<Replacement<ASTNode>> src,
       final List<Replacement<ASTNode>> dst, final List<ASTNode> befores, final List<ASTNode> afters) {
     for (int i = 0; i < befores.size(); i++) {
       final Replacement<ASTNode> replacement = src.get(i);
@@ -142,7 +148,7 @@ public class ReplacementUtils {
    * @param befores list of nodes abstracted for before version
    * @param afters list of nodes abstracted for after version
    */
-  private static void addNodePairsBasedOnGumTree(final List<Replacement<ASTNode>> src,
+  private static void addConcreteEditsGumTree(final List<Replacement<ASTNode>> src,
       final DiffCalculator diff, final CompilationUnit dstCu, final List<ASTNode> befores,
       final List<ASTNode> afters) {
     for (final Replacement<ASTNode> replacement : src) {
@@ -151,13 +157,15 @@ public class ReplacementUtils {
         continue;
       }
       final ITree srcRoot = diff.getSrc().getRoot();
-      AbstractMatchCalculator mcalc = new PositionMatchCalculator(srcNode);
+      IMatcher<ITree> matcher = new PositionTreeMatcher(srcNode);
+      AbstractMatchCalculator<ITree> mcalc = new TreeMatchCalculator(matcher);
       final ITree itreeSrc = mcalc.getNode(srcRoot);
       final ITree itreeDst = diff.getMatcher().getMappings().getDst(itreeSrc);
       befores.add(srcNode);
       if (itreeDst != null) {
-        mcalc = new PositionMatchCalculator(itreeDst);
-        final ASTNode dstNode = mcalc.getNode(dstCu);
+        IMatcher<ASTNode> nodeMatcher = new PositionNodeMatcher(itreeDst);
+        AbstractMatchCalculator<ASTNode> nodeCalc = new NodeMatchCalculator(nodeMatcher);
+        final ASTNode dstNode = nodeCalc.getNode(dstCu);
         if (srcNode.toString().trim().equals(dstNode.toString().trim())) {
           afters.add(dstNode);
         } else {
@@ -186,7 +194,12 @@ public class ReplacementUtils {
     final Version dstv = pi.getDstVersion();
     final String dstCommit = dstEdit.getCommit();
     final CompilationUnit dstCu = CompilerUtils.getCunit(dstEdit, dstCommit, dstv, pi);
-    final Tuple<List<ASTNode>, List<ASTNode>> ma = mapping(src, dst, diff, dstCu);
+    TransformationConfigObject config = new TransformationConfigObject();
+    config.setSrcList(src);
+    config.setDstList(dst);
+    config.setDiff(diff);
+    config.setDstCu(dstCu);
+    final Tuple<List<ASTNode>, List<ASTNode>> ma = mapping(config);
     return ma;
   }
 }

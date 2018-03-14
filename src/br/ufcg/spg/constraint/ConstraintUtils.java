@@ -1,9 +1,10 @@
 package br.ufcg.spg.constraint;
 
-import br.ufcg.spg.matcher.AbstractMatchCalculator;
-import br.ufcg.spg.matcher.EvaluatorMatchCalculator;
-import br.ufcg.spg.search.evaluator.AllwaysTrueEvaluator;
-import br.ufcg.spg.search.evaluator.IEvaluator;
+import br.ufcg.spg.matcher.AllNodeMatcher;
+import br.ufcg.spg.matcher.IMatcher;
+import br.ufcg.spg.matcher.calculator.AbstractMatchCalculator;
+import br.ufcg.spg.matcher.calculator.NodeMatchCalculator;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,8 +21,8 @@ public class ConstraintUtils {
    * @return constraints associated with the provided file.
    */
   public static List<ASTNode> constraints(final CompilationUnit unit) {
-    final IEvaluator evaluator = new AllwaysTrueEvaluator();
-    final AbstractMatchCalculator mcal = new EvaluatorMatchCalculator(evaluator);
+    final IMatcher<ASTNode> matcher = new AllNodeMatcher();
+    final AbstractMatchCalculator<ASTNode> mcal = new NodeMatchCalculator(matcher);
     final List<ASTNode> nodes = mcal.getNodes(unit);
     final List<ASTNode> errors = new ArrayList<ASTNode>();
     for (final ASTNode node : nodes) {

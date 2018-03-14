@@ -1,7 +1,7 @@
 package br.ufcg.spg.analyzer.util;
 
 import br.ufcg.spg.antiunification.AntiUnifier;
-import br.ufcg.spg.tree.ATree;
+import br.ufcg.spg.tree.RevisarTree;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -49,8 +49,8 @@ public final class AnalyzerUtil {
    *          root tree
    * @return list of nodes of this root tree.
    */
-  public static <T> List<ATree<T>> getNodes(final ATree<T> node) {
-    final List<ATree<T>> nodesTree = new ArrayList<ATree<T>>();
+  public static <T> List<RevisarTree<T>> getNodes(final RevisarTree<T> node) {
+    final List<RevisarTree<T>> nodesTree = new ArrayList<RevisarTree<T>>();
     getNodeList(node, nodesTree);
     return nodesTree;
   }
@@ -83,15 +83,15 @@ public final class AnalyzerUtil {
    *          - node
    * @return node list
    */
-  private static <T> List<ATree<T>> getNodeList(final ATree<T> node,
-      final List<ATree<T>> nodesTree) {
-    final List<ATree<T>> children = node.getChildren();
+  private static <T> List<RevisarTree<T>> getNodeList(final RevisarTree<T> node,
+      final List<RevisarTree<T>> nodesTree) {
+    final List<RevisarTree<T>> children = node.getChildren();
     nodesTree.add(node);
     if (children.isEmpty()) {
       return nodesTree;
     }
     for (int i = 0; i < children.size(); i++) {
-      final ATree<T> childNode = children.get(i);
+      final RevisarTree<T> childNode = children.get(i);
       getNodeList(childNode, nodesTree);
     }
     return nodesTree;

@@ -2,8 +2,8 @@ package br.ufcg.spg.dcap;
 
 import br.ufcg.spg.antiunification.AntiUnifier;
 import br.ufcg.spg.equation.EquationUtils;
-import br.ufcg.spg.tree.AParser;
-import br.ufcg.spg.tree.ATree;
+import br.ufcg.spg.tree.RevisarTreeParser;
+import br.ufcg.spg.tree.RevisarTree;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 
@@ -15,14 +15,14 @@ public class DcapCalculator {
    * @param index index of the place-hold
    * @return d-cap for anti-unification
    */
-  private static ATree<String> dcap(final ATree<String> au, int d, int index) {
+  private static RevisarTree<String> dcap(final RevisarTree<String> au, int d, int index) {
     if (d == 0 || au.getChildren().isEmpty()) {
-      return new ATree<>("#" + index);
+      return new RevisarTree<>("#" + index);
     }
-    final ATree<String> atree = new ATree<>(au.getValue());
+    final RevisarTree<String> atree = new RevisarTree<>(au.getValue());
     d--;
-    for (final ATree<String> child : au.getChildren()) {
-      final ATree<String> achild = dcap(child, d, index++);
+    for (final RevisarTree<String> child : au.getChildren()) {
+      final RevisarTree<String> achild = dcap(child, d, index++);
       atree.addChild(achild);
     }
     return atree;
@@ -33,9 +33,9 @@ public class DcapCalculator {
    * @param au anti-unification
    * @return d-cap for anti-unification
    */
-  public static ATree<String> dcap(final AntiUnifier au, final int d) {
+  public static RevisarTree<String> dcap(final AntiUnifier au, final int d) {
     final String auEquation = EquationUtils.convertToEquation(au);
-    final ATree<String> atree = AParser.parser(auEquation);
+    final RevisarTree<String> atree = RevisarTreeParser.parser(auEquation);
     return dcap(atree, d, 1);
   }
   
@@ -44,10 +44,10 @@ public class DcapCalculator {
    * @param au anti-unification
    * @return d-cap for anti-unification
    */
-  public static ATree<String> dcap(final ASTNode au) {
+  public static RevisarTree<String> dcap(final ASTNode au) {
     final int d = 3;
     final String auEquation = EquationUtils.convertToAuEq(au);
-    final ATree<String> atree = AParser.parser(auEquation);
+    final RevisarTree<String> atree = RevisarTreeParser.parser(auEquation);
     return dcap(atree, d, 1);
   }
 

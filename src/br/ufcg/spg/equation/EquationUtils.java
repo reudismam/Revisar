@@ -6,7 +6,7 @@ import br.ufcg.spg.binding.BindingLocator;
 import br.ufcg.spg.binding.BindingSolver;
 import br.ufcg.spg.config.TechniqueConfig;
 import br.ufcg.spg.mapper.AsciiMapper;
-import br.ufcg.spg.tree.ATree;
+import br.ufcg.spg.tree.RevisarTree;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ public class EquationUtils {
   /**
    * Converts a ASTNode to an anti-unification equation.
    */
-  public static String convertToEq(final ATree<String> au) {
+  public static String convertToEq(final RevisarTree<String> au) {
     if (au.getChildren().isEmpty()) {
       final String value = au.getValue();
       String content = value.trim();
@@ -32,11 +32,11 @@ public class EquationUtils {
       return content;
     }
     String tree = au.getValue() + "(";
-    final ATree<String> sotFirst = au.getChildren().get(0);
+    final RevisarTree<String> sotFirst = au.getChildren().get(0);
     final String nodeFirst = convertToEq(sotFirst);
     tree += nodeFirst;
     for (int i = 1; i < au.getChildren().size(); i++) {
-      final ATree<String> sot = au.getChildren().get(i);
+      final RevisarTree<String> sot = au.getChildren().get(i);
       final String node = ", " + convertToEq(sot);
       tree += node;
     }
