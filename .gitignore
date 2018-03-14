@@ -23,6 +23,7 @@ hs_err_pid*
 .metadata
 bin/
 tmp/
+email/
 *.tmp
 *temp[0-9]*.java
 *.bak
