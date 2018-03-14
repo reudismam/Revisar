@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1"
+    xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+    <persistence-unit name="AntiUnification"
+        transaction-type="RESOURCE_LOCAL">
+        <class>br.ufcg.spg.edit.Edit</class>
+        <class>br.ufcg.spg.cluster.Cluster</class>
+        <class>br.ufcg.spg.refaster.Transformation</class>
+        <class>br.ufcg.spg.dependence.Dependence</class>
+        <class>br.ufcg.spg.imports.Import</class>
+        <properties>
+            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://127.0.0.1:5432/AUDb" />
+            <property name="javax.persistence.jdbc.user" value="postgres" />
+            <property name="javax.persistence.jdbc.password" value="12345" />
+            <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" />
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
+            <property name="hibernate.connection.shutdown" value="true" />
+            <property name="hibernate.hbm2ddl.auto" value="update" />
+            <property name="hibernate.show_sql" value="false" />
+            <property name="hibernate.format_sql" value="false"/>
+            <property name="javax.persistence.schema-generation.create-database-schemas" value="true"/>
+            <property name="javax.persistence.schema-generation.database.action" value="create"/>
+       </properties>
+     </persistence-unit>
+</persistence>
