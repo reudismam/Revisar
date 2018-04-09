@@ -5,13 +5,10 @@ import br.ufcg.spg.compile.CompilerUtils;
 import br.ufcg.spg.constraint.ConstraintUtils;
 import br.ufcg.spg.database.DependenceDao;
 import br.ufcg.spg.database.EditDao;
-import br.ufcg.spg.diff.DiffCalculator;
-import br.ufcg.spg.diff.DiffTreeContext;
 import br.ufcg.spg.edit.Edit;
 import br.ufcg.spg.edit.EditUtils;
 import br.ufcg.spg.exp.ExpUtils;
 import br.ufcg.spg.git.CommitUtils;
-import br.ufcg.spg.git.GitUtils;
 import br.ufcg.spg.imports.Import;
 import br.ufcg.spg.matcher.IMatcher;
 import br.ufcg.spg.matcher.KindNodeMatcher;
@@ -20,21 +17,19 @@ import br.ufcg.spg.matcher.PositionRevisarTreeMatcher;
 import br.ufcg.spg.matcher.calculator.AbstractMatchCalculator;
 import br.ufcg.spg.matcher.calculator.NodeMatchCalculator;
 import br.ufcg.spg.matcher.calculator.RevisarTreeMatchCalculator;
+import br.ufcg.spg.parser.JParser;
 import br.ufcg.spg.project.ProjectAnalyzer;
 import br.ufcg.spg.project.ProjectInfo;
-import br.ufcg.spg.project.Version;
 import br.ufcg.spg.tree.RevisarTree;
 import br.ufcg.spg.tree.RevisarTreeUtils;
-
-import com.github.gumtreediff.matchers.MappingStore;
-import com.github.gumtreediff.tree.ITree;
-import com.github.gumtreediff.tree.TreeContext;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +37,6 @@ import java.util.concurrent.ExecutionException;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.CompilationUnit;
-import org.eclipse.jdt.core.dom.SimplePropertyDescriptor;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.NoFilepatternException;
 import org.eclipse.jgit.errors.AmbiguousObjectException;
@@ -82,28 +76,19 @@ public class DependenceUtils {
    * @param srcEdit source code edit.
    * @return dependences
    */
-  public static List<ASTNode> dependences(final Edit srcEdit) 
+  public static List<ASTNode> dependences(final Edit srcEdit, List<ASTNode> errorsSrc) 
       throws IOException, ExecutionException, NoFilepatternException, GitAPIException {
     final Edit dstEdit = srcEdit.getDst();
     final List<Import> imports = dstEdit.getImports();
     //dst text and location where srcEdit goes to in the dst tree.
     final Tuple<String, Tuple<Integer, Integer>> edit = edit(srcEdit, srcEdit.getDst(), imports);
     final String after = edit.getItem1();
-    //checkout the commit if current commit differs.
     final ProjectInfo pi = ProjectAnalyzer.project(srcEdit);
-    CommitUtils.checkoutIfDiffer(dstEdit.getCommit(), pi);
     //before and after node.
     final String srcFile = srcEdit.getPath();
     final Tuple<CompilationUnit, CompilationUnit> baEdit = 
         EditUtils.beforeAfter(srcFile, after, pi.getSrcVersion());
     final CompilationUnit srcRoot = baEdit.getItem1();
-    //identify broken constraints in source code..
-    List<ASTNode> errorsSrc = ConstraintUtils.constraints(srcRoot);
-    final IMatcher<ASTNode> srcMatcher = new PositionNodeMatcher(srcEdit.getStartPos(), 
-        srcEdit.getEndPos());
-    final AbstractMatchCalculator<ASTNode> mcal = new NodeMatchCalculator(srcMatcher);
-    final ASTNode srcNode = mcal.getNode(srcRoot);
-    errorsSrc = removeIntersect(errorsSrc, srcNode);
     final Tuple<Integer, Integer> locationDst = edit.getItem2();
     final CompilationUnit dstRoot = baEdit.getItem2();
     final IMatcher<ASTNode> positionMatcher = new PositionNodeMatcher(
@@ -120,6 +105,28 @@ public class DependenceUtils {
     final List<ASTNode> mapped = mapped(dstErrors, srcRoot, dstRoot);
     final List<ASTNode> diffs = diffs(errorsSrc, mapped);
     return diffs;
+  }
+
+  private static CompilationUnit getCompilationUnit(final Edit srcEdit, final Edit dstEdit) 
+      throws MissingObjectException, IncorrectObjectTypeException, 
+      AmbiguousObjectException, IOException, NoFilepatternException, GitAPIException {
+    //checkout the commit if current commit differs.
+    final ProjectInfo pi = ProjectAnalyzer.project(srcEdit);
+    CommitUtils.checkoutIfDiffer(dstEdit.getCommit(), pi);
+    final String srcFile = srcEdit.getPath();
+    final CompilationUnit compSrc = JParser.parse(srcFile, pi.getSrcVersion());
+    return compSrc;
+  }
+
+  private static List<ASTNode> getErrorsSrc(final Edit srcEdit, final CompilationUnit srcRoot) {
+    //identify broken constraints in source code..
+    List<ASTNode> errorsSrc = ConstraintUtils.constraints(srcRoot);
+    final IMatcher<ASTNode> srcMatcher = new PositionNodeMatcher(srcEdit.getStartPos(), 
+        srcEdit.getEndPos());
+    final AbstractMatchCalculator<ASTNode> mcal = new NodeMatchCalculator(srcMatcher);
+    final ASTNode srcNode = mcal.getNode(srcRoot);
+    errorsSrc = removeIntersect(errorsSrc, srcNode);
+    return errorsSrc;
   }
   
   /**
@@ -158,15 +165,34 @@ public class DependenceUtils {
   public static Map<Edit, List<Edit>> computeGraph(final List<Edit> srcEdits)
       throws IOException, ExecutionException, NoFilepatternException, GitAPIException {
     final Map<Edit, List<Edit>> graph = new Hashtable<>();
+    final Map<String, List<ASTNode>> errorsSrc = new HashMap<>();
+    final Map<String, List<Edit>> fileEdits = new HashMap<>();
     // fill each node with an empty list
     for (final Edit edit : srcEdits) {
       graph.put(edit, new ArrayList<>());
+      if (!fileEdits.containsKey(edit.getPath())) {
+        fileEdits.put(edit.getPath(), new ArrayList<>());
+      }
+      List<Edit> mp = fileEdits.get(edit.getPath());
+      mp.add(edit);
+      fileEdits.put(edit.getPath(), mp);
     }
     for (int i = 0; i < srcEdits.size(); i++) {
       final Edit srcEdit = srcEdits.get(i);
-      final List<ASTNode> related = dependences(srcEdit);
+      List<ASTNode> errors;
+      if (errorsSrc.containsKey(srcEdit.getPath())) {
+        errors = errorsSrc.get(srcEdit.getPath());
+      } else {
+        CompilationUnit srcRoot = getCompilationUnit(srcEdit, srcEdit.getDst());
+        errors = getErrorsSrc(srcEdit, srcRoot);
+        errorsSrc.put(srcEdit.getPath(), errors);
+      }
+      if (errors.size() > 1000) {
+        continue;
+      }
+      final List<ASTNode> related = dependences(srcEdit, errors);
       for (final ASTNode node : related) {
-        final Edit original = original(srcEdits, node);
+        final Edit original = original(fileEdits.get(srcEdit.getPath()), node);
         if (original != null) {
           final List<Edit> listNode = graph.get(srcEdit);
           if (!listNode.contains(original)) {
@@ -222,23 +248,26 @@ public class DependenceUtils {
   private static Edit original(final List<Edit> allNodes, final ASTNode node) 
       throws IOException, ExecutionException {
     for (int i = 0; i < allNodes.size(); i++) {
-      final Edit t = allNodes.get(i);
-      final GitUtils analyzer = new GitUtils();
-      final ProjectInfo pi = ProjectAnalyzer.project(t);
-      final Version srcVersion = pi.getSrcVersion();
-      final String commit = t.getCommit();
-      final CompilationUnit cu = CompilerUtils.getCunit(t, commit, pi.getSrcVersion(), pi);
-      final IMatcher<ASTNode> matcher = new PositionNodeMatcher(t.getStartPos(), 
-          t.getEndPos());
+      final Edit edit = allNodes.get(i);
+      final ProjectInfo pi = ProjectAnalyzer.project(edit);
+      final String commit = edit.getCommit();
+      final CompilationUnit cu = CompilerUtils.getCunit(edit, commit, pi.getSrcVersion(), pi);
+      final IMatcher<ASTNode> matcher = new PositionNodeMatcher(edit.getStartPos(), 
+          edit.getEndPos());
       final AbstractMatchCalculator<ASTNode> mcal = new NodeMatchCalculator(matcher);
-      final ASTNode n = mcal.getNode(cu);
-      if (n != null && intersect(node, n)) {
-        return t;
+      final ASTNode foundNode = mcal.getNode(cu);
+      if (foundNode != null && intersect(node, foundNode)) {
+        return edit;
       }
     }
     return null;
   }
 
+  /**
+   * Determines whether two nodes intersect themselves.
+   * @param nodei first node
+   * @param nodej second node
+   */
   private static boolean intersect(final ASTNode nodei, final ASTNode nodej) {
     final int starti = nodei.getStartPosition();
     final int endi = starti + nodei.getLength();
@@ -247,24 +276,6 @@ public class DependenceUtils {
     final boolean iandj = starti <= startj && startj <= endi;
     final boolean jandi = startj <= starti && starti < endj;
     return iandj || jandi;
-  }
-
-  /**
-   * Returns true is the two node are equal.
-   * 
-   * @param node
-   *          i
-   * @param node
-   *          j
-   * @return true if the two nodes are equal.
-   */
-  private static boolean same(final ASTNode nodei, final ASTNode nodej) {
-    final int starti = nodei.getStartPosition();
-    final int endi = starti + nodei.getLength();
-    final int startj = nodej.getStartPosition();
-    final int endj = startj + nodej.getLength();
-    final boolean equals = starti == startj && endi == endj;
-    return equals;
   }
 
   /**
@@ -326,28 +337,21 @@ public class DependenceUtils {
     return result;
   }
   
-  
-  
-
   /**
-   * gets the diff between the constraint of the before and after version.
-   * 
-   * @param errorsSrc
-   *          - errors in source version
-   * @param errorsDst
-   *          - errors in destination version
-   * @return diff between the constraint on the before and after version
+   * gets the diff between before and after version.
+   * @param errorsSrc source version
+   * @param errorsDst destination  version
    */
   private static List<ASTNode> diffs(final List<ASTNode> errorsSrc, final List<ASTNode> errorsDst) {
-    final List<ASTNode> result = new ArrayList<ASTNode>();
-    for (final ASTNode dstNode : errorsDst) {
-      boolean found = false;
-      for (final ASTNode srcNode : errorsSrc) {
-        if (same(dstNode, srcNode)) {
-          found = true;
-        }
-      }
-      if (!found) {
+    final HashSet<Tuple<Integer, Integer>> set = new HashSet<>();
+    final List<ASTNode> result = new ArrayList<>();
+    for (final ASTNode srcNode : errorsSrc) {
+      Tuple<Integer, Integer> tu = new Tuple<>(srcNode.getStartPosition(), srcNode.getLength());
+      set.add(tu);
+    }   
+    for (final ASTNode dstNode: errorsDst) {
+      Tuple<Integer, Integer> tu = new Tuple<>(dstNode.getStartPosition(), dstNode.getLength());
+      if (!set.contains(tu)) {
         result.add(dstNode);
       }
     }

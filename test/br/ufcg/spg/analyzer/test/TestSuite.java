@@ -83,7 +83,7 @@ public class TestSuite {
   @Test
   public void exp_TranslateId() 
       throws IOException, JustificationException, ControlledException, CoreException {
-    Technique.translateEdits("29414");
+    Technique.translateEdits("1525005");
     System.out.println("END.");
   }
   

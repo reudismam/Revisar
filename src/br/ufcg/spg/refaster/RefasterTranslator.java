@@ -121,9 +121,10 @@ public class RefasterTranslator {
     final DiffCalculator diff = new DiffPath(srcEdit.getPath(), dstEdit.getPath());
     diff.diff();
     String commit = dstEdit.getCommit();
-    String filePath = dstEdit.getPath();
+    String srcPath = srcEdit.getPath();
+    String dstPath = dstEdit.getPath();
     TransformationConfigObject config = configTransformationObject(
-        commit, filePath, rule, pi, 
+        commit, srcPath, dstPath, rule, pi, 
         dstUnit, srcNode, dstNode, ba, src, dst, diff);
     ba = ReturnStmTranslator.config(config);
     return ba;
@@ -134,7 +135,8 @@ public class RefasterTranslator {
    */
   private static TransformationConfigObject configTransformationObject(
       final String commit, 
-      final String path,
+      final String srcPath,
+      final String dstPath,
       final CompilationUnit rule, 
       final ProjectInfo pi,
       final CompilationUnit dstUnit, 
@@ -146,7 +148,8 @@ public class RefasterTranslator {
       final DiffCalculator diff) {
     TransformationConfigObject config = new TransformationConfigObject();
     config.setCommit(commit);
-    config.setPath(path);
+    config.setSrcPath(srcPath);
+    config.setDstPath(dstPath);
     config.setNodeSrc(srcNode);
     config.setNodeDst(dstNode);
     config.setSrcList(src);

@@ -52,12 +52,12 @@ public class ReturnStmTranslator {
     final List<ASTNode> befores = bas.getItem1();
     final List<ASTNode> afters = bas.getItem2();
     ReturnStatementConfig bconfig = getReturnStatementConfig(
-        config.getCommit(), config.getPath(),
+        config.getCommit(), config.getSrcPath(),
         config.getNodeSrc(), config.getSrcList(),
         config.getBa().getItem1(), config.getPi().getSrcVersion(), 
         config, befores);
     ReturnStatementConfig aconfig = getReturnStatementConfig(
-        config.getCommit(), config.getPath(),
+        config.getCommit(), config.getDstPath(),
         config.getNodeDst(), config.getDstList(),
         config.getBa().getItem2(), config.getPi().getDstVersion(), 
         config, afters);
@@ -189,7 +189,7 @@ public class ReturnStmTranslator {
         targets.add(nodek);
       }
     }
-    return new Tuple<>(targets, holeVariables);
+    return new Tuple<>(holeVariables, targets);
   }
   
   /**

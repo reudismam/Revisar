@@ -17,9 +17,13 @@ public class TransformationConfigObject {
    */
   private String commit;
   /**
-   * Path to file.
+   * Path to the source file.
    */
-  private String path;
+  private String srcPath;
+  /**
+   * Path to the destination file.
+   */
+  private String dstPath;
   /** 
    * source node.
    */
@@ -65,12 +69,20 @@ public class TransformationConfigObject {
     this.commit = commit;
   }
 
-  public String getPath() {
-    return path;
+  public String getSrcPath() {
+    return srcPath;
   }
 
-  public void setPath(String path) {
-    this.path = path;
+  public void setSrcPath(String srcPath) {
+    this.srcPath = srcPath;
+  }
+
+  public String getDstPath() {
+    return dstPath;
+  }
+
+  public void setDstPath(String dstPath) {
+    this.dstPath = dstPath;
   }
 
   public ASTNode getNodeSrc() {

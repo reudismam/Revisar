@@ -31,7 +31,8 @@ public class VariableDeclarationFragmentBodyConfig implements IConfigBody {
 
   @Override
   public MethodDeclaration config() {
-    final VariableDeclarationFragment varFrag = (VariableDeclarationFragment) template;
+    VariableDeclarationFragment varFrag = (VariableDeclarationFragment) template;
+    varFrag = (VariableDeclarationFragment) ASTNode.copySubtree(ast, varFrag);
     SimpleName name = varFrag.getName();
     name = (SimpleName) ASTNode.copySubtree(ast, name);
     Expression initializer = varFrag.getInitializer();
