@@ -2,16 +2,10 @@ package br.ufcg.spg.refaster;
 
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
-import org.eclipse.jdt.core.dom.Assignment;
-import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.Statement;
-import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
-
-import br.ufcg.spg.type.TypeUtils;
 
 public class VariableDeclarationFragmentBodyConfig implements IConfigBody {
   private final ASTNode template;
@@ -21,8 +15,8 @@ public class VariableDeclarationFragmentBodyConfig implements IConfigBody {
   /**
    * Constructor.
    */
-  public VariableDeclarationFragmentBodyConfig(final ASTNode template, final MethodDeclaration method,
-      final AST ast) {
+  public VariableDeclarationFragmentBodyConfig(final ASTNode template, 
+      final MethodDeclaration method, final AST ast) {
     super();
     this.template = template;
     this.method = method;
@@ -32,7 +26,8 @@ public class VariableDeclarationFragmentBodyConfig implements IConfigBody {
   @Override
   public MethodDeclaration config() {
     VariableDeclarationFragment varFrag = (VariableDeclarationFragment) template;
-    varFrag = (VariableDeclarationFragment) ASTNode.copySubtree(ast, varFrag);
+    ASTNode statement = (VariableDeclarationStatement) varFrag.getParent();
+    /*varFrag = (VariableDeclarationFragment) ASTNode.copySubtree(ast, varFrag);
     SimpleName name = varFrag.getName();
     name = (SimpleName) ASTNode.copySubtree(ast, name);
     Expression initializer = varFrag.getInitializer();
@@ -48,7 +43,7 @@ public class VariableDeclarationFragmentBodyConfig implements IConfigBody {
       stmType = (Type) ASTNode.copySubtree(ast, stmType);
       statement = ast.newVariableDeclarationStatement(varFrag);
       ((VariableDeclarationStatement) statement).setType(stmType);
-    }
+    }*/
     statement = (Statement) ASTNode.copySubtree(ast, statement);
     method.getBody().statements().remove(0);
     method.getBody().statements().add(statement);
