@@ -4,11 +4,11 @@ import br.ufcg.spg.cluster.Cluster;
 import br.ufcg.spg.config.TechniqueConfig;
 import br.ufcg.spg.database.ClusterDao;
 import br.ufcg.spg.database.TransformationDao;
-import br.ufcg.spg.evaluator.ClusterValidator;
-import br.ufcg.spg.evaluator.RenameChecker;
-import br.ufcg.spg.evaluator.node.INodeChecker;
 import br.ufcg.spg.refaster.RefasterTranslator;
 import br.ufcg.spg.refaster.Transformation;
+import br.ufcg.spg.validator.ClusterValidator;
+import br.ufcg.spg.validator.RenameChecker;
+import br.ufcg.spg.validator.node.INodeChecker;
 
 import java.io.File;
 import java.util.ArrayList;

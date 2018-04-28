@@ -1,4 +1,4 @@
-package br.ufcg.spg.evaluator.node;
+package br.ufcg.spg.validator.node;
 
 import java.util.List;
 

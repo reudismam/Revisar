@@ -1,9 +1,9 @@
-package br.ufcg.spg.evaluator;
+package br.ufcg.spg.validator;
 
 import br.ufcg.spg.cluster.Cluster;
 import br.ufcg.spg.edit.Edit;
-import br.ufcg.spg.evaluator.template.ITransformationValidatorStrategy;
-import br.ufcg.spg.evaluator.template.TemplateValidatorStrategy;
+import br.ufcg.spg.validator.template.ITransformationValidatorStrategy;
+import br.ufcg.spg.validator.template.TemplateValidatorStrategy;
 
 import java.io.IOException;
 import java.util.Arrays;

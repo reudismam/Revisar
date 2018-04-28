@@ -1,4 +1,4 @@
-package br.ufcg.spg.evaluator.node;
+package br.ufcg.spg.validator.node;
 
 public interface INodeChecker {
   public boolean check();

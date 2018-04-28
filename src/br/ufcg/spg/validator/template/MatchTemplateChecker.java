@@ -1,4 +1,4 @@
-package br.ufcg.spg.evaluator.template;
+package br.ufcg.spg.validator.template;
 
 import at.jku.risc.stout.urauc.algo.AntiUnifyProblem.VariableWithHedges;
 import at.jku.risc.stout.urauc.data.Hedge;
@@ -8,8 +8,8 @@ import br.ufcg.spg.cluster.UnifierCluster;
 import br.ufcg.spg.edit.Edit;
 import br.ufcg.spg.equation.EquationUtils;
 import br.ufcg.spg.match.Match;
-import br.ufcg.spg.tree.RevisarTreeParser;
 import br.ufcg.spg.tree.RevisarTree;
+import br.ufcg.spg.tree.RevisarTreeParser;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -51,18 +51,18 @@ public class MatchTemplateChecker implements ITemplateChecker {
    */
   @Override
   public boolean check() {
-    final Edit first = srcEdits.get(0);
-    final List<Match> matchesFirst = getMatches(first, srcAu, dstAu);
-    final Edit last = srcEdits.get(srcEdits.size() - 1);
-    final Map<String, String> gfirst = getUnifierMatching(first.getTemplate(), srcAu);
-    final Map<String, String> glast = getUnifierMatching(last.getTemplate(), srcAu);
+    final Edit firstEdit = srcEdits.get(0);
+    final List<Match> matchesFirst = getMatches(firstEdit, srcAu, dstAu);
+    final Edit lastEdit = srcEdits.get(srcEdits.size() - 1);
+    final Map<String, String> gfirst = getUnifierMatching(firstEdit.getTemplate(), srcAu);
+    final Map<String, String> glast = getUnifierMatching(lastEdit.getTemplate(), srcAu);
     if (gfirst.size() != glast.size()) {
       return false;
     }
     if (matchesFirst == null) {
       return false;
     }
-    final List<Match> matchesLast = getMatches(last, srcAu, dstAu); 
+    final List<Match> matchesLast = getMatches(lastEdit, srcAu, dstAu); 
     if (matchesLast == null) {
       return false;
     }
@@ -91,7 +91,8 @@ public class MatchTemplateChecker implements ITemplateChecker {
     //Gets hash id and value of destination nodes.
     final Map<String, String> dstAuMatches = getUnifierMatching(dstTemplate, dstAu);
     //Gets  hash id and value tree of destination nodes.
-    final Map<String, RevisarTree<String>> abstracted = getAbstractionMapping(dstTemplate, dstAuMatches);
+    final Map<String, RevisarTree<String>> abstracted = 
+        getAbstractionMapping(dstTemplate, dstAuMatches);
     //checks that all abstracted variables from destination is present on source.
     final Map<String, RevisarTree<String>> srcMapping = getStringTreeMapping(srcTemplate);
     final Map<String, RevisarTree<String>> dstMapping = getStringTreeMapping(dstTemplate);
@@ -106,24 +107,6 @@ public class MatchTemplateChecker implements ITemplateChecker {
     final Map<String, String> srcUniMatching = getUnifierMatching(srcTemplate, srcAu);
     final Map<String, RevisarTree<String>> varMatching = getVariableMatching(abstracted, srcDstMapping);
     final List<Match> matches = getMatches2(srcUniMatching, dstAuMatches);
-    return matches;
-  }
-
-  private List<Match> getMatches(final Map<String, String> srcUniMatching, 
-      final Map<String, RevisarTree<String>> varMatching) {
-    final List<Match> matches = new ArrayList<>();
-    for (final Entry<String, String> srcEntry  : srcUniMatching.entrySet()) {
-      final String srcKey = srcEntry.getKey();
-      final String srcValue = srcEntry.getValue();
-      for (final Entry<String, RevisarTree<String>> dstEntry: varMatching.entrySet()) {
-        final String dstKey = dstEntry.getKey();
-        final String dstValue = EquationUtils.convertToEq(dstEntry.getValue());
-        if (srcValue.equals(dstValue)) {
-          final Match match = new Match(srcKey, dstKey, srcValue);
-          matches.add(match);
-        }
-      }
-    }
     return matches;
   }
   

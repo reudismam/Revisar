@@ -1,13 +1,14 @@
-package br.ufcg.spg.evaluator;
+package br.ufcg.spg.validator;
 
 import at.jku.risc.stout.urauc.algo.AntiUnifyProblem.VariableWithHedges;
 import br.ufcg.spg.antiunification.AntiUnifier;
 import br.ufcg.spg.cluster.Cluster;
 import br.ufcg.spg.cluster.UnifierCluster;
-import br.ufcg.spg.evaluator.node.INodeChecker;
-import br.ufcg.spg.evaluator.template.ITemplateChecker;
 import br.ufcg.spg.replacement.ReplacementUtils;
 import br.ufcg.spg.template.TemplateUtils;
+import br.ufcg.spg.validator.node.INodeChecker;
+import br.ufcg.spg.validator.template.ITemplateChecker;
+
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

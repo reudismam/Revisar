@@ -1,10 +1,10 @@
-package br.ufcg.spg.evaluator.template;
+package br.ufcg.spg.validator.template;
 
 import br.ufcg.spg.analyzer.util.AnalyzerUtil;
 import br.ufcg.spg.edit.Edit;
 import br.ufcg.spg.equation.EquationUtils;
-import br.ufcg.spg.tree.RevisarTreeParser;
 import br.ufcg.spg.tree.RevisarTree;
+import br.ufcg.spg.tree.RevisarTreeParser;
 import br.ufcg.spg.tree.RevisarTreeUtils;
 
 import java.io.IOException;
@@ -27,7 +27,6 @@ public class MethodInvocationTemplateChecker implements IValidationTemplateRule 
    * Constructor.
    */
   public MethodInvocationTemplateChecker() {
-    super();
   }
   
   @Override

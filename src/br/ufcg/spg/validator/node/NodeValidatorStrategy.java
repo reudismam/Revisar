@@ -1,13 +1,13 @@
-package br.ufcg.spg.evaluator.node;
+package br.ufcg.spg.validator.node;
 
 import br.ufcg.spg.compile.CompilerUtils;
 import br.ufcg.spg.edit.Edit;
-import br.ufcg.spg.evaluator.template.ITransformationValidatorStrategy;
 import br.ufcg.spg.project.ProjectAnalyzer;
 import br.ufcg.spg.project.ProjectInfo;
 import br.ufcg.spg.project.Version;
 import br.ufcg.spg.replacement.Replacement;
 import br.ufcg.spg.replacement.ReplacementUtils;
+import br.ufcg.spg.validator.template.ITransformationValidatorStrategy;
 
 import java.util.ArrayList;
 import java.util.Hashtable;

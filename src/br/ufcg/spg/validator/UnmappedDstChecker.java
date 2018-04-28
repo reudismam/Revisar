@@ -1,14 +1,14 @@
-package br.ufcg.spg.evaluator;
+package br.ufcg.spg.validator;
 
 import br.ufcg.spg.bean.Tuple;
 import br.ufcg.spg.compile.CompilerUtils;
 import br.ufcg.spg.edit.Edit;
-import br.ufcg.spg.evaluator.node.INodeChecker;
 import br.ufcg.spg.project.ProjectAnalyzer;
 import br.ufcg.spg.project.ProjectInfo;
 import br.ufcg.spg.project.Version;
 import br.ufcg.spg.replacement.Replacement;
 import br.ufcg.spg.replacement.ReplacementUtils;
+import br.ufcg.spg.validator.node.INodeChecker;
 
 import java.util.ArrayList;
 import java.util.List;

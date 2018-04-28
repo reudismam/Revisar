@@ -14,7 +14,6 @@ import br.ufcg.spg.diff.DiffCalculator;
 import br.ufcg.spg.diff.DiffPath;
 import br.ufcg.spg.edit.Edit;
 import br.ufcg.spg.equation.EquationUtils;
-import br.ufcg.spg.evaluator.node.NodeValidator;
 import br.ufcg.spg.expression.ExpressionManager;
 import br.ufcg.spg.git.CommitUtils;
 import br.ufcg.spg.git.GitUtils;
@@ -29,6 +28,7 @@ import br.ufcg.spg.project.ProjectInfo;
 import br.ufcg.spg.source.SourceUtils;
 import br.ufcg.spg.tree.RevisarTree;
 import br.ufcg.spg.util.PrintUtils;
+import br.ufcg.spg.validator.node.NodeValidator;
 
 import com.github.gumtreediff.actions.model.Action;
 import com.github.gumtreediff.actions.model.Insert;

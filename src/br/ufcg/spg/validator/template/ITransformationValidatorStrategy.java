@@ -1,4 +1,4 @@
-package br.ufcg.spg.evaluator.template;
+package br.ufcg.spg.validator.template;
 
 import br.ufcg.spg.edit.Edit;
 import java.util.List;

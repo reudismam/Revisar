@@ -1,4 +1,4 @@
-package br.ufcg.spg.evaluator;
+package br.ufcg.spg.validator;
 
 public class RuleCheckerFactory {
 

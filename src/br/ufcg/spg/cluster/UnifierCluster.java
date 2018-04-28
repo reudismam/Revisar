@@ -13,11 +13,11 @@ import br.ufcg.spg.database.ClusterDao;
 import br.ufcg.spg.edit.Edit;
 import br.ufcg.spg.edit.EditStorage;
 import br.ufcg.spg.equation.EquationUtils;
-import br.ufcg.spg.evaluator.ClusterValidator;
-import br.ufcg.spg.evaluator.node.NodeValidator;
 import br.ufcg.spg.transformation.TransformationUtils;
 import br.ufcg.spg.tree.RevisarTree;
 import br.ufcg.spg.util.PrintUtils;
+import br.ufcg.spg.validator.ClusterValidator;
+import br.ufcg.spg.validator.node.NodeValidator;
 
 import java.io.IOException;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package br.ufcg.spg.evaluator.node;
+package br.ufcg.spg.validator.node;
 
 import br.ufcg.spg.analyzer.util.AnalyzerUtil;
 import br.ufcg.spg.tree.RevisarTreeUtils;

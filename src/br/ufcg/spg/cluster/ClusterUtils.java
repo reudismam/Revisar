@@ -3,7 +3,7 @@ package br.ufcg.spg.cluster;
 import java.io.IOException;
 
 /**
- * Cluster Utils class.
+ * Cluster utility class.
  */
 public final class ClusterUtils {
   private ClusterUtils() {
