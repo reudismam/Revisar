@@ -9,7 +9,7 @@ import java.util.List;
  * Performs match operations.
  *
  */
-public class RevisarTreeMatchCalculator<T> extends AbstractMatchCalculator<RevisarTree<T>> {
+public class RevisarTreeMatchCalculator<T> extends MatchCalculator<RevisarTree<T>> {
   
   /**
    * Constructor.

@@ -20,7 +20,7 @@ import br.ufcg.spg.git.GitUtils;
 import br.ufcg.spg.imports.Import;
 import br.ufcg.spg.matcher.IMatcher;
 import br.ufcg.spg.matcher.PositionNodeMatcher;
-import br.ufcg.spg.matcher.calculator.AbstractMatchCalculator;
+import br.ufcg.spg.matcher.calculator.MatchCalculator;
 import br.ufcg.spg.matcher.calculator.NodeMatchCalculator;
 import br.ufcg.spg.parser.JParser;
 import br.ufcg.spg.project.ProjectAnalyzer;
@@ -178,7 +178,7 @@ public class EditPairCalculator {
         final ITree dstNode = beforeafter.getItem2();
         // get ASTNode in compilation unit
         IMatcher<ASTNode> srcMatcher = new PositionNodeMatcher(srcNode);
-        final AbstractMatchCalculator<ASTNode> srcMa = new NodeMatchCalculator(srcMatcher);
+        final MatchCalculator<ASTNode> srcMa = new NodeMatchCalculator(srcMatcher);
         final ASTNode srcAstNode = srcMa.getNode(unitSrc);
         final ITree ctxSrc = unchagedContext(srcPath, diff.getSrc(), diff.getDst(), 
             srcNode, dstNode,
@@ -187,15 +187,15 @@ public class EditPairCalculator {
             ctxSrc.getEndPos());
         // get ASTNode for node with unchanged context in compilation unit
         final IMatcher<ASTNode> fsrcMatcher = new PositionNodeMatcher(ctxSrc);
-        final AbstractMatchCalculator<ASTNode> fsrcMa = new NodeMatchCalculator(fsrcMatcher);
+        final MatchCalculator<ASTNode> fsrcMa = new NodeMatchCalculator(fsrcMatcher);
         final ASTNode fixedSrc = fsrcMa.getNode(unitSrc);
         // get ASTNode for fixedDst
         final IMatcher<ASTNode> dstMatcher = new PositionNodeMatcher(dstNode);
-        final AbstractMatchCalculator<ASTNode> dstMa = new NodeMatchCalculator(dstMatcher);
+        final MatchCalculator<ASTNode> dstMa = new NodeMatchCalculator(dstMatcher);
         final ASTNode dstAstNode = dstMa.getNode(unitDst);
         final ITree ctxDst = mappings.getDst(ctxSrc);
         final IMatcher<ASTNode> fdstMatcher = new PositionNodeMatcher(ctxDst);
-        final AbstractMatchCalculator<ASTNode> fdstMa = new NodeMatchCalculator(fdstMatcher);
+        final MatchCalculator<ASTNode> fdstMa = new NodeMatchCalculator(fdstMatcher);
         final ASTNode fixedDst = fdstMa.getNode(unitDst);
         final boolean isSingleLineDst = SourceUtils.isSingleLine(unitDst, ctxDst.getPos(), 
             ctxDst.getEndPos());
@@ -285,7 +285,8 @@ public class EditPairCalculator {
     return srcAu;
   }
 
-  private static void showEditPair(final String src, final String dst, final ITree srcNode, final ITree dstNode, 
+  private static void showEditPair(final String src, final String dst, 
+      final ITree srcNode, final ITree dstNode, 
       final ASTNode fixedSrc, final ASTNode fixedDst) throws IOException {
     // Log data
     final String str1 = new String(Files.readAllBytes(Paths.get(src)));

@@ -186,7 +186,7 @@ public class AntiUnifier {
    */
   @Override
   public String toString() {
-    final RevisarTree<String> atree = toATree();
+    final RevisarTree<String> atree = toRevisarTree();
     final String output = PrintUtils.prettyPrint(atree);
     return output;
   }
@@ -223,16 +223,16 @@ public class AntiUnifier {
    * Converts this ant-unification to a tree.
    * @return the tree version of the ant-unification
    */
-  public RevisarTree<String> toATree() {
+  public RevisarTree<String> toRevisarTree() {
     final RevisarTree<String> tree = RevisarTreeParser.parser(this.getValue().getUnifier());
     if (left != null && left.getValue() != null) {
-      tree.getChildren().add(left.toATree());
+      tree.getChildren().add(left.toRevisarTree());
     }
     if (mid != null) {
-      tree.getChildren().add(mid.toATree());
+      tree.getChildren().add(mid.toRevisarTree());
     }
     if (right != null && right.getValue() != null) {
-      tree.getChildren().add(right.toATree());
+      tree.getChildren().add(right.toRevisarTree());
     }
     return tree;
   }

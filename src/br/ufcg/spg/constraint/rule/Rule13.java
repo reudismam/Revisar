@@ -2,7 +2,7 @@ package br.ufcg.spg.constraint.rule;
 
 import br.ufcg.spg.matcher.IMatcher;
 import br.ufcg.spg.matcher.KindNodeMatcher;
-import br.ufcg.spg.matcher.calculator.AbstractMatchCalculator;
+import br.ufcg.spg.matcher.calculator.MatchCalculator;
 import br.ufcg.spg.matcher.calculator.NodeMatchCalculator;
 
 import java.util.List;
@@ -24,7 +24,7 @@ public class Rule13 extends RuleBase {
     }
     final ITypeBinding typeBinding = methodType.getReturnType();
     final IMatcher<ASTNode> returnMatcher = new KindNodeMatcher(ASTNode.RETURN_STATEMENT);
-    final AbstractMatchCalculator<ASTNode> mcal = new NodeMatchCalculator(returnMatcher);
+    final MatchCalculator<ASTNode> mcal = new NodeMatchCalculator(returnMatcher);
     final List<ASTNode> returnStms = mcal.getNodes(methodDcl);
     for (final ASTNode ast : returnStms) {
       final ReturnStatement rstm = (ReturnStatement) ast;

@@ -3,7 +3,9 @@ package br.ufcg.spg.validator.template;
 import at.jku.risc.stout.urauc.algo.AntiUnifyProblem.VariableWithHedges;
 import at.jku.risc.stout.urauc.data.Hedge;
 import br.ufcg.spg.analyzer.util.AnalyzerUtil;
+import br.ufcg.spg.antiunification.AntiUnificationUtils;
 import br.ufcg.spg.antiunification.AntiUnifier;
+import br.ufcg.spg.bean.Tuple;
 import br.ufcg.spg.cluster.UnifierCluster;
 import br.ufcg.spg.edit.Edit;
 import br.ufcg.spg.equation.EquationUtils;
@@ -17,6 +19,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * Checks mapping.
@@ -25,16 +28,16 @@ public class MatchTemplateChecker implements ITemplateChecker {
   /**
    * Source code anti-unification.
    */
-  private transient String srcAu;
+  private final transient String srcAu;
   /**
    * Destination code anti-unification.
    */
-  private transient String dstAu;
+  private final transient String dstAu;
   
   /**
    * Edit list.
    */
-  private transient List<Edit> srcEdits;
+  private final transient List<Edit> srcEdits;
   
   /**
    * Creates a new instance.
@@ -54,9 +57,11 @@ public class MatchTemplateChecker implements ITemplateChecker {
     final Edit firstEdit = srcEdits.get(0);
     final List<Match> matchesFirst = getMatches(firstEdit, srcAu, dstAu);
     final Edit lastEdit = srcEdits.get(srcEdits.size() - 1);
-    final Map<String, String> gfirst = getUnifierMatching(firstEdit.getTemplate(), srcAu);
-    final Map<String, String> glast = getUnifierMatching(lastEdit.getTemplate(), srcAu);
-    if (gfirst.size() != glast.size()) {
+    final Map<String, String> substutingsFirst = AntiUnificationUtils.getUnifierMatching(
+        firstEdit.getTemplate(), srcAu);
+    final Map<String, String> substitutingsLast = AntiUnificationUtils.getUnifierMatching(
+        lastEdit.getTemplate(), srcAu);
+    if (substutingsFirst.size() != substitutingsLast.size()) {
       return false;
     }
     if (matchesFirst == null) {
@@ -69,15 +74,12 @@ public class MatchTemplateChecker implements ITemplateChecker {
     if (matchesFirst.size() != matchesLast.size()) {
       return false;
     }
-    for (final Match match : matchesFirst) {
-      boolean contains = false;
-      for (final Match lastMatch : matchesLast) {
-        if (match.getSrcHash().trim().equals(lastMatch.getSrcHash().trim()) 
-            && match.getDstHash().trim().equals(lastMatch.getDstHash().trim())) {
-          contains = true;
-        }
-      }
-      if (!contains) {
+    Set<Tuple<String, String>> set = new HashSet<>();
+    for (final Match match: matchesFirst) {
+      set.add(new Tuple<>(match.getSrcHash().trim(), match.getDstHash().trim()));
+    }
+    for (final Match match: matchesLast) {
+      if (!set.contains(new Tuple<>(match.getSrcHash().trim(), match.getDstHash().trim()))) {
         return false;
       }
     }
@@ -89,10 +91,8 @@ public class MatchTemplateChecker implements ITemplateChecker {
     final String srcTemplate = srcEdit.getPlainTemplate();
     final String dstTemplate = dstEdit.getPlainTemplate();
     //Gets hash id and value of destination nodes.
-    final Map<String, String> dstAuMatches = getUnifierMatching(dstTemplate, dstAu);
-    //Gets  hash id and value tree of destination nodes.
-    final Map<String, RevisarTree<String>> abstracted = 
-        getAbstractionMapping(dstTemplate, dstAuMatches);
+    final Map<String, String> dstAuMatches = AntiUnificationUtils.getUnifierMatching(
+        dstTemplate, dstAu);
     //checks that all abstracted variables from destination is present on source.
     final Map<String, RevisarTree<String>> srcMapping = getStringTreeMapping(srcTemplate);
     final Map<String, RevisarTree<String>> dstMapping = getStringTreeMapping(dstTemplate);
@@ -104,13 +104,13 @@ public class MatchTemplateChecker implements ITemplateChecker {
       }
       srcDstMapping.put(str, dstMapping.get(str));
     }
-    final Map<String, String> srcUniMatching = getUnifierMatching(srcTemplate, srcAu);
-    final Map<String, RevisarTree<String>> varMatching = getVariableMatching(abstracted, srcDstMapping);
-    final List<Match> matches = getMatches2(srcUniMatching, dstAuMatches);
+    final Map<String, String> srcUniMatching = AntiUnificationUtils.getUnifierMatching(
+        srcTemplate, srcAu);
+    final List<Match> matches = getMatches(srcUniMatching, dstAuMatches);
     return matches;
   }
   
-  private List<Match> getMatches2(final Map<String, String> srcUniMatching, 
+  private List<Match> getMatches(final Map<String, String> srcUniMatching, 
       final Map<String, String> dstUnitMatching) {
     final List<Match> matches = new ArrayList<>();
     for (final Entry<String, String> srcEntry  : srcUniMatching.entrySet()) {
@@ -128,14 +128,13 @@ public class MatchTemplateChecker implements ITemplateChecker {
     return matches;
   }
 
-
   /**
    * Gets variable matching.
    * @param abstracted abstracted matching.
    * @param srcDstMapping source destination mapping.
    * @return destination variable matching.
    */
-  private Map<String, RevisarTree<String>> getVariableMatching(
+  public Map<String, RevisarTree<String>> getVariableMatching(
       final Map<String, RevisarTree<String>> abstracted,
       final Map<String, RevisarTree<String>> srcDstMapping) {
     final Map<String, RevisarTree<String>> variableMatching = new Hashtable<>();
@@ -151,7 +150,10 @@ public class MatchTemplateChecker implements ITemplateChecker {
     return variableMatching;
   }
 
-  private Map<String, RevisarTree<String>> getAbstractionMapping(final String template, 
+  /**
+   * Gets abstraction mapping.
+   */
+  public Map<String, RevisarTree<String>> getAbstractionMapping(final String template, 
       final Map<String, String> unifierMatching) {
     final Map<String, RevisarTree<String>> abstracted = new Hashtable<>();
     final RevisarTree<String> absTemplate = RevisarTreeParser.parser(template);
@@ -170,23 +172,6 @@ public class MatchTemplateChecker implements ITemplateChecker {
   }
 
   /**
-   * Gets the hash_id pair and value.
-   * @return mapping
-   */
-  private Map<String, String> getUnifierMatching(final String template, 
-      final String cluterTemplate) {
-    final AntiUnifier dstUnifier = UnifierCluster.computeUnification(template, cluterTemplate);
-    final List<VariableWithHedges> dstVariables = dstUnifier.getValue().getVariables();
-    final Map<String, String> unifierMatching = new Hashtable<>();
-    for (final VariableWithHedges variable : dstVariables) {
-      final String strRight = removeEnclosingParenthesis(variable.getRight());
-      final String strLeft = removeEnclosingParenthesis(variable.getLeft());
-      unifierMatching.put(strLeft, strRight);
-    }
-    return unifierMatching;
-  }
-  
-  /**
    * Verifies if the two nodes intersects.
    * @param root root node
    * @param toVerify to verify node
@@ -200,7 +185,8 @@ public class MatchTemplateChecker implements ITemplateChecker {
    * @param root root node.
    * @param toVerify to verify.
    */
-  private boolean isStartInside(final RevisarTree<String> root, final RevisarTree<String> toVerify) {
+  private boolean isStartInside(final RevisarTree<String> root, 
+      final RevisarTree<String> toVerify) {
     final int toVerifyStart = toVerify.getPos();
     final int rootStart = root.getPos();
     final int rootEnd = root.getEnd();

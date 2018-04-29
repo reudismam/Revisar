@@ -4,7 +4,7 @@ import br.ufcg.spg.compile.CompilerUtils;
 import br.ufcg.spg.edit.Edit;
 import br.ufcg.spg.matcher.IMatcher;
 import br.ufcg.spg.matcher.PositionNodeMatcher;
-import br.ufcg.spg.matcher.calculator.AbstractMatchCalculator;
+import br.ufcg.spg.matcher.calculator.MatchCalculator;
 import br.ufcg.spg.matcher.calculator.NodeMatchCalculator;
 import br.ufcg.spg.project.ProjectAnalyzer;
 import br.ufcg.spg.project.ProjectInfo;
@@ -60,7 +60,7 @@ public final class RuleNodeChecker implements INodeChecker {
         final CompilationUnit srcUnit = CompilerUtils.getCunit(srcEdit, commit, srcVersion, pi);
         final IMatcher<ASTNode> matcher = new PositionNodeMatcher(srcEdit.getStartPos(), 
             srcEdit.getEndPos());
-        final AbstractMatchCalculator<ASTNode> mcalc = new NodeMatchCalculator(matcher);
+        final MatchCalculator<ASTNode> mcalc = new NodeMatchCalculator(matcher);
         final ASTNode node = mcalc.getNode(srcUnit);
         nodes.add(node);
       }

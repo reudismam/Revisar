@@ -11,7 +11,7 @@ import org.eclipse.jdt.core.dom.ASTNode;
  * Performs match operations.
  *
  */
-public class NodeMatchCalculator extends AbstractMatchCalculator<ASTNode> {
+public class NodeMatchCalculator extends MatchCalculator<ASTNode> {
   
   /**
    * Constructor.

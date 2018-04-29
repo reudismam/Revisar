@@ -9,7 +9,7 @@ import java.util.List;
  * Performs match operations.
  *
  */
-public abstract class AbstractMatchCalculator<T> {
+public abstract class MatchCalculator<T> {
 
   /**
    * List of nodes in the AST.
@@ -31,7 +31,7 @@ public abstract class AbstractMatchCalculator<T> {
   /**
    * Constructor.
    */
-  public AbstractMatchCalculator(IMatcher<T> evaluator) {
+  public MatchCalculator(IMatcher<T> evaluator) {
     this.evaluator = evaluator;
   }
 

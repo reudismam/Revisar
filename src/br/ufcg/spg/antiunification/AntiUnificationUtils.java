@@ -5,11 +5,14 @@ import at.jku.risc.stout.urauc.algo.AlignFncLAA;
 import at.jku.risc.stout.urauc.algo.AntiUnifyProblem;
 import at.jku.risc.stout.urauc.algo.DebugLevel;
 import at.jku.risc.stout.urauc.algo.JustificationException;
+import at.jku.risc.stout.urauc.algo.AntiUnifyProblem.VariableWithHedges;
 import at.jku.risc.stout.urauc.data.EquationSystem;
+import at.jku.risc.stout.urauc.data.Hedge;
 import at.jku.risc.stout.urauc.data.InputParser;
 import at.jku.risc.stout.urauc.util.ControlledException;
 
 import br.ufcg.spg.analyzer.util.AnalyzerUtil;
+import br.ufcg.spg.cluster.UnifierCluster;
 import br.ufcg.spg.equation.EquationUtils;
 import br.ufcg.spg.search.evaluator.IEvaluator;
 import br.ufcg.spg.search.evaluator.KindEvaluator;
@@ -20,7 +23,9 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -362,5 +367,37 @@ public final class AntiUnificationUtils {
     final AntiUnifierHoles antUnifier = new AntiUnifierHoles(alFnc, eqSys, DebugLevel.SILENT);
     antUnifier.antiUnify(iterateAll, false, System.out);
     return antUnifier.getUnification();
+  }
+  
+  /**
+   * Gets the hash_id pair and value.
+   * @return mapping
+   */
+  public static Map<String, String> getUnifierMatching(final String template, 
+      final String cluterTemplate) {
+    final AntiUnifier unifier = UnifierCluster.computeUnification(template, cluterTemplate);
+    final List<VariableWithHedges> dstVariables = unifier.getValue().getVariables();
+    final Map<String, String> unifierMatching = new Hashtable<>();
+    for (final VariableWithHedges variable : dstVariables) {
+      final String strRight = removeEnclosingParenthesis(variable.getRight());
+      final String strLeft = removeEnclosingParenthesis(variable.getLeft());
+      unifierMatching.put(strLeft, strRight);
+    }
+    return unifierMatching;
+  }
+  
+  /**
+   * Remove parenthesis.
+   * @param variable hedge variable
+   * @return string without parenthesis
+   */
+  private static String removeEnclosingParenthesis(final Hedge variable) {
+    final String str = variable.toString().trim();
+    final boolean startWithParen = str.startsWith("(");
+    final boolean endWithParen = str.endsWith(")");
+    if (!str.isEmpty() && startWithParen && endWithParen) {
+      return str.substring(1, str.length() - 1);
+    }
+    return str;
   }
 }

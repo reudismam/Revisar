@@ -20,11 +20,7 @@ public class TemplateValidatorStrategy implements ITransformationValidatorStrate
         return false;
       }
       ch = new MatchTemplateChecker(srcAu, dstAu, srcEdits);
-      final boolean ba = ch.check();
-      if (!ba) {
-        return ba;
-      }
-      return true;
+      return ch.check();
     } catch (final Exception e) {
       throw new RuntimeException(e);
     }

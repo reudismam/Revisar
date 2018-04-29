@@ -320,7 +320,7 @@ public final class UnifierCluster {
    * @return cost of unifying two trees
    */
   private static double computerAddCost(final AntiUnifier root) {
-    final RevisarTree<String> atree = root.toATree();
+    final RevisarTree<String> atree = root.toRevisarTree();
     final String output = PrintUtils.prettyPrint(atree);
     if (output.contains("LARGER")) {
       return Double.POSITIVE_INFINITY;

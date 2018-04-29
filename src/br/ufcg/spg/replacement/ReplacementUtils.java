@@ -9,7 +9,7 @@ import br.ufcg.spg.edit.Edit;
 import br.ufcg.spg.matcher.IMatcher;
 import br.ufcg.spg.matcher.PositionNodeMatcher;
 import br.ufcg.spg.matcher.PositionTreeMatcher;
-import br.ufcg.spg.matcher.calculator.AbstractMatchCalculator;
+import br.ufcg.spg.matcher.calculator.MatchCalculator;
 import br.ufcg.spg.matcher.calculator.NodeMatchCalculator;
 import br.ufcg.spg.matcher.calculator.TreeMatchCalculator;
 import br.ufcg.spg.project.ProjectInfo;
@@ -50,7 +50,7 @@ public class ReplacementUtils {
       throws IOException, NoFilepatternException, GitAPIException {
     IMatcher<ASTNode> matcher = new PositionNodeMatcher(edit.getStartPos(), 
         edit.getEndPos());
-    final AbstractMatchCalculator<ASTNode> mcalc = new NodeMatchCalculator(matcher);
+    final MatchCalculator<ASTNode> mcalc = new NodeMatchCalculator(matcher);
     final ASTNode node = mcalc.getNode(unit);
     final Map<String, List<ASTNode>> map = getAbstractionMap(au, node);
     final List<Replacement<ASTNode>> targetList = new ArrayList<>();
@@ -158,13 +158,13 @@ public class ReplacementUtils {
       }
       final ITree srcRoot = diff.getSrc().getRoot();
       IMatcher<ITree> matcher = new PositionTreeMatcher(srcNode);
-      AbstractMatchCalculator<ITree> mcalc = new TreeMatchCalculator(matcher);
+      MatchCalculator<ITree> mcalc = new TreeMatchCalculator(matcher);
       final ITree itreeSrc = mcalc.getNode(srcRoot);
       final ITree itreeDst = diff.getMatcher().getMappings().getDst(itreeSrc);
       befores.add(srcNode);
       if (itreeDst != null) {
         IMatcher<ASTNode> nodeMatcher = new PositionNodeMatcher(itreeDst);
-        AbstractMatchCalculator<ASTNode> nodeCalc = new NodeMatchCalculator(nodeMatcher);
+        MatchCalculator<ASTNode> nodeCalc = new NodeMatchCalculator(nodeMatcher);
         final ASTNode dstNode = nodeCalc.getNode(dstCu);
         if (srcNode.toString().trim().equals(dstNode.toString().trim())) {
           afters.add(dstNode);

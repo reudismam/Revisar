@@ -43,7 +43,7 @@ public class PrintUtils {
    *          - ant-unification
    */
   private static String prettyPrintATree(AntiUnifier au) {
-    RevisarTree<String> atree = au.toATree();
+    RevisarTree<String> atree = au.toRevisarTree();
     String output = prettyPrint(atree);
     return output;
   }

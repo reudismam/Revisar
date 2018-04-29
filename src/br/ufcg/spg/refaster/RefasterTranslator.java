@@ -9,7 +9,7 @@ import br.ufcg.spg.git.CommitUtils;
 import br.ufcg.spg.matcher.IMatcher;
 import br.ufcg.spg.matcher.KindNodeMatcher;
 import br.ufcg.spg.matcher.PositionNodeMatcher;
-import br.ufcg.spg.matcher.calculator.AbstractMatchCalculator;
+import br.ufcg.spg.matcher.calculator.MatchCalculator;
 import br.ufcg.spg.matcher.calculator.NodeMatchCalculator;
 import br.ufcg.spg.parser.JParser;
 import br.ufcg.spg.project.ProjectAnalyzer;
@@ -103,7 +103,7 @@ public class RefasterTranslator {
     final CompilationUnit dstUnit = JParser.parse(dstEdit.getPath(), pi.getDstVersion());
     final CompilationUnit srcUnit = JParser.parse(srcEdit.getPath(), pi.getSrcVersion());
     IMatcher<ASTNode> srcMatch = new PositionNodeMatcher(srcEdit.getStartPos(), srcEdit.getEndPos());
-    AbstractMatchCalculator<ASTNode> mcalc = new NodeMatchCalculator(srcMatch);
+    MatchCalculator<ASTNode> mcalc = new NodeMatchCalculator(srcMatch);
     final ASTNode srcNode = mcalc.getNode(srcUnit);
     IMatcher<ASTNode> dstMatch = new PositionNodeMatcher(dstEdit.getStartPos(), dstEdit.getEndPos());
     mcalc = new NodeMatchCalculator(dstMatch);
@@ -187,7 +187,7 @@ public class RefasterTranslator {
   private static Tuple<MethodDeclaration, MethodDeclaration> getBeforeAfterMethod(
       final CompilationUnit refasterRule) {
     final KindNodeMatcher evaluator = new KindNodeMatcher(ASTNode.METHOD_DECLARATION);
-    final AbstractMatchCalculator<ASTNode> mcal = new NodeMatchCalculator(evaluator);
+    final MatchCalculator<ASTNode> mcal = new NodeMatchCalculator(evaluator);
     final List<ASTNode> nodes = mcal.getNodes(refasterRule);
     final MethodDeclaration before = (MethodDeclaration) nodes.get(0);
     final MethodDeclaration after = (MethodDeclaration) nodes.get(1);

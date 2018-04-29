@@ -110,13 +110,19 @@ public class TransformationUtils {
     return srcClusters;
   }
   
-  private static List<Cluster> getLargestClusters() {
+  /**
+   * Get clusters with the largest number of nodes.
+   */
+  public static List<Cluster> getLargestClusters() {
     final ClusterDao dao = ClusterDao.getInstance();
     final List<Cluster> srcClusters = dao.getLargestClusters();
     return srcClusters;
   }
   
-  private static List<Cluster> getClusterMoreProjects() {
+  /**
+   * Get clusters with the largest number of examples.
+   */
+  public static List<Cluster> getClusterMoreProjects() {
     final ClusterDao dao = ClusterDao.getInstance();
     final List<Cluster> srcClusters = dao.getClusterMoreProjects();
     return srcClusters;

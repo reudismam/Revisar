@@ -2,7 +2,7 @@ package br.ufcg.spg.constraint;
 
 import br.ufcg.spg.matcher.AllNodeMatcher;
 import br.ufcg.spg.matcher.IMatcher;
-import br.ufcg.spg.matcher.calculator.AbstractMatchCalculator;
+import br.ufcg.spg.matcher.calculator.MatchCalculator;
 import br.ufcg.spg.matcher.calculator.NodeMatchCalculator;
 
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ public class ConstraintUtils {
    */
   public static List<ASTNode> constraints(final CompilationUnit unit) {
     final IMatcher<ASTNode> matcher = new AllNodeMatcher();
-    final AbstractMatchCalculator<ASTNode> mcal = new NodeMatchCalculator(matcher);
+    final MatchCalculator<ASTNode> mcal = new NodeMatchCalculator(matcher);
     final List<ASTNode> nodes = mcal.getNodes(unit);
     final List<ASTNode> errors = new ArrayList<ASTNode>();
     for (final ASTNode node : nodes) {

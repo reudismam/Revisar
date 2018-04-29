@@ -9,7 +9,7 @@ import br.ufcg.spg.matcher.IMatcher;
 import br.ufcg.spg.matcher.PositionNodeMatcher;
 import br.ufcg.spg.matcher.PositionTreeMatcher;
 import br.ufcg.spg.matcher.ValueNodeMatcher;
-import br.ufcg.spg.matcher.calculator.AbstractMatchCalculator;
+import br.ufcg.spg.matcher.calculator.MatchCalculator;
 import br.ufcg.spg.matcher.calculator.NodeMatchCalculator;
 import br.ufcg.spg.matcher.calculator.TreeMatchCalculator;
 import br.ufcg.spg.parser.JParser;
@@ -146,7 +146,7 @@ public class ReturnStmTranslator {
     final ITree srcTree = diff.getSrc().getRoot();
     final ITree dstTree = diff.getDst().getRoot();
     IMatcher<ITree> match = new PositionTreeMatcher(rconfig.getTarget());
-    AbstractMatchCalculator<ITree> mcalc = new TreeMatchCalculator(match);
+    MatchCalculator<ITree> mcalc = new TreeMatchCalculator(match);
     final ITree srcTarget = mcalc.getNode(srcTree);
     final Matcher matcher = diff.getMatcher();
     final ITree dstMatch = matcher.getMappings().getDst(srcTarget);
@@ -158,7 +158,7 @@ public class ReturnStmTranslator {
     mcalc = new TreeMatchCalculator(match);
     final ITree dstTarget = mcalc.getNode(dstTree);
     IMatcher<ASTNode> nodematch = new PositionNodeMatcher(dstTarget);
-    AbstractMatchCalculator<ASTNode> nodecalc = new NodeMatchCalculator(nodematch);
+    MatchCalculator<ASTNode> nodecalc = new NodeMatchCalculator(nodematch);
     final ASTNode dstAstNode = nodecalc.getNode(cunit.getItem2());
     return dstAstNode;
   }
@@ -199,7 +199,7 @@ public class ReturnStmTranslator {
    */
   private static List<ASTNode> getNodesSameName(final ASTNode target, final String nodeContent) {
     final IMatcher<ASTNode> match = new ValueNodeMatcher(nodeContent);
-    final AbstractMatchCalculator<ASTNode> mcal = new NodeMatchCalculator(match);
+    final MatchCalculator<ASTNode> mcal = new NodeMatchCalculator(match);
     return mcal.getNodes(target);
   }
   
@@ -232,7 +232,7 @@ public class ReturnStmTranslator {
       final ASTNode source = substutings.get(i);
       final ASTNode holeVariable = holeVariables.get(i);
       IMatcher<ASTNode> match = new PositionNodeMatcher(source);
-      final AbstractMatchCalculator<ASTNode> mcalc = new NodeMatchCalculator(match);
+      final MatchCalculator<ASTNode> mcalc = new NodeMatchCalculator(match);
       final ASTNode srcTargetNode = mcalc.getNode(root);
       rewriter.replace(srcTargetNode, holeVariable, null);
     }

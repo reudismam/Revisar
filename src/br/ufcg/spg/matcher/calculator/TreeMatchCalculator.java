@@ -10,7 +10,7 @@ import java.util.List;
  * Performs match operations.
  *
  */
-public class TreeMatchCalculator extends AbstractMatchCalculator<ITree> {
+public class TreeMatchCalculator extends MatchCalculator<ITree> {
   
   /**
    * Constructor.
