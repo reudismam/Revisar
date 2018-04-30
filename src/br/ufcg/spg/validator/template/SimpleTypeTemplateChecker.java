@@ -1,7 +1,5 @@
 package br.ufcg.spg.validator.template;
 
-import at.jku.risc.stout.urauc.algo.AntiUnifyProblem.VariableWithHedges;
-import at.jku.risc.stout.urauc.data.Hedge;
 import br.ufcg.spg.analyzer.util.AnalyzerUtil;
 import br.ufcg.spg.antiunification.AntiUnificationUtils;
 import br.ufcg.spg.antiunification.AntiUnifier;
@@ -12,7 +10,6 @@ import br.ufcg.spg.matcher.ValueTemplateMatcher;
 import br.ufcg.spg.matcher.calculator.MatchCalculator;
 import br.ufcg.spg.matcher.calculator.RevisarTreeMatchCalculator;
 import br.ufcg.spg.tree.RevisarTree;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -40,14 +37,22 @@ public class SimpleTypeTemplateChecker implements ITemplateChecker {
     this.srcAu = srcAu;
     this.srcEdits = srcEdits;
   }
-
+  
   /**
    * {@inheritDoc}
    */
   @Override
-  public boolean check() {
+  public boolean checkIsValidUnification() {
+    return !isTemplateAbstractSimpleType();
+  }
+
+  /**
+   * Verifies whether template abstract any simple type.
+   */
+  private boolean isTemplateAbstractSimpleType() {
     final Edit firstEdit = srcEdits.get(0);
-    final Map<String, String> substutingsFirst = AntiUnificationUtils.getUnifierMatching(firstEdit.getTemplate(), srcAu);
+    final Map<String, String> substutingsFirst = AntiUnificationUtils.getUnifierMatching(
+        firstEdit.getTemplate(), srcAu);
     final AntiUnifier unifier = UnifierCluster.computeUnification(firstEdit.getTemplate(), srcAu);
     final RevisarTree<String> tree = unifier.toRevisarTree();
     for (final Entry<String, String> match : substutingsFirst.entrySet()) {

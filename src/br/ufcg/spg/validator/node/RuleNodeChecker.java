@@ -49,7 +49,7 @@ public final class RuleNodeChecker implements INodeChecker {
    * {@inheritDoc}
    */
   @Override
-  public boolean check() {
+  public boolean checkIsValidUnification() {
     try {
       final List<ASTNode> nodes = new ArrayList<>();
       for (final Edit srcEdit : srcEdits) {

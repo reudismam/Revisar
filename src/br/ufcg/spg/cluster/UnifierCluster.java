@@ -22,6 +22,8 @@ import br.ufcg.spg.validator.node.NodeValidator;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -93,8 +95,7 @@ public final class UnifierCluster {
   public List<Cluster> clusters(final List<Edit> srcList) throws IOException {
     final List<Cluster> src = new ArrayList<>();
     final TechniqueConfig config = TechniqueConfig.getInstance();
-    final Map<String, List<Edit>> groups = 
-        srcList.stream().collect(Collectors.groupingBy(w -> config.getDcap(w.getDst())));
+    final Map<String, List<Edit>> groups = groupEditsByDCap(srcList, config);
     for (final Entry<String, List<Edit>> entry: groups.entrySet()) {
       final List<Edit> toAnalyze = entry.getValue();
       final List<Cluster> clts =  clusterEdits(toAnalyze);
@@ -103,10 +104,25 @@ public final class UnifierCluster {
     return src;
   }
 
+  private Map<String, List<Edit>> groupEditsByDCap(final List<Edit> srcList, 
+      final TechniqueConfig config) {
+    /*final Map<String, List<Edit>> groups = 
+        srcList.stream().collect(Collectors.groupingBy(w -> config.getDcap(w.getDst())));*/
+    final Map<String, List<Edit>> groups = new Hashtable<>();
+    for (Edit edit : srcList) {
+      String dcap = config.getDcap(edit.getDst());
+      if (!groups.containsKey(dcap)) {
+        groups.put(dcap, new ArrayList<>());
+      }
+      groups.get(dcap).add(edit);
+    }
+    return groups;
+  }
+
   /**
    * computes the clusters.
    */
-  private List<Cluster> clusterEdits(final List<Edit> srcList) throws IOException {
+  public List<Cluster> clusterEdits(final List<Edit> srcList) throws IOException {
     final List<Cluster> src = new ArrayList<Cluster>();
     final List<Cluster> dst = new ArrayList<Cluster>();
     System.out.println("CLUSTER LIST");
@@ -121,37 +137,12 @@ public final class UnifierCluster {
       }
       final Edit dstEdit = srcEdit.getDst();
       try {
-        final String srcAuCluster = srcEdit.getPlainTemplate();
-        final String dstAuCluster = dstEdit.getPlainTemplate();
         final List<Tuple<Cluster, Double>> costs = bestCluster(src, dst, srcEdit, dstEdit);
-        Cluster valid = null;
-        for (final Tuple<Cluster, Double> tu : costs) {
-          final Cluster srcCluster = tu.getItem1();
-          if (isValid(srcCluster, srcCluster.getDst(), srcEdit, dstEdit)) {
-            valid = srcCluster;
-          }
-        }
+        Cluster valid = searchForValid(srcEdit, dstEdit, costs);
         if (valid != null) {
-          final Cluster srcCluster = valid;
-          final Cluster dstCluster = valid.getDst();
-          srcCluster.getNodes().add(srcEdit);
-          dstCluster.getNodes().add(dstEdit);
-          final AntiUnifier srcUni = 
-              computeUnification(srcEdit.getPlainTemplate(), srcCluster.getAu());
-          final String srcAu = EquationUtils.convertToEquation(srcUni);
-          final AntiUnifier dstUni = 
-              computeUnification(dstEdit.getPlainTemplate(), dstCluster.getAu());
-          final String dstAu = EquationUtils.convertToEquation(dstUni);
-          srcCluster.setAu(srcAu);
-          dstCluster.setAu(dstAu);
+          processValid(srcEdit, dstEdit, valid);
         } else {
-          final Cluster srcCluster = new Cluster(srcAuCluster, src.size() + srcClusters + "");
-          final Cluster dstCluster = new Cluster(dstAuCluster, dst.size() + srcClusters + "");
-          srcCluster.getNodes().add(srcEdit);
-          dstCluster.getNodes().add(dstEdit);
-          src.add(srcCluster);
-          dst.add(dstCluster);
-          srcCluster.setDst(dstCluster);
+          processInvalid(src, dst, srcEdit, dstEdit);
         } 
       } catch (final Exception e) {
         e.printStackTrace();
@@ -161,6 +152,56 @@ public final class UnifierCluster {
     return src;
   }
 
+  /**
+   * Search for a valid cluster to receive the edits.
+   */
+  private Cluster searchForValid(final Edit srcEdit, final Edit dstEdit, 
+      final List<Tuple<Cluster, Double>> costs) {
+    Cluster valid = null;
+    for (final Tuple<Cluster, Double> tu : costs) {
+      final Cluster srcCluster = tu.getItem1();
+      if (isValid(srcCluster, srcCluster.getDst(), srcEdit, dstEdit)) {
+        valid = srcCluster;
+        break;
+      }
+    }
+    return valid;
+  }
+
+  /**
+   * Process edit that is valid with a cluster.
+   */
+  private void processValid(final Edit srcEdit, final Edit dstEdit, Cluster valid) {
+    final Cluster srcCluster = valid;
+    final Cluster dstCluster = valid.getDst();
+    srcCluster.getNodes().add(srcEdit);
+    dstCluster.getNodes().add(dstEdit);
+    final AntiUnifier srcUni = 
+        computeUnification(srcEdit.getPlainTemplate(), srcCluster.getAu());
+    final String srcAu = EquationUtils.convertToEquation(srcUni);
+    final AntiUnifier dstUni = 
+        computeUnification(dstEdit.getPlainTemplate(), dstCluster.getAu());
+    final String dstAu = EquationUtils.convertToEquation(dstUni);
+    srcCluster.setAu(srcAu);
+    dstCluster.setAu(dstAu);
+  }
+
+  /**
+   * Process edit is not valid with any cluster.
+   */
+  private void processInvalid(final List<Cluster> src, 
+      final List<Cluster> dst, final Edit srcEdit, final Edit dstEdit) {
+    final String srcAuCluster = srcEdit.getPlainTemplate();
+    final String dstAuCluster = dstEdit.getPlainTemplate();
+    final Cluster srcCluster = new Cluster(srcAuCluster, src.size() + srcClusters + "");
+    final Cluster dstCluster = new Cluster(dstAuCluster, dst.size() + srcClusters + "");
+    srcCluster.getNodes().add(srcEdit);
+    dstCluster.getNodes().add(dstEdit);
+    src.add(srcCluster);
+    dst.add(dstCluster);
+    srcCluster.setDst(dstCluster);
+  }
+  
   /**
    * Computes the source and target cluster given parameters.
    * 
@@ -233,7 +274,6 @@ public final class UnifierCluster {
     };
     totalCosts.sort(cmp); 
     return totalCosts;
-    //return indexBest;
   }
 
   private boolean isValid(final Cluster srcCluster, final Cluster dstCluster, 

@@ -13,12 +13,7 @@ public final class RuleTemplateChecker implements ITemplateChecker {
   /**
    * List of rule each node must be checked in each node.
    */
-  private final transient List<IValidationTemplateRule> rules;
-
-  /**
-   * Edits to analyze.
-   */
-  private final transient List<Edit> srcEdits;
+  private final transient List<ITemplateChecker> rules;
 
   /**
    * Constructor
@@ -28,38 +23,33 @@ public final class RuleTemplateChecker implements ITemplateChecker {
    * @param rules
    *          rules to be analyzed.
    */
-  private RuleTemplateChecker(final List<IValidationTemplateRule> rules, 
+  private RuleTemplateChecker(final List<ITemplateChecker> rules, 
       final List<Edit> srcEdits) {
     super();
     this.rules = rules;
-    this.srcEdits = srcEdits;
   }
 
   /**
    * Creates a instance of a rule checker.
-   * 
-   * @param depth
-   *          depth on the three to be analyzed.
    * @param srcEdits
    *          source code edits
    * @return a new instance of a rule checker.
    */
-  public static RuleTemplateChecker create(final int depth, final List<Edit> srcEdits) {
-    final List<IValidationTemplateRule> rules = new ArrayList<IValidationTemplateRule>();
-    final MethodInvocationTemplateChecker minvo = new MethodInvocationTemplateChecker();
+  public static RuleTemplateChecker create(final String srcAu, 
+      final String dstAu, final List<Edit> srcEdits) {
+    final List<ITemplateChecker> rules = new ArrayList<>();
+    final MethodInvocationTemplateChecker minvo = new MethodInvocationTemplateChecker(srcEdits);
+    final SimpleTypeTemplateChecker stype = new SimpleTypeTemplateChecker(srcAu, dstAu, srcEdits);
     rules.add(minvo);
+    rules.add(stype);
     return new RuleTemplateChecker(rules, srcEdits);
   }
 
   @Override
-  public boolean check() {
+  public boolean checkIsValidUnification() {
     try {
-      //final List<String> templates = new ArrayList<>();
-      //for (final Edit srcEdit : srcEdits) {
-      //  templates.add(srcEdit.getTemplate());
-      //}
-      for (final IValidationTemplateRule rule : rules) {
-        if (!rule.check(srcEdits)) {
+      for (final ITemplateChecker rule : rules) {
+        if (!rule.checkIsValidUnification()) {
           return false;
         }
       }

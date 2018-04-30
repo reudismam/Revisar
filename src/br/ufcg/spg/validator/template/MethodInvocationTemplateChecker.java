@@ -21,16 +21,18 @@ import org.eclipse.jgit.errors.MissingObjectException;
 /**
  * Rule that check for valid method invocation.
  */
-public class MethodInvocationTemplateChecker implements IValidationTemplateRule {
+public class MethodInvocationTemplateChecker implements ITemplateChecker {
+  private List<Edit> nodes;
 
   /**
    * Constructor.
    */
-  public MethodInvocationTemplateChecker() {
+  public MethodInvocationTemplateChecker(final List<Edit> nodes) {
+    this.nodes = nodes;
   }
   
   @Override
-  public boolean check(final List<Edit> nodes) {
+  public boolean checkIsValidUnification() {
     try {
       if (!isRootMethodInvocation(nodes.get(0))) {
         return true;

@@ -50,7 +50,7 @@ public class ClusterDao extends GenericDao<Cluster, String> {
    * Gets cluster by label.
    * @return cluster for the label
    */
-  public List<Cluster> getSrcEdits(final String srcClusterId) {
+  public List<Cluster> getClusters(final String srcClusterId) {
     final CriteriaBuilder builder = em.getCriteriaBuilder();
     final CriteriaQuery<Cluster> query = builder.createQuery(Cluster.class);
     final Root<Cluster> root = query.from(Cluster.class);
@@ -109,7 +109,7 @@ public class ClusterDao extends GenericDao<Cluster, String> {
     final List<String> list = q.getResultList();
     final List<Cluster> clist = new ArrayList<Cluster>();
     for (int i = 0; i < list.size(); i++) {
-      final Cluster c = this.getSrcEdits(list.get(i)).get(0);
+      final Cluster c = this.getClusters(list.get(i)).get(0);
       clist.add(c);
     }
     return clist;
@@ -134,7 +134,7 @@ public class ClusterDao extends GenericDao<Cluster, String> {
     final List<String> list = q.getResultList();
     final List<Cluster> clist = new ArrayList<Cluster>();
     for (int i = 0; i < list.size(); i++) {
-      final Cluster c = this.getSrcEdits(list.get(i)).get(0);
+      final Cluster c = this.getClusters(list.get(i)).get(0);
       clist.add(c);
     }
     return clist;

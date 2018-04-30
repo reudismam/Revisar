@@ -4,6 +4,7 @@ import at.jku.risc.stout.urauc.algo.JustificationException;
 import at.jku.risc.stout.urauc.util.ControlledException;
 import br.ufcg.spg.bean.Tuple;
 import br.ufcg.spg.cluster.Cluster;
+import br.ufcg.spg.cluster.ClusterUtils;
 import br.ufcg.spg.cluster.UnifierCluster;
 import br.ufcg.spg.config.TechniqueConfig;
 import br.ufcg.spg.database.ClusterDao;
@@ -88,11 +89,18 @@ public class TestSuite {
   }
   
   @Test
+  public void exp_cluster_id() 
+      throws IOException, JustificationException, ControlledException, CoreException {
+    ClusterUtils.buildClusters("1524518");
+    System.out.println("END.");
+  }
+  
+  @Test
   public void test_d_cap() 
       throws IOException, JustificationException, ControlledException, CoreException {
     configMainArguments();
     final ClusterDao dao = ClusterDao.getInstance();
-    final List<Cluster> clusters = dao.getSrcEdits("113406");
+    final List<Cluster> clusters = dao.getClusters("113406");
     final Cluster cluster = clusters.get(0);
     final Edit srcEdit = cluster.getNodes().get(0);
     final String srcDcap = srcEdit.getDcap3();

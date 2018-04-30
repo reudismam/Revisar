@@ -32,7 +32,7 @@ public class NodeValidatorStrategy implements ITransformationValidatorStrategy {
     try {
       // Since all edits are consistent in the cluster, we only need two edits.
       INodeChecker ch = RuleNodeChecker.create(0, srcEdits);
-      if (!ch.check()) {
+      if (!ch.checkIsValidUnification()) {
         return false;
       }
       for (int i = 0; i < srcEdits.size(); i++) {
@@ -53,7 +53,7 @@ public class NodeValidatorStrategy implements ITransformationValidatorStrategy {
           dstMap.get(re.getUnification()).add(re.getNode().toString());
         }
         ch = new MatchNodeChecker(srcEdit, dstEdit, src, dst);
-        final boolean ba = ch.check();
+        final boolean ba = ch.checkIsValidUnification();
         if (!ba) {
           return ba;
         }

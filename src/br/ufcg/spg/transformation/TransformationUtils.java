@@ -46,7 +46,7 @@ public class TransformationUtils {
    */
   public static void transformations(final String clusterId) {
     final ClusterDao dao = ClusterDao.getInstance();
-    final List<Cluster> clusters = dao.getSrcEdits(clusterId);
+    final List<Cluster> clusters = dao.getClusters(clusterId);
     transformations(clusters);
   }
   
@@ -77,7 +77,7 @@ public class TransformationUtils {
           final INodeChecker ch = new RenameChecker(clusteri, clusterj);
           boolean isRename = false;
           try {
-            isRename = ch.check();
+            isRename = ch.checkIsValidUnification();
           } catch (final Exception e) {
             e.printStackTrace();
           }
