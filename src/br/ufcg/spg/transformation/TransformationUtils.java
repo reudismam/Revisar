@@ -77,7 +77,7 @@ public class TransformationUtils {
           final INodeChecker ch = new RenameChecker(clusteri, clusterj);
           boolean isRename = false;
           try {
-            isRename = ch.checkIsValidUnification();
+            isRename = ch.isValidUnification();
           } catch (final Exception e) {
             e.printStackTrace();
           }

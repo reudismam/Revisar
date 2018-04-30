@@ -29,7 +29,7 @@ public class RenameChecker implements INodeChecker, ITemplateChecker {
   }
 
   @Override
-  public boolean checkIsValidUnification() {
+  public boolean isValidUnification() {
     try {
       final String srcAu = srcCluster.getAu();
       final String dstAu = dstCluster.getAu();

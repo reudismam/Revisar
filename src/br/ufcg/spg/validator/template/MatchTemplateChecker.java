@@ -53,7 +53,7 @@ public class MatchTemplateChecker implements ITemplateChecker {
    * {@inheritDoc}
    */
   @Override
-  public boolean checkIsValidUnification() {
+  public boolean isValidUnification() {
     final Edit firstEdit = srcEdits.get(0);
     final List<Match> matchesFirst = getMatches(firstEdit, srcAu, dstAu);
     final Edit lastEdit = srcEdits.get(srcEdits.size() - 1);

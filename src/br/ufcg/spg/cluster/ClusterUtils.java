@@ -2,6 +2,7 @@ package br.ufcg.spg.cluster;
 
 import br.ufcg.spg.database.ClusterDao;
 import br.ufcg.spg.edit.Edit;
+import br.ufcg.spg.transformation.TransformationUtils;
 
 import java.io.IOException;
 import java.util.List;
@@ -34,7 +35,8 @@ public final class ClusterUtils {
     List<Edit> srcEdits = clusters.get(0).getNodes();
     final UnifierCluster unifierCluster = UnifierCluster.getInstance();
     try {
-      unifierCluster.clusterEdits(srcEdits);
+      List<Cluster> srcClusters = unifierCluster.clusterEdits(srcEdits);
+      TransformationUtils.transformations(srcClusters);
     } catch (IOException e) {
       e.printStackTrace();
     }

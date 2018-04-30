@@ -32,7 +32,7 @@ public class MethodInvocationTemplateChecker implements ITemplateChecker {
   }
   
   @Override
-  public boolean checkIsValidUnification() {
+  public boolean isValidUnification() {
     try {
       if (!isRootMethodInvocation(nodes.get(0))) {
         return true;

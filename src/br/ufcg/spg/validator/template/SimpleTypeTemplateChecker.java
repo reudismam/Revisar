@@ -23,17 +23,16 @@ public class SimpleTypeTemplateChecker implements ITemplateChecker {
   /**
    * Source code anti-unification.
    */
-  private transient String srcAu;
+  private final transient String srcAu;
   /**
    * Edit list.
    */
-  private transient List<Edit> srcEdits;
+  private final transient List<Edit> srcEdits;
   
   /**
    * Creates a new instance.
    */
-  public SimpleTypeTemplateChecker(final String srcAu, 
-      final String dstAu, final List<Edit> srcEdits) {
+  public SimpleTypeTemplateChecker(final String srcAu, final List<Edit> srcEdits) {
     this.srcAu = srcAu;
     this.srcEdits = srcEdits;
   }
@@ -42,7 +41,7 @@ public class SimpleTypeTemplateChecker implements ITemplateChecker {
    * {@inheritDoc}
    */
   @Override
-  public boolean checkIsValidUnification() {
+  public boolean isValidUnification() {
     return !isTemplateAbstractSimpleType();
   }
 
@@ -51,27 +50,38 @@ public class SimpleTypeTemplateChecker implements ITemplateChecker {
    */
   private boolean isTemplateAbstractSimpleType() {
     final Edit firstEdit = srcEdits.get(0);
-    final Map<String, String> substutingsFirst = AntiUnificationUtils.getUnifierMatching(
+    final Map<String, String> substutings = AntiUnificationUtils.getUnifierMatching(
         firstEdit.getTemplate(), srcAu);
     final AntiUnifier unifier = UnifierCluster.computeUnification(firstEdit.getTemplate(), srcAu);
     final RevisarTree<String> tree = unifier.toRevisarTree();
-    for (final Entry<String, String> match : substutingsFirst.entrySet()) {
-      final String valueKey = "#" + match.getKey().substring(5);
+    for (final Entry<String, String> match : substutings.entrySet()) {
+      String valueKey = match.getKey();
+      if (!valueKey.contains("hash")) {
+        continue;
+      }
+      valueKey = "#" + (valueKey.substring(5, valueKey.length()));
       final IMatcher<RevisarTree<String>> matcher = new ValueTemplateMatcher(valueKey);
       final MatchCalculator<RevisarTree<String>> calc = new RevisarTreeMatchCalculator<>(matcher);
       final RevisarTree<String> value = calc.getNode(tree);
-      final RevisarTree<String> parent = value.getParent();
-      if (parent == null) {
-        return false;
-      }
-      final RevisarTree<String> parentParent = parent.getParent();
-      if (parentParent == null) {
-        return false;
-      }
       final String simpleTypeLabel = AnalyzerUtil.getLabel(ASTNode.SIMPLE_TYPE);
-      if (parentParent.getValue().equals(simpleTypeLabel)) {
+      final boolean parentContains = ancestorsContainLabel(value, simpleTypeLabel);
+      if (parentContains) {
         return true;
       }
+    }
+    return false;
+  }
+
+  /**
+   * Verifies whether any of the ancestor is of a specific label.
+   */
+  private boolean ancestorsContainLabel(final RevisarTree<String> value, String label) {
+    RevisarTree<String> parent = value;
+    while (parent != null) {
+      if (parent.getValue().equals(label)) {
+        return true;
+      }
+      parent = parent.getParent();
     }
     return false;
   }

@@ -59,7 +59,7 @@ public class UnmappedDstChecker implements INodeChecker {
   }
 
   @Override
-  public boolean checkIsValidUnification() {
+  public boolean isValidUnification() {
     try {
       final Edit srcEdit = srcEdits.get(0);
       final Edit dstEdit = srcEdit.getDst();

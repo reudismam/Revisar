@@ -49,7 +49,7 @@ public class MatchNodeChecker implements INodeChecker {
   }
 
   @Override
-  public boolean checkIsValidUnification() {
+  public boolean isValidUnification() {
     try {
       final ProjectInfo pi = ProjectAnalyzer.project(srcEdit);
       final Tuple<List<ASTNode>, List<ASTNode>> baList = ReplacementUtils.ba(srcEdit,

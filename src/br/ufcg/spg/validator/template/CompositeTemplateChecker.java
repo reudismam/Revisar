@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Checks rules.
  */
-public final class RuleTemplateChecker implements ITemplateChecker {
+public final class CompositeTemplateChecker implements ITemplateChecker {
   
   /**
    * List of rule each node must be checked in each node.
@@ -23,9 +23,7 @@ public final class RuleTemplateChecker implements ITemplateChecker {
    * @param rules
    *          rules to be analyzed.
    */
-  private RuleTemplateChecker(final List<ITemplateChecker> rules, 
-      final List<Edit> srcEdits) {
-    super();
+  private CompositeTemplateChecker(final List<ITemplateChecker> rules) {
     this.rules = rules;
   }
 
@@ -35,21 +33,24 @@ public final class RuleTemplateChecker implements ITemplateChecker {
    *          source code edits
    * @return a new instance of a rule checker.
    */
-  public static RuleTemplateChecker create(final String srcAu, 
+  public static CompositeTemplateChecker create(final String srcAu, 
       final String dstAu, final List<Edit> srcEdits) {
     final List<ITemplateChecker> rules = new ArrayList<>();
     final MethodInvocationTemplateChecker minvo = new MethodInvocationTemplateChecker(srcEdits);
-    final SimpleTypeTemplateChecker stype = new SimpleTypeTemplateChecker(srcAu, dstAu, srcEdits);
+    final SimpleTypeTemplateChecker stype = new SimpleTypeTemplateChecker(srcAu, srcEdits);
     rules.add(minvo);
     rules.add(stype);
-    return new RuleTemplateChecker(rules, srcEdits);
+    return new CompositeTemplateChecker(rules);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public boolean checkIsValidUnification() {
+  public boolean isValidUnification() {
     try {
       for (final ITemplateChecker rule : rules) {
-        if (!rule.checkIsValidUnification()) {
+        if (!rule.isValidUnification()) {
           return false;
         }
       }

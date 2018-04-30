@@ -82,7 +82,7 @@ public class TestSuite {
   }
   
   @Test
-  public void exp_TranslateId() 
+  public void exp_translate_id() 
       throws IOException, JustificationException, ControlledException, CoreException {
     Technique.translateEdits("1494576");
     System.out.println("END.");
@@ -91,7 +91,7 @@ public class TestSuite {
   @Test
   public void exp_cluster_id() 
       throws IOException, JustificationException, ControlledException, CoreException {
-    ClusterUtils.buildClusters("1524518");
+    ClusterUtils.buildClusters("1523225");
     System.out.println("END.");
   }
   

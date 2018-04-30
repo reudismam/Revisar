@@ -15,12 +15,12 @@ public class TemplateValidatorStrategy implements ITransformationValidatorStrate
   @Override
   public boolean isValidTrans(final List<Edit> srcEdits, final String srcAu, final String dstAu) {
     try {
-      ITemplateChecker ch = RuleTemplateChecker.create(srcAu, dstAu, srcEdits);
-      if (!ch.checkIsValidUnification()) {
+      ITemplateChecker ch = CompositeTemplateChecker.create(srcAu, dstAu, srcEdits);
+      if (!ch.isValidUnification()) {
         return false;
       }
       ch = new MatchTemplateChecker(srcAu, dstAu, srcEdits);
-      return ch.checkIsValidUnification();
+      return ch.isValidUnification();
     } catch (final Exception e) {
       throw new RuntimeException(e);
     }

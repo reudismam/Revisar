@@ -22,12 +22,10 @@ import br.ufcg.spg.validator.node.NodeValidator;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
 /**
  * Unifier cluster class.
@@ -88,7 +86,7 @@ public final class UnifierCluster {
   }
   
   /**
-   * Compute clusters.
+   * Computes clusters.
    * @param srcList source clusters
    * @return clusters
    */
@@ -104,10 +102,11 @@ public final class UnifierCluster {
     return src;
   }
 
+  /**
+   * Groups edits by d-cap.
+   */
   private Map<String, List<Edit>> groupEditsByDCap(final List<Edit> srcList, 
       final TechniqueConfig config) {
-    /*final Map<String, List<Edit>> groups = 
-        srcList.stream().collect(Collectors.groupingBy(w -> config.getDcap(w.getDst())));*/
     final Map<String, List<Edit>> groups = new Hashtable<>();
     for (Edit edit : srcList) {
       String dcap = config.getDcap(edit.getDst());
@@ -153,7 +152,7 @@ public final class UnifierCluster {
   }
 
   /**
-   * Search for a valid cluster to receive the edits.
+   * Searches for a valid cluster to receive the edits.
    */
   private Cluster searchForValid(final Edit srcEdit, final Edit dstEdit, 
       final List<Tuple<Cluster, Double>> costs) {
@@ -169,7 +168,7 @@ public final class UnifierCluster {
   }
 
   /**
-   * Process edit that is valid with a cluster.
+   * Processes edit that is valid with a cluster.
    */
   private void processValid(final Edit srcEdit, final Edit dstEdit, Cluster valid) {
     final Cluster srcCluster = valid;
@@ -187,7 +186,7 @@ public final class UnifierCluster {
   }
 
   /**
-   * Process edit is not valid with any cluster.
+   * Processes edit is not valid with any cluster.
    */
   private void processInvalid(final List<Cluster> src, 
       final List<Cluster> dst, final Edit srcEdit, final Edit dstEdit) {
