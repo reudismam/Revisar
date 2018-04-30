@@ -8,12 +8,12 @@ import java.util.List;
 /**
  * Checks rules.
  */
-public final class CompositeTemplateChecker implements ITemplateChecker {
+public final class CompositeTemplateChecker implements ITemplateValidator {
   
   /**
    * List of rule each node must be checked in each node.
    */
-  private final transient List<ITemplateChecker> rules;
+  private final transient List<ITemplateValidator> rules;
 
   /**
    * Constructor
@@ -23,7 +23,7 @@ public final class CompositeTemplateChecker implements ITemplateChecker {
    * @param rules
    *          rules to be analyzed.
    */
-  private CompositeTemplateChecker(final List<ITemplateChecker> rules) {
+  private CompositeTemplateChecker(final List<ITemplateValidator> rules) {
     this.rules = rules;
   }
 
@@ -35,7 +35,7 @@ public final class CompositeTemplateChecker implements ITemplateChecker {
    */
   public static CompositeTemplateChecker create(final String srcAu, 
       final String dstAu, final List<Edit> srcEdits) {
-    final List<ITemplateChecker> rules = new ArrayList<>();
+    final List<ITemplateValidator> rules = new ArrayList<>();
     final MethodInvocationTemplateChecker minvo = new MethodInvocationTemplateChecker(srcEdits);
     final SimpleTypeTemplateChecker stype = new SimpleTypeTemplateChecker(srcAu, srcEdits);
     rules.add(minvo);
@@ -49,7 +49,7 @@ public final class CompositeTemplateChecker implements ITemplateChecker {
   @Override
   public boolean isValidUnification() {
     try {
-      for (final ITemplateChecker rule : rules) {
+      for (final ITemplateValidator rule : rules) {
         if (!rule.isValidUnification()) {
           return false;
         }

@@ -24,7 +24,7 @@ import java.util.Set;
 /**
  * Checks mapping.
  */
-public class MatchTemplateChecker implements ITemplateChecker {
+public class MatchTemplateChecker implements ITemplateValidator {
   /**
    * Source code anti-unification.
    */
@@ -32,8 +32,7 @@ public class MatchTemplateChecker implements ITemplateChecker {
   /**
    * Destination code anti-unification.
    */
-  private final transient String dstAu;
-  
+  private final transient String dstAu;  
   /**
    * Edit list.
    */
@@ -57,23 +56,25 @@ public class MatchTemplateChecker implements ITemplateChecker {
     final Edit firstEdit = srcEdits.get(0);
     final List<Match> matchesFirst = getMatches(firstEdit, srcAu, dstAu);
     final Edit lastEdit = srcEdits.get(srcEdits.size() - 1);
-    final Map<String, String> substutingsFirst = AntiUnificationUtils.getUnifierMatching(
-        firstEdit.getTemplate(), srcAu);
-    final Map<String, String> substitutingsLast = AntiUnificationUtils.getUnifierMatching(
-        lastEdit.getTemplate(), srcAu);
-    if (substutingsFirst.size() != substitutingsLast.size()) {
+    final boolean sameSize = isHolesSameSize(firstEdit, lastEdit);
+    if (!sameSize || matchesFirst == null) {
       return false;
-    }
-    if (matchesFirst == null) {
-      return false;
-    }
+    }  
     final List<Match> matchesLast = getMatches(lastEdit, srcAu, dstAu); 
-    if (matchesLast == null) {
+    if (matchesLast == null || matchesFirst.size() != matchesLast.size()) {
       return false;
     }
-    if (matchesFirst.size() != matchesLast.size()) {
-      return false;
-    }
+    return isCompatible(matchesFirst, matchesLast);
+  }
+
+  /**
+   * Verifies whether two list of matches are compatible.
+   * Two list are compatible if the have the same hole from
+   * before and after version.
+   * @param matchesFirst first list of matches.
+   * @param matchesLast second list of matches.
+   */
+  private boolean isCompatible(final List<Match> matchesFirst, final List<Match> matchesLast) {
     Set<Tuple<String, String>> set = new HashSet<>();
     for (final Match match: matchesFirst) {
       set.add(new Tuple<>(match.getSrcHash().trim(), match.getDstHash().trim()));
@@ -86,27 +87,42 @@ public class MatchTemplateChecker implements ITemplateChecker {
     return true;
   }
 
+  /**
+   * Verifies whether the size of holes when we 
+   * anti-unify the first edit and anti-unify the
+   * second edit is the same.
+   */
+  private boolean isHolesSameSize(final Edit first, final Edit last) {
+    final Map<String, String> substutingsFirst = AntiUnificationUtils.getUnifierMatching(
+        first.getTemplate(), srcAu);
+    final Map<String, String> substitutingsLast = AntiUnificationUtils.getUnifierMatching(
+        last.getTemplate(), srcAu);
+    if (substutingsFirst.size() != substitutingsLast.size()) {
+      return false;
+    }
+    return true;
+  }
+
   private List<Match> getMatches(final Edit srcEdit, final String srcAu, final String dstAu) {
     final Edit dstEdit = srcEdit.getDst();
     final String srcTemplate = srcEdit.getPlainTemplate();
     final String dstTemplate = dstEdit.getPlainTemplate();
-    //Gets hash id and value of destination nodes.
-    final Map<String, String> dstAuMatches = AntiUnificationUtils.getUnifierMatching(
-        dstTemplate, dstAu);
     //checks that all abstracted variables from destination is present on source.
-    final Map<String, RevisarTree<String>> srcMapping = getStringTreeMapping(srcTemplate);
-    final Map<String, RevisarTree<String>> dstMapping = getStringTreeMapping(dstTemplate);
-    final HashSet<String> dstNodes = getNodes(dstEdit, dstAu);
+    final Map<String, RevisarTree<String>> srcMapping = getStringRevisarTreeMapping(srcTemplate);
+    final Map<String, RevisarTree<String>> dstMapping = getStringRevisarTreeMapping(dstTemplate);
+    final Set<String> dstSubstitutings = getSubstitutings(dstEdit, dstAu);
     final Map<String, RevisarTree<String>> srcDstMapping = new Hashtable<>();
-    for (final String str: dstNodes) {
+    for (final String str: dstSubstitutings) {
       if (!srcMapping.containsKey(str)) {
         return null;
       }
       srcDstMapping.put(str, dstMapping.get(str));
     }
-    final Map<String, String> srcUniMatching = AntiUnificationUtils.getUnifierMatching(
+    final Map<String, String> holeSubstutingSrc = AntiUnificationUtils.getUnifierMatching(
         srcTemplate, srcAu);
-    final List<Match> matches = getMatches(srcUniMatching, dstAuMatches);
+    final Map<String, String> holeSubstutingDst = AntiUnificationUtils.getUnifierMatching(
+        dstTemplate, dstAu);
+    final List<Match> matches = getMatches(holeSubstutingSrc, holeSubstutingDst);
     return matches;
   }
   
@@ -172,6 +188,51 @@ public class MatchTemplateChecker implements ITemplateChecker {
   }
 
   /**
+   * Gets mapping between string and tree.
+   * @param edit edit.
+   * @return mapping between and tree.
+   */
+  private Map<String, RevisarTree<String>> getStringRevisarTreeMapping(final String template) {
+    final Map<String, RevisarTree<String>> mapping = new Hashtable<>();
+    final RevisarTree<String> revisarTree = RevisarTreeParser.parser(template);
+    final List<RevisarTree<String>> treeNodes = AnalyzerUtil.getNodes(revisarTree);
+    for (final RevisarTree<String> node : treeNodes) {
+      final String str = EquationUtils.convertToEq(node);
+      mapping.put(str, node);
+    }
+    return mapping;
+  }
+
+  /**
+   * Get holes.
+   */
+  private Set<String> getSubstitutings(final Edit edit, final String au) {
+    final Set<String> holes = new HashSet<>();
+    final AntiUnifier unifier = UnifierCluster.computeUnification(edit.getPlainTemplate(), au);
+    final List<VariableWithHedges> variables = unifier.getValue().getVariables();
+    for (final VariableWithHedges variable : variables) {
+      final String str = removeEnclosingParenthesis(variable.getRight());
+      holes.add(str);
+    }
+    return holes;
+  }
+
+  /**
+   * Remove parenthesis.
+   * @param variable hedge variable
+   * @return string without parenthesis
+   */
+  private String removeEnclosingParenthesis(final Hedge variable) {
+    final String str = variable.toString().trim();
+    final boolean startWithParen = str.startsWith("(");
+    final boolean endWithParen = str.endsWith(")");
+    if (!str.isEmpty() && startWithParen && endWithParen) {
+      return str.substring(1, str.length() - 1);
+    }
+    return str;
+  }
+  
+  /**
    * Verifies if the two nodes intersects.
    * @param root root node
    * @param toVerify to verify node
@@ -191,47 +252,5 @@ public class MatchTemplateChecker implements ITemplateChecker {
     final int rootStart = root.getPos();
     final int rootEnd = root.getEnd();
     return rootStart <= toVerifyStart && toVerifyStart <= rootEnd;   
-  }
-
-  /**
-   * Gets mapping between string and tree.
-   * @param edit edit.
-   * @return mapping between and tree.
-   */
-  private Map<String, RevisarTree<String>> getStringTreeMapping(final String template) {
-    final Map<String, RevisarTree<String>> srcNodes = new Hashtable<>();
-    final RevisarTree<String> srcTemplate = RevisarTreeParser.parser(template);
-    final List<RevisarTree<String>> srcTreeNodes = AnalyzerUtil.getNodes(srcTemplate);
-    for (final RevisarTree<String> variable : srcTreeNodes) {
-      final String srcStr = EquationUtils.convertToEq(variable);
-      srcNodes.put(srcStr, variable);
-    }
-    return srcNodes;
-  }
-
-  private HashSet<String> getNodes(final Edit edit, final String cau) {
-    final HashSet<String> nodes = new HashSet<>();
-    final AntiUnifier unifier = UnifierCluster.computeUnification(edit.getPlainTemplate(), cau);
-    final List<VariableWithHedges> dstVariables = unifier.getValue().getVariables();
-    for (final VariableWithHedges variable : dstVariables) {
-      final String str = removeEnclosingParenthesis(variable.getRight());
-      nodes.add(str);
-    }
-    return nodes;
-  }
-
-  /**
-   * Remove parenthesis.
-   * @param variable hedge variable
-   * @return string without parenthesis
-   */
-  private String removeEnclosingParenthesis(final Hedge variable) {
-    final String str = variable.toString().trim();
-    final boolean startWithParen = str.startsWith("(");
-    final boolean endWithParen = str.endsWith(")");
-    if (!str.isEmpty() && startWithParen && endWithParen) {
-      return str.substring(1, str.length() - 1);
-    }
-    return str;
   }
 }

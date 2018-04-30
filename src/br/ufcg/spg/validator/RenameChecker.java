@@ -7,13 +7,13 @@ import br.ufcg.spg.cluster.UnifierCluster;
 import br.ufcg.spg.replacement.ReplacementUtils;
 import br.ufcg.spg.template.TemplateUtils;
 import br.ufcg.spg.validator.node.INodeChecker;
-import br.ufcg.spg.validator.template.ITemplateChecker;
+import br.ufcg.spg.validator.template.ITemplateValidator;
 
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class RenameChecker implements INodeChecker, ITemplateChecker {
+public class RenameChecker implements INodeChecker, ITemplateValidator {
   private final Cluster srcCluster;
   private final Cluster dstCluster;
   

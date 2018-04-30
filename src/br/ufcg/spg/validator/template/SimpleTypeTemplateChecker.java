@@ -19,7 +19,7 @@ import org.eclipse.jdt.core.dom.ASTNode;
 /**
  * Checks mapping.
  */
-public class SimpleTypeTemplateChecker implements ITemplateChecker {
+public class SimpleTypeTemplateChecker implements ITemplateValidator {
   /**
    * Source code anti-unification.
    */
