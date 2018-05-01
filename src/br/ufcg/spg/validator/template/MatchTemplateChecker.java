@@ -13,12 +13,16 @@ import br.ufcg.spg.match.Match;
 import br.ufcg.spg.tree.RevisarTree;
 import br.ufcg.spg.tree.RevisarTreeParser;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import java.util.Set;
 
 /**
@@ -54,17 +58,40 @@ public class MatchTemplateChecker implements ITemplateValidator {
   @Override
   public boolean isValidUnification() {
     final Edit firstEdit = srcEdits.get(0);
-    final List<Match> matchesFirst = getMatches(firstEdit, srcAu, dstAu);
+    final List<Match> matchesFirst = getInputOuputMatching(firstEdit, srcAu, dstAu);
     final Edit lastEdit = srcEdits.get(srcEdits.size() - 1);
     final boolean sameSize = isHolesSameSize(firstEdit, lastEdit);
-    if (!sameSize || matchesFirst == null) {
+    if (!sameSize) {
+      return false;
+    }
+    if (!isOuputSubstituingInInput(firstEdit, srcAu, dstAu)) {
       return false;
     }  
-    final List<Match> matchesLast = getMatches(lastEdit, srcAu, dstAu); 
-    if (matchesLast == null || matchesFirst.size() != matchesLast.size()) {
+    final List<Match> matchesLast = getInputOuputMatching(lastEdit, srcAu, dstAu); 
+    if (!isOuputSubstituingInInput(lastEdit, srcAu, dstAu)) {
+      return false;
+    }
+    if (matchesFirst.size() != matchesLast.size()) {
       return false;
     }
     return isCompatible(matchesFirst, matchesLast);
+  }
+  
+  /**
+   * Verifies whether substituting nodes in output is present on input tree.
+   */
+  private boolean isOuputSubstituingInInput(final Edit srcEdit, 
+      final String srcAu, final String dstAu) {
+    final Edit dstEdit = srcEdit.getDst();
+    final String srcTemplate = srcEdit.getPlainTemplate();
+    final Map<String, RevisarTree<String>> srcMapping = getStringRevisarTreeMapping(srcTemplate);
+    final Set<String> dstSubstitutings = getSubstitutings(dstEdit, dstAu);
+    for (final String str: dstSubstitutings) {
+      if (!srcMapping.containsKey(str)) {
+        return false;
+      }
+    }
+    return true;
   }
 
   /**
@@ -97,42 +124,31 @@ public class MatchTemplateChecker implements ITemplateValidator {
         first.getTemplate(), srcAu);
     final Map<String, String> substitutingsLast = AntiUnificationUtils.getUnifierMatching(
         last.getTemplate(), srcAu);
-    if (substutingsFirst.size() != substitutingsLast.size()) {
-      return false;
-    }
-    return true;
+    return substutingsFirst.size() == substitutingsLast.size();
   }
-
-  private List<Match> getMatches(final Edit srcEdit, final String srcAu, final String dstAu) {
+  
+  private List<Match> getInputOuputMatching(final Edit srcEdit, 
+      final String srcAu, final String dstAu) {
     final Edit dstEdit = srcEdit.getDst();
     final String srcTemplate = srcEdit.getPlainTemplate();
     final String dstTemplate = dstEdit.getPlainTemplate();
-    //checks that all abstracted variables from destination is present on source.
-    final Map<String, RevisarTree<String>> srcMapping = getStringRevisarTreeMapping(srcTemplate);
-    final Map<String, RevisarTree<String>> dstMapping = getStringRevisarTreeMapping(dstTemplate);
-    final Set<String> dstSubstitutings = getSubstitutings(dstEdit, dstAu);
-    final Map<String, RevisarTree<String>> srcDstMapping = new Hashtable<>();
-    for (final String str: dstSubstitutings) {
-      if (!srcMapping.containsKey(str)) {
-        return null;
-      }
-      srcDstMapping.put(str, dstMapping.get(str));
-    }
-    final Map<String, String> holeSubstutingSrc = AntiUnificationUtils.getUnifierMatching(
+    final Map<String, String> holeSubstitutingsSrc = AntiUnificationUtils.getUnifierMatching(
         srcTemplate, srcAu);
-    final Map<String, String> holeSubstutingDst = AntiUnificationUtils.getUnifierMatching(
+    final Map<String, String> holeSubstitutingsDst = AntiUnificationUtils.getUnifierMatching(
         dstTemplate, dstAu);
-    final List<Match> matches = getMatches(holeSubstutingSrc, holeSubstutingDst);
-    return matches;
-  }
-  
-  private List<Match> getMatches(final Map<String, String> srcUniMatching, 
-      final Map<String, String> dstUnitMatching) {
+    BiMap<String, String> substitutingHolesDst = HashBiMap.create(holeSubstitutingsDst).inverse();
     final List<Match> matches = new ArrayList<>();
-    for (final Entry<String, String> srcEntry  : srcUniMatching.entrySet()) {
+    for (final Entry<String, String> entry : holeSubstitutingsSrc.entrySet()) {
+      if (substitutingHolesDst.containsKey(entry.getValue())) {
+        String dstKey = substitutingHolesDst.get(entry.getValue());
+        Match match = new Match(entry.getKey(), dstKey, entry.getValue());
+        matches.add(match);
+      }
+    }
+    /*for (final Entry<String, String> srcEntry  : holeSubstutingSrc.entrySet()) {
       final String srcKey = srcEntry.getKey();
       final String srcValue = srcEntry.getValue();
-      for (final Entry<String, String> dstEntry: dstUnitMatching.entrySet()) {
+      for (final Entry<String, String> dstEntry: holeSubstutingDst.entrySet()) {
         final String dstKey = dstEntry.getKey();
         final String dstValue = dstEntry.getValue();
         if (srcValue.equals(dstValue)) {
@@ -140,7 +156,7 @@ public class MatchTemplateChecker implements ITemplateValidator {
           matches.add(match);
         }
       }
-    }
+    }*/
     return matches;
   }
 
@@ -208,7 +224,7 @@ public class MatchTemplateChecker implements ITemplateValidator {
    */
   private Set<String> getSubstitutings(final Edit edit, final String au) {
     final Set<String> holes = new HashSet<>();
-    final AntiUnifier unifier = UnifierCluster.computeUnification(edit.getPlainTemplate(), au);
+    final AntiUnifier unifier = UnifierCluster.computeUnification(au, edit.getPlainTemplate());
     final List<VariableWithHedges> variables = unifier.getValue().getVariables();
     for (final VariableWithHedges variable : variables) {
       final String str = removeEnclosingParenthesis(variable.getRight());

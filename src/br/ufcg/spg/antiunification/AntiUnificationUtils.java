@@ -375,7 +375,7 @@ public final class AntiUnificationUtils {
    */
   public static Map<String, String> getUnifierMatching(final String template, 
       final String cluterTemplate) {
-    final AntiUnifier unifier = UnifierCluster.computeUnification(template, cluterTemplate);
+    final AntiUnifier unifier = UnifierCluster.computeUnification(cluterTemplate, template);
     final List<VariableWithHedges> dstVariables = unifier.getValue().getVariables();
     final Map<String, String> unifierMatching = new Hashtable<>();
     for (final VariableWithHedges variable : dstVariables) {

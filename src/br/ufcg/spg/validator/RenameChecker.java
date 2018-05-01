@@ -44,7 +44,7 @@ public class RenameChecker implements INodeChecker, ITemplateValidator {
       }
       final String srcEq = TemplateUtils.removeAll(srcAu);
       final String dstEq = TemplateUtils.removeAll(dstAu);
-      final AntiUnifier un = UnifierCluster.computeUnification(srcEq, dstEq);
+      final AntiUnifier un = UnifierCluster.computeUnification(dstEq, srcEq);
       final List<VariableWithHedges> vs = un.getValue().getVariables();
       if (vs.size() != 1) {
         return false;

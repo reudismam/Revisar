@@ -176,10 +176,10 @@ public final class UnifierCluster {
     srcCluster.getNodes().add(srcEdit);
     dstCluster.getNodes().add(dstEdit);
     final AntiUnifier srcUni = 
-        computeUnification(srcEdit.getPlainTemplate(), srcCluster.getAu());
+        computeUnification(srcCluster.getAu(), srcEdit.getPlainTemplate());
     final String srcAu = EquationUtils.convertToEquation(srcUni);
     final AntiUnifier dstUni = 
-        computeUnification(dstEdit.getPlainTemplate(), dstCluster.getAu());
+        computeUnification(dstCluster.getAu(), dstEdit.getPlainTemplate());
     final String dstAu = EquationUtils.convertToEquation(dstUni);
     srcCluster.setAu(srcAu);
     dstCluster.setAu(dstAu);
@@ -217,9 +217,9 @@ public final class UnifierCluster {
     for (int i = 1; i < srcEdits.size(); i++) {
       final String srcAuCluster = srcEdits.get(i).getPlainTemplate();
       final String dstAuCluster = srcEdits.get(i).getDst().getPlainTemplate();
-      final AntiUnifier srcAu = computeUnification(srcAuCluster, srcUnifier);
+      final AntiUnifier srcAu = computeUnification(srcUnifier, srcAuCluster);
       srcUnifier = EquationUtils.convertToEquation(srcAu);
-      final AntiUnifier dstAu = computeUnification(dstAuCluster, dstUnifier);
+      final AntiUnifier dstAu = computeUnification(dstUnifier, dstAuCluster);
       dstUnifier = EquationUtils.convertToEquation(dstAu);
     }
     final Cluster srcCluster = new Cluster(srcUnifier, clusterId);
@@ -278,9 +278,9 @@ public final class UnifierCluster {
   private boolean isValid(final Cluster srcCluster, final Cluster dstCluster, 
       final Edit src, final Edit dst) {
     final List<Edit> srcEdits = srcCluster.getNodes();
-    final AntiUnifier srcAu = computeUnification(src.getPlainTemplate(), srcCluster.getAu());
+    final AntiUnifier srcAu = computeUnification(srcCluster.getAu(), src.getPlainTemplate());
     final String srcUnifier = EquationUtils.convertToEquation(srcAu);
-    final AntiUnifier dstAu = computeUnification(dst.getPlainTemplate(), dstCluster.getAu());
+    final AntiUnifier dstAu = computeUnification(dstCluster.getAu(), dst.getPlainTemplate());
     final String dstUnifier = EquationUtils.convertToEquation(dstAu);
     try {
       final List<Edit> newSrcEdits = new ArrayList<>(srcEdits);
@@ -305,7 +305,7 @@ public final class UnifierCluster {
   private static List<Tuple<String, Double>> cost(final List<Cluster> clusters, final String au) {
     final List<Tuple<String, Double>> cost = new ArrayList<>();
     for (final Cluster cluster : clusters) {
-      final AntiUnifier unifier = computeUnification(au, cluster.getAu());
+      final AntiUnifier unifier = computeUnification(cluster.getAu(), au);
       final String unifierStr = EquationUtils.convertToEquation(unifier);
       final double clusterCost = computerAddCost(unifier);
       final Tuple<String, Double> tuple = new Tuple<>(unifierStr, clusterCost);
@@ -326,22 +326,22 @@ public final class UnifierCluster {
   public static AntiUnifier computeUnification(final AntiUnifier au, final AntiUnifier clusterAu) {
     final String eqCluster = EquationUtils.convertToEquation(clusterAu);
     final String eqOther = EquationUtils.convertToEquation(au);
-    return computeUnification(eqOther, eqCluster);
+    return computeUnification(eqCluster, eqOther);
   }
 
   /**
    * Computes anti-unification.
-   * 
    * @param au
-   *          first anti-unification
-   * @param clusterAu
    *          second anti-unification
+   * @param clusterAu
+   *          first anti-unification
+   * 
    * @return anti-unification
    */
   public static AntiUnifier computeUnification(final String au, final String clusterAu) {
     AntiUnifier unifier;
-    final String eqCluster = clusterAu;
-    final String eqOther = au;
+    final String eqCluster = au;
+    final String eqOther = clusterAu;
     try {
       unifier = AntiUnificationUtils.antiUnify(eqCluster, eqOther);
       return unifier;

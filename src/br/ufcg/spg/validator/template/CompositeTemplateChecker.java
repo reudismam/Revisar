@@ -1,9 +1,12 @@
 package br.ufcg.spg.validator.template;
 
+import br.ufcg.spg.analyzer.util.AnalyzerUtil;
 import br.ufcg.spg.edit.Edit;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.eclipse.jdt.core.dom.ASTNode;
 
 /**
  * Checks rules.
@@ -37,9 +40,15 @@ public final class CompositeTemplateChecker implements ITemplateValidator {
       final String dstAu, final List<Edit> srcEdits) {
     final List<ITemplateValidator> rules = new ArrayList<>();
     final MethodInvocationTemplateChecker minvo = new MethodInvocationTemplateChecker(srcEdits);
-    final SimpleTypeTemplateChecker stype = new SimpleTypeTemplateChecker(srcAu, srcEdits);
+    final String simpleTypeLabel = AnalyzerUtil.getLabel(ASTNode.SIMPLE_TYPE);
+    final LabelTemplateValidator simpleType = new LabelTemplateValidator(srcAu, 
+        srcEdits, simpleTypeLabel);
+    final String primitiveTypeLabel = AnalyzerUtil.getLabel(ASTNode.PRIMITIVE_TYPE);
+    final LabelTemplateValidator primitiveType = new LabelTemplateValidator(srcAu, 
+        srcEdits, primitiveTypeLabel);
     rules.add(minvo);
-    rules.add(stype);
+    rules.add(simpleType);
+    rules.add(primitiveType);
     return new CompositeTemplateChecker(rules);
   }
 
