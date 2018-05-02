@@ -21,13 +21,13 @@ import org.eclipse.jgit.errors.MissingObjectException;
 /**
  * Rule that check for valid method invocation.
  */
-public class MethodInvocationTemplateChecker implements ITemplateValidator {
+public class MethodInvocationTemplateValidator implements ITemplateValidator {
   private List<Edit> nodes;
 
   /**
    * Constructor.
    */
-  public MethodInvocationTemplateChecker(final List<Edit> nodes) {
+  public MethodInvocationTemplateValidator(final List<Edit> nodes) {
     this.nodes = nodes;
   }
   

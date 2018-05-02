@@ -91,7 +91,7 @@ public class TestSuite {
   @Test
   public void exp_cluster_id() 
       throws IOException, JustificationException, ControlledException, CoreException {
-    ClusterUtils.buildClusters("1490758");
+    ClusterUtils.buildClusters("1512727");
     System.out.println("END.");
   }
   
@@ -198,8 +198,6 @@ public class TestSuite {
     Technique.translateEdits();
   }
   
-  
-
   /**
    * Test base method.
    * @throws ExecutionException 

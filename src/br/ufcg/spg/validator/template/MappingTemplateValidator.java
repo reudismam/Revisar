@@ -28,7 +28,7 @@ import java.util.Set;
 /**
  * Checks mapping.
  */
-public class MatchTemplateChecker implements ITemplateValidator {
+public class MappingTemplateValidator implements ITemplateValidator {
   /**
    * Source code anti-unification.
    */
@@ -45,7 +45,7 @@ public class MatchTemplateChecker implements ITemplateValidator {
   /**
    * Creates a new instance.
    */
-  public MatchTemplateChecker(final String srcAu, 
+  public MappingTemplateValidator(final String srcAu, 
       final String dstAu, final List<Edit> srcEdits) {
     this.srcAu = srcAu;
     this.dstAu = dstAu;

@@ -11,7 +11,7 @@ import org.eclipse.jdt.core.dom.ASTNode;
 /**
  * Checks rules.
  */
-public final class CompositeTemplateChecker implements ITemplateValidator {
+public final class CompositeTemplateValidator implements ITemplateValidator {
   
   /**
    * List of rule each node must be checked in each node.
@@ -26,7 +26,7 @@ public final class CompositeTemplateChecker implements ITemplateValidator {
    * @param rules
    *          rules to be analyzed.
    */
-  private CompositeTemplateChecker(final List<ITemplateValidator> rules) {
+  private CompositeTemplateValidator(final List<ITemplateValidator> rules) {
     this.rules = rules;
   }
 
@@ -36,20 +36,24 @@ public final class CompositeTemplateChecker implements ITemplateValidator {
    *          source code edits
    * @return a new instance of a rule checker.
    */
-  public static CompositeTemplateChecker create(final String srcAu, 
+  public static CompositeTemplateValidator create(final String srcAu, 
       final String dstAu, final List<Edit> srcEdits) {
     final List<ITemplateValidator> rules = new ArrayList<>();
-    final MethodInvocationTemplateChecker minvo = new MethodInvocationTemplateChecker(srcEdits);
+    final MethodInvocationTemplateValidator minvo = new MethodInvocationTemplateValidator(srcEdits);
     final String simpleTypeLabel = AnalyzerUtil.getLabel(ASTNode.SIMPLE_TYPE);
     final LabelTemplateValidator simpleType = new LabelTemplateValidator(srcAu, 
         srcEdits, simpleTypeLabel);
     final String primitiveTypeLabel = AnalyzerUtil.getLabel(ASTNode.PRIMITIVE_TYPE);
     final LabelTemplateValidator primitiveType = new LabelTemplateValidator(srcAu, 
         srcEdits, primitiveTypeLabel);
+    final String markerAnnotationLabel = AnalyzerUtil.getLabel(ASTNode.MARKER_ANNOTATION);
+    final LabelTemplateValidator markerAnnotation = new LabelTemplateValidator(srcAu, 
+        srcEdits, markerAnnotationLabel);
     rules.add(minvo);
     rules.add(simpleType);
     rules.add(primitiveType);
-    return new CompositeTemplateChecker(rules);
+    rules.add(markerAnnotation);
+    return new CompositeTemplateValidator(rules);
   }
 
   /**
