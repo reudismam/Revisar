@@ -1,9 +1,7 @@
 package br.ufcg.spg.validator.template;
 
 import br.ufcg.spg.analyzer.util.AnalyzerUtil;
-import br.ufcg.spg.antiunification.AntiUnificationUtils;
-import br.ufcg.spg.antiunification.AntiUnifier;
-import br.ufcg.spg.cluster.UnifierCluster;
+import br.ufcg.spg.antiunification.AntiUnifierUtils;
 import br.ufcg.spg.edit.Edit;
 import br.ufcg.spg.matcher.IMatcher;
 import br.ufcg.spg.matcher.ValueTemplateMatcher;
@@ -11,8 +9,6 @@ import br.ufcg.spg.matcher.calculator.MatchCalculator;
 import br.ufcg.spg.matcher.calculator.RevisarTreeMatchCalculator;
 import br.ufcg.spg.tree.RevisarTree;
 import br.ufcg.spg.tree.RevisarTreeParser;
-import br.ufcg.spg.tree.RevisarTreeUtils;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -49,7 +45,7 @@ public class MethodInvocationNameValidator implements ITemplateValidator {
   private boolean isHoleLabel() {
     final Edit firstEdit = srcEdits.get(0);
     final Edit lastEdit = srcEdits.get(srcEdits.size() - 1);
-    final Map<String, String> substutings = AntiUnificationUtils.getUnifierMatching(
+    final Map<String, String> substutings = AntiUnifierUtils.getUnifierMatching(
         firstEdit.getTemplate(), lastEdit.getTemplate());
     final RevisarTree<String> tree = RevisarTreeParser.parser(firstEdit.getTemplate());
     for (final Entry<String, String> match : substutings.entrySet()) {
@@ -77,7 +73,10 @@ public class MethodInvocationNameValidator implements ITemplateValidator {
       throw new RuntimeException("node cannot be found in tree.");
     }
     final RevisarTree<String> parent = value.getParent();
+    if (parent ==  null) {
+      return false;
+    }
     final int index = parent.getChildren().indexOf(value);
-    return parent != null && parent.getValue().equals(label) && index == 0;
+    return parent.getValue().equals(label) && index == 0;
   }
 }

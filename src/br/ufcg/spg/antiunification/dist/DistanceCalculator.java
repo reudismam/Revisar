@@ -3,9 +3,8 @@ package br.ufcg.spg.antiunification.dist;
 import at.jku.risc.stout.urauc.algo.AntiUnifyProblem.VariableWithHedges;
 import at.jku.risc.stout.urauc.data.Hedge;
 import br.ufcg.spg.antiunification.AntiUnifier;
-import br.ufcg.spg.tree.RevisarTreeParser;
 import br.ufcg.spg.tree.RevisarTree;
-
+import br.ufcg.spg.tree.RevisarTreeParser;
 import java.util.List;
 
 public abstract class DistanceCalculator {

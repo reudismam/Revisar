@@ -24,7 +24,6 @@ public class Error {
    */
   public Error(final int id, final int line, final String file, final String code, 
       final int startPosition, final int endPosition, final String description) {
-    super();
     this.id = id;
     this.line = line;
     this.file = file;
@@ -116,11 +115,30 @@ public class Error {
     }
     return true;
   }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean equals(final Object obj) {
+    if (!(obj instanceof Error)) {
+      return false;
+    }
+    Error er = (Error) obj;
+    return this.equals(er);
+  }
+  
+  @Override
+  public int hashCode() {
+    return this.toString().hashCode();
+  }
 
   @Override
   public String toString() {
-    final String s = "Id: " + id + "\n" + "Line: " + line + "\n" + "File: " + file + "\n" + "Code: " + code + "\n"
-        + "Start position: " + startPosition + "\n" + "End position: " + endPosition + "\n" + "Description: "
+    final String s = "Id: " + id + "\n" + "Line: " + line + "\n" + "File: "
+        + file + "\n" + "Code: " + code + "\n"
+        + "Start position: " + startPosition + "\n" + "End position: " 
+        + endPosition + "\n" + "Description: "
         + description;
     return s;
   }

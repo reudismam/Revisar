@@ -4,8 +4,8 @@ import at.jku.risc.stout.urauc.algo.JustificationException;
 import at.jku.risc.stout.urauc.util.ControlledException;
 import br.ufcg.spg.bean.Tuple;
 import br.ufcg.spg.cluster.Cluster;
+import br.ufcg.spg.cluster.ClusterUnifier;
 import br.ufcg.spg.cluster.ClusterUtils;
-import br.ufcg.spg.cluster.UnifierCluster;
 import br.ufcg.spg.config.TechniqueConfig;
 import br.ufcg.spg.database.ClusterDao;
 import br.ufcg.spg.database.DependenceDao;
@@ -112,7 +112,7 @@ public class TestSuite {
     for (final Entry<String, List<Edit>> entry: groups.entrySet()) {
       final List<Edit> toAnalyze = entry.getValue();
       final List<Cluster> clts =  
-          UnifierCluster.getInstance().clusters(toAnalyze);
+          ClusterUnifier.getInstance().clusters(toAnalyze);
       final ClusterDao cdao = ClusterDao.getInstance();
       cdao.saveAll(clts);     
       TransformationUtils.transformations(clts);

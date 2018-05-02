@@ -3,16 +3,16 @@ package br.ufcg.spg.antiunification;
 import at.jku.risc.stout.urauc.algo.AlignFnc;
 import at.jku.risc.stout.urauc.algo.AlignFncLAA;
 import at.jku.risc.stout.urauc.algo.AntiUnifyProblem;
+import at.jku.risc.stout.urauc.algo.AntiUnifyProblem.VariableWithHedges;
 import at.jku.risc.stout.urauc.algo.DebugLevel;
 import at.jku.risc.stout.urauc.algo.JustificationException;
-import at.jku.risc.stout.urauc.algo.AntiUnifyProblem.VariableWithHedges;
 import at.jku.risc.stout.urauc.data.EquationSystem;
 import at.jku.risc.stout.urauc.data.Hedge;
 import at.jku.risc.stout.urauc.data.InputParser;
 import at.jku.risc.stout.urauc.util.ControlledException;
 
 import br.ufcg.spg.analyzer.util.AnalyzerUtil;
-import br.ufcg.spg.cluster.UnifierCluster;
+import br.ufcg.spg.cluster.ClusterUnifier;
 import br.ufcg.spg.equation.EquationUtils;
 import br.ufcg.spg.search.evaluator.IEvaluator;
 import br.ufcg.spg.search.evaluator.KindEvaluator;
@@ -35,9 +35,9 @@ import java.util.concurrent.TimeoutException;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 
-public final class AntiUnificationUtils {
+public final class AntiUnifierUtils {
   
-  private AntiUnificationUtils(){
+  private AntiUnifierUtils(){
   }
   
   /**
@@ -128,7 +128,7 @@ public final class AntiUnificationUtils {
     targetNodesUpper.add(fixedSrcList.get(fst));
     targetNodesUpper.add(fixedSrcList.get(snd));
     // compute template
-    final AntiUnifier template = AntiUnificationUtils.maxContext(
+    final AntiUnifier template = AntiUnifierUtils.maxContext(
         targetNodes, targetNodesUpper, true);
     final AntiUnifier root = AnalyzerUtil.getRoot(template);
     if (root == null) {
@@ -269,10 +269,6 @@ public final class AntiUnificationUtils {
     try {
       au = antiUnify(eq1, eq2);
     } catch (final Exception e) {
-      System.out.println(first);
-      System.out.print(second);
-      System.out.println(eq1);
-      System.out.println(eq2);
       throw new RuntimeException("Error while computing equations");
     }
     return au;
@@ -323,24 +319,22 @@ public final class AntiUnificationUtils {
         }
       }
     });
-    executor.shutdown(); // <-- reject all further submissions
+    executor.shutdown();
     try {
-      future.get(2, TimeUnit.SECONDS); // <-- wait 2 seconds to finish
-    } catch (final InterruptedException e) { // <-- possible error cases
+      future.get(2, TimeUnit.SECONDS);
+    } catch (final InterruptedException e) {
       System.out.println("job was interrupted");
       unification = null;
     } catch (final ExecutionException e) {
       System.out.println("caught exception: " + e.getCause());
       unification = null;
     } catch (final TimeoutException e) {
-      future.cancel(true); // <-- interrupt the job
+      future.cancel(true);
       unification = null;
       System.out.println("timeout");
     }
-    // wait all unfinished tasks for 2 sec
     try {
       if (!executor.awaitTermination(2, TimeUnit.SECONDS)) {
-        // force them to quit by interrupting
         executor.shutdownNow();
       }
     } catch (final InterruptedException e) {
@@ -375,7 +369,7 @@ public final class AntiUnificationUtils {
    */
   public static Map<String, String> getUnifierMatching(final String cluterTemplate, 
       final String template) {
-    final AntiUnifier unifier = UnifierCluster.computeUnification(cluterTemplate, template);
+    final AntiUnifier unifier = ClusterUnifier.antiUnify(cluterTemplate, template);
     final List<VariableWithHedges> dstVariables = unifier.getValue().getVariables();
     final Map<String, String> unifierMatching = new Hashtable<>();
     for (final VariableWithHedges variable : dstVariables) {

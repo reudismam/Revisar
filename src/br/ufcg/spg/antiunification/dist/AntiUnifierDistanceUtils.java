@@ -5,8 +5,8 @@ import at.jku.risc.stout.urauc.data.Hedge;
 import at.jku.risc.stout.urauc.data.atom.Variable;
 
 import br.ufcg.spg.antiunification.AntiUnifier;
-import br.ufcg.spg.tree.RevisarTreeParser;
 import br.ufcg.spg.tree.RevisarTree;
+import br.ufcg.spg.tree.RevisarTreeParser;
 
 import java.util.HashSet;
 import java.util.List;

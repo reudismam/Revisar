@@ -3,7 +3,7 @@ package br.ufcg.spg.editpair;
 import at.jku.risc.stout.urauc.algo.JustificationException;
 import at.jku.risc.stout.urauc.util.ControlledException;
 
-import br.ufcg.spg.antiunification.AntiUnificationUtils;
+import br.ufcg.spg.antiunification.AntiUnifierUtils;
 import br.ufcg.spg.antiunification.AntiUnifier;
 import br.ufcg.spg.bean.Tuple;
 import br.ufcg.spg.comparer.ActionComparer;
@@ -280,7 +280,7 @@ public class EditPairCalculator {
       throws JustificationException, IOException, ControlledException {
     final ASTNode [] srcNodes = {astNode};
     final ASTNode [] srcFixedNodes = {fixedNode};
-    final AntiUnifier srcAu = AntiUnificationUtils.template(0, 0, Arrays.asList(srcNodes), 
+    final AntiUnifier srcAu = AntiUnifierUtils.template(0, 0, Arrays.asList(srcNodes), 
         Arrays.asList(srcFixedNodes));
     return srcAu;
   }

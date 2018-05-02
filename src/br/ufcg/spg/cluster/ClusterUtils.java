@@ -18,7 +18,7 @@ public final class ClusterUtils {
    * Builds cluster data set.
    */
   public static void buildClusters() {
-    final UnifierCluster unifierCluster = UnifierCluster.getInstance();
+    final ClusterUnifier unifierCluster = ClusterUnifier.getInstance();
     try {
       unifierCluster.clusters();
     } catch (IOException e) {
@@ -33,7 +33,7 @@ public final class ClusterUtils {
     ClusterDao dao = ClusterDao.getInstance();
     List<Cluster> clusters = dao.getClusters(clusterId);
     List<Edit> srcEdits = clusters.get(0).getNodes();
-    final UnifierCluster unifierCluster = UnifierCluster.getInstance();
+    final ClusterUnifier unifierCluster = ClusterUnifier.getInstance();
     try {
       List<Cluster> srcClusters = unifierCluster.clusterEdits(srcEdits);
       TransformationUtils.transformations(srcClusters);

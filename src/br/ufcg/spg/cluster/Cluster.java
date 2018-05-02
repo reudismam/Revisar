@@ -1,8 +1,8 @@
 package br.ufcg.spg.cluster;
 
 import br.ufcg.spg.edit.Edit;
-import br.ufcg.spg.tree.RevisarTreeParser;
 import br.ufcg.spg.tree.RevisarTree;
+import br.ufcg.spg.tree.RevisarTreeParser;
 import br.ufcg.spg.util.PrintUtils;
 
 import java.util.ArrayList;

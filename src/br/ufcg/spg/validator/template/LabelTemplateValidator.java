@@ -1,8 +1,8 @@
 package br.ufcg.spg.validator.template;
 
-import br.ufcg.spg.antiunification.AntiUnificationUtils;
 import br.ufcg.spg.antiunification.AntiUnifier;
-import br.ufcg.spg.cluster.UnifierCluster;
+import br.ufcg.spg.antiunification.AntiUnifierUtils;
+import br.ufcg.spg.cluster.ClusterUnifier;
 import br.ufcg.spg.edit.Edit;
 import br.ufcg.spg.matcher.IMatcher;
 import br.ufcg.spg.matcher.ValueTemplateMatcher;
@@ -25,13 +25,16 @@ public class LabelTemplateValidator implements ITemplateValidator {
    * Edit list.
    */
   private final transient List<Edit> srcEdits;
-  
+  /**
+   * Label to be evaluated.
+   */
   private final transient String label;
   
   /**
    * Creates a new instance.
    */
-  public LabelTemplateValidator(final String srcAu, final List<Edit> srcEdits, String typeLabel) {
+  public LabelTemplateValidator(final String srcAu, final List<Edit> srcEdits, 
+      final String typeLabel) {
     this.srcAu = srcAu;
     this.srcEdits = srcEdits;
     this.label = typeLabel;
@@ -46,14 +49,13 @@ public class LabelTemplateValidator implements ITemplateValidator {
   }
 
   /**
-   * Verifies whether template abstract any simple type.
+   * Verifies whether template abstract any node with given label.
    */
   private boolean isHoleLabel() {
     final Edit firstEdit = srcEdits.get(0);
-    final Map<String, String> substutings = AntiUnificationUtils.getUnifierMatching(
+    final Map<String, String> substutings = AntiUnifierUtils.getUnifierMatching(
         srcAu, firstEdit.getPlainTemplate());
-    final AntiUnifier unifier = UnifierCluster.computeUnification(
-        srcAu, firstEdit.getPlainTemplate());
+    final AntiUnifier unifier = ClusterUnifier.antiUnify(srcAu, firstEdit.getPlainTemplate());
     final RevisarTree<String> tree = unifier.toRevisarTree();
     for (final Entry<String, String> match : substutings.entrySet()) {
       String valueKey = match.getKey();
@@ -64,8 +66,8 @@ public class LabelTemplateValidator implements ITemplateValidator {
       final IMatcher<RevisarTree<String>> matcher = new ValueTemplateMatcher(valueKey);
       final MatchCalculator<RevisarTree<String>> calc = new RevisarTreeMatchCalculator<>(matcher);
       final RevisarTree<String> value = calc.getNode(tree);
-      final boolean parentContains = ancestorsContainLabel(value, label);
-      if (parentContains) {
+      final boolean ancestorsContains = ancestorsContainLabel(value, label);
+      if (ancestorsContains) {
         return true;
       }
     }

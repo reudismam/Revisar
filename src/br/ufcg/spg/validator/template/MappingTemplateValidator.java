@@ -3,10 +3,10 @@ package br.ufcg.spg.validator.template;
 import at.jku.risc.stout.urauc.algo.AntiUnifyProblem.VariableWithHedges;
 import at.jku.risc.stout.urauc.data.Hedge;
 import br.ufcg.spg.analyzer.util.AnalyzerUtil;
-import br.ufcg.spg.antiunification.AntiUnificationUtils;
 import br.ufcg.spg.antiunification.AntiUnifier;
+import br.ufcg.spg.antiunification.AntiUnifierUtils;
 import br.ufcg.spg.bean.Tuple;
-import br.ufcg.spg.cluster.UnifierCluster;
+import br.ufcg.spg.cluster.ClusterUnifier;
 import br.ufcg.spg.edit.Edit;
 import br.ufcg.spg.equation.EquationUtils;
 import br.ufcg.spg.match.Match;
@@ -120,9 +120,9 @@ public class MappingTemplateValidator implements ITemplateValidator {
    * second edit is the same.
    */
   private boolean isHolesSameSize(final Edit first, final Edit last) {
-    final Map<String, String> substutingsFirst = AntiUnificationUtils.getUnifierMatching(
+    final Map<String, String> substutingsFirst = AntiUnifierUtils.getUnifierMatching(
         srcAu, first.getPlainTemplate());
-    final Map<String, String> substitutingsLast = AntiUnificationUtils.getUnifierMatching(
+    final Map<String, String> substitutingsLast = AntiUnifierUtils.getUnifierMatching(
         srcAu, last.getPlainTemplate());
     return substutingsFirst.size() == substitutingsLast.size();
   }
@@ -132,9 +132,9 @@ public class MappingTemplateValidator implements ITemplateValidator {
     final Edit dstEdit = srcEdit.getDst();
     final String srcTemplate = srcEdit.getPlainTemplate();
     final String dstTemplate = dstEdit.getPlainTemplate();
-    final Map<String, String> holeSubstitutingsSrc = AntiUnificationUtils.getUnifierMatching(
+    final Map<String, String> holeSubstitutingsSrc = AntiUnifierUtils.getUnifierMatching(
         srcAu, srcTemplate);
-    final Map<String, String> holeSubstitutingsDst = AntiUnificationUtils.getUnifierMatching(
+    final Map<String, String> holeSubstitutingsDst = AntiUnifierUtils.getUnifierMatching(
         dstAu, dstTemplate);
     BiMap<String, String> substitutingHolesDst = HashBiMap.create(holeSubstitutingsDst).inverse();
     final List<Match> matches = new ArrayList<>();
@@ -224,7 +224,7 @@ public class MappingTemplateValidator implements ITemplateValidator {
    */
   private Set<String> getSubstitutings(final Edit edit, final String au) {
     final Set<String> holes = new HashSet<>();
-    final AntiUnifier unifier = UnifierCluster.computeUnification(au, edit.getPlainTemplate());
+    final AntiUnifier unifier = ClusterUnifier.antiUnify(au, edit.getPlainTemplate());
     final List<VariableWithHedges> variables = unifier.getValue().getVariables();
     for (final VariableWithHedges variable : variables) {
       final String str = removeEnclosingParenthesis(variable.getRight());
