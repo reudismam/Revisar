@@ -91,7 +91,7 @@ public class TestSuite {
   @Test
   public void exp_cluster_id() 
       throws IOException, JustificationException, ControlledException, CoreException {
-    ClusterUtils.buildClusters("1512727");
+    ClusterUtils.buildClusters("1409289");
     System.out.println("END.");
   }
   

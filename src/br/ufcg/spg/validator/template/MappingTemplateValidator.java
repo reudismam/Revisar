@@ -121,9 +121,9 @@ public class MappingTemplateValidator implements ITemplateValidator {
    */
   private boolean isHolesSameSize(final Edit first, final Edit last) {
     final Map<String, String> substutingsFirst = AntiUnificationUtils.getUnifierMatching(
-        first.getTemplate(), srcAu);
+        srcAu, first.getPlainTemplate());
     final Map<String, String> substitutingsLast = AntiUnificationUtils.getUnifierMatching(
-        last.getTemplate(), srcAu);
+        srcAu, last.getPlainTemplate());
     return substutingsFirst.size() == substitutingsLast.size();
   }
   
@@ -133,9 +133,9 @@ public class MappingTemplateValidator implements ITemplateValidator {
     final String srcTemplate = srcEdit.getPlainTemplate();
     final String dstTemplate = dstEdit.getPlainTemplate();
     final Map<String, String> holeSubstitutingsSrc = AntiUnificationUtils.getUnifierMatching(
-        srcTemplate, srcAu);
+        srcAu, srcTemplate);
     final Map<String, String> holeSubstitutingsDst = AntiUnificationUtils.getUnifierMatching(
-        dstTemplate, dstAu);
+        dstAu, dstTemplate);
     BiMap<String, String> substitutingHolesDst = HashBiMap.create(holeSubstitutingsDst).inverse();
     final List<Match> matches = new ArrayList<>();
     for (final Entry<String, String> entry : holeSubstitutingsSrc.entrySet()) {

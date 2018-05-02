@@ -39,16 +39,18 @@ public final class CompositeTemplateValidator implements ITemplateValidator {
   public static CompositeTemplateValidator create(final String srcAu, 
       final String dstAu, final List<Edit> srcEdits) {
     final List<ITemplateValidator> rules = new ArrayList<>();
-    final MethodInvocationTemplateValidator minvo = new MethodInvocationTemplateValidator(srcEdits);
+    final ITemplateValidator minvo = new MethodInvocationTemplateValidator(srcEdits);
     final String simpleTypeLabel = AnalyzerUtil.getLabel(ASTNode.SIMPLE_TYPE);
-    final LabelTemplateValidator simpleType = new LabelTemplateValidator(srcAu, 
+    final ITemplateValidator simpleType = new LabelTemplateValidator(srcAu, 
         srcEdits, simpleTypeLabel);
     final String primitiveTypeLabel = AnalyzerUtil.getLabel(ASTNode.PRIMITIVE_TYPE);
-    final LabelTemplateValidator primitiveType = new LabelTemplateValidator(srcAu, 
+    final ITemplateValidator primitiveType = new LabelTemplateValidator(srcAu, 
         srcEdits, primitiveTypeLabel);
     final String markerAnnotationLabel = AnalyzerUtil.getLabel(ASTNode.MARKER_ANNOTATION);
-    final LabelTemplateValidator markerAnnotation = new LabelTemplateValidator(srcAu, 
+    final ITemplateValidator markerAnnotation = new LabelTemplateValidator(srcAu, 
         srcEdits, markerAnnotationLabel);
+    final ITemplateValidator methodName = new MethodInvocationNameValidator(srcEdits);
+    rules.add(methodName);
     rules.add(minvo);
     rules.add(simpleType);
     rules.add(primitiveType);

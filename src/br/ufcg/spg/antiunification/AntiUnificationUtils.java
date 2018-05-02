@@ -373,8 +373,8 @@ public final class AntiUnificationUtils {
    * Gets the hash_id pair and value.
    * @return mapping
    */
-  public static Map<String, String> getUnifierMatching(final String template, 
-      final String cluterTemplate) {
+  public static Map<String, String> getUnifierMatching(final String cluterTemplate, 
+      final String template) {
     final AntiUnifier unifier = UnifierCluster.computeUnification(cluterTemplate, template);
     final List<VariableWithHedges> dstVariables = unifier.getValue().getVariables();
     final Map<String, String> unifierMatching = new Hashtable<>();

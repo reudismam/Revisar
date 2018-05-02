@@ -1,5 +1,6 @@
 package br.ufcg.spg.validator.template;
 
+import br.ufcg.spg.analyzer.util.AnalyzerUtil;
 import br.ufcg.spg.antiunification.AntiUnificationUtils;
 import br.ufcg.spg.antiunification.AntiUnifier;
 import br.ufcg.spg.cluster.UnifierCluster;
@@ -9,32 +10,29 @@ import br.ufcg.spg.matcher.ValueTemplateMatcher;
 import br.ufcg.spg.matcher.calculator.MatchCalculator;
 import br.ufcg.spg.matcher.calculator.RevisarTreeMatchCalculator;
 import br.ufcg.spg.tree.RevisarTree;
+import br.ufcg.spg.tree.RevisarTreeParser;
+import br.ufcg.spg.tree.RevisarTreeUtils;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.eclipse.jdt.core.dom.ASTNode;
+
 /**
  * Checks mapping.
  */
-public class LabelTemplateValidator implements ITemplateValidator {
-  /**
-   * Source code anti-unification.
-   */
-  private final transient String srcAu;
+public class MethodInvocationNameValidator implements ITemplateValidator {
   /**
    * Edit list.
    */
   private final transient List<Edit> srcEdits;
   
-  private final transient String label;
-  
   /**
    * Creates a new instance.
    */
-  public LabelTemplateValidator(final String srcAu, final List<Edit> srcEdits, String typeLabel) {
-    this.srcAu = srcAu;
+  public MethodInvocationNameValidator(final List<Edit> srcEdits) {
     this.srcEdits = srcEdits;
-    this.label = typeLabel;
   }
   
   /**
@@ -50,22 +48,21 @@ public class LabelTemplateValidator implements ITemplateValidator {
    */
   private boolean isHoleLabel() {
     final Edit firstEdit = srcEdits.get(0);
+    final Edit lastEdit = srcEdits.get(srcEdits.size() - 1);
     final Map<String, String> substutings = AntiUnificationUtils.getUnifierMatching(
-        srcAu, firstEdit.getPlainTemplate());
-    final AntiUnifier unifier = UnifierCluster.computeUnification(
-        srcAu, firstEdit.getPlainTemplate());
-    final RevisarTree<String> tree = unifier.toRevisarTree();
+        firstEdit.getTemplate(), lastEdit.getTemplate());
+    final RevisarTree<String> tree = RevisarTreeParser.parser(firstEdit.getTemplate());
     for (final Entry<String, String> match : substutings.entrySet()) {
       String valueKey = match.getKey();
-      if (!valueKey.contains("hash")) {
+      if (!valueKey.contains("name_")) {
         continue;
       }
-      valueKey = "#" + valueKey.substring(5);
       final IMatcher<RevisarTree<String>> matcher = new ValueTemplateMatcher(valueKey);
       final MatchCalculator<RevisarTree<String>> calc = new RevisarTreeMatchCalculator<>(matcher);
       final RevisarTree<String> value = calc.getNode(tree);
-      final boolean parentContains = ancestorsContainLabel(value, label);
-      if (parentContains) {
+      final String label = AnalyzerUtil.getLabel(ASTNode.METHOD_INVOCATION);
+      final boolean isRename = isRename(value, label);
+      if (isRename) {
         return true;
       }
     }
@@ -75,14 +72,12 @@ public class LabelTemplateValidator implements ITemplateValidator {
   /**
    * Verifies whether any of the ancestor is of a specific label.
    */
-  private boolean ancestorsContainLabel(final RevisarTree<String> value, String label) {
-    RevisarTree<String> parent = value;
-    while (parent != null) {
-      if (parent.getValue().equals(label)) {
-        return true;
-      }
-      parent = parent.getParent();
+  private boolean isRename(final RevisarTree<String> value, String label) {
+    if (value == null) {
+      throw new RuntimeException("node cannot be found in tree.");
     }
-    return false;
+    final RevisarTree<String> parent = value.getParent();
+    final int index = parent.getChildren().indexOf(value);
+    return parent != null && parent.getValue().equals(label) && index == 0;
   }
 }
