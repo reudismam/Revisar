@@ -84,14 +84,14 @@ public class TestSuite {
   @Test
   public void exp_translate_id() 
       throws IOException, JustificationException, ControlledException, CoreException {
-    Technique.translateEdits("1494576");
+    Technique.translateEdits("1365589");
     System.out.println("END.");
   }
   
   @Test
   public void exp_cluster_id() 
       throws IOException, JustificationException, ControlledException, CoreException {
-    ClusterUtils.buildClusters("1409289");
+    ClusterUtils.buildClusters("1403911");
     System.out.println("END.");
   }
   

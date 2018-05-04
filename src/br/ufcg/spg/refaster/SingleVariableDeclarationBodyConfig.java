@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.Dimension;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
@@ -37,9 +38,14 @@ public class SingleVariableDeclarationBodyConfig implements IConfigBody {
     final VariableDeclarationFragment varFrag = ast.newVariableDeclarationFragment();
     final SimpleName name = (SimpleName) ASTNode.copySubtree(ast, decl.getName());
     varFrag.setName(name);
+    int numberOfDimension = decl.getExtraDimensions();
+    if (numberOfDimension == 1) {
+      Dimension dimension = ast.newDimension();
+      varFrag.extraDimensions().add(dimension);
+    }
+    VariableDeclarationStatement statement = ast.newVariableDeclarationStatement(varFrag);
     Type stmType = TypeUtils.extractType(decl, ast);
     stmType = (Type) ASTNode.copySubtree(ast, stmType);
-    VariableDeclarationStatement statement = ast.newVariableDeclarationStatement(varFrag);
     statement.setType(stmType);
     final List<ASTNode> modifiers = decl.modifiers();
     final List<ASTNode> nmodifiers = new ArrayList<>();

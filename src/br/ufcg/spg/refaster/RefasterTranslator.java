@@ -102,10 +102,12 @@ public class RefasterTranslator {
     final ProjectInfo pi = checkoutIfDiffer(srcEdit);
     final CompilationUnit dstUnit = JParser.parse(dstEdit.getPath(), pi.getDstVersion());
     final CompilationUnit srcUnit = JParser.parse(srcEdit.getPath(), pi.getSrcVersion());
-    IMatcher<ASTNode> srcMatch = new PositionNodeMatcher(srcEdit.getStartPos(), srcEdit.getEndPos());
+    IMatcher<ASTNode> srcMatch = new PositionNodeMatcher(srcEdit.getStartPos(), 
+        srcEdit.getEndPos());
     MatchCalculator<ASTNode> mcalc = new NodeMatchCalculator(srcMatch);
     final ASTNode srcNode = mcalc.getNode(srcUnit);
-    IMatcher<ASTNode> dstMatch = new PositionNodeMatcher(dstEdit.getStartPos(), dstEdit.getEndPos());
+    IMatcher<ASTNode> dstMatch = new PositionNodeMatcher(dstEdit.getStartPos(), 
+        dstEdit.getEndPos());
     mcalc = new NodeMatchCalculator(dstMatch);
     final ASTNode dstNode = mcalc.getNode(dstUnit);
     Tuple<MethodDeclaration, MethodDeclaration> ba = getBeforeAfterMethod(rule);
