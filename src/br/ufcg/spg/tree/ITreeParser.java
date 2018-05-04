@@ -1,7 +1,7 @@
 package br.ufcg.spg.tree;
 
-import br.ufcg.spg.analyzer.util.AnalyzerUtil;
 import br.ufcg.spg.bean.Tuple;
+import br.ufcg.spg.node.util.ASTNodeUtils;
 import br.ufcg.spg.util.PrintUtils;
 
 import java.util.List;
@@ -23,8 +23,8 @@ public class ITreeParser {
     if (auChildren.isEmpty()) {
       return tree;
     }
-    final List<Object> childrenNodes = AnalyzerUtil.getChildren(node);
-    final List<ASTNode> children = AnalyzerUtil.normalize(childrenNodes);
+    final List<Object> childrenNodes = ASTNodeUtils.getChildren(node);
+    final List<ASTNode> children = ASTNodeUtils.normalize(childrenNodes);
     if (children.size() > auChildren.size()) {
       return tree;
     }

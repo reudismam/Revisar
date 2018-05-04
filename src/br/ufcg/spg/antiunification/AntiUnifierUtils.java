@@ -10,10 +10,9 @@ import at.jku.risc.stout.urauc.data.EquationSystem;
 import at.jku.risc.stout.urauc.data.Hedge;
 import at.jku.risc.stout.urauc.data.InputParser;
 import at.jku.risc.stout.urauc.util.ControlledException;
-
-import br.ufcg.spg.analyzer.util.AnalyzerUtil;
 import br.ufcg.spg.cluster.ClusterUnifier;
 import br.ufcg.spg.equation.EquationUtils;
+import br.ufcg.spg.node.util.ASTNodeUtils;
 import br.ufcg.spg.search.evaluator.IEvaluator;
 import br.ufcg.spg.search.evaluator.KindEvaluator;
 import br.ufcg.spg.search.evaluator.SizeEvaluator;
@@ -80,13 +79,13 @@ public final class AntiUnifierUtils {
       if (unify) {
         return antiUnify(trees.get(0), trees.get(1));
       }
-      return new AntiUnifier(AnalyzerUtil.getLabel(trees.get(0).getNodeType()));
+      return new AntiUnifier(ASTNodeUtils.getLabel(trees.get(0).getNodeType()));
     }
     AntiUnifier au;
     if (unify) {
       au = antiUnify(trees.get(0), trees.get(1));
     } else {
-      au = new AntiUnifier(AnalyzerUtil.getLabel(trees.get(0).getNodeType()));
+      au = new AntiUnifier(ASTNodeUtils.getLabel(trees.get(0).getNodeType()));
     }
     if (allSameKind(Arrays.asList(trees.get(0).getParent(), trees.get(1).getParent()))) {
       final List<List<ASTNode>> left = getLeftSiblings(trees);
@@ -130,19 +129,22 @@ public final class AntiUnifierUtils {
     // compute template
     final AntiUnifier template = AntiUnifierUtils.maxContext(
         targetNodes, targetNodesUpper, true);
-    final AntiUnifier root = AnalyzerUtil.getRoot(template);
+    final AntiUnifier root = AntiUnifierUtils.getRoot(template);
     if (root == null) {
       System.out.println("A transformation could not be learned!");
     }
     return root;
   }
 
+  /**
+   * Gets left siblings of a list of nodes.
+   */
   private static List<List<ASTNode>> getLeftSiblings(final List<ASTNode> trees) {
     final List<List<ASTNode>> left = new ArrayList<List<ASTNode>>();
     for (final ASTNode tree : trees) {
       final ASTNode parent = tree.getParent();
-      final List<Object> children = AnalyzerUtil.getChildren(parent);
-      final List<ASTNode> normalizedChildren = AnalyzerUtil.normalize(children);
+      final List<Object> children = ASTNodeUtils.getChildren(parent);
+      final List<ASTNode> normalizedChildren = ASTNodeUtils.normalize(children);
       final int index = normalizedChildren.indexOf(tree);
       final List<ASTNode> subList = normalizedChildren.subList(0, index);
       if (!subList.isEmpty()) {
@@ -152,12 +154,15 @@ public final class AntiUnifierUtils {
     return left;
   }
 
+  /**
+   * Gets right siblings of a list of nodes.
+   */
   private static List<List<ASTNode>> getRightSiblings(final List<ASTNode> trees) {
     final List<List<ASTNode>> right = new ArrayList<List<ASTNode>>();
     for (final ASTNode tree : trees) {
       final ASTNode parent = tree.getParent();
-      final List<Object> children = AnalyzerUtil.getChildren(parent);
-      final List<ASTNode> normalizedChildren = AnalyzerUtil.normalize(children);
+      final List<Object> children = ASTNodeUtils.getChildren(parent);
+      final List<ASTNode> normalizedChildren = ASTNodeUtils.normalize(children);
       final int index = normalizedChildren.indexOf(tree);
       final List<ASTNode> subList = normalizedChildren.subList(index + 1, 
           normalizedChildren.size());
@@ -393,5 +398,22 @@ public final class AntiUnifierUtils {
       return str.substring(1, str.length() - 1);
     }
     return str;
+  }
+
+  /**
+   * Get the root of an anti-unification algorithm.
+   * 
+   * @param au
+   *          - anti-unification
+   * @return root of the anti-unification
+   */
+  public static AntiUnifier getRoot(final AntiUnifier au) {
+    AntiUnifier root = au.getParent();
+    AntiUnifier previous = au;
+    while (root != null) {
+      previous = root;
+      root = root.getParent();
+    }
+    return previous;
   }
 }

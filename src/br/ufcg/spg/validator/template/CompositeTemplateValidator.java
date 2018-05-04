@@ -1,7 +1,7 @@
 package br.ufcg.spg.validator.template;
 
-import br.ufcg.spg.analyzer.util.AnalyzerUtil;
 import br.ufcg.spg.edit.Edit;
+import br.ufcg.spg.node.util.ASTNodeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,13 +40,13 @@ public final class CompositeTemplateValidator implements ITemplateValidator {
       final String dstAu, final List<Edit> srcEdits) {
     final List<ITemplateValidator> rules = new ArrayList<>();
     final ITemplateValidator minvo = new MethodInvocationTemplateValidator(srcEdits);
-    final String simpleTypeLabel = AnalyzerUtil.getLabel(ASTNode.SIMPLE_TYPE);
+    final String simpleTypeLabel = ASTNodeUtils.getLabel(ASTNode.SIMPLE_TYPE);
     final ITemplateValidator simpleType = new LabelTemplateValidator(srcAu, 
         srcEdits, simpleTypeLabel);
-    final String primitiveTypeLabel = AnalyzerUtil.getLabel(ASTNode.PRIMITIVE_TYPE);
+    final String primitiveTypeLabel = ASTNodeUtils.getLabel(ASTNode.PRIMITIVE_TYPE);
     final ITemplateValidator primitiveType = new LabelTemplateValidator(srcAu, 
         srcEdits, primitiveTypeLabel);
-    final String markerAnnotationLabel = AnalyzerUtil.getLabel(ASTNode.MARKER_ANNOTATION);
+    final String markerAnnotationLabel = ASTNodeUtils.getLabel(ASTNode.MARKER_ANNOTATION);
     final ITemplateValidator markerAnnotation = new LabelTemplateValidator(srcAu, 
         srcEdits, markerAnnotationLabel);
     final ITemplateValidator methodName = new MethodInvocationNameValidator(srcEdits);

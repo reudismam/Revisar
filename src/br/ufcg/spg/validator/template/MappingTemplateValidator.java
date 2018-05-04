@@ -2,7 +2,6 @@ package br.ufcg.spg.validator.template;
 
 import at.jku.risc.stout.urauc.algo.AntiUnifyProblem.VariableWithHedges;
 import at.jku.risc.stout.urauc.data.Hedge;
-import br.ufcg.spg.analyzer.util.AnalyzerUtil;
 import br.ufcg.spg.antiunification.AntiUnifier;
 import br.ufcg.spg.antiunification.AntiUnifierUtils;
 import br.ufcg.spg.bean.Tuple;
@@ -10,6 +9,7 @@ import br.ufcg.spg.cluster.ClusterUnifier;
 import br.ufcg.spg.edit.Edit;
 import br.ufcg.spg.equation.EquationUtils;
 import br.ufcg.spg.match.Match;
+import br.ufcg.spg.node.NodesExtractor;
 import br.ufcg.spg.tree.RevisarTree;
 import br.ufcg.spg.tree.RevisarTreeParser;
 
@@ -145,62 +145,7 @@ public class MappingTemplateValidator implements ITemplateValidator {
         matches.add(match);
       }
     }
-    /*for (final Entry<String, String> srcEntry  : holeSubstutingSrc.entrySet()) {
-      final String srcKey = srcEntry.getKey();
-      final String srcValue = srcEntry.getValue();
-      for (final Entry<String, String> dstEntry: holeSubstutingDst.entrySet()) {
-        final String dstKey = dstEntry.getKey();
-        final String dstValue = dstEntry.getValue();
-        if (srcValue.equals(dstValue)) {
-          final Match match = new Match(srcKey, dstKey, srcValue);
-          matches.add(match);
-        }
-      }
-    }*/
     return matches;
-  }
-
-  /**
-   * Gets variable matching.
-   * @param abstracted abstracted matching.
-   * @param srcDstMapping source destination mapping.
-   * @return destination variable matching.
-   */
-  public Map<String, RevisarTree<String>> getVariableMatching(
-      final Map<String, RevisarTree<String>> abstracted,
-      final Map<String, RevisarTree<String>> srcDstMapping) {
-    final Map<String, RevisarTree<String>> variableMatching = new Hashtable<>();
-    for (final Entry<String, RevisarTree<String>> entry : srcDstMapping.entrySet()) {
-      final RevisarTree<String> value = entry.getValue();
-      for (final Entry<String, RevisarTree<String>> abs : abstracted.entrySet()) {
-        final RevisarTree<String> absValue = abs.getValue();
-        if (isIntersect(value, absValue)) {
-          variableMatching.put(abs.getKey(), value);
-        }
-      }
-    }
-    return variableMatching;
-  }
-
-  /**
-   * Gets abstraction mapping.
-   */
-  public Map<String, RevisarTree<String>> getAbstractionMapping(final String template, 
-      final Map<String, String> unifierMatching) {
-    final Map<String, RevisarTree<String>> abstracted = new Hashtable<>();
-    final RevisarTree<String> absTemplate = RevisarTreeParser.parser(template);
-    final List<RevisarTree<String>> dstTreeNodes = AnalyzerUtil.getNodes(absTemplate); 
-    for (final Entry<String, String> entry: unifierMatching.entrySet()) {
-      for (final RevisarTree<String> dstNode : dstTreeNodes) {
-        final String absNode = EquationUtils.convertToEq(dstNode);
-        final String key = entry.getKey();
-        final String value = entry.getValue();
-        if (value.equals(absNode)) {
-          abstracted.put(key, dstNode);
-        }
-      }
-    }
-    return abstracted;
   }
 
   /**
@@ -211,7 +156,7 @@ public class MappingTemplateValidator implements ITemplateValidator {
   private Map<String, RevisarTree<String>> getStringRevisarTreeMapping(final String template) {
     final Map<String, RevisarTree<String>> mapping = new Hashtable<>();
     final RevisarTree<String> revisarTree = RevisarTreeParser.parser(template);
-    final List<RevisarTree<String>> treeNodes = AnalyzerUtil.getNodes(revisarTree);
+    final List<RevisarTree<String>> treeNodes = NodesExtractor.getNodes(revisarTree);
     for (final RevisarTree<String> node : treeNodes) {
       final String str = EquationUtils.convertToEq(node);
       mapping.put(str, node);
@@ -246,27 +191,5 @@ public class MappingTemplateValidator implements ITemplateValidator {
       return str.substring(1, str.length() - 1);
     }
     return str;
-  }
-  
-  /**
-   * Verifies if the two nodes intersects.
-   * @param root root node
-   * @param toVerify to verify node
-   */
-  private boolean isIntersect(final RevisarTree<String> root, final RevisarTree<String> toVerify) {
-    return isStartInside(root, toVerify) || isStartInside(toVerify, root);
-  }
-  
-  /**
-   * Verify if start position of toVerify is inside root.
-   * @param root root node.
-   * @param toVerify to verify.
-   */
-  private boolean isStartInside(final RevisarTree<String> root, 
-      final RevisarTree<String> toVerify) {
-    final int toVerifyStart = toVerify.getPos();
-    final int rootStart = root.getPos();
-    final int rootEnd = root.getEnd();
-    return rootStart <= toVerifyStart && toVerifyStart <= rootEnd;   
   }
 }

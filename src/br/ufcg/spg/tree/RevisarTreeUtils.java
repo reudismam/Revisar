@@ -6,7 +6,7 @@ import java.util.List;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 
-import br.ufcg.spg.analyzer.util.AnalyzerUtil;
+import br.ufcg.spg.node.util.ASTNodeUtils;
 
 public class RevisarTreeUtils {
   
@@ -26,8 +26,8 @@ public class RevisarTreeUtils {
    * Converts a ASTNode to a Revisar Tree.
    */
   public static RevisarTree<ASTNode> convertToRevisarTree(final ASTNode astNode) {
-    final List<Object> children = AnalyzerUtil.getChildren(astNode);
-    final List<ASTNode> normalizedChildren = AnalyzerUtil.normalize(children);
+    final List<Object> children = ASTNodeUtils.getChildren(astNode);
+    final List<ASTNode> normalizedChildren = ASTNodeUtils.normalize(children);
     RevisarTree<ASTNode> rtree = new RevisarTree<ASTNode>(astNode);
     if (normalizedChildren.isEmpty()) {
       return rtree;

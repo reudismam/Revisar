@@ -1,11 +1,11 @@
 package br.ufcg.spg.equation;
 
-import br.ufcg.spg.analyzer.util.AnalyzerUtil;
 import br.ufcg.spg.antiunification.AntiUnifier;
 import br.ufcg.spg.binding.BindingLocator;
 import br.ufcg.spg.binding.BindingSolver;
 import br.ufcg.spg.config.TechniqueConfig;
 import br.ufcg.spg.mapper.AsciiMapper;
+import br.ufcg.spg.node.util.ASTNodeUtils;
 import br.ufcg.spg.tree.RevisarTree;
 
 import java.util.List;
@@ -101,16 +101,16 @@ public class EquationUtils {
    * Converts a ASTNode to an anti-unification equation.
    */
   public static String convertToEquation(final ASTNode astNode, final boolean includeType) {
-    final List<Object> children = AnalyzerUtil.getChildren(astNode);
-    final List<ASTNode> normalizedChildren = AnalyzerUtil.normalize(children);
+    final List<Object> children = ASTNodeUtils.getChildren(astNode);
+    final List<ASTNode> normalizedChildren = ASTNodeUtils.normalize(children);
     String type = qualifiedName(astNode);
     if (type == null) {
       type = "Unknown";
     }
-    final String rootLabel = AnalyzerUtil.getLabel(astNode.getNodeType());
+    final String rootLabel = ASTNodeUtils.getLabel(astNode.getNodeType());
     final int nodeType = astNode.getNodeType();
     if (normalizedChildren.isEmpty()) {
-      final String value = AnalyzerUtil.getValue(astNode);
+      final String value = ASTNodeUtils.getValue(astNode);
       String content = value.trim();
       content = processStringLiteral(nodeType, content);
       content = processCharLiteral(nodeType, content);
@@ -173,14 +173,14 @@ public class EquationUtils {
 
   private static String processBlock(final int nodeType, String content) {
     if (nodeType == ASTNode.BLOCK) {
-      content = "" + AnalyzerUtil.getLabel(nodeType);
+      content = "" + ASTNodeUtils.getLabel(nodeType);
     }
     return content;
   }
 
   private static String processArrayInitializer(String content, final int nodeType) {
     if (nodeType == ASTNode.ARRAY_INITIALIZER) {
-      content = AnalyzerUtil.getLabel(nodeType);
+      content = ASTNodeUtils.getLabel(nodeType);
     }
     return content;
   }

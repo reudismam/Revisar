@@ -1,7 +1,7 @@
 package br.ufcg.spg.validator.node;
 
-import br.ufcg.spg.analyzer.util.AnalyzerUtil;
 import br.ufcg.spg.equation.EquationUtils;
+import br.ufcg.spg.node.util.ASTNodeUtils;
 import br.ufcg.spg.tree.RevisarTreeParser;
 import br.ufcg.spg.tree.RevisarTree;
 import br.ufcg.spg.tree.RevisarTreeUtils;
@@ -117,6 +117,6 @@ public class MethodInvocationNodeChecker implements IValidationNodeRule {
   
   private boolean isRootMethodInvocation(String template) {
     final String root = RevisarTreeUtils.root(template);
-    return root.equals(AnalyzerUtil.getLabel(ASTNode.IMPORT_DECLARATION));
+    return root.equals(ASTNodeUtils.getLabel(ASTNode.IMPORT_DECLARATION));
   }
 }

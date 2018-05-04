@@ -1,12 +1,12 @@
 package br.ufcg.spg.validator.template;
 
-import br.ufcg.spg.analyzer.util.AnalyzerUtil;
 import br.ufcg.spg.antiunification.AntiUnifierUtils;
 import br.ufcg.spg.edit.Edit;
 import br.ufcg.spg.matcher.IMatcher;
 import br.ufcg.spg.matcher.ValueTemplateMatcher;
 import br.ufcg.spg.matcher.calculator.MatchCalculator;
 import br.ufcg.spg.matcher.calculator.RevisarTreeMatchCalculator;
+import br.ufcg.spg.node.util.ASTNodeUtils;
 import br.ufcg.spg.tree.RevisarTree;
 import br.ufcg.spg.tree.RevisarTreeParser;
 import java.util.List;
@@ -56,7 +56,7 @@ public class MethodInvocationNameValidator implements ITemplateValidator {
       final IMatcher<RevisarTree<String>> matcher = new ValueTemplateMatcher(valueKey);
       final MatchCalculator<RevisarTree<String>> calc = new RevisarTreeMatchCalculator<>(matcher);
       final RevisarTree<String> value = calc.getNode(tree);
-      final String label = AnalyzerUtil.getLabel(ASTNode.METHOD_INVOCATION);
+      final String label = ASTNodeUtils.getLabel(ASTNode.METHOD_INVOCATION);
       final boolean isRename = isRename(value, label);
       if (isRename) {
         return true;

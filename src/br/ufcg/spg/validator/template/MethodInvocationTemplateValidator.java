@@ -1,8 +1,8 @@
 package br.ufcg.spg.validator.template;
 
-import br.ufcg.spg.analyzer.util.AnalyzerUtil;
 import br.ufcg.spg.edit.Edit;
 import br.ufcg.spg.equation.EquationUtils;
+import br.ufcg.spg.node.util.ASTNodeUtils;
 import br.ufcg.spg.tree.RevisarTree;
 import br.ufcg.spg.tree.RevisarTreeParser;
 import br.ufcg.spg.tree.RevisarTreeUtils;
@@ -76,6 +76,6 @@ public class MethodInvocationTemplateValidator implements ITemplateValidator {
   private boolean isRootMethodInvocation(final Edit edit) {
     final String template = edit.getTemplate();
     final String root = RevisarTreeUtils.root(template);
-    return root.equals(AnalyzerUtil.getLabel(ASTNode.METHOD_INVOCATION));
+    return root.equals(ASTNodeUtils.getLabel(ASTNode.METHOD_INVOCATION));
   }
 }

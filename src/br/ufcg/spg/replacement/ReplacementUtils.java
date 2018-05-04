@@ -1,6 +1,5 @@
 package br.ufcg.spg.replacement;
 
-import br.ufcg.spg.analyzer.util.AnalyzerUtil;
 import br.ufcg.spg.bean.Tuple;
 import br.ufcg.spg.compile.CompilerUtils;
 import br.ufcg.spg.diff.DiffCalculator;
@@ -12,13 +11,14 @@ import br.ufcg.spg.matcher.PositionTreeMatcher;
 import br.ufcg.spg.matcher.calculator.MatchCalculator;
 import br.ufcg.spg.matcher.calculator.NodeMatchCalculator;
 import br.ufcg.spg.matcher.calculator.TreeMatchCalculator;
+import br.ufcg.spg.node.NodesExtractor;
 import br.ufcg.spg.project.ProjectInfo;
 import br.ufcg.spg.project.Version;
 import br.ufcg.spg.refaster.config.TransformationConfigObject;
 import br.ufcg.spg.template.TemplateUtils;
-import br.ufcg.spg.tree.RevisarTreeParser;
-import br.ufcg.spg.tree.RevisarTree;
 import br.ufcg.spg.tree.ITreeParser;
+import br.ufcg.spg.tree.RevisarTree;
+import br.ufcg.spg.tree.RevisarTreeParser;
 
 import com.github.gumtreediff.tree.ITree;
 
@@ -80,11 +80,12 @@ public class ReplacementUtils {
     return null;
   }
   
-  private static Map<String, List<ASTNode>> getAbstractionMap(final String clAu, final ASTNode node) {
+  private static Map<String, List<ASTNode>> getAbstractionMap(final String clAu, 
+      final ASTNode node) {
     final RevisarTree<String> template = RevisarTreeParser.parser(clAu);
     final RevisarTree<String> au = TemplateUtils.removeAll(template);
     final RevisarTree<Tuple<ASTNode, String>> parsed = ITreeParser.parse(au, node);
-    final List<RevisarTree<Tuple<ASTNode, String>>> nodes = AnalyzerUtil.getNodes(parsed);
+    final List<RevisarTree<Tuple<ASTNode, String>>> nodes = NodesExtractor.getNodes(parsed);
     final Map<String, List<ASTNode>> map = new Hashtable<>();
     for (final RevisarTree<Tuple<ASTNode, String>> tuple : nodes) {
       final ASTNode astNode = tuple.getValue().getItem1();
@@ -124,7 +125,8 @@ public class ReplacementUtils {
    * @param afters list of nodes abstracted for after version
    */
   private static void addConcreteEditsStructure(final List<Replacement<ASTNode>> src,
-      final List<Replacement<ASTNode>> dst, final List<ASTNode> befores, final List<ASTNode> afters) {
+      final List<Replacement<ASTNode>> dst, final List<ASTNode> befores, 
+      final List<ASTNode> afters) {
     for (int i = 0; i < befores.size(); i++) {
       final Replacement<ASTNode> replacement = src.get(i);
       final ASTNode srcNode = replacement.getNode();

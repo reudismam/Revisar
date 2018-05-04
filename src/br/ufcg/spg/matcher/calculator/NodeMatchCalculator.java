@@ -1,7 +1,7 @@
 package br.ufcg.spg.matcher.calculator;
 
-import br.ufcg.spg.analyzer.util.AnalyzerUtil;
 import br.ufcg.spg.matcher.IMatcher;
+import br.ufcg.spg.node.util.ASTNodeUtils;
 
 import java.util.List;
 
@@ -24,8 +24,8 @@ public class NodeMatchCalculator extends MatchCalculator<ASTNode> {
    * {@inheritDoc}
    */
   public List<ASTNode> chilren(ASTNode st) {
-    final List<Object> childrenObjects = AnalyzerUtil.getChildren(st);
-    final List<ASTNode> children = AnalyzerUtil.normalize(childrenObjects);
+    final List<Object> childrenObjects = ASTNodeUtils.getChildren(st);
+    final List<ASTNode> children = ASTNodeUtils.normalize(childrenObjects);
     return children;
   }
 }
