@@ -44,7 +44,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -278,10 +277,7 @@ public class EditPairCalculator {
    */
   private static AntiUnifier antiUnification(final ASTNode astNode, final ASTNode fixedNode) 
       throws JustificationException, IOException, ControlledException {
-    final ASTNode [] srcNodes = {astNode};
-    final ASTNode [] srcFixedNodes = {fixedNode};
-    final AntiUnifier srcAu = AntiUnifierUtils.template(0, 0, Arrays.asList(srcNodes), 
-        Arrays.asList(srcFixedNodes));
+    final AntiUnifier srcAu = AntiUnifierUtils.template(astNode, astNode, fixedNode, fixedNode);
     return srcAu;
   }
 
