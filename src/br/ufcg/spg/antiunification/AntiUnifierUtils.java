@@ -51,14 +51,14 @@ public final class AntiUnifierUtils {
   private static AntiUnifier maxContext(final ASTNode first, final ASTNode second, 
       final ASTNode firstUpper, final ASTNode secondUpper, final boolean unify)
       throws JustificationException, IOException, ControlledException {
-	List<ASTNode> trees = Arrays.asList(first, second);
-	List<ASTNode> upperNodes = Arrays.asList(firstUpper, secondUpper);
+    List<ASTNode> trees = Arrays.asList(first, second); 
     if (!allSameKind(trees)) {
       return createAntiUnification(first, second, null, unify);
     }
     IEvaluator evaluator = new KindEvaluator(ASTNode.METHOD_DECLARATION);
     if (isSome(trees, evaluator)) {
-      return createAntiUnification(first, second, ASTNodeUtils.getLabel(ASTNode.METHOD_DECLARATION), unify);
+      return createAntiUnification(first, second, ASTNodeUtils.getLabel(
+          ASTNode.METHOD_DECLARATION), unify);
     }
     evaluator = new SizeEvaluator();
     if (isSome(trees, evaluator)) {
@@ -66,12 +66,16 @@ public final class AntiUnifierUtils {
     }
     evaluator = new KindEvaluator(ASTNode.FIELD_DECLARATION);
     if (isSome(trees, evaluator)) {
-      return createAntiUnification(first, second, ASTNodeUtils.getLabel(ASTNode.FIELD_DECLARATION), unify);
+      return createAntiUnification(first, second, ASTNodeUtils.getLabel(
+          ASTNode.FIELD_DECLARATION), unify);
     }
+    List<ASTNode> upperNodes = Arrays.asList(firstUpper, secondUpper);
     if (someIncludeUpper(trees, upperNodes)) {
-      return createAntiUnification(first, second, ASTNodeUtils.getLabel(first.getNodeType()), unify);
+      return createAntiUnification(first, second, ASTNodeUtils.getLabel(
+          first.getNodeType()), unify);
     }
-    AntiUnifier au = createAntiUnification(first, second, ASTNodeUtils.getLabel(first.getNodeType()), unify);
+    AntiUnifier au = createAntiUnification(first, second, ASTNodeUtils.getLabel(
+        first.getNodeType()), unify);
     final ASTNode parentFirst = first.getParent();
     final ASTNode parentSecond = second.getParent();
     if (allSameKind(Arrays.asList(parentFirst, parentSecond))) {
@@ -92,35 +96,30 @@ public final class AntiUnifierUtils {
   private static AntiUnifier createAntiUnification(final ASTNode first, final ASTNode second, 
       String label, final boolean unify)
       throws IOException, JustificationException, ControlledException {
-	if (unify) {
+    if (unify) {
       return antiUnify(first, second);
     }
-	if (label == null) {
-		return new AntiUnifier();
-	}
+    if (label == null) {
+      return new AntiUnifier();
+    }
     return new AntiUnifier(label);
   }
 
   /**
    * Learn unification template.
    * 
-   * @param fst
+   * @param first
    *          first target node
-   * @param snd
+   * @param second
    *          second target node
-   * @param srcList
-   *          source code list
-   * @param fixedSrcList
-   *          fixed code list
    * @return unification template
    */
   public static AntiUnifier template(final ASTNode first, final ASTNode second, 
       final ASTNode fixedFirst, final ASTNode fixedSecond)
       throws JustificationException, IOException, ControlledException {
     // compute template
-    final AntiUnifier template = AntiUnifierUtils.maxContext(
-      first, second, fixedFirst, 
-      fixedSecond, true);
+    final AntiUnifier template = AntiUnifierUtils.maxContext(first, second, fixedFirst, 
+        fixedSecond, true);
     final AntiUnifier root = AntiUnifierUtils.getRoot(template);
     if (root == null) {
       System.out.println("A transformation could not be learned!");

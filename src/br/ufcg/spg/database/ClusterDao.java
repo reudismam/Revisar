@@ -67,7 +67,8 @@ public class ClusterDao extends GenericDao<Cluster, String> {
    * @return source code edits.
    */
   public int getMaxLabel() {
-    final String query = "SELECT DISTINCT(e.label) FROM Cluster e WHERE e.dst IS NOT NULL ORDER BY cast(e.label as integer) desc";
+    final String query = "SELECT DISTINCT(e.label) FROM Cluster e WHERE e.dst IS NOT NULL "
+        + "ORDER BY cast(e.label as integer) desc";
     final List<String> list = em.createQuery(query, String.class).getResultList();
     if (list.isEmpty()) {
       return -1;
@@ -121,7 +122,8 @@ public class ClusterDao extends GenericDao<Cluster, String> {
    */
   public List<Cluster> getClusterMoreProjects() {
     final String query = "select t.label from "
-                          + "(select c.label, count(distinct(e.project)) as s from cluster c, cluster_edit ce, edit e "
+                          + "(select c.label, count(distinct(e.project)) as s "
+                          + "from cluster c, cluster_edit ce, edit e "
                           + "where c.id = ce.cluster_id and "
                           + "ce.nodes_id = e.id and "
                           + "c.dst_id is not null and "

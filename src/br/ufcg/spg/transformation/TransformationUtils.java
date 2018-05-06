@@ -4,6 +4,7 @@ import br.ufcg.spg.cluster.Cluster;
 import br.ufcg.spg.config.TechniqueConfig;
 import br.ufcg.spg.database.ClusterDao;
 import br.ufcg.spg.database.TransformationDao;
+import br.ufcg.spg.edit.Edit;
 import br.ufcg.spg.refaster.RefasterTranslator;
 import br.ufcg.spg.refaster.Transformation;
 import br.ufcg.spg.validator.ClusterValidator;
@@ -58,50 +59,60 @@ public class TransformationUtils {
       for (int i = 0; i < srcClusters.size(); i++) {
         System.out.println(((double) i) / srcClusters.size() + " % completed.");
         final Cluster clusteri = srcClusters.get(i);
-        final Cluster clusterj = clusteri.getDst();
         // Analyze clusters with two or more elements.
         if (clusteri.getNodes().size() < 2) {
           continue;
         }
-        try {
-          String refaster = "NOT SET";
-          if (TechniqueConfig.getInstance().isCreateRule()) {    
-            refaster = RefasterTranslator.translate(clusteri);
-          }
-          final Transformation trans = new Transformation();
-          final boolean isValid = ClusterValidator.isValidTrans(clusteri);
-          trans.setTransformation(refaster);
-          trans.setCluster(clusteri);
-          trans.setValid(isValid);
-          TransformationDao.getInstance().save(trans);
-          final INodeChecker ch = new RenameChecker(clusteri, clusterj);
-          boolean isRename = false;
-          try {
-            isRename = ch.isValidUnification();
-          } catch (final Exception e) {
-            e.printStackTrace();
-          }
-          String content = "";
-          content += refaster + "\n";
-          content += "SRC CLUSTER\n";
-          content += clusteri + "\n";
-          content += "DST CLUSTER\n";
-          content += clusterj + "\n";
-          String path;
-          if (isRename) {
-            path = "../Projects/cluster/rename/" + clusteri.getId() + ".txt";
-          } else {
-            path = "../Projects/cluster/" + isValid + "/" + clusteri.getId() + ".txt";
-          }
-          final File clusterFile = new File(path);
-          FileUtils.writeStringToFile(clusterFile, content);
-        } catch (final Exception e) {
-          e.printStackTrace();
-        }
+        Edit edit = clusteri.getNodes().get(0);
+        tranformation(clusteri, edit);
       }
     } catch (final Exception e) {
       e.printStackTrace();
     }
+  }
+
+  /**
+   * Learns a transformation for a cluster.
+   */
+  public static String tranformation(final Cluster clusteri, final Edit srcEdit) {
+    try {
+      final Cluster clusterj = clusteri.getDst();
+      String refaster = "NOT SET";
+      if (TechniqueConfig.getInstance().isCreateRule()) {    
+        refaster = RefasterTranslator.translate(clusteri, srcEdit);
+      }
+      final Transformation trans = new Transformation();
+      final boolean isValid = ClusterValidator.isValidTrans(clusteri);
+      trans.setTransformation(refaster);
+      trans.setCluster(clusteri);
+      trans.setValid(isValid);
+      TransformationDao.getInstance().save(trans);
+      final INodeChecker ch = new RenameChecker(clusteri, clusterj);
+      boolean isRename = false;
+      try {
+        isRename = ch.isValidUnification();
+      } catch (final Exception e) {
+        e.printStackTrace();
+      }
+      String content = "";
+      content += refaster + "\n";
+      content += "SRC CLUSTER\n";
+      content += clusteri + "\n";
+      content += "DST CLUSTER\n";
+      content += clusterj + "\n";
+      String path;
+      if (isRename) {
+        path = "../Projects/cluster/rename/" + clusteri.getId() + ".txt";
+      } else {
+        path = "../Projects/cluster/" + isValid + "/" + clusteri.getId() + ".txt";
+      }
+      final File clusterFile = new File(path);
+      FileUtils.writeStringToFile(clusterFile, content);
+      return refaster;
+    } catch (final Exception e) {
+      e.printStackTrace();
+    }
+    return null;
   }
 
   private static List<Cluster> getClusters() {

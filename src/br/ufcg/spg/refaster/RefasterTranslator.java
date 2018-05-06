@@ -40,7 +40,7 @@ public class RefasterTranslator {
   /**
    * Translate edit to Refaster rule.
    */
-  public static String translate(final Cluster clusteri)
+  public static String translate(final Cluster clusteri, final Edit srcEdit)
       throws BadLocationException, IOException, JavaModelException, 
       IllegalArgumentException, NoFilepatternException, GitAPIException {
     final JParser refasterRuleParser = new JParser();
@@ -48,7 +48,7 @@ public class RefasterTranslator {
     final CompilationUnit rule = refasterRuleParser.parseWithDocument(refasterFile);
     final Document document = refasterRuleParser.getDocument();
     // Learn before and after method
-    final Tuple<MethodDeclaration, MethodDeclaration> ba = beforeAfter(clusteri, rule);
+    final Tuple<MethodDeclaration, MethodDeclaration> ba = beforeAfter(clusteri, rule, srcEdit);
     // Replace before and after method in Refaster rule.
     final String refaster = replaceBeforeAfter(rule, document, ba);
     return refaster;
@@ -92,13 +92,12 @@ public class RefasterTranslator {
    * @return before and after method for Refaster rule
    */
   private static Tuple<MethodDeclaration, MethodDeclaration> beforeAfter(
-      final Cluster srcCluster, final CompilationUnit rule)
+      final Cluster srcCluster, final CompilationUnit rule, Edit srcEdit)
       throws BadLocationException, IOException, NoFilepatternException, GitAPIException {
     final Cluster dstCluster = srcCluster.getDst();
     //gets only first location, since other locations
     //follow the same template
-    final Edit srcEdit = srcCluster.getNodes().get(0);
-    final Edit dstEdit = dstCluster.getNodes().get(0);
+    final Edit dstEdit = srcEdit.getDst();
     final ProjectInfo pi = checkoutIfDiffer(srcEdit);
     final CompilationUnit dstUnit = JParser.parse(dstEdit.getPath(), pi.getDstVersion());
     final CompilationUnit srcUnit = JParser.parse(srcEdit.getPath(), pi.getSrcVersion());

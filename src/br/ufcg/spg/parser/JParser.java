@@ -43,7 +43,7 @@ public class JParser {
       parser.setKind(ASTParser.K_COMPILATION_UNIT);
       parser.setBindingsRecovery(true);
       parser.setStatementsRecovery(true);
-      final Map options = JavaCore.getOptions();
+      final Map<?,?> options = JavaCore.getOptions();
       parser.setCompilerOptions(options);
       final String unitName = file;
       parser.setUnitName(unitName);
@@ -65,7 +65,8 @@ public class JParser {
    *          - file
    * @return parsed file
    */
-  public CompilationUnit parseWithDocument(final String file, final String[] sources, final String[] classpath) {
+  public CompilationUnit parseWithDocument(final String file, final String[] sources, 
+      final String[] classpath) {
     try {
       final String str = new String(Files.readAllBytes(Paths.get(file)));
       document = new Document(str);
@@ -75,7 +76,7 @@ public class JParser {
       parser.setKind(ASTParser.K_COMPILATION_UNIT);
       parser.setBindingsRecovery(true);
       parser.setStatementsRecovery(true);
-      final Map options = JavaCore.getOptions();
+      final Map<?, ?> options = JavaCore.getOptions();
       parser.setCompilerOptions(options);
       final String unitName = file;
       parser.setUnitName(unitName);
@@ -100,7 +101,7 @@ public class JParser {
     parser.setKind(ASTParser.K_COMPILATION_UNIT);
     parser.setBindingsRecovery(true);
     parser.setStatementsRecovery(true);
-    final Map options = JavaCore.getOptions();
+    final Map<?, ?> options = JavaCore.getOptions();
     parser.setCompilerOptions(options);
     final String unitName = file;
     parser.setUnitName(unitName);
@@ -127,7 +128,7 @@ public class JParser {
     parser.setKind(ASTParser.K_COMPILATION_UNIT);
     parser.setBindingsRecovery(true);
     parser.setStatementsRecovery(true);
-    final Map options = JavaCore.getOptions();
+    final Map<?, ?> options = JavaCore.getOptions();
     parser.setCompilerOptions(options);
     final String unitName = file;
     parser.setUnitName(unitName);
