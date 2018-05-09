@@ -1,4 +1,4 @@
-package br.ufcg.spg.refaster;
+package br.ufcg.spg.transformation;
 
 import br.ufcg.spg.cluster.Cluster;
 

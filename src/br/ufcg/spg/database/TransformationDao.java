@@ -1,8 +1,8 @@
 package br.ufcg.spg.database;
 
-import br.ufcg.spg.refaster.Transformation;
-
 import java.util.List;
+
+import br.ufcg.spg.transformation.Transformation;
 
 public class TransformationDao extends GenericDao<Transformation, Long> {
   
