@@ -36,6 +36,8 @@ public class Edit {
   private Date date;
   private String path;
   @Column(columnDefinition = "TEXT")
+  private String pathRoot;
+  @Column(columnDefinition = "TEXT")
   private String dcap3;
   @Column(columnDefinition = "TEXT")
   private String dcap2;
@@ -73,7 +75,7 @@ public class Edit {
    */
   public Edit(final String commit, final int startPos, 
                   final int endPos, final int index, final String project, 
-                  final String path, final Edit context, final Edit dst,
+                  final String path, final String pathRoot, final Edit context, final Edit dst,
                   final String template, final String text) {
     super();
     this.commit = commit;
@@ -82,6 +84,7 @@ public class Edit {
     this.index = index;
     this.project = project;
     this.path = path;
+    this.pathRoot = pathRoot;
     this.context = context;
     this.dst = dst;
     this.template = template;
@@ -144,6 +147,14 @@ public class Edit {
     this.path = path;
   }
   
+  public String getPathRoot() {
+    return pathRoot;
+  }
+
+  public void setPathRoot(String pathRoot) {
+    this.pathRoot = pathRoot;
+  }
+
   public String getDcap3() {
     return dcap3;
   }

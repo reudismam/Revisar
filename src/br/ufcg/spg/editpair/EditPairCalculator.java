@@ -23,6 +23,7 @@ import br.ufcg.spg.matcher.PositionNodeMatcher;
 import br.ufcg.spg.matcher.calculator.MatchCalculator;
 import br.ufcg.spg.matcher.calculator.NodeMatchCalculator;
 import br.ufcg.spg.parser.JParser;
+import br.ufcg.spg.path.PathUtils;
 import br.ufcg.spg.project.ProjectAnalyzer;
 import br.ufcg.spg.project.ProjectInfo;
 import br.ufcg.spg.source.SourceUtils;
@@ -220,17 +221,21 @@ public class EditPairCalculator {
         final AntiUnifier dstAu = antiUnification(dstAstNode, fixedDst);
         final String srcEq = EquationUtils.convertToEquation(srcAu);
         final String dstEq = EquationUtils.convertToEquation(dstAu);
+        final String srcCtxPath = PathUtils.computePathRoot(fixedSrc);
+        final String dstCtxPath = PathUtils.computePathRoot(fixedDst);
+        final String srcPathRoot = PathUtils.computePathRoot(srcAstNode);
+        final String dstPathRoot = PathUtils.computePathRoot(dstAstNode);
         if (!NodeValidator.isValidNode(srcEq) || !NodeValidator.isValidNode(dstEq)) {
           continue;
         }
         final Edit dstCtx = new Edit(cmt, fixedDstStart, fixedDstEnd, ctxIdxDst, pj, 
-            dstPath, null, null, null, null);
+            dstPath, dstCtxPath, null, null, null, null);
         final Edit srcCtx = new Edit(cmt, fixedSrcStart, fixedSrcEnd, ctxIdxSrc, pj + "_old",
-            srcPath, null, dstCtx, null, null);
+            srcPath, srcCtxPath, null, dstCtx, null, null);
         final Edit dstEdit = new Edit(cmt, dstStartPos, dstEndPos, dstIdx, pj, 
-            dstPath, dstCtx, null, dstEq, dstAstNode.toString());
+            dstPath, dstPathRoot, dstCtx, null, dstEq, dstAstNode.toString());
         final Edit srcEdit = new Edit(cmt, srcStartPos, srcEndPos, srcIdx, pj + "_old", 
-            srcPath, srcCtx, dstEdit, srcEq, srcAstNode.toString());
+            srcPath, srcPathRoot, srcCtx, dstEdit, srcEq, srcAstNode.toString());
         dstEdit.setImports(imports);
         configDcap(srcEdit, srcAu);
         configDcap(dstEdit, dstAu);

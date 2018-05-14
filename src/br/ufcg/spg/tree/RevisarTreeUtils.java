@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jdt.core.dom.ASTNode;
-import org.eclipse.jdt.core.dom.MethodInvocation;
-
 import br.ufcg.spg.node.util.ASTNodeUtils;
 
 public class RevisarTreeUtils {
