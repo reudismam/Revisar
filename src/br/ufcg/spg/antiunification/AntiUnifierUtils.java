@@ -12,10 +12,10 @@ import at.jku.risc.stout.urauc.data.InputParser;
 import at.jku.risc.stout.urauc.util.ControlledException;
 import br.ufcg.spg.cluster.ClusterUnifier;
 import br.ufcg.spg.equation.EquationUtils;
+import br.ufcg.spg.matcher.IMatcher;
+import br.ufcg.spg.matcher.KindNodeMatcher;
+import br.ufcg.spg.matcher.LargerThanMatcher;
 import br.ufcg.spg.node.util.ASTNodeUtils;
-import br.ufcg.spg.search.evaluator.IEvaluator;
-import br.ufcg.spg.search.evaluator.KindEvaluator;
-import br.ufcg.spg.search.evaluator.SizeEvaluator;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -55,16 +55,16 @@ public final class AntiUnifierUtils {
     if (!allSameKind(trees)) {
       return createAntiUnification(first, second, null, unify);
     }
-    IEvaluator evaluator = new KindEvaluator(ASTNode.METHOD_DECLARATION);
+    IMatcher<ASTNode> evaluator = new KindNodeMatcher(ASTNode.METHOD_DECLARATION);
     if (isSome(trees, evaluator)) {
       return createAntiUnification(first, second, ASTNodeUtils.getLabel(
           ASTNode.METHOD_DECLARATION), unify);
     }
-    evaluator = new SizeEvaluator();
+    evaluator = new LargerThanMatcher(100);
     if (isSome(trees, evaluator)) {
       return new AntiUnifier("LARGER()");
     }
-    evaluator = new KindEvaluator(ASTNode.FIELD_DECLARATION);
+    evaluator = new KindNodeMatcher(ASTNode.FIELD_DECLARATION);
     if (isSome(trees, evaluator)) {
       return createAntiUnification(first, second, ASTNodeUtils.getLabel(
           ASTNode.FIELD_DECLARATION), unify);
@@ -187,7 +187,7 @@ public final class AntiUnifierUtils {
    * @param trees list of trees to be analyzed.
    * @return true if some tree is method declaration
    */
-  public static boolean isSome(final List<ASTNode> trees, final IEvaluator eval) {
+  public static boolean isSome(final List<ASTNode> trees, final IMatcher<ASTNode> eval) {
     if (trees.isEmpty()) {
       throw new UnsupportedOperationException("Trees could not be null.");
     }
