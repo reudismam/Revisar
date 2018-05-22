@@ -92,4 +92,17 @@ public final class ASTNodeUtils {
     }
     return nodes;
   }
+
+  public static ASTNode getTopNode(final ASTNode node) {
+    if (node.getParent() == null) {
+      return node;
+    }
+    if (node.getNodeType() == ASTNode.METHOD_DECLARATION) {
+      return node;
+    }
+    if (node.getNodeType() == ASTNode.FIELD_DECLARATION) {
+      return node;
+    }
+    return getTopNode(node.getParent());
+  }
 }

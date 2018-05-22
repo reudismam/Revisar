@@ -13,6 +13,7 @@ import br.ufcg.spg.dcap.DcapCalculator;
 import br.ufcg.spg.diff.DiffCalculator;
 import br.ufcg.spg.diff.DiffPath;
 import br.ufcg.spg.edit.Edit;
+import br.ufcg.spg.edit.EditStorage;
 import br.ufcg.spg.equation.EquationUtils;
 import br.ufcg.spg.expression.ExpressionManager;
 import br.ufcg.spg.git.CommitUtils;
@@ -22,6 +23,7 @@ import br.ufcg.spg.matcher.IMatcher;
 import br.ufcg.spg.matcher.PositionNodeMatcher;
 import br.ufcg.spg.matcher.calculator.MatchCalculator;
 import br.ufcg.spg.matcher.calculator.NodeMatchCalculator;
+import br.ufcg.spg.node.util.ASTNodeUtils;
 import br.ufcg.spg.parser.JParser;
 import br.ufcg.spg.path.PathUtils;
 import br.ufcg.spg.project.ProjectAnalyzer;
@@ -204,58 +206,88 @@ public class EditPairCalculator {
         }
         if (srcAstNode == null || fixedSrc == null || dstAstNode == null || fixedDst == null) {
           continue;
-        }
-        final int srcStartPos = srcAstNode.getStartPosition();
-        final int srcEndPos = srcStartPos + srcAstNode.getLength();
-        final int dstStartPos = dstAstNode.getStartPosition();
-        final int dstEndPos = dstStartPos + dstAstNode.getLength();
-        final int fixedSrcStart = fixedSrc.getStartPosition();
-        final int fixedSrcEnd = fixedSrcStart  + fixedSrc.getLength();
-        final int fixedDstStart = fixedDst.getStartPosition();
-        final int fixedDstEnd = fixedDstStart + fixedDst.getLength();
-        final int srcIdx = srcMa.getIndex(unitSrc);
-        final int ctxIdxSrc = fsrcMa.getIndex(unitSrc);
-        final int dstIdx = dstMa.getIndex(unitDst);
-        final int ctxIdxDst = fsrcMa.getIndex(unitDst);
+        }      
         final AntiUnifier srcAu = antiUnification(srcAstNode, fixedSrc);
         final AntiUnifier dstAu = antiUnification(dstAstNode, fixedDst);
         final String srcEq = EquationUtils.convertToEquation(srcAu);
         final String dstEq = EquationUtils.convertToEquation(dstAu);
-        final String srcCtxPath = PathUtils.computePathRoot(fixedSrc);
-        final String dstCtxPath = PathUtils.computePathRoot(fixedDst);
-        final String srcPathRoot = PathUtils.computePathRoot(srcAstNode);
-        final String dstPathRoot = PathUtils.computePathRoot(dstAstNode);
         if (!NodeValidator.isValidNode(srcEq) || !NodeValidator.isValidNode(dstEq)) {
           continue;
         }
-        final Edit dstCtx = new Edit(cmt, fixedDstStart, fixedDstEnd, ctxIdxDst, pj, 
-            dstPath, dstCtxPath, null, null, null, null);
-        final Edit srcCtx = new Edit(cmt, fixedSrcStart, fixedSrcEnd, ctxIdxSrc, pj + "_old",
-            srcPath, srcCtxPath, null, dstCtx, null, null);
-        final Edit dstEdit = new Edit(cmt, dstStartPos, dstEndPos, dstIdx, pj, 
-            dstPath, dstPathRoot, dstCtx, null, dstEq, dstAstNode.toString());
-        final Edit srcEdit = new Edit(cmt, srcStartPos, srcEndPos, srcIdx, pj + "_old", 
-            srcPath, srcPathRoot, srcCtx, dstEdit, srcEq, srcAstNode.toString());
-        dstEdit.setImports(imports);
-        configDcap(srcEdit, srcAu);
-        configDcap(dstEdit, dstAu);
-        final GitUtils gutils = new GitUtils();
-        final PersonIdent pident = gutils.getPersonIdent(pi.getDstVersion().getProject(), cmt);
-        srcEdit.setDeveloper(pident.getName());
-        srcEdit.setEmail(pident.getEmailAddress());
-        srcEdit.setDate(pident.getWhen());
-        srcEdits.add(srcEdit);
+        final ASTNode srcUpper = ASTNodeUtils.getTopNode(srcAstNode);
+        final ASTNode dstUpper = ASTNodeUtils.getTopNode(dstAstNode);
+        if (srcUpper == null || dstUpper == null) {
+          continue;
+        }
+        final Edit srcUpperEdit = createEdit(cmt, srcUpper, pj + "_old", srcPath, unitSrc);
+        final String srcUpperEq = EquationUtils.convertToAuEq(srcUpper);
+        final String dstUpperEq = EquationUtils.convertToAuEq(dstUpper);
+        final Edit dstUpperEdit = createEdit(cmt, dstUpper, pj, dstPath, unitDst);
+        final Edit dstCtx = createEdit(cmt, fixedDst, pj, dstPath, unitDst);
+        final Edit srcCtx = createEdit(cmt, fixedSrc, pj + "_old", srcPath, unitSrc);
+        final Edit dstEdit = createEdit(cmt, dstAstNode, pj, dstPath, unitDst);
+        final Edit srcEdit = createEdit(cmt, srcAstNode, pj + "_old", srcPath, unitSrc);
+        //specific configuration to dst context
+        srcCtx.setDst(dstCtx);
+        //specific configuration to dst
+        dstEdit.setContext(dstCtx);
+        dstEdit.setTemplate(dstEq);
+        dstEdit.setUpper(dstUpperEdit);
+        dstUpperEdit.setTemplate(dstUpperEq);
+        srcUpperEdit.setTemplate(srcUpperEq);
+        configSrcEdit(cmt, srcEdit, dstEdit, srcCtx, srcUpperEdit, srcEq, imports, srcAu, dstAu, pi);
+        //srcEdits.add(srcEdit);
         showEditPair(srcPath, dstPath, srcNode, dstNode, fixedSrc, fixedDst);
-        /*int currentCount = storage.getNumberEdits();
-        int max = storage.getMaxNumberEdits();
-        if (currentCount >= max && !TechniqueConfig.getInstance().isAllCommits()) {
-          return;
-        }*/
       }
     }
     return srcEdits;
   }
   
+  /**
+   * Configure src edit
+   * @param srcEdit src edit
+   * @param dstEdit dst edit
+   * @param srcCtx src context
+   * @param srcEq src template
+   * @param imports import statements
+   * @param srcAu src anti-unification
+   * @param dstAu dst anti-unification
+   */
+  private static Edit configSrcEdit(final String cmt, final Edit srcEdit, final Edit dstEdit, final Edit srcUpper,
+      final Edit srcCtx, String srcEq, List<Import> imports, 
+      AntiUnifier srcAu, AntiUnifier dstAu, final ProjectInfo pi) 
+          throws JustificationException, IOException, ControlledException {
+  //specific configuration to src
+    srcEdit.setDst(dstEdit);
+    srcEdit.setContext(srcCtx);
+    srcEdit.setUpper(srcUpper);
+    srcEdit.setTemplate(srcEq);
+    //other configurations
+    dstEdit.setImports(imports);
+    configDcap(srcEdit, srcAu);
+    configDcap(dstEdit, dstAu);
+    final GitUtils gutils = new GitUtils();
+    final PersonIdent pident = gutils.getPersonIdent(pi.getDstVersion().getProject(), cmt);
+    srcEdit.setDeveloper(pident.getName());
+    srcEdit.setEmail(pident.getEmailAddress());
+    srcEdit.setDate(pident.getWhen());
+    return srcEdit;
+  }
+  
+  private static Edit createEdit(String cmt, ASTNode node, String pj, String dstPath, CompilationUnit unit) {
+    IMatcher<ASTNode> matcher = new PositionNodeMatcher(node);
+    final MatchCalculator<ASTNode> calc = new NodeMatchCalculator(matcher);
+    final ASTNode astNode = calc.getNode(unit);
+    final int startPos = astNode.getStartPosition();
+    final int endPos = startPos + astNode.getLength();
+    final int index = calc.getIndex(unit);
+    final String dstCtxPath = PathUtils.computePathRoot(astNode);
+    final String text = node.toString();
+    final Edit dstCtx = new Edit(cmt, startPos, endPos, index, pj, 
+        dstPath, dstCtxPath, null, null, null, text);
+    return dstCtx;
+  }
+
   /**
    * Configures dcap for edit.
    * @param edit edit
@@ -377,7 +409,6 @@ public class EditPairCalculator {
       pathDst.add(tempDst);
       tempDst = tempDst.getParent();
     }
-
     pathDst.add(tempDst);
     Collections.reverse(pathSrc);
     Collections.reverse(pathDst);

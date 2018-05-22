@@ -54,6 +54,9 @@ public class Edit {
   @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private Edit dst;
   
+  @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  private Edit upper;
+  
   /**
    * List of nodes in this cluster.
    */
@@ -223,25 +226,6 @@ public class Edit {
     this.imports = imports;
   }
 
-  @Override
-  public boolean equals(final Object obj) {
-    return super.equals(obj);
-  }
-
-  @Override
-  public int hashCode() {
-    return toString().hashCode();
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public String toString() {
-    final String str = this.getText() + ", " + this.getPath() + ", " + this.getCommit() + "\n";
-    return str;
-  }
-
   public String getDeveloper() {
     return developer;
   }
@@ -265,4 +249,33 @@ public class Edit {
   public void setDate(final Date date) {
     this.date = date;
   }
+
+  public Edit getUpper() {
+    return upper;
+  }
+
+  public void setUpper(Edit upper) {
+    this.upper = upper;
+  }
+
+  @Override
+  public boolean equals(final Object obj) {
+    return super.equals(obj);
+  }
+
+  @Override
+  public int hashCode() {
+    return toString().hashCode();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String toString() {
+    final String str = this.getText() + ", " + this.getPath() + ", " + this.getCommit() + "\n";
+    return str;
+  }
 }
+
+

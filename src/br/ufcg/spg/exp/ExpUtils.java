@@ -133,7 +133,7 @@ public class ExpUtils {
   public static List<String> getLogs(final String pname) throws IOException {
     // files to be analyzed
     String projectFolder = MainArguments.getInstance().getProjectFolder();
-    final String projectFolderDst = projectFolder + pname  + "/";
+    final String projectFolderDst = projectFolder + "/" + pname  + "/";
     final GitUtils analyzer = new GitUtils();
     List<String> log = null;
     //checkout the default branch
