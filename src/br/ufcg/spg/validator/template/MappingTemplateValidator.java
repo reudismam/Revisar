@@ -58,7 +58,7 @@ public class MappingTemplateValidator implements ITemplateValidator {
   @Override
   public boolean isValidUnification() {
     final Edit firstEdit = srcEdits.get(0);
-    final List<Match> matchesFirst = getInputOuputMatching(firstEdit, srcAu, dstAu);
+    final List<Match> matchesFirst = getInputOuputMatches(firstEdit, srcAu, dstAu);
     final Edit lastEdit = srcEdits.get(srcEdits.size() - 1);
     final boolean sameSize = isHolesSameSize(firstEdit, lastEdit);
     if (!sameSize) {
@@ -67,7 +67,7 @@ public class MappingTemplateValidator implements ITemplateValidator {
     if (!isOuputSubstituingInInput(firstEdit, srcAu, dstAu)) {
       return false;
     }  
-    final List<Match> matchesLast = getInputOuputMatching(lastEdit, srcAu, dstAu); 
+    final List<Match> matchesLast = getInputOuputMatches(lastEdit, srcAu, dstAu); 
     if (!isOuputSubstituingInInput(lastEdit, srcAu, dstAu)) {
       return false;
     }
@@ -127,7 +127,7 @@ public class MappingTemplateValidator implements ITemplateValidator {
     return substutingsFirst.size() == substitutingsLast.size();
   }
   
-  private List<Match> getInputOuputMatching(final Edit srcEdit, 
+  private List<Match> getInputOuputMatches(final Edit srcEdit, 
       final String srcAu, final String dstAu) {
     final Edit dstEdit = srcEdit.getDst();
     final String srcTemplate = srcEdit.getPlainTemplate();
@@ -136,16 +136,33 @@ public class MappingTemplateValidator implements ITemplateValidator {
         srcAu, srcTemplate);
     final Map<String, String> holeSubstitutingsDst = AntiUnifierUtils.getUnifierMatching(
         dstAu, dstTemplate);
-    BiMap<String, String> substitutingHolesDst = HashBiMap.create(holeSubstitutingsDst).inverse();
+    //BiMap<String, String> substitutingHolesDst = HashBiMap.create(holeSubstitutingsDst).inverse();
+    Map<String, List<String>> substitutingHolesDst = inverte(holeSubstitutingsDst);
     final List<Match> matches = new ArrayList<>();
     for (final Entry<String, String> entry : holeSubstitutingsSrc.entrySet()) {
       if (substitutingHolesDst.containsKey(entry.getValue())) {
-        String dstKey = substitutingHolesDst.get(entry.getValue());
-        Match match = new Match(entry.getKey(), dstKey, entry.getValue());
-        matches.add(match);
+        List<String> dstKeys = substitutingHolesDst.get(entry.getValue());
+        for (final String dstKey : dstKeys) {
+          Match match = new Match(entry.getKey(), dstKey, entry.getValue());    
+          matches.add(match);
+        }
       }
     }
     return matches;
+  }
+  
+  /**
+   * Invert the mapping.
+   */
+  public Map<String, List<String>> inverte(final Map<String, String> holeSubstutings) {
+    final Map<String, List<String>> inverted = new Hashtable<>();
+    for (final Entry<String, String> entry: holeSubstutings.entrySet()) {
+      if (!holeSubstutings.containsKey(entry.getValue())) {
+        inverted.put(entry.getValue(), new ArrayList<>());
+      }
+      inverted.get(entry.getValue()).add(entry.getKey());
+    }
+    return inverted;
   }
 
   /**

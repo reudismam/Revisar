@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.NoHeadException;
 
@@ -102,7 +101,7 @@ public class ExpUtils {
   private static List<Tuple<String, String>> defineProjects(final List<String> projects) {
     final List<Tuple<String, String>> projs = new ArrayList<>();
     for (int i = 0; i < projects.size(); i++) {
-      final Tuple<String, String> tuple = new Tuple<>(projects.get(i), null);
+      final Tuple<String, String> tuple = new Tuple<>(projects.get(i).trim(), null);
       projs.add(tuple);
     }
     final Edit lastEdit = EditDao.getInstance().getLastEdit();

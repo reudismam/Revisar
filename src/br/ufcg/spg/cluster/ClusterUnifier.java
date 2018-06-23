@@ -19,13 +19,20 @@ import br.ufcg.spg.util.PrintUtils;
 import br.ufcg.spg.validator.ClusterValidator;
 import br.ufcg.spg.validator.node.NodeValidator;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Unifier cluster class.
@@ -40,6 +47,8 @@ public final class ClusterUnifier {
    * Singleton instance.
    */
   private static ClusterUnifier instance;
+  
+  static final Logger logger = LogManager.getLogger(ClusterUnifier.class.getName());
 
   private ClusterUnifier() {
   }
@@ -72,7 +81,10 @@ public final class ClusterUnifier {
       index = allDcaps.indexOf(target) + 1;
     }
     for (int d = index; d < allDcaps.size(); d++) {
-      System.out.println(((double) d) / allDcaps.size() + " % completed.");
+      String logMessage = ((double) d) / allDcaps.size() + " % completed of all d-caps.\n";
+      System.out.print(logMessage);
+      logger.trace(logMessage);
+      Files.write(Paths.get("clustering.txt"), logMessage.getBytes(), StandardOpenOption.APPEND);
       final String dcap = allDcaps.get(d);
       final List<Edit> edits = storage.getSrcListByDCap(dcap, config.getDcap());
       if (edits.size() < 2) {

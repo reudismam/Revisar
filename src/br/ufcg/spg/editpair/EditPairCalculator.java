@@ -214,6 +214,7 @@ public class EditPairCalculator {
         if (!NodeValidator.isValidNode(srcEq) || !NodeValidator.isValidNode(dstEq)) {
           continue;
         }
+        /*System.out.println("Before creating upper edit!");
         final ASTNode srcUpper = ASTNodeUtils.getTopNode(srcAstNode);
         final ASTNode dstUpper = ASTNodeUtils.getTopNode(dstAstNode);
         if (srcUpper == null || dstUpper == null) {
@@ -223,6 +224,7 @@ public class EditPairCalculator {
         final String srcUpperEq = EquationUtils.convertToAuEq(srcUpper);
         final String dstUpperEq = EquationUtils.convertToAuEq(dstUpper);
         final Edit dstUpperEdit = createEdit(cmt, dstUpper, pj, dstPath, unitDst);
+        System.out.println("After creating upper edit!");*/
         final Edit dstCtx = createEdit(cmt, fixedDst, pj, dstPath, unitDst);
         final Edit srcCtx = createEdit(cmt, fixedSrc, pj + "_old", srcPath, unitSrc);
         final Edit dstEdit = createEdit(cmt, dstAstNode, pj, dstPath, unitDst);
@@ -232,11 +234,13 @@ public class EditPairCalculator {
         //specific configuration to dst
         dstEdit.setContext(dstCtx);
         dstEdit.setTemplate(dstEq);
-        dstEdit.setUpper(dstUpperEdit);
+        /*dstEdit.setUpper(dstUpperEdit);
         dstUpperEdit.setTemplate(dstUpperEq);
         srcUpperEdit.setTemplate(srcUpperEq);
-        configSrcEdit(cmt, srcEdit, dstEdit, srcCtx, srcUpperEdit, srcEq, imports, srcAu, dstAu, pi);
-        //srcEdits.add(srcEdit);
+        configSrcEdit(cmt, srcEdit, dstEdit, srcCtx, srcUpperEdit, 
+        srcEq, imports, srcAu, dstAu, pi);*/
+        configSrcEdit(cmt, srcEdit, dstEdit, srcCtx, null, srcEq, imports, srcAu, dstAu, pi);
+        srcEdits.add(srcEdit);
         showEditPair(srcPath, dstPath, srcNode, dstNode, fixedSrc, fixedDst);
       }
     }
@@ -244,7 +248,7 @@ public class EditPairCalculator {
   }
   
   /**
-   * Configure src edit
+   * Configure src edit.
    * @param srcEdit src edit
    * @param dstEdit dst edit
    * @param srcCtx src context
@@ -253,11 +257,12 @@ public class EditPairCalculator {
    * @param srcAu src anti-unification
    * @param dstAu dst anti-unification
    */
-  private static Edit configSrcEdit(final String cmt, final Edit srcEdit, final Edit dstEdit, final Edit srcUpper,
-      final Edit srcCtx, String srcEq, List<Import> imports, 
+  private static Edit configSrcEdit(final String cmt, final Edit srcEdit, 
+      final Edit dstEdit, final Edit srcCtx,
+      final Edit srcUpper, String srcEq, List<Import> imports, 
       AntiUnifier srcAu, AntiUnifier dstAu, final ProjectInfo pi) 
           throws JustificationException, IOException, ControlledException {
-  //specific configuration to src
+    //specific configuration to src
     srcEdit.setDst(dstEdit);
     srcEdit.setContext(srcCtx);
     srcEdit.setUpper(srcUpper);
@@ -274,7 +279,8 @@ public class EditPairCalculator {
     return srcEdit;
   }
   
-  private static Edit createEdit(String cmt, ASTNode node, String pj, String dstPath, CompilationUnit unit) {
+  private static Edit createEdit(String cmt, ASTNode node, String pj, 
+      String dstPath, CompilationUnit unit) {
     IMatcher<ASTNode> matcher = new PositionNodeMatcher(node);
     final MatchCalculator<ASTNode> calc = new NodeMatchCalculator(matcher);
     final ASTNode astNode = calc.getNode(unit);

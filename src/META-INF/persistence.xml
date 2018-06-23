@@ -6,7 +6,7 @@
         transaction-type="RESOURCE_LOCAL">
         <class>br.ufcg.spg.edit.Edit</class>
         <class>br.ufcg.spg.cluster.Cluster</class>
-        <class>br.ufcg.spg.refaster.Transformation</class>
+        <class>br.ufcg.spg.transformation.Transformation</class>
         <class>br.ufcg.spg.dependence.Dependence</class>
         <class>br.ufcg.spg.imports.Import</class>
         <properties>
