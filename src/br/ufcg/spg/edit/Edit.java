@@ -35,8 +35,8 @@ public class Edit {
   @Temporal(TemporalType.DATE)
   private Date date;
   private String path;
-  @Column(columnDefinition = "TEXT")
-  private String pathRoot;
+  //@Column(columnDefinition = "TEXT")
+  //private String pathRoot;
   @Column(columnDefinition = "TEXT")
   private String dcap3;
   @Column(columnDefinition = "TEXT")
@@ -54,8 +54,8 @@ public class Edit {
   @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private Edit dst;
   
-  @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-  private Edit upper;
+  //@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  //private Edit upper;
   
   /**
    * List of nodes in this cluster.
@@ -87,7 +87,7 @@ public class Edit {
     this.index = index;
     this.project = project;
     this.path = path;
-    this.pathRoot = pathRoot;
+    //this.pathRoot = pathRoot;
     this.context = context;
     this.dst = dst;
     this.template = template;
@@ -150,13 +150,13 @@ public class Edit {
     this.path = path;
   }
   
-  public String getPathRoot() {
+  /*public String getPathRoot() {
     return pathRoot;
   }
 
   public void setPathRoot(String pathRoot) {
     this.pathRoot = pathRoot;
-  }
+  }*/
 
   public String getDcap3() {
     return dcap3;
@@ -251,11 +251,12 @@ public class Edit {
   }
 
   public Edit getUpper() {
-    return upper;
+    //return upper;
+    return null;
   }
 
   public void setUpper(Edit upper) {
-    this.upper = upper;
+    //this.upper = upper;
   }
 
   @Override

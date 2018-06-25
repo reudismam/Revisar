@@ -120,23 +120,23 @@ public class ClusterDao extends GenericDao<Cluster, String> {
    * Gets source code edits.
    * @return source code edits.
    */
-  public List<Cluster> getClusterMoreProjects() {
-    final String query = "select t.label from "
-                          + "(select c.label, count(distinct(e.project)) as s "
+  public List<Cluster> getClusterMoreProjects(int numberProjects) {
+    final String query = "select t.id from "
+                          + "(select c.id, count(distinct(e.project)) as s "
                           + "from cluster c, cluster_edit ce, edit e "
                           + "where c.id = ce.cluster_id and "
                           + "ce.nodes_id = e.id and "
                           + "c.dst_id is not null and "
                           + "e.dst_id is not null and "
                           + "e.context is not null "
-                          + "group by c.label) as t "
-                          + "where s >= 2 "
+                          + "group by c.id) as t "
+                          + "where s >= " + numberProjects + " "
                           + "order by s desc";
     final Query q = em.createNativeQuery(query);
-    final List<String> list = q.getResultList();
+    final List<Long> list = q.getResultList();
     final List<Cluster> clist = new ArrayList<Cluster>();
     for (int i = 0; i < list.size(); i++) {
-      final Cluster c = this.getClusters(list.get(i)).get(0);
+      final Cluster c = this.getClusters(list.get(i) + "").get(0);
       clist.add(c);
     }
     return clist;

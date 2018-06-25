@@ -117,7 +117,7 @@ public final class ClusterUnifier {
   /**
    * Groups edits by d-cap.
    */
-  private Map<String, List<Edit>> groupEditsByDCap(final List<Edit> srcList, 
+  public Map<String, List<Edit>> groupEditsByDCap(final List<Edit> srcList, 
       final TechniqueConfig config) {
     final Map<String, List<Edit>> groups = new Hashtable<>();
     for (Edit edit : srcList) {

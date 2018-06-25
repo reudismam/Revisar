@@ -5,6 +5,8 @@ import br.ufcg.spg.config.TechniqueConfig;
 import br.ufcg.spg.database.ClusterDao;
 import br.ufcg.spg.database.TransformationDao;
 import br.ufcg.spg.edit.Edit;
+import br.ufcg.spg.ml.clustering.MLClustering;
+import br.ufcg.spg.ml.editoperation.Script;
 import br.ufcg.spg.refaster.RefasterTranslator;
 import br.ufcg.spg.validator.ClusterValidator;
 import br.ufcg.spg.validator.RenameChecker;
@@ -14,9 +16,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.commons.io.FileUtils;
 
 public class TransformationUtils {
+  private static List<Script> scripts = new ArrayList<>();
+  private static List<Script> renameScripts = new ArrayList<>();
   /**
    * Computes the matches for all clusters.
    */
@@ -52,7 +57,69 @@ public class TransformationUtils {
   }
   
   /**
-   * Computes the matching between before and after variables.
+   * Computes the template for some cluster.
+   * @param clusterId label of the cluster
+   */
+  public static void transformationsLargestClusters() {
+    final List<Cluster> clusters = getLargestClusters();
+    transformations(clusters);
+  }
+  
+  /**
+   * Computes the template for some cluster.
+   * @param clusterId label of the cluster
+   */
+  public static void transformationsMoreProjects() {
+    final List<Cluster> clusters = getClusterMoreProjects();
+    transformations(clusters);
+    List<ArrayList<Script>> clusteredScripts =  MLClustering.cluster(scripts);
+    int countCluster = 0;
+    List<Script> clusteredScriptsList = new ArrayList<>();
+    for (ArrayList<Script> list : clusteredScripts) {
+      clusteredScriptsList.addAll(list);
+      saveCluster(++countCluster, list);
+    }
+    saveCluster(++countCluster, renameScripts);
+    for (Script sc : scripts) {
+      if (!clusteredScriptsList.contains(sc)) {
+        String content = "EDITS\n";
+        content += sc.getList() + "\n";
+        content += "SRC CLUSTER\n";
+        content += sc.getCluster() + "\n";
+        content += "DST CLUSTER\n";
+        content += sc.getCluster().getDst() + "\n";
+        String path = "../Projects/cluster/clusters/" + ++ countCluster + ".txt";
+        final File clusterFile = new File(path);
+        try {
+          FileUtils.writeStringToFile(clusterFile, content);
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
+    }
+  }
+
+  private static void saveCluster(int countCluster, List<Script> list) {
+    String content = "NUMBER OF NODES IN THIS CLUSTER: " + list.size() + "\n\n";
+    for (Script sc : list) {
+      content += "EDITS\n";
+      content += sc.getList() + "\n";
+      content += "SRC CLUSTER\n";
+      content += sc.getCluster() + "\n";
+      content += "DST CLUSTER\n";
+      content += sc.getCluster().getDst() + "\n";
+    }
+    String path = "../Projects/cluster/clusters/" + countCluster + ".txt";
+    final File clusterFile = new File(path);
+    try {
+      FileUtils.writeStringToFile(clusterFile, content);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+  
+  /**
+   * Computes transformations for a set of clusters.
    */
   public static void transformations(final List<Cluster> srcClusters) {
     try {
@@ -116,7 +183,30 @@ public class TransformationUtils {
     } catch (final Exception e) {
       e.printStackTrace();
     }
+    
+    boolean isSameBeforeAfter = isSameBeforeAfter(clusteri);
     String path;
+    if (isSameBeforeAfter) {
+      path = "../Projects/cluster/same/" + clusteri.getId() + ".txt";
+      return;
+    }
+    
+    Script script = MLClustering.getCluster(clusteri);    
+    String beforePattern = "VARIABLE_DECLARATION_FRAGMENT\\(SIMPLE_NAME\\(hash_[0-9]+\\)\\)";
+    String afterPattern = "VARIABLE_DECLARATION_FRAGMENT\\(SIMPLE_NAME\\([a-zA-Z0-9_]+\\)\\)";
+    String returnBp = "RETURN_STATEMENT\\(SIMPLE_NAME\\(hash_[0-9]\\)\\)";
+    String returnAp = "RETURN_STATEMENT\\(SIMPLE_NAME\\([a-zA-Z0-9_]+\\)\\)";
+    final String srcOutput =  clusteri.getAu();
+    final String dstOutput = clusterj.getAu();
+    if ((srcOutput.matches(beforePattern) && dstOutput.matches(afterPattern))
+        || srcOutput.matches(returnBp) && dstOutput.matches(returnAp)) {
+      renameScripts.add(script);
+      return;
+    }
+      
+    if (!script.getList().isEmpty()) {
+      scripts.add(script);
+    }
     if (isRename) {
       path = "../Projects/cluster/rename/" + clusteri.getId() + ".txt";
     } else {
@@ -130,6 +220,16 @@ public class TransformationUtils {
     final ClusterDao dao = ClusterDao.getInstance();
     final List<Cluster> srcClusters = dao.getSrcClusters();
     return srcClusters;
+  }
+  
+  public static boolean isSameBeforeAfter(final Cluster clusteri) {
+    for (Edit c : clusteri.getNodes()) {
+      Edit dstEdit = c.getDst();
+      if (!c.getText().equals(dstEdit.getText())) {
+        return false;
+      }
+    }
+    return true;
   }
   
   /**
@@ -146,7 +246,7 @@ public class TransformationUtils {
    */
   public static List<Cluster> getClusterMoreProjects() {
     final ClusterDao dao = ClusterDao.getInstance();
-    final List<Cluster> srcClusters = dao.getClusterMoreProjects();
+    final List<Cluster> srcClusters = dao.getClusterMoreProjects(3);
     return srcClusters;
   }
 }
