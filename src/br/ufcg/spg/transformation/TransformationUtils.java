@@ -5,7 +5,7 @@ import br.ufcg.spg.config.TechniqueConfig;
 import br.ufcg.spg.database.ClusterDao;
 import br.ufcg.spg.database.TransformationDao;
 import br.ufcg.spg.edit.Edit;
-import br.ufcg.spg.ml.clustering.MLClustering;
+import br.ufcg.spg.ml.clustering.DbScanClustering;
 import br.ufcg.spg.ml.editoperation.Script;
 import br.ufcg.spg.refaster.RefasterTranslator;
 import br.ufcg.spg.validator.ClusterValidator;
@@ -22,6 +22,8 @@ import org.apache.commons.io.FileUtils;
 public class TransformationUtils {
   private static List<Script> scripts = new ArrayList<>();
   private static List<Script> renameScripts = new ArrayList<>();
+  
+  private static int clusterIndex = 1;
   /**
    * Computes the matches for all clusters.
    */
@@ -72,7 +74,7 @@ public class TransformationUtils {
   public static void transformationsMoreProjects() {
     final List<Cluster> clusters = getClusterMoreProjects();
     transformations(clusters);
-    List<ArrayList<Script>> clusteredScripts =  MLClustering.cluster(scripts);
+    List<ArrayList<Script>> clusteredScripts =  DbScanClustering.cluster(scripts);
     int countCluster = 0;
     List<Script> clusteredScriptsList = new ArrayList<>();
     for (ArrayList<Script> list : clusteredScripts) {
@@ -191,7 +193,7 @@ public class TransformationUtils {
       return;
     }
     
-    Script script = MLClustering.getCluster(clusteri);    
+    Script script = DbScanClustering.getCluster(clusteri);    
     String beforePattern = "VARIABLE_DECLARATION_FRAGMENT\\(SIMPLE_NAME\\(hash_[0-9]+\\)\\)";
     String afterPattern = "VARIABLE_DECLARATION_FRAGMENT\\(SIMPLE_NAME\\([a-zA-Z0-9_]+\\)\\)";
     String returnBp = "RETURN_STATEMENT\\(SIMPLE_NAME\\(hash_[0-9]\\)\\)";
@@ -208,9 +210,9 @@ public class TransformationUtils {
       scripts.add(script);
     }
     if (isRename) {
-      path = "../Projects/cluster/rename/" + clusteri.getId() + ".txt";
+      path = "../Projects/cluster/rename/" + clusterIndex++ + ".txt";
     } else {
-      path = "../Projects/cluster/" + trans.isValid() + "/" + clusteri.getId() + ".txt";
+      path = "../Projects/cluster/" + trans.isValid() + "/" + clusterIndex++ + ".txt";
     }
     final File clusterFile = new File(path);
     FileUtils.writeStringToFile(clusterFile, content);

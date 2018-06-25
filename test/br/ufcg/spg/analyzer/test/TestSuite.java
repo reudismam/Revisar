@@ -106,22 +106,35 @@ public class TestSuite {
   }
   
   @Test
-  public void exp_cluster_more_projects() 
-      throws IOException, JustificationException, ControlledException, CoreException {
+  public void exp_cluster_more_projects() throws IOException {
     configMainArguments();
-    ClusterDao cluster = ClusterDao.getInstance();
-    List<Cluster> clusters = cluster.getClusterMoreProjects(3);
+    List<Cluster> clusters = TransformationUtils.getClusterMoreProjects();
     List<Edit> allEdits = new ArrayList<>();
+    int i = clusters.size();
+    System.out.println(i);
     for (Cluster c : clusters) {
       allEdits.addAll(c.getNodes());
     }
-    /*Map<String, List<Edit>> dcaps = ClusterUnifier.getInstance().groupEditsByDCap(allEdits, TechniqueConfig.getInstance());
+    Map<String, List<Edit>> dcaps = ClusterUnifier.getInstance().groupEditsByDCap(allEdits, TechniqueConfig.getInstance());
     List<Cluster> clustersDcap = new ArrayList<>();
     for (Entry<String, List<Edit>> entry : dcaps.entrySet()) {
       List<Cluster> clusterForDcap = ClusterUnifier.getInstance().clusterEdits(entry.getValue());
       clustersDcap.addAll(clusterForDcap);
     }
-    TransformationUtils.transformations(clustersDcap);*/
+    TransformationUtils.transformations(clustersDcap);
+    System.out.println("END.");
+  }
+  
+  @Test
+  public void exp_cluster_more_projects_no_dcap() throws IOException {
+    configMainArguments();
+    List<Cluster> clusters = TransformationUtils.getClusterMoreProjects();
+    List<Edit> allEdits = new ArrayList<>();
+    int i = clusters.size();
+    System.out.println(i);
+    for (Cluster c : clusters) {
+      allEdits.addAll(c.getNodes());
+    }
     List<Cluster> newClusters =  ClusterUnifier.getInstance().clusterEdits(allEdits);
     TransformationUtils.transformations(newClusters);
     System.out.println("END.");

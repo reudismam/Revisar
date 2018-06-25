@@ -30,7 +30,7 @@ public final class TechniqueConfig {
   /**
    * Specifies d-cap to analyze.
    */
-  private int dcap = 2;
+  private int dcap = 1;
 
   /**
    * Max number of edits to extract from database.

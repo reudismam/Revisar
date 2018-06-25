@@ -23,6 +23,7 @@ public class VariableDeclarationFragmentBodyConfig implements IConfigBody {
     this.ast = ast;
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public MethodDeclaration config() {
     VariableDeclarationFragment varFrag = (VariableDeclarationFragment) template;

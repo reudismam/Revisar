@@ -19,7 +19,6 @@ import br.ufcg.spg.util.PrintUtils;
 import br.ufcg.spg.validator.ClusterValidator;
 import br.ufcg.spg.validator.node.NodeValidator;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;

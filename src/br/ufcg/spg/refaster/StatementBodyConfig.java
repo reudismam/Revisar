@@ -21,6 +21,7 @@ public class StatementBodyConfig implements IConfigBody {
     this.ast = ast;
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public MethodDeclaration config() {
     Statement statement = (Statement) template;

@@ -13,9 +13,6 @@ import br.ufcg.spg.node.NodesExtractor;
 import br.ufcg.spg.tree.RevisarTree;
 import br.ufcg.spg.tree.RevisarTreeParser;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Hashtable;

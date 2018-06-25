@@ -44,7 +44,7 @@ public class TypeUtils {
     if (astNode instanceof TypeParameter) {
       final TypeParameter tparam = (TypeParameter) astNode;
       final WildcardType type = ast.newWildcardType();
-      final List boundList = tparam.typeBounds();
+      final List<?> boundList = tparam.typeBounds();
       Type bound = null;
       if (boundList.size() > 0) {
         bound = (Type) boundList.get(0);
@@ -89,6 +89,7 @@ public class TypeUtils {
    *          type binding
    * @return returns the type for binding
    */
+  @SuppressWarnings("unchecked")
   public static Type typeFromBinding(final AST ast, final ITypeBinding typeBinding) {
     if (ast == null) {
       throw new NullPointerException("ast is null");

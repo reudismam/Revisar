@@ -24,6 +24,7 @@ public class ExpressionBodyConfig implements IConfigBody {
     this.ast = ast;
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public MethodDeclaration config() {
     expression = (Expression) ASTNode.copySubtree(ast, expression);

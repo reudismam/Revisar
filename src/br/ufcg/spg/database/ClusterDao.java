@@ -107,6 +107,7 @@ public class ClusterDao extends GenericDao<Cluster, String> {
                           + "where s >= 15 "
                           + "order by s desc";
     final Query q = em.createNativeQuery(query);
+    @SuppressWarnings("unchecked")
     final List<String> list = q.getResultList();
     final List<Cluster> clist = new ArrayList<Cluster>();
     for (int i = 0; i < list.size(); i++) {
@@ -133,6 +134,7 @@ public class ClusterDao extends GenericDao<Cluster, String> {
                           + "where s >= " + numberProjects + " "
                           + "order by s desc";
     final Query q = em.createNativeQuery(query);
+    @SuppressWarnings("unchecked")
     final List<Long> list = q.getResultList();
     final List<Cluster> clist = new ArrayList<Cluster>();
     for (int i = 0; i < list.size(); i++) {
@@ -158,6 +160,7 @@ public class ClusterDao extends GenericDao<Cluster, String> {
                           + "group by c.label, e.commit, e.id "
                           + "ORDER BY e.id) as t ";
     final Query q = em.createNativeQuery(query);
+    @SuppressWarnings("unchecked")
     final List<String> list = q.getResultList();
     final List<String> newList = new ArrayList<>();
     final HashSet<String> set = new HashSet<>();

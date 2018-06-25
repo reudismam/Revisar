@@ -51,6 +51,7 @@ public class ParameterTranslator {
    * @param method method 
    * @return method with parameters added.
    */
+  @SuppressWarnings("unchecked")
   private static MethodDeclaration addParameter(
       final List<Type> types, final CompilationUnit cuUnit, MethodDeclaration method) {
     final AST ast = cuUnit.getAST();
