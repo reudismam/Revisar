@@ -1,5 +1,7 @@
 package br.ufcg.spg.config;
 
+import br.ufcg.spg.antiunification.algorithm.HOAU;
+import br.ufcg.spg.antiunification.algorithm.IAntiUnifyAlgoritm;
 import br.ufcg.spg.edit.Edit;
 
 /**
@@ -44,6 +46,7 @@ public final class TechniqueConfig {
   
   private boolean fullTemplateRules = false;
   
+  private IAntiUnifyAlgoritm auAlgorithm = new HOAU();
 
   private TechniqueConfig() {
   }
@@ -129,5 +132,13 @@ public final class TechniqueConfig {
 
   public void setFullTemplateRules(boolean fullTemplateRules) {
     this.fullTemplateRules = fullTemplateRules;
+  }
+
+  public IAntiUnifyAlgoritm getAuAlgorithm() {
+    return auAlgorithm;
+  }
+
+  public void setAuAlgorithm(IAntiUnifyAlgoritm auAlgorithm) {
+    this.auAlgorithm = auAlgorithm;
   }
 }

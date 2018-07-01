@@ -1,16 +1,8 @@
 package br.ufcg.spg.antiunification;
 
-import at.jku.risc.stout.urauc.algo.AlignFnc;
-import at.jku.risc.stout.urauc.algo.AlignFncLAA;
-import at.jku.risc.stout.urauc.algo.AntiUnifyProblem;
-import at.jku.risc.stout.urauc.algo.AntiUnifyProblem.VariableWithHedges;
-import at.jku.risc.stout.urauc.algo.DebugLevel;
-import at.jku.risc.stout.urauc.algo.JustificationException;
-import at.jku.risc.stout.urauc.data.EquationSystem;
-import at.jku.risc.stout.urauc.data.Hedge;
-import at.jku.risc.stout.urauc.data.InputParser;
-import at.jku.risc.stout.urauc.util.ControlledException;
-import br.ufcg.spg.cluster.ClusterUnifier;
+import br.ufcg.spg.antiunification.substitution.HoleWithSubstutings;
+import br.ufcg.spg.config.TechniqueConfig;
+import br.ufcg.spg.edit.Edit;
 import br.ufcg.spg.equation.EquationUtils;
 import br.ufcg.spg.matcher.IMatcher;
 import br.ufcg.spg.matcher.KindNodeMatcher;
@@ -18,13 +10,13 @@ import br.ufcg.spg.matcher.LargerThanMatcher;
 import br.ufcg.spg.node.util.ASTNodeUtils;
 
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -32,9 +24,13 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.jdt.core.dom.ASTNode;
 
 public final class AntiUnifierUtils {
+  
+  static final Logger logger = LogManager.getLogger(AntiUnifierUtils.class.getName());
   
   private AntiUnifierUtils(){
   }
@@ -50,8 +46,8 @@ public final class AntiUnifierUtils {
    */
   private static AntiUnifier maxContext(final ASTNode first, final ASTNode second, 
       final ASTNode firstUpper, final ASTNode secondUpper, final boolean unify)
-      throws JustificationException, IOException, ControlledException {
-    List<ASTNode> trees = Arrays.asList(first, second); 
+      throws IOException {
+    final List<ASTNode> trees = Arrays.asList(first, second); 
     if (!allSameKind(trees)) {
       return createAntiUnification(first, second, null, unify);
     }
@@ -94,8 +90,7 @@ public final class AntiUnifierUtils {
   }
 
   private static AntiUnifier createAntiUnification(final ASTNode first, final ASTNode second, 
-      String label, final boolean unify)
-      throws IOException, JustificationException, ControlledException {
+      String label, final boolean unify) {
     if (unify) {
       return antiUnify(first, second);
     }
@@ -116,13 +111,13 @@ public final class AntiUnifierUtils {
    */
   public static AntiUnifier template(final ASTNode first, final ASTNode second, 
       final ASTNode fixedFirst, final ASTNode fixedSecond)
-      throws JustificationException, IOException, ControlledException {
+      throws IOException {
     // compute template
     final AntiUnifier template = AntiUnifierUtils.maxContext(first, second, fixedFirst, 
         fixedSecond, true);
     final AntiUnifier root = AntiUnifierUtils.getRoot(template);
     if (root == null) {
-      System.out.println("A transformation could not be learned!");
+      logger.trace("A transformation could not be learned!");
     }
     return root;
   }
@@ -131,7 +126,7 @@ public final class AntiUnifierUtils {
    * Gets left siblings of a list of nodes.
    */
   private static List<List<ASTNode>> getLeftSiblings(final List<ASTNode> trees) {
-    final List<List<ASTNode>> left = new ArrayList<List<ASTNode>>();
+    final List<List<ASTNode>> left = new ArrayList<>();
     for (final ASTNode tree : trees) {
       final ASTNode parent = tree.getParent();
       final List<Object> children = ASTNodeUtils.getChildren(parent);
@@ -149,7 +144,7 @@ public final class AntiUnifierUtils {
    * Gets right siblings of a list of nodes.
    */
   private static List<List<ASTNode>> getRightSiblings(final List<ASTNode> trees) {
-    final List<List<ASTNode>> right = new ArrayList<List<ASTNode>>();
+    final List<List<ASTNode>> right = new ArrayList<>();
     for (final ASTNode tree : trees) {
       final ASTNode parent = tree.getParent();
       final List<Object> children = ASTNodeUtils.getChildren(parent);
@@ -183,7 +178,7 @@ public final class AntiUnifierUtils {
   }
 
   /**
-   * Verifies if some tree is method declaration
+   * Verifies if some tree is method declaration.
    * @param trees list of trees to be analyzed.
    * @return true if some tree is method declaration
    */
@@ -200,7 +195,7 @@ public final class AntiUnifierUtils {
   }
 
   /**
-   * Verifies true if any tree contains fixed context
+   * Verifies true if any tree contains fixed context.
    * @param trees trees
    * @param upperNodes upper trees.
    * @return true if any tree contains fixed context
@@ -219,15 +214,13 @@ public final class AntiUnifierUtils {
     }
     return false;
   }
-
-  //TODO resolve bug here.
+  
   /**
    * Anti-unify trees.
    * @param trees trees
    * @return anti-unification
    */
-  public static AntiUnifier antiUnify(final List<List<ASTNode>> trees)
-      throws IOException, JustificationException, ControlledException {
+  public static AntiUnifier antiUnify(final List<List<ASTNode>> trees) {
     if (trees.isEmpty()) {
       return new AntiUnifier();
     }
@@ -244,8 +237,7 @@ public final class AntiUnifierUtils {
     }
     final String eq1 = EquationUtils.convertToEquation(trees.get(0));
     final String eq2 = EquationUtils.convertToEquation(trees.get(1));
-    final AntiUnifier au = antiUnify(eq1, eq2);
-    return au;
+    return antiUnify(eq1, eq2);
   }
 
   /**
@@ -257,17 +249,14 @@ public final class AntiUnifierUtils {
    *          node
    * @return anti-unification for nodes
    */
-  public static AntiUnifier antiUnify(final ASTNode first, final ASTNode second)
-      throws IOException, JustificationException, ControlledException {
+  public static AntiUnifier antiUnify(final ASTNode first, final ASTNode second) {
     final String eq1 = EquationUtils.convertToAuEq(first);
     final String eq2 = EquationUtils.convertToAuEq(second);
-    AntiUnifier au = null;
     try {
-      au = antiUnify(eq1, eq2);
+      return antiUnify(eq1, eq2);
     } catch (final Exception e) {
       throw new RuntimeException("Error while computing equations");
     }
-    return au;
   }
 
   /**
@@ -279,8 +268,7 @@ public final class AntiUnifierUtils {
    *          node
    * @return anti-unification for nodes
    */
-  public static AntiUnifier antiUnify(final String eq1, final String eq2) 
-      throws JustificationException, ControlledException, IOException {
+  public static AntiUnifier antiUnify(final String eq1, final String eq2) {
     if (eq1.length() > 1000 || eq2.length() > 1000) {
       return new AntiUnifier("LARGER()");
     }
@@ -288,8 +276,7 @@ public final class AntiUnifierUtils {
     if (unification == null) {
       return new AntiUnifier("LARGER()");
     }
-    final AntiUnifier au = new AntiUnifier(unification);
-    return au;
+    return new AntiUnifier(unification);
   }
 
   private static AntiUnificationData unification = null;
@@ -305,13 +292,9 @@ public final class AntiUnifierUtils {
       @Override
       public void run() {
         try {
-          unification = unify(eq1, eq2);
-        } catch (final JustificationException e) {
-          e.printStackTrace();
-        } catch (final ControlledException e) {
-          e.printStackTrace();
-        } catch (final IOException e) {
-          e.printStackTrace();
+          unification = TechniqueConfig.getInstance().getAuAlgorithm().unify(eq1, eq2);
+        } catch (final Exception e) {
+          logger.error(e.getStackTrace());
         }
       }
     });
@@ -319,76 +302,23 @@ public final class AntiUnifierUtils {
     try {
       future.get(2, TimeUnit.SECONDS);
     } catch (final InterruptedException e) {
-      System.out.println("job was interrupted");
+      logger.trace("job was interrupted");
       unification = null;
     } catch (final ExecutionException e) {
-      System.out.println("caught exception: " + e.getCause());
+      logger.trace("caught exception: " + e.getCause());
       unification = null;
     } catch (final TimeoutException e) {
       future.cancel(true);
       unification = null;
-      System.out.println("timeout");
+      logger.trace("timeout");
     }
     try {
       if (!executor.awaitTermination(2, TimeUnit.SECONDS)) {
         executor.shutdownNow();
       }
     } catch (final InterruptedException e) {
-      e.printStackTrace();
+      logger.error(e.getStackTrace());
     }
-  }
-
-  /**
-   * computes the anti-unification of two equations.
-   */
-  private static AntiUnificationData unify(final String eq1, final String eq2) 
-      throws JustificationException, ControlledException, IOException {
-    final Reader in1 = new StringReader(eq1);
-    final Reader in2 = new StringReader(eq2);
-    final boolean iterateAll = true;
-    final AlignFnc alFnc = new AlignFncLAA();
-    final EquationSystem<AntiUnifyProblem> eqSys = new EquationSystem<AntiUnifyProblem>() {
-      @Override
-      public AntiUnifyProblem newEquation() {
-        return new AntiUnifyProblem();
-      }
-    };
-    new InputParser<AntiUnifyProblem>(eqSys).parseHedgeEquation(in1, in2);
-    final AntiUnifierHoles antUnifier = new AntiUnifierHoles(alFnc, eqSys, DebugLevel.SILENT);
-    antUnifier.antiUnify(iterateAll, false, System.out);
-    return antUnifier.getUnification();
-  }
-  
-  /**
-   * Gets the hash_id pair and value.
-   * @return mapping
-   */
-  public static Map<String, String> getUnifierMatching(final String cluterTemplate, 
-      final String template) {
-    final AntiUnifier unifier = ClusterUnifier.antiUnify(cluterTemplate, template);
-    final List<VariableWithHedges> dstVariables = unifier.getValue().getVariables();
-    final Map<String, String> unifierMatching = new Hashtable<>();
-    for (final VariableWithHedges variable : dstVariables) {
-      final String strRight = removeEnclosingParenthesis(variable.getRight());
-      final String strLeft = removeEnclosingParenthesis(variable.getLeft());
-      unifierMatching.put(strLeft, strRight);
-    }
-    return unifierMatching;
-  }
-  
-  /**
-   * Remove parenthesis.
-   * @param variable hedge variable
-   * @return string without parenthesis
-   */
-  private static String removeEnclosingParenthesis(final Hedge variable) {
-    final String str = variable.toString().trim();
-    final boolean startWithParen = str.startsWith("(");
-    final boolean endWithParen = str.endsWith(")");
-    if (!str.isEmpty() && startWithParen && endWithParen) {
-      return str.substring(1, str.length() - 1);
-    }
-    return str;
   }
 
   /**
@@ -406,5 +336,69 @@ public final class AntiUnifierUtils {
       root = root.getParent();
     }
     return previous;
+  }
+
+  /**
+   * Computes anti-unification.
+   * 
+   * @param au
+   *          first anti-unification
+   * @param clusterAu
+   *          second anti-unification
+   * @return anti-unification
+   */
+  public static AntiUnifier computeUnification(final AntiUnifier au, final AntiUnifier clusterAu) {
+    final String eqCluster = EquationUtils.convertToEquation(clusterAu);
+    final String eqOther = EquationUtils.convertToEquation(au);
+    return antiUnify(eqCluster, eqOther);
+  }
+  
+  /**
+   * Gets unifier matching.
+   **/
+  public static Map<String, String> getUnifierMatching(final String cluterTemplate,
+      final String template) {
+    final AntiUnifier unifier = AntiUnifierUtils.antiUnify(cluterTemplate, template);
+    final List<HoleWithSubstutings> dstVariables = unifier.getValue().getVariables();
+    final Map<String, String> unifierMatching = new HashMap<>();
+    for (final HoleWithSubstutings variable : dstVariables) {
+      final String strRight = AntiUnifierUtils.removeEnclosingParenthesis(
+          variable.getRightSubstuting());
+      final String strLeft = AntiUnifierUtils.removeEnclosingParenthesis(
+          variable.getLeftSubstuting());
+      unifierMatching.put(strLeft, strRight);
+    }
+    return unifierMatching;
+  }
+
+  /**
+   * Gets substutings.
+   **/
+  public static Set<String> getSubstitutings(final Edit edit, final String au) {
+    final Set<String> holes = new HashSet<>();
+    final AntiUnifier unifier = AntiUnifierUtils.antiUnify(au, edit.getPlainTemplate());
+    final List<HoleWithSubstutings> variables = unifier.getValue().getVariables();
+    for (final HoleWithSubstutings variable : variables) {
+      final String str = AntiUnifierUtils.removeEnclosingParenthesis(variable.getRightSubstuting());
+      holes.add(str);
+    }
+    return holes;
+  }
+  
+  /**
+   * Remove parenthesis.
+   * 
+   * @param variable
+   *          hedge variable
+   * @return string without parenthesis
+   */
+  public static String removeEnclosingParenthesis(final String variable) {
+    final String str = variable.trim();
+    final boolean startWithParen = str.startsWith("(");
+    final boolean endWithParen = str.endsWith(")");
+    if (!str.isEmpty() && startWithParen && endWithParen) {
+      return str.substring(1, str.length() - 1);
+    }
+    return str;
   }
 }

@@ -28,6 +28,8 @@ import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.NoFilepatternException;
@@ -38,6 +40,8 @@ import org.eclipse.jgit.errors.MissingObjectException;
 import org.junit.Test;
 
 public class TestSuite {
+  
+  static final Logger logger = LogManager.getLogger(TestSuite.class.getName());
   
   @Test
   public void exp() throws IOException, JustificationException, ControlledException, CoreException {
@@ -62,7 +66,7 @@ public class TestSuite {
     configMainArguments();
     Technique.clusterEdits();
     Technique.translateEdits();
-    System.out.println("END.");
+    logger.trace("END.");
   }
   
   @Test
@@ -79,7 +83,7 @@ public class TestSuite {
       throws IOException, JustificationException, ControlledException, CoreException {
     configMainArguments();
     Technique.translateEdits();
-    System.out.println("END.");
+    logger.trace("END.");
   }
   
   @Test
@@ -87,14 +91,22 @@ public class TestSuite {
       throws IOException, JustificationException, ControlledException, CoreException {
     configMainArguments();
     TransformationUtils.transformationsMoreProjects();
-    System.out.println("END.");
+    logger.trace("END.");
+  }
+  
+  @Test
+  public void exp_TranslateMoreProjects_Why_Distinct_Clusters() 
+      throws IOException, JustificationException, ControlledException, CoreException {
+    configMainArguments();
+    TransformationUtils.transformationsMoreProjects_Why_Distinct_Clusters();
+    logger.trace("END.");
   }
   
   @Test
   public void exp_translate_id() 
       throws IOException, JustificationException, ControlledException, CoreException {
     Technique.translateEdits("1365589");
-    System.out.println("END.");
+    logger.trace("END.");
   }
   
   @Test
@@ -102,27 +114,28 @@ public class TestSuite {
       throws IOException, JustificationException, ControlledException, CoreException {
     configMainArguments();
     ClusterUtils.buildClusters("1290970");
-    System.out.println("END.");
+    logger.trace("END.");
   }
   
   @Test
-  public void exp_cluster_more_projects() throws IOException {
+  public void exp_cluster_more_projects2() throws IOException {
     configMainArguments();
     List<Cluster> clusters = TransformationUtils.getClusterMoreProjects();
     List<Edit> allEdits = new ArrayList<>();
     int i = clusters.size();
-    System.out.println(i);
+    logger.trace(i);
     for (Cluster c : clusters) {
       allEdits.addAll(c.getNodes());
     }
-    Map<String, List<Edit>> dcaps = ClusterUnifier.getInstance().groupEditsByDCap(allEdits, TechniqueConfig.getInstance());
+    Map<String, List<Edit>> dcaps = ClusterUnifier.getInstance().groupEditsByDCap(
+        allEdits, TechniqueConfig.getInstance());
     List<Cluster> clustersDcap = new ArrayList<>();
     for (Entry<String, List<Edit>> entry : dcaps.entrySet()) {
       List<Cluster> clusterForDcap = ClusterUnifier.getInstance().clusterEdits(entry.getValue());
       clustersDcap.addAll(clusterForDcap);
     }
     TransformationUtils.transformations(clustersDcap);
-    System.out.println("END.");
+    logger.trace("END.");
   }
   
   @Test
@@ -131,13 +144,13 @@ public class TestSuite {
     List<Cluster> clusters = TransformationUtils.getClusterMoreProjects();
     List<Edit> allEdits = new ArrayList<>();
     int i = clusters.size();
-    System.out.println(i);
+    logger.trace(i);
     for (Cluster c : clusters) {
       allEdits.addAll(c.getNodes());
     }
     List<Cluster> newClusters =  ClusterUnifier.getInstance().clusterEdits(allEdits);
     TransformationUtils.transformations(newClusters);
-    System.out.println("END.");
+    logger.trace("END.");
   }
   
   @Test
@@ -162,7 +175,7 @@ public class TestSuite {
       cdao.saveAll(clts);     
       TransformationUtils.transformations(clts);
     }
-    System.out.println("END.");
+    logger.trace("END.");
   }
   
   @Test
@@ -177,7 +190,8 @@ public class TestSuite {
     final double size = commits.size();
     for (int i = index + 1; i < commits.size(); i++) {
       final String commit = commits.get(i);
-      System.out.println(i / size + "% calculate : current commit: " + commit);
+      logger.trace((i * 1.0 / size) * 100 + "% calculate : current commit: " + commit);
+      System.out.println();
       try {
         DependenceUtils.computeGraph(commit);
       } catch (final Exception e) {
@@ -210,15 +224,16 @@ public class TestSuite {
     TimeLogger.getInstance().setTimeExtract(estimatedTime);
     Technique.clusterEdits();
     Technique.translateEdits();
-    System.out.println("DEBUG: TOTAL COMMITS");
+    
+    logger.trace("DEBUG: TOTAL COMMITS");
     final EditStorage storage = EditStorage.getInstance();
     for (final Tuple<String, String> project: projects) {
-      System.out.println("=====================");
-      System.out.println(project.getItem1());
-      System.out.println("Total: " + storage.getCommitProjects().get(project.getItem1()).size());
-      System.out.println("=====================");     
+      logger.trace("=====================");
+      logger.trace(project.getItem1());
+      logger.trace("TOTAL: " + storage.getCommitProjects().get(project.getItem1()).size());
+      logger.trace("=====================");   
     }
-    System.out.println("END.");
+    logger.trace("END.");
   }
 
   /**

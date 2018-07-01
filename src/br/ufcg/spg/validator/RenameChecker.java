@@ -1,9 +1,9 @@
 package br.ufcg.spg.validator;
 
-import at.jku.risc.stout.urauc.algo.AntiUnifyProblem.VariableWithHedges;
 import br.ufcg.spg.antiunification.AntiUnifier;
+import br.ufcg.spg.antiunification.AntiUnifierUtils;
+import br.ufcg.spg.antiunification.substitution.HoleWithSubstutings;
 import br.ufcg.spg.cluster.Cluster;
-import br.ufcg.spg.cluster.ClusterUnifier;
 import br.ufcg.spg.replacement.ReplacementUtils;
 import br.ufcg.spg.template.TemplateUtils;
 import br.ufcg.spg.validator.node.INodeChecker;
@@ -44,8 +44,8 @@ public class RenameChecker implements INodeChecker, ITemplateValidator {
       }
       final String srcEq = TemplateUtils.removeAll(srcAu);
       final String dstEq = TemplateUtils.removeAll(dstAu);
-      final AntiUnifier un = ClusterUnifier.antiUnify(dstEq, srcEq);
-      final List<VariableWithHedges> vs = un.getValue().getVariables();
+      final AntiUnifier un = AntiUnifierUtils.antiUnify(dstEq, srcEq);
+      final List<HoleWithSubstutings> vs = un.getValue().getVariables();
       if (vs.size() != 1) {
         return false;
       }

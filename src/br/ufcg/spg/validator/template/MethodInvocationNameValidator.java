@@ -9,6 +9,7 @@ import br.ufcg.spg.matcher.calculator.RevisarTreeMatchCalculator;
 import br.ufcg.spg.node.util.ASTNodeUtils;
 import br.ufcg.spg.tree.RevisarTree;
 import br.ufcg.spg.tree.RevisarTreeParser;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;

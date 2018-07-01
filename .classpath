@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
+	<classpathentry excluding="main/resources/" kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="src" path="src/main/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="lib/gumtree/annotations-2.0.1.jar"/>
@@ -95,7 +96,6 @@
 	<classpathentry kind="lib" path="lib/error_prone_refaster-2.1.0.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.jgit-4.8.0.201706111038-r-javadoc.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.jgit-4.8.0.201706111038-r.jar" sourcepath="C:/Users/SPG-04/.m2/repository/org/eclipse/jgit/org.eclipse.jgit/4.8.0.201706111038-r/org.eclipse.jgit-4.8.0.201706111038-r-sources.jar"/>
-	<classpathentry kind="lib" path="lib/urauc.jar"/>
 	<classpathentry kind="lib" path="lib/commons-math3-3.6.1/commons-math3-3.6.1-javadoc.jar"/>
 	<classpathentry kind="lib" path="lib/commons-math3-3.6.1/commons-math3-3.6.1-sources.jar"/>
 	<classpathentry kind="lib" path="lib/commons-math3-3.6.1/commons-math3-3.6.1-test-sources.jar"/>
@@ -116,5 +116,8 @@
 			<attribute name="owner.project.facets" value="jpt.jpa"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="lib/urauc.jar"/>
+	<classpathentry kind="lib" path="lib/urau.jar"/>
+	<classpathentry kind="lib" path="lib/hoau.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

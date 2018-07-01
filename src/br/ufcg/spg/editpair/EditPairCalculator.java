@@ -1,8 +1,5 @@
 package br.ufcg.spg.editpair;
 
-import at.jku.risc.stout.urauc.algo.JustificationException;
-import at.jku.risc.stout.urauc.util.ControlledException;
-
 import br.ufcg.spg.antiunification.AntiUnifierUtils;
 import br.ufcg.spg.antiunification.AntiUnifier;
 import br.ufcg.spg.bean.Tuple;
@@ -53,10 +50,13 @@ import org.apache.commons.io.FileUtils;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.api.errors.NoFilepatternException;
 import org.eclipse.jgit.lib.PersonIdent;
 
 public class EditPairCalculator {
+  
+  private EditPairCalculator() {
+  }
+  
   /**
    * Builds before and after list.
    * @param project project
@@ -65,8 +65,7 @@ public class EditPairCalculator {
    */
   public static List<Edit> computeEditPairs(final String project, List<String> files, 
       final String dstCommit) 
-      throws IOException, JustificationException, ControlledException, 
-      NoFilepatternException, GitAPIException {
+      throws IOException, GitAPIException {
     Run.initGenerators();
     // files to be analyzed
     final String projectFolderDst = "../Projects/" + project + "/";
@@ -78,8 +77,8 @@ public class EditPairCalculator {
       return new ArrayList<>();
     }
     final String projectFolderSrc = "../Projects/" + project + "_old/";
-    final List<String> srcFilePaths = new ArrayList<String>();
-    final List<String> dstFilePaths = new ArrayList<String>();
+    final List<String> srcFilePaths = new ArrayList<>();
+    final List<String> dstFilePaths = new ArrayList<>();
     for (final String fileName : files) {
       final String srcFilePath = buildFilePath(projectFolderSrc, fileName);
       final String dstFilePath = buildFilePath(projectFolderDst, fileName);  
@@ -90,9 +89,8 @@ public class EditPairCalculator {
     final String dstFileName = dstFilePaths.get(0);
     final ProjectInfo pi = ProjectAnalyzer.project(project, srcFileName, dstFileName);
     CommitUtils.checkoutIfDiffer(dstCommit, pi);
-    final List<Edit> srcEdits = EditPairCalculator.extractEditPairs(srcFilePaths, 
+    return EditPairCalculator.extractEditPairs(srcFilePaths, 
         dstFilePaths, pi, dstCommit, project);
-    return srcEdits;
   }
   
   public static String buildFilePath(final String folderPath, final String filePath) {
@@ -112,7 +110,7 @@ public class EditPairCalculator {
   public static List<Edit> extractEditPairs(final List<String> srcFilePaths, 
       final List<String> dstFilePaths, final ProjectInfo pi,
       final String cmt, final String pj) 
-          throws IOException, JustificationException, ControlledException {
+          throws IOException {
     final List<Edit> srcEdits = new ArrayList<>();
     for (int i = 0; i < srcFilePaths.size(); i++) {
       final String srcPath = srcFilePaths.get(i);
@@ -258,8 +256,7 @@ public class EditPairCalculator {
   private static Edit configSrcEdit(final String cmt, final Edit srcEdit, 
       final Edit dstEdit, final Edit srcCtx,
       final Edit srcUpper, String srcEq, List<Import> imports, 
-      AntiUnifier srcAu, AntiUnifier dstAu, final ProjectInfo pi) 
-          throws JustificationException, IOException, ControlledException {
+      AntiUnifier srcAu, AntiUnifier dstAu, final ProjectInfo pi) {
     //specific configuration to src
     srcEdit.setDst(dstEdit);
     srcEdit.setContext(srcCtx);
@@ -287,9 +284,8 @@ public class EditPairCalculator {
     final int index = calc.getIndex(unit);
     final String dstCtxPath = PathUtils.computePathRoot(astNode);
     final String text = node.toString();
-    final Edit dstCtx = new Edit(cmt, startPos, endPos, index, pj, 
+    return new Edit(cmt, startPos, endPos, index, pj, 
         dstPath, dstCtxPath, null, null, null, text);
-    return dstCtx;
   }
 
   /**
@@ -297,8 +293,7 @@ public class EditPairCalculator {
    * @param edit edit
    * @param antiUnifier anti-unification
    */
-  private static void configDcap(final Edit edit, final AntiUnifier antiUnifier) 
-      throws JustificationException, IOException, ControlledException {
+  private static void configDcap(final Edit edit, final AntiUnifier antiUnifier) {
     final RevisarTree<String> srcTreeD3 = DcapCalculator.dcap(antiUnifier, 3);
     final String srcDcapD3 = PrintUtils.prettyPrint(srcTreeD3);
     final RevisarTree<String> srcTreeD2 = DcapCalculator.dcap(antiUnifier, 2);
@@ -317,9 +312,8 @@ public class EditPairCalculator {
    * @return anti unification
    */
   private static AntiUnifier antiUnification(final ASTNode astNode, final ASTNode fixedNode) 
-      throws JustificationException, IOException, ControlledException {
-    final AntiUnifier srcAu = AntiUnifierUtils.template(astNode, astNode, fixedNode, fixedNode);
-    return srcAu;
+      throws IOException {
+    return AntiUnifierUtils.template(astNode, astNode, fixedNode, fixedNode);
   }
 
   private static void showEditPair(final String src, final String dst, 
@@ -380,8 +374,7 @@ public class EditPairCalculator {
         return null;
       }
     }
-    final Tuple<ITree, ITree> t = new Tuple<ITree, ITree>(srcNode, dstNode);
-    return t;
+    return new Tuple<>(srcNode, dstNode);
   }
 
   /**

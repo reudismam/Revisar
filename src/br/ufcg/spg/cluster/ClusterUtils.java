@@ -38,12 +38,8 @@ public final class ClusterUtils {
     List<Cluster> clusters = dao.getClusters(clusterId);
     List<Edit> srcEdits = clusters.get(0).getNodes();
     final ClusterUnifier unifierCluster = ClusterUnifier.getInstance();
-    try {
-      List<Cluster> srcClusters = unifierCluster.clusterEdits(srcEdits);
-      TransformationUtils.transformations(srcClusters);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+    List<Cluster> srcClusters = unifierCluster.clusterEdits(srcEdits);
+    TransformationUtils.transformations(srcClusters);
   }
   
   /**
@@ -55,14 +51,10 @@ public final class ClusterUtils {
     List<Edit> srcEdits = clusters.get(0).getNodes();
     final ClusterUnifier unifierCluster = ClusterUnifier.getInstance();
     final List<Cluster> clusterList = new ArrayList<>();
-    try {
-      List<Cluster> srcClusters = unifierCluster.clusterEdits(srcEdits);
-      for (Cluster cluster : srcClusters) {
-        List<Cluster> cls = segmentByType(cluster);
-        clusterList.addAll(cls);
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
+    List<Cluster> srcClusters = unifierCluster.clusterEdits(srcEdits);
+    for (Cluster cluster : srcClusters) {
+      List<Cluster> cls = segmentByType(cluster);
+      clusterList.addAll(cls);
     }
     return clusterList;
   }

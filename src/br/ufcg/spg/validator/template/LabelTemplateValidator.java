@@ -2,13 +2,16 @@ package br.ufcg.spg.validator.template;
 
 import br.ufcg.spg.antiunification.AntiUnifier;
 import br.ufcg.spg.antiunification.AntiUnifierUtils;
-import br.ufcg.spg.cluster.ClusterUnifier;
+import br.ufcg.spg.antiunification.algorithm.URAUC;
+import br.ufcg.spg.config.TechniqueConfig;
 import br.ufcg.spg.edit.Edit;
 import br.ufcg.spg.matcher.IMatcher;
 import br.ufcg.spg.matcher.ValueTemplateMatcher;
 import br.ufcg.spg.matcher.calculator.MatchCalculator;
 import br.ufcg.spg.matcher.calculator.RevisarTreeMatchCalculator;
 import br.ufcg.spg.tree.RevisarTree;
+
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -50,12 +53,15 @@ public class LabelTemplateValidator implements ITemplateValidator {
 
   /**
    * Verifies whether template abstract any node with given label.
+   * @throws IOException 
+   * @throws ControlledException 
+   * @throws JustificationException 
    */
   private boolean isHoleLabel() {
     final Edit firstEdit = srcEdits.get(0);
     final Map<String, String> substutings = AntiUnifierUtils.getUnifierMatching(
         srcAu, firstEdit.getPlainTemplate());
-    final AntiUnifier unifier = ClusterUnifier.antiUnify(srcAu, firstEdit.getPlainTemplate());
+    final AntiUnifier unifier = AntiUnifierUtils.antiUnify(srcAu, firstEdit.getPlainTemplate());
     final RevisarTree<String> tree = unifier.toRevisarTree();
     for (final Entry<String, String> match : substutings.entrySet()) {
       String valueKey = match.getKey();

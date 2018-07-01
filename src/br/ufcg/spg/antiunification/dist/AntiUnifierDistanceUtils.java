@@ -1,10 +1,7 @@
 package br.ufcg.spg.antiunification.dist;
 
-import at.jku.risc.stout.urauc.algo.AntiUnifyProblem.VariableWithHedges;
-import at.jku.risc.stout.urauc.data.Hedge;
-import at.jku.risc.stout.urauc.data.atom.Variable;
-
 import br.ufcg.spg.antiunification.AntiUnifier;
+import br.ufcg.spg.antiunification.substitution.HoleWithSubstutings;
 import br.ufcg.spg.tree.RevisarTree;
 import br.ufcg.spg.tree.RevisarTreeParser;
 
@@ -12,6 +9,9 @@ import java.util.HashSet;
 import java.util.List;
 
 public class AntiUnifierDistanceUtils {
+  
+  private AntiUnifierDistanceUtils() {
+  }
 
   /**
    * Computes the distance inducted by the anti-unification. The ant-unification
@@ -24,11 +24,11 @@ public class AntiUnifierDistanceUtils {
       return 0;
     }
     int distUnification = 0;
-    for (final VariableWithHedges var : root.getValue().getVariables()) {
-      final Hedge left = var.getLeft();
-      final Hedge right = var.getRight();
-      final RevisarTree<String> treeLeft = RevisarTreeParser.parser(left.toString());
-      final RevisarTree<String> treeRight = RevisarTreeParser.parser(right.toString());
+    for (final HoleWithSubstutings var : root.getValue().getVariables()) {
+      final String left = var.getLeftSubstuting();
+      final String right = var.getRightSubstuting();
+      final RevisarTree<String> treeLeft = RevisarTreeParser.parser(left);
+      final RevisarTree<String> treeRight = RevisarTreeParser.parser(right);
       final int sizeLeft = DistUtil.computeSize(treeLeft);
       final int sizeRight = DistUtil.computeSize(treeRight);
       distUnification += sizeLeft + sizeRight;
@@ -48,20 +48,20 @@ public class AntiUnifierDistanceUtils {
    *          Anti-unification to be analyzed
    * @return The number of placeholders
    */
-  public static HashSet<Variable> placeHolders(final AntiUnifier root) {
+  public static HashSet<String> placeHolders(final AntiUnifier root) {
     if (root == null) {
       return new HashSet<>();
     }
-    final HashSet<Variable> set = new HashSet<Variable>();
-    for (final VariableWithHedges var : root.getValue().getVariables()) {
-      final Variable variable = var.getVar();
+    final HashSet<String> set = new HashSet<>();
+    for (final HoleWithSubstutings var : root.getValue().getVariables()) {
+      final String variable = var.getHole();
       if (!set.contains(variable)) {
         set.add(variable);
       }
     }
     final List<AntiUnifier> children = root.getChildren();
     for (final AntiUnifier unifier : children) {
-      final HashSet<Variable> hash = placeHolders(unifier);
+      final HashSet<String> hash = placeHolders(unifier);
       set.addAll(hash);
     }
     return set;

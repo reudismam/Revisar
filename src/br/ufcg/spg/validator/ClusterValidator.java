@@ -5,30 +5,30 @@ import br.ufcg.spg.edit.Edit;
 import br.ufcg.spg.validator.template.ITransformationValidatorStrategy;
 import br.ufcg.spg.validator.template.TemplateValidatorStrategy;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
-import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.api.errors.NoFilepatternException;
-
+/**
+ * Cluster evaluator.
+ *
+ */
 public class ClusterValidator {
+  
+  private ClusterValidator() {
+  }
   
   /**
    * Verifies the validity of the transformation.
    * @param srcCluster source code cluster
    * @return true if transformation is valid.
    */
-  public static boolean isValidTrans(final Cluster srcCluster) 
-      throws IOException, NoFilepatternException, GitAPIException, ExecutionException {
+  public static boolean isValidTrans(final Cluster srcCluster) {
     final Cluster dstCluster = srcCluster.getDst();
     final List<Edit> srcEdits = srcCluster.getNodes();
     final String srcAu = srcCluster.getAu();
     final String dstAu = dstCluster.getAu();
     final ITransformationValidatorStrategy strategy = new TemplateValidatorStrategy();
-    final boolean valid = strategy.isValidTrans(srcEdits, srcAu, dstAu);
-    return valid;
+    return strategy.isValidTrans(srcEdits, srcAu, dstAu);
   }
   
   /**
@@ -39,8 +39,7 @@ public class ClusterValidator {
    * @return true if transformation is valid.
    */
   public static boolean isValidTrans(final List<Edit> csrcEdits, 
-      final String srcAu, final String dstAu) 
-      throws IOException, NoFilepatternException, GitAPIException, ExecutionException {
+      final String srcAu, final String dstAu) {
     final ITransformationValidatorStrategy strategy = new TemplateValidatorStrategy();
     // Since edits are consistent in cluster, we only need two edits
     final Edit firstEdit = csrcEdits.get(0);

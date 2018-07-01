@@ -77,9 +77,7 @@ public final class Technique {
   }
   
   public static void computeDepedence() 
-      throws MissingObjectException, IncorrectObjectTypeException, 
-      AmbiguousObjectException, IOException, ExecutionException, 
-      NoFilepatternException, GitAPIException {
+      throws GitAPIException, MissingObjectException, IncorrectObjectTypeException, AmbiguousObjectException, IOException, ExecutionException {
     DependenceUtils.dependences();
   }
   

@@ -1,7 +1,6 @@
 package br.ufcg.spg.antiunification;
 
-import at.jku.risc.stout.urauc.algo.AntiUnifyProblem.VariableWithHedges;
-
+import br.ufcg.spg.antiunification.substitution.HoleWithSubstutings;
 import br.ufcg.spg.tree.RevisarTree;
 import br.ufcg.spg.tree.RevisarTreeParser;
 import br.ufcg.spg.util.PrintUtils;
@@ -59,7 +58,7 @@ public class AntiUnifier {
    */
   public AntiUnifier(final String value) {
     final AntiUnificationData newAu = new AntiUnificationData(
-        value, new ArrayList<VariableWithHedges>());
+        value, new ArrayList<HoleWithSubstutings>());
     this.value = newAu;
   }
 
@@ -139,6 +138,7 @@ public class AntiUnifier {
   }
 
   /**
+   * Set mid.
    * @param mid
    *          the mid to set.
    */
@@ -147,7 +147,7 @@ public class AntiUnifier {
   }
 
   /**
-   * Gets the parent of the anti-unification
+   * Gets the parent of the anti-unification.
    * @return the parent.
    */
   public AntiUnifier getParent() {
@@ -155,6 +155,7 @@ public class AntiUnifier {
   }
 
   /**
+   * Set parent.
    * @param parent
    *          the parent to set.
    */
@@ -168,7 +169,7 @@ public class AntiUnifier {
    * @return children nodes
    */
   public List<AntiUnifier> getChildren() {
-    final List<AntiUnifier> children = new ArrayList<AntiUnifier>();
+    final List<AntiUnifier> children = new ArrayList<>();
     if (left != null && left.getValue() != null) {
       children.add(left);
     }
@@ -187,8 +188,7 @@ public class AntiUnifier {
   @Override
   public String toString() {
     final RevisarTree<String> atree = toRevisarTree();
-    final String output = PrintUtils.prettyPrint(atree);
-    return output;
+    return PrintUtils.prettyPrint(atree);
   }
 
   /**

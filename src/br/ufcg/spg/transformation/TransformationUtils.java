@@ -1,6 +1,8 @@
 package br.ufcg.spg.transformation;
 
+import br.ufcg.spg.bean.Tuple;
 import br.ufcg.spg.cluster.Cluster;
+import br.ufcg.spg.cluster.ClusterUnifier;
 import br.ufcg.spg.config.TechniqueConfig;
 import br.ufcg.spg.database.ClusterDao;
 import br.ufcg.spg.database.TransformationDao;
@@ -18,12 +20,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-public class TransformationUtils {
+/**
+ * Utility class to perform transformations.
+ */
+public final class TransformationUtils {
+  /**
+   * Learned scripts
+   */
   private static List<Script> scripts = new ArrayList<>();
+  /**
+   * Rename scripts
+   */
   private static List<Script> renameScripts = new ArrayList<>();
   
+  /**
+   * Logger
+   */
+  private static final Logger logger = LogManager.getLogger(TransformationUtils.class.getName());
+  
+  /**
+   * Field only for test purpose
+   */
   private static int clusterIndex = 1;
+  
+  private TransformationUtils() {
+  }
+  
   /**
    * Computes the matches for all clusters.
    */
@@ -82,41 +107,66 @@ public class TransformationUtils {
       saveCluster(++countCluster, list);
     }
     saveCluster(++countCluster, renameScripts);
-    for (Script sc : scripts) {
+    for (final Script sc : scripts) {
       if (!clusteredScriptsList.contains(sc)) {
-        String content = "EDITS\n";
-        content += sc.getList() + "\n";
-        content += "SRC CLUSTER\n";
-        content += sc.getCluster() + "\n";
-        content += "DST CLUSTER\n";
-        content += sc.getCluster().getDst() + "\n";
+        StringBuilder content = new StringBuilder("EDITS\n");
+        content.append(sc.getList()).append('\n');
+        content.append("SRC CLUSTER\n");
+        content.append(sc.getCluster()).append('\n');
+        content.append("DST CLUSTER\n");
+        content.append(sc.getCluster().getDst()).append('\n');
         String path = "../Projects/cluster/clusters/" + ++ countCluster + ".txt";
         final File clusterFile = new File(path);
         try {
-          FileUtils.writeStringToFile(clusterFile, content);
+          FileUtils.writeStringToFile(clusterFile, content.toString());
         } catch (IOException e) {
-          e.printStackTrace();
+          logger.error(e.getStackTrace());
         }
       }
     }
   }
+  
+  /**
+   * Computes the template for some cluster.
+   * @param clusterId label of the cluster
+   */
+  public static void transformationsMoreProjects_Why_Distinct_Clusters() {
+    final List<Cluster> clusters = getClusterMoreProjects();
+    transformations(clusters);
+    final List<ArrayList<Script>> clusteredScripts =  DbScanClustering.cluster(scripts);
+    final List<Edit> edits = new ArrayList<>();
+    ArrayList<Script> list = clusteredScripts.get(0);
+    list = new ArrayList<>(list.subList(2, 4));
+    for (Script sc : list) {
+      edits.addAll(sc.getCluster().getNodes());
+    }
+    Tuple<Tuple<List<Cluster>, List<Cluster>>, Tuple<Edit, Edit>> toAnalyze = ClusterUnifier.getInstance().clusterEditsAnalyzeInvalid(edits);
+    Edit srcEdit = toAnalyze.getItem2().getItem1();
+    Edit dstEdit = toAnalyze.getItem2().getItem2();
+    List<Cluster> src = toAnalyze.getItem1().getItem1();
+    List<Cluster> dst = toAnalyze.getItem1().getItem2();
+    List<Tuple<Cluster, Double>> costs;
+    costs = ClusterUnifier.getInstance().bestCluster(src, dst, srcEdit, dstEdit);
+    Cluster valid = ClusterUnifier.getInstance().searchForValid(srcEdit, dstEdit, costs);
+    logger.trace(valid);
+  }
 
   private static void saveCluster(int countCluster, List<Script> list) {
-    String content = "NUMBER OF NODES IN THIS CLUSTER: " + list.size() + "\n\n";
+    StringBuilder content = new StringBuilder("NUMBER OF NODES IN THIS CLUSTER: " + list.size()).append("\n\n");
     for (Script sc : list) {
-      content += "EDITS\n";
-      content += sc.getList() + "\n";
-      content += "SRC CLUSTER\n";
-      content += sc.getCluster() + "\n";
-      content += "DST CLUSTER\n";
-      content += sc.getCluster().getDst() + "\n";
+      content.append("EDITS\n");
+      content.append(sc.getList()).append('\n');
+      content.append("SRC CLUSTER\n");
+      content.append(sc.getCluster()).append('\n');
+      content.append("DST CLUSTER\n");
+      content.append(sc.getCluster().getDst()).append('\n');
     }
     String path = "../Projects/cluster/clusters/" + countCluster + ".txt";
     final File clusterFile = new File(path);
     try {
-      FileUtils.writeStringToFile(clusterFile, content);
+      FileUtils.writeStringToFile(clusterFile, content.toString());
     } catch (IOException e) {
-      e.printStackTrace();
+      logger.error(e.getStackTrace());
     }
   }
   
@@ -126,7 +176,7 @@ public class TransformationUtils {
   public static void transformations(final List<Cluster> srcClusters) {
     try {
       for (int i = 0; i < srcClusters.size(); i++) {
-        System.out.println(((double) i) / srcClusters.size() + " % completed.");
+        logger.trace(((double) i) / srcClusters.size() + " % completed.");
         final Cluster clusteri = srcClusters.get(i);
         // Analyze clusters with two or more elements.
         if (clusteri.getNodes().size() < 2) {
@@ -134,11 +184,11 @@ public class TransformationUtils {
         }
         Edit edit = clusteri.getNodes().get(0);
         Transformation transformation = tranformation(clusteri, edit);
-        TransformationDao.getInstance().save(transformation);
+        //TransformationDao.getInstance().save(transformation);
         saveTransformation(transformation);
       }
     } catch (final Exception e) {
-      e.printStackTrace();
+      logger.error(e.getStackTrace());
     }
   }
 
@@ -160,7 +210,7 @@ public class TransformationUtils {
       trans.setValid(isValid);
       return trans;
     } catch (final Exception e) {
-      e.printStackTrace();
+      logger.error(e.getStackTrace());
     }
     return null;
   }
@@ -169,27 +219,26 @@ public class TransformationUtils {
    * Saves a transformation.
    */
   public static void saveTransformation(final Transformation trans) throws IOException {
-    String refaster = trans.getTransformation();
-    Cluster clusteri = trans.getCluster();
-    Cluster clusterj = clusteri.getDst();
-    String content = "";
-    content += refaster + "\n";
-    content += "SRC CLUSTER\n";
-    content += clusteri + "\n";
-    content += "DST CLUSTER\n";
-    content += clusterj + "\n";
+    final String refaster = trans.getTransformation();
+    final Cluster clusteri = trans.getCluster();
+    final Cluster clusterj = clusteri.getDst();
+    StringBuilder content = new StringBuilder("");
+    content.append(refaster).append('\n');
+    content.append("SRC CLUSTER\n");
+    content.append(clusteri).append('\n');
+    content.append("DST CLUSTER\n");
+    content.append(clusterj).append('\n');
     final INodeChecker ch = new RenameChecker(clusteri, clusterj);
     boolean isRename = false;
     try {
       isRename = ch.isValidUnification();
     } catch (final Exception e) {
-      e.printStackTrace();
+      logger.error(e.getStackTrace());
     }
     
     boolean isSameBeforeAfter = isSameBeforeAfter(clusteri);
     String path;
     if (isSameBeforeAfter) {
-      path = "../Projects/cluster/same/" + clusteri.getId() + ".txt";
       return;
     }
     
@@ -212,16 +261,15 @@ public class TransformationUtils {
     if (isRename) {
       path = "../Projects/cluster/rename/" + clusterIndex++ + ".txt";
     } else {
-      path = "../Projects/cluster/" + trans.isValid() + "/" + clusterIndex++ + ".txt";
+      path = "../Projects/cluster/" + trans.isValid() + '/' + clusterIndex++ + ".txt";
     }
     final File clusterFile = new File(path);
-    FileUtils.writeStringToFile(clusterFile, content);
+    FileUtils.writeStringToFile(clusterFile, content.toString());
   }
 
   private static List<Cluster> getClusters() {
     final ClusterDao dao = ClusterDao.getInstance();
-    final List<Cluster> srcClusters = dao.getSrcClusters();
-    return srcClusters;
+    return dao.getSrcClusters();
   }
   
   public static boolean isSameBeforeAfter(final Cluster clusteri) {
@@ -239,8 +287,7 @@ public class TransformationUtils {
    */
   public static List<Cluster> getLargestClusters() {
     final ClusterDao dao = ClusterDao.getInstance();
-    final List<Cluster> srcClusters = dao.getLargestClusters();
-    return srcClusters;
+    return dao.getLargestClusters();
   }
   
   /**
@@ -248,7 +295,6 @@ public class TransformationUtils {
    */
   public static List<Cluster> getClusterMoreProjects() {
     final ClusterDao dao = ClusterDao.getInstance();
-    final List<Cluster> srcClusters = dao.getClusterMoreProjects(3);
-    return srcClusters;
+    return dao.getClusterMoreProjects(3);
   }
 }
