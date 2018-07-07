@@ -14,11 +14,11 @@ import br.ufcg.spg.antiunification.substitution.HoleWithSubstutings;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AntiUnifierHoleHOAU extends AntiUnify {
+public class AntiUnifierHoleHoau extends AntiUnify {
 
   private final List<AntiUnificationData> unifications;
 
-  public AntiUnifierHoleHOAU(final EquationSystem<AntiUnifyProblem> sys, int maxReduce,
+  public AntiUnifierHoleHoau(final EquationSystem<AntiUnifyProblem> sys, int maxReduce,
       final DebugLevel debugLevel) throws ControlledException {
     super(sys, maxReduce, debugLevel);
     unifications = new ArrayList<>();

@@ -1,6 +1,6 @@
 package br.ufcg.spg.config;
 
-import br.ufcg.spg.antiunification.algorithm.HOAU;
+import br.ufcg.spg.antiunification.algorithm.Hoau;
 import br.ufcg.spg.antiunification.algorithm.IAntiUnifyAlgoritm;
 import br.ufcg.spg.edit.Edit;
 
@@ -46,7 +46,7 @@ public final class TechniqueConfig {
   
   private boolean fullTemplateRules = false;
   
-  private IAntiUnifyAlgoritm auAlgorithm = new HOAU();
+  private IAntiUnifyAlgoritm auAlgorithm = new Hoau();
 
   private TechniqueConfig() {
   }

@@ -16,6 +16,9 @@ import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 
 public class EquationUtils {
+  
+  private EquationUtils() {
+  }
     
   /**
    * Converts a ASTNode to an anti-unification equation.
@@ -31,7 +34,7 @@ public class EquationUtils {
       }
       return content;
     }
-    String tree = au.getValue() + "(";
+    String tree = au.getValue() + '(';
     final RevisarTree<String> sotFirst = au.getChildren().get(0);
     final String nodeFirst = convertToEq(sotFirst);
     tree += nodeFirst;
@@ -40,7 +43,7 @@ public class EquationUtils {
       final String node = ", " + convertToEq(sot);
       tree += node;
     }
-    tree += ")";
+    tree += ')';
     return tree;
   }
   
@@ -149,11 +152,9 @@ public class EquationUtils {
   private static String processType(final boolean includeType, 
       final String type, final String rootLabel, final String content) {
     if (includeType) {
-      final String treeNode = rootLabel + "(type_" + type + ", " + content + ")";
-      return treeNode;
+      return rootLabel + "(type_" + type + ", " + content + ")";
     } else {
-      final String treeNode = rootLabel + "(" + content + ")";  
-      return treeNode;
+      return rootLabel + '(' + content + ')';  
     }
   }
 

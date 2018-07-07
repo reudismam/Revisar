@@ -138,14 +138,14 @@ public class Cluster {
     result.append(getLabel()).append('\n').append(output);
     result.append('\n').append(au).append('\n')
     .append("\nList of nodes ").append(nodes.size()).append(":\n");
-    int count = 0;
+    //int count = 0;
     for (final Edit node : nodes) {
       result.append(node.getText()).append(", ")
       .append(node.getPath()).append(", ").append(node.getCommit()).append('\n');
-      if (++count == 4) {
+      /*if (++count == 4) {
         result.append("...\n");
         break;
-      }
+      }*/
     }
     return result.toString();
   }

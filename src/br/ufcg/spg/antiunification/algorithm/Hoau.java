@@ -10,7 +10,7 @@ import br.ufcg.spg.antiunification.AntiUnificationData;
 import java.io.Reader;
 import java.io.StringReader;
 
-public class HOAU implements IAntiUnifyAlgoritm {
+public class Hoau implements IAntiUnifyAlgoritm {
 
   /**
    * {@inheritDoc}
@@ -28,7 +28,7 @@ public class HOAU implements IAntiUnifyAlgoritm {
     };
     try {
       new InputParser().parseEquation(in1, in2, eqSys, maxReduce);
-      final AntiUnifierHoleHOAU antUnifier = new AntiUnifierHoleHOAU(
+      final AntiUnifierHoleHoau antUnifier = new AntiUnifierHoleHoau(
            eqSys, maxReduce, DebugLevel.SILENT);
       antUnifier.antiUnify(false, System.out);
       return antUnifier.getUnification();

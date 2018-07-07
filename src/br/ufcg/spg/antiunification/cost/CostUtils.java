@@ -1,8 +1,5 @@
 package br.ufcg.spg.antiunification.cost;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import br.ufcg.spg.antiunification.AntiUnifier;
 import br.ufcg.spg.antiunification.AntiUnifierUtils;
 import br.ufcg.spg.antiunification.dist.AntiUnifierDistanceUtils;
@@ -13,6 +10,9 @@ import br.ufcg.spg.cluster.Cluster;
 import br.ufcg.spg.equation.EquationUtils;
 import br.ufcg.spg.tree.RevisarTree;
 import br.ufcg.spg.util.PrintUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public final class CostUtils {
   

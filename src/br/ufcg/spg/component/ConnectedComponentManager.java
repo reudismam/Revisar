@@ -24,7 +24,7 @@ public class ConnectedComponentManager {
    * Visited edit operations. Required to compute connected components (DFS
    * implementation).
    */
-  private static HashMap<Action, Integer> _visited;
+  private static HashMap<Action, Integer> visited;
 
   /**
    * Edit operations graph.
@@ -37,24 +37,22 @@ public class ConnectedComponentManager {
    * Compute connected components.
    */
   private static List<List<Action>> computeConnectedComponents(final List<Action> editOperations) {
-    _visited = new HashMap<Action, Integer>();
+    visited = new HashMap<>();
     int i = 0;
-    final HashMap<Integer, List<Action>> dic = new HashMap<Integer, List<Action>>();
+    final HashMap<Integer, List<Action>> dic = new HashMap<>();
     for (final Action edit : editOperations) {
       final Action t = edit;
-      if (!_visited.containsKey(t)) {
+      if (!visited.containsKey(t)) {
         dic.put(i, new ArrayList<Action>());
         depthFirstSearch(edit, i++);
       }
     }
-
     for (final Action edit : editOperations) {
       final Action t = edit;
-      final int cc = _visited.get(t);
+      final int cc = visited.get(t);
       dic.get(cc).add(edit);
     }
-    final List<List<Action>> ccs = new ArrayList<List<Action>>(dic.values());
-    return ccs;
+    return new ArrayList<>(dic.values());
   }
 
   /**
@@ -65,10 +63,10 @@ public class ConnectedComponentManager {
    */
   private static void depthFirstSearch(final Action editOperation, final int i) {
     final Action t = editOperation;
-    _visited.put(t, i);
+    visited.put(t, i);
     for (final Action edit : graph.get(t)) {
       final Action te = edit;
-      if (!_visited.containsKey(te)) {
+      if (!visited.containsKey(te)) {
         depthFirstSearch(edit, i);
       }
     }
@@ -82,8 +80,7 @@ public class ConnectedComponentManager {
   public List<List<Action>> connectedComponents(final List<Action> editOperations) {
     connectionComparer = new FullConnected(editOperations);
     buildDigraph(editOperations);
-    final List<List<Action>> ccs = computeConnectedComponents(editOperations);
-    return ccs;
+    return computeConnectedComponents(editOperations);
   }
 
   /**
@@ -93,7 +90,7 @@ public class ConnectedComponentManager {
    * @param script list of actions
    */
   private void buildDigraph(final List<Action> script) {
-    graph = new HashMap<Action, List<Action>>();
+    graph = new HashMap<>();
     for (final Action edit : script) {
       final Action t = edit;
       graph.put(t, new ArrayList<Action>());
@@ -119,7 +116,7 @@ public class ConnectedComponentManager {
 
   private class FullConnected {
 
-    public List<Action> script;
+    private List<Action> script;
 
     public FullConnected(final List<Action> script) {
       this.script = script;
@@ -177,14 +174,9 @@ public class ConnectedComponentManager {
           return true;
         }
       }
-
       // In a sequence of inserts. The node from edit i will be equal to
       // the parent of edit j.
-      if (parentj != null && parentj.equals(editi.getNode())) {
-        return true;
-      }
-
-      return false;
+      return parentj != null && parentj.equals(editi.getNode());
     }
   }
 }

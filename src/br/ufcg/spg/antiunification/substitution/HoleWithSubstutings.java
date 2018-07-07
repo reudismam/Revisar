@@ -63,34 +63,43 @@ public class HoleWithSubstutings {
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj)
+  public boolean equals(final Object obj) {
+    if (this == obj) {
       return true;
-    if (obj == null)
+    }
+    if (obj == null) {
       return false;
-    if (getClass() != obj.getClass())
+    }
+    if (getClass() != obj.getClass()) {
       return false;
-    HoleWithSubstutings other = (HoleWithSubstutings) obj;
+    }
+    final HoleWithSubstutings other = (HoleWithSubstutings) obj;
     if (hole == null) {
-      if (other.hole != null)
+      if (other.hole != null) {
         return false;
-    } else if (!hole.equals(other.hole))
+      }
+    } else if (!hole.equals(other.hole)) {
       return false;
+    }
     if (leftSubstuting == null) {
-      if (other.leftSubstuting != null)
+      if (other.leftSubstuting != null) {
         return false;
-    } else if (!leftSubstuting.equals(other.leftSubstuting))
+      }
+    } else if (!leftSubstuting.equals(other.leftSubstuting)) {
       return false;
+    }
     if (rightSubstuting == null) {
-      if (other.rightSubstuting != null)
+      if (other.rightSubstuting != null) {
         return false;
-    } else if (!rightSubstuting.equals(other.rightSubstuting))
+      }
+    } else if (!rightSubstuting.equals(other.rightSubstuting)) {
       return false;
+    }
     return true;
   }
 
   @Override
   public String toString() {
-    return hole + " : " + leftSubstuting + " =^= "+ rightSubstuting;
+    return hole + " : " + leftSubstuting + " =^= " + rightSubstuting;
   }
 }

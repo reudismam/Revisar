@@ -15,13 +15,13 @@ import br.ufcg.spg.antiunification.substitution.HoleWithSubstutings;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AntiUnifierHolesARAU extends AntiUnify {
+public class AntiUnifierHolesArau extends AntiUnify {
 
   private final List<AntiUnificationData> unifications;
 
-  public AntiUnifierHolesARAU(final RigidityFnc aFnc, final EquationSystem<AntiUnifyProblem> sys, 
+  public AntiUnifierHolesArau(final RigidityFnc func, final EquationSystem<AntiUnifyProblem> sys, 
       final DebugLevel debugLevel) {
-    super(aFnc, sys, debugLevel);
+    super(func, sys, debugLevel);
     unifications = new ArrayList<>();
   }
 
@@ -48,17 +48,4 @@ public class AntiUnifierHolesARAU extends AntiUnify {
   public List<AntiUnificationData> getUnifications() {
     return unifications;
   }
-  
-//  private List<HoleWithSubstutings> convertToHoleWithSubstutings(
-//      final List<VariableWithHedges> variables) {
-//    List<HoleWithSubstutings> list = new ArrayList<>();
-//    for (VariableWithHedges var : variables) {
-//      HoleWithSubstutings hole = new HoleWithSubstutings();
-//      hole.setHole(var.getVar().toString());
-//      hole.setLeftSubstuting(var.getLeft().toString());
-//      hole.setRightSubstuting(var.getRight().toString());
-//      list.add(hole);
-//    }
-//    return list;
-//  }
 }

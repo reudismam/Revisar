@@ -7,12 +7,12 @@ import at.jku.risc.stout.urau.algo.RigidityFncSubsequence;
 import at.jku.risc.stout.urau.data.EquationSystem;
 import at.jku.risc.stout.urau.data.InputParser;
 
-
 import br.ufcg.spg.antiunification.AntiUnificationData;
+
 import java.io.Reader;
 import java.io.StringReader;
 
-public class URAU implements IAntiUnifyAlgoritm {
+public class Urau implements IAntiUnifyAlgoritm {
 
   /**
    * {@inheritDoc}
@@ -23,7 +23,7 @@ public class URAU implements IAntiUnifyAlgoritm {
     final Reader in2 = new StringReader(eq2);
     boolean iterateAll = true;
 
-    RigidityFnc rFnc = new RigidityFncSubsequence().setMinLen(3);
+    RigidityFnc func = new RigidityFncSubsequence().setMinLen(3);
     EquationSystem<AntiUnifyProblem> eqSys = new EquationSystem<AntiUnifyProblem>() {
         public AntiUnifyProblem newEquation() {
             return new AntiUnifyProblem();
@@ -31,8 +31,8 @@ public class URAU implements IAntiUnifyAlgoritm {
     };
     try {
       new InputParser<AntiUnifyProblem>(eqSys).parseHedgeEquation(in1, in2);
-      final AntiUnifierHolesARAU antUnifier = new AntiUnifierHolesARAU(
-          rFnc, eqSys, DebugLevel.SILENT);
+      final AntiUnifierHolesArau antUnifier = new AntiUnifierHolesArau(
+          func, eqSys, DebugLevel.SILENT);
       antUnifier.antiUnify(iterateAll, System.out);
       return antUnifier.getUnification();
     } catch (Exception e) {

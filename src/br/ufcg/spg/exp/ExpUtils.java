@@ -20,28 +20,28 @@ import java.util.Random;
 import java.util.Set;
 
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.api.errors.NoHeadException;
 
 public class ExpUtils {
-  
+
   /**
    * Gets projects.
-   * @return projects 
+   * 
+   * @return projects
    */
   public static List<Tuple<String, String>> getProjects() {
     try {
       String projectsFile = MainArguments.getInstance().getProjects();
       final List<String> projects = Files.readLines(new File(projectsFile), 
           Charset.defaultCharset());
-      final List<Tuple<String, String>> projs = defineProjects(projects);
-      return projs;
+      return defineProjects(projects);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
   }
-  
+
   /**
    * Gets projects.
+   * 
    * @return projects
    */
   public static List<String> getAllProjects() {
@@ -58,8 +58,11 @@ public class ExpUtils {
       throw new RuntimeException(e);
     }
   }
-  
-  public static List<String> allEmails() throws NoHeadException, IOException, GitAPIException {
+
+  /**
+   * Return the e-mails in a list of commits.
+   */
+  public static List<String> allEmails() throws IOException, GitAPIException {
     final List<String> projects = getAllProjects();
     final Set<String> emails = new HashSet<>();
     final GitUtils git = new GitUtils();
@@ -75,7 +78,7 @@ public class ExpUtils {
     }
     return new ArrayList<>(emails);
   }
-  
+
   /**
    * Shuffle a list.
    */
@@ -84,20 +87,23 @@ public class ExpUtils {
     Collections.shuffle(list, new Random(seed));
     return list;
   }
-  
+
   /**
    * Save list of e-mails.
-   * @param list of e-mails.
-   * @param fileName file name.
+   * 
+   * @param list
+   *          of e-mails.
+   * @param fileName
+   *          file name.
    */
   public static void saveEmails(final List<String> list, final String fileName) throws IOException {
-    final FileWriter writer = new FileWriter(fileName); 
-    for (final String str: list) {
-      writer.write(str + ",\n");
+    try (FileWriter writer = new FileWriter(fileName)) {
+      for (final String str : list) {
+        writer.write(str + ",\n");
+      }
     }
-    writer.close();
   }
-  
+
   private static List<Tuple<String, String>> defineProjects(final List<String> projects) {
     final List<Tuple<String, String>> projs = new ArrayList<>();
     for (int i = 0; i < projects.size(); i++) {
@@ -123,19 +129,21 @@ public class ExpUtils {
     }
     return remainPj;
   }
-  
+
   /**
    * Gets the log of a project.
-   * @param pname name of the project
+   * 
+   * @param pname
+   *          name of the project
    * @return list of commit ids
    */
   public static List<String> getLogs(final String pname) throws IOException {
     // files to be analyzed
     String projectFolder = MainArguments.getInstance().getProjectFolder();
-    final String projectFolderDst = projectFolder + "/" + pname  + "/";
+    final String projectFolderDst = projectFolder + "/" + pname + "/";
     final GitUtils analyzer = new GitUtils();
     List<String> log = null;
-    //checkout the default branch
+    // checkout the default branch
     try {
       GitUtils.checkout(projectFolderDst, "refs/remotes/origin/HEAD");
     } catch (IOException | GitAPIException e) {

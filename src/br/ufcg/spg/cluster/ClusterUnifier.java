@@ -111,7 +111,8 @@ public final class ClusterUnifier {
   /**
    * Groups edits by d-cap.
    */
-  public Map<String, List<Edit>> groupEditsByDCap(final List<Edit> srcList, final TechniqueConfig config) {
+  public Map<String, List<Edit>> groupEditsByDCap(final List<Edit> srcList, 
+      final TechniqueConfig config) {
     final Map<String, List<Edit>> groups = new HashMap<>();
     for (Edit edit : srcList) {
       String dcap = config.getDcap(edit.getDst());
@@ -151,7 +152,7 @@ public final class ClusterUnifier {
           processInvalid(src, dst, srcEdit, dstEdit);
         }
       } catch (final Exception e) {
-          e.printStackTrace();
+        e.printStackTrace();
       }
       if (logger.isTraceEnabled()) {
         logger.trace("DEBUG: " + (src.size() + srcClusters - 1));
@@ -163,7 +164,8 @@ public final class ClusterUnifier {
   /**
    * computes the clusters.
    */
-  public Tuple<Tuple<List<Cluster>, List<Cluster>>, Tuple<Edit, Edit> > clusterEditsAnalyzeInvalid(final List<Edit> srcList) {
+  public Tuple<Tuple<List<Cluster>, List<Cluster>>, Tuple<Edit, Edit>> clusterEditsAnalyzeInvalid(
+      final List<Edit> srcList) {
     final List<Cluster> src = new ArrayList<>();
     final List<Cluster> dst = new ArrayList<>();
     int count = 0;
@@ -229,7 +231,8 @@ public final class ClusterUnifier {
     AntiUnifier srcUni;
     srcUni = AntiUnifierUtils.antiUnify(srcCluster.getAu(), srcEdit.getPlainTemplate());
     final String srcAu = EquationUtils.convertToEquation(srcUni);
-    final AntiUnifier dstUni = AntiUnifierUtils.antiUnify(dstCluster.getAu(), dstEdit.getPlainTemplate());
+    final AntiUnifier dstUni = AntiUnifierUtils.antiUnify(dstCluster.getAu(), 
+        dstEdit.getPlainTemplate());
     final String dstAu = EquationUtils.convertToEquation(dstUni);
     srcCluster.setAu(srcAu);
     dstCluster.setAu(dstAu);
@@ -291,17 +294,14 @@ public final class ClusterUnifier {
    *          cluster for source node
    * @param dstCls
    *          cluster for destination node
-   * @param srcAu
-   *          source code unification
-   * @param dstAu
-   *          destination code unification
+   * @param src
+   *          src edit
+   * @param dst
+   *          dst edit
    * @return best cluster
-   * @throws IOException
-   * @throws ControlledException
-   * @throws JustificationException
    */
-  public List<Tuple<Cluster, Double>> bestCluster(final List<Cluster> srcCls, final List<Cluster> dstCls,
-      final Edit src, final Edit dst) {
+  public List<Tuple<Cluster, Double>> bestCluster(final List<Cluster> srcCls, 
+      final List<Cluster> dstCls, final Edit src, final Edit dst) {
     final String srcAu = src.getPlainTemplate();
     final String dstAu = dst.getPlainTemplate();
     final List<Tuple<String, Double>> srcCost = CostUtils.cost(srcCls, srcAu);
@@ -326,12 +326,15 @@ public final class ClusterUnifier {
     return totalCosts;
   }
 
-  private boolean isValid(final Cluster srcCluster, final Cluster dstCluster, final Edit src, final Edit dst) {
+  private boolean isValid(final Cluster srcCluster, final Cluster dstCluster, 
+      final Edit src, final Edit dst) {
     try {
       final List<Edit> srcEdits = srcCluster.getNodes();
-      final AntiUnifier srcAu = AntiUnifierUtils.antiUnify(srcCluster.getAu(), src.getPlainTemplate());
+      final AntiUnifier srcAu = AntiUnifierUtils.antiUnify(srcCluster.getAu(), 
+          src.getPlainTemplate());
       final String srcUnifier = EquationUtils.convertToEquation(srcAu);
-      final AntiUnifier dstAu = AntiUnifierUtils.antiUnify(dstCluster.getAu(), dst.getPlainTemplate());
+      final AntiUnifier dstAu = AntiUnifierUtils.antiUnify(dstCluster.getAu(), 
+          dst.getPlainTemplate());
       final String dstUnifier = EquationUtils.convertToEquation(dstAu);
       final List<Edit> newSrcEdits = new ArrayList<>(srcEdits);
       newSrcEdits.add(src);

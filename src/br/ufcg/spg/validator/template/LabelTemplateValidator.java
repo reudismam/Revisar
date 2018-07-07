@@ -2,7 +2,7 @@ package br.ufcg.spg.validator.template;
 
 import br.ufcg.spg.antiunification.AntiUnifier;
 import br.ufcg.spg.antiunification.AntiUnifierUtils;
-import br.ufcg.spg.antiunification.algorithm.URAUC;
+import br.ufcg.spg.antiunification.algorithm.Urauc;
 import br.ufcg.spg.config.TechniqueConfig;
 import br.ufcg.spg.edit.Edit;
 import br.ufcg.spg.matcher.IMatcher;

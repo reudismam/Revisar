@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 
-public class URAUC implements IAntiUnifyAlgoritm {
+public class Urauc implements IAntiUnifyAlgoritm {
 
   /**
    * {@inheritDoc}
@@ -32,7 +32,7 @@ public class URAUC implements IAntiUnifyAlgoritm {
     };
     try {
       new InputParser<AntiUnifyProblem>(eqSys).parseHedgeEquation(in1, in2);
-      final AntiUnifierHolesARAUC antUnifier = new AntiUnifierHolesARAUC(
+      final AntiUnifierHolesArauc antUnifier = new AntiUnifierHolesArauc(
           alFnc, eqSys, DebugLevel.SILENT);
       antUnifier.antiUnify(iterateAll, false, System.out);
       return antUnifier.getUnification();

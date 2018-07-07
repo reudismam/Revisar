@@ -8,6 +8,9 @@ import io.bretty.console.tree.TreePrinter;
 import java.util.List;
 
 public class PrintUtils {
+  
+  private PrintUtils() {
+  }
 
   public static String prettyPrint(AntiUnifier au) {
     return prettyPrintATree(au);
@@ -19,9 +22,10 @@ public class PrintUtils {
    * @param atree
    *          ATree to be printed.
    */
-  public static String prettyPrint(RevisarTree<String> atree) {
-    RevisarTree<String> root = atree;
-    TreeNodeConverter<RevisarTree<String>> converter = new TreeNodeConverter<RevisarTree<String>>() {
+  public static String prettyPrint(final RevisarTree<String> atree) {
+    final RevisarTree<String> root = atree;
+    final TreeNodeConverter<RevisarTree<String>> converter = 
+        new TreeNodeConverter<RevisarTree<String>>() {
       @Override
       public String name(RevisarTree<String> tree) {
         return tree.getValue();
@@ -32,8 +36,7 @@ public class PrintUtils {
         return au.getChildren();
       }
     };
-    String output = TreePrinter.toString(root, converter).trim();
-    return output;
+    return TreePrinter.toString(root, converter).trim();
   }
 
   /**
@@ -44,7 +47,6 @@ public class PrintUtils {
    */
   private static String prettyPrintATree(AntiUnifier au) {
     RevisarTree<String> atree = au.toRevisarTree();
-    String output = prettyPrint(atree);
-    return output;
+    return prettyPrint(atree);
   }
 }

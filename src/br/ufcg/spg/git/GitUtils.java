@@ -11,19 +11,16 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.validator.routines.EmailValidator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.jgit.api.CheckoutCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ResetCommand.ResetType;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.api.errors.NoFilepatternException;
-import org.eclipse.jgit.api.errors.NoHeadException;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.diff.DiffEntry.ChangeType;
 import org.eclipse.jgit.diff.DiffFormatter;
 import org.eclipse.jgit.diff.RawTextComparator;
-import org.eclipse.jgit.errors.AmbiguousObjectException;
-import org.eclipse.jgit.errors.IncorrectObjectTypeException;
-import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectLoader;
@@ -40,7 +37,13 @@ import org.eclipse.jgit.treewalk.TreeWalk;
 import org.eclipse.jgit.treewalk.filter.PathFilter;
 import org.eclipse.jgit.util.io.DisabledOutputStream;
 
+/**
+ * Git utility class.
+ */
 public class GitUtils {
+  
+  static final Logger logger = LogManager.getLogger(GitUtils.class.getName());
+  
   /**
    * Checkouts commit from the specified repository given a hash value.
    * 
@@ -49,40 +52,41 @@ public class GitUtils {
    * @param sha
    *          commit id
    */
-  public static void checkout(final String repositoryPath, final String sha)
-      throws NoFilepatternException, IOException, GitAPIException {
-    final Git git = Git.open(new File(repositoryPath)); // checkout the folder with .git
-    try {    
-      final CheckoutCommand checkout = git.checkout();
-      checkout.setName(sha).call();
-      System.out.println("Branch");
-      System.out.println(git.getRepository().getFullBranch());
-    } catch (final Exception e) {
-      final String message = e.getMessage();
-      final String meStart = "Cannot lock ";
-      final String meEnd = ".git\\index";
-      final int pathStart = message.indexOf(meStart);
-      final int pathEnd = message.indexOf(meEnd);
-      if (pathStart != -1 && pathEnd != -1) {
-        String path = message.substring(pathStart + meStart.length(), pathEnd + meEnd.length());
-        path = path + ".lock";
-        try {
-          final File file = new File(path);
-          file.setWritable(true);
-          Files.delete(file.toPath());
-        } catch (final IOException e1) {
-          e1.printStackTrace();
-        }
-      }
+  public static void checkout(final String repositoryPath, final String sha) 
+      throws IOException, GitAPIException {
+    try (final Git git = Git.open(new File(repositoryPath))) { // checkout the folder with .git
       try {
-        final GitUtils gitAnalyzer = new GitUtils();
-        gitAnalyzer.clearLocalEdits(repositoryPath);
         final CheckoutCommand checkout = git.checkout();
         checkout.setName(sha).call();
-        System.out.println("Branch");
-        System.out.println(git.getRepository().getFullBranch());
-      } catch (final Exception ex) {
-        ex.printStackTrace();
+        logger.trace("Branch");
+        logger.trace(git.getRepository().getFullBranch());
+      } catch (final Exception e) {
+        final String message = e.getMessage();
+        final String meStart = "Cannot lock ";
+        final String meEnd = ".git\\index";
+        final int pathStart = message.indexOf(meStart);
+        final int pathEnd = message.indexOf(meEnd);
+        if (pathStart != -1 && pathEnd != -1) {
+          String path = message.substring(pathStart + meStart.length(), pathEnd + meEnd.length());
+          path = path + ".lock";
+          try {
+            final File file = new File(path);
+            file.setWritable(true);
+            Files.delete(file.toPath());
+          } catch (final IOException e1) {
+            e1.printStackTrace();
+          }
+        }
+        try {
+          final GitUtils gitAnalyzer = new GitUtils();
+          gitAnalyzer.clearLocalEdits(repositoryPath);
+          final CheckoutCommand checkout = git.checkout();
+          checkout.setName(sha).call();
+          logger.trace("Branch");
+          logger.trace(git.getRepository().getFullBranch());
+        } catch (final Exception ex) {
+          ex.printStackTrace();
+        }
       }
     }
   }
@@ -101,9 +105,9 @@ public class GitUtils {
     final Repository repository = startRepo(repoPath);
     // Get the commit you are looking for.
     final RevCommit newCommit = extractCommit(repository, hashId);
-    System.out.println("LogCommit: " + newCommit);
+    logger.trace("LogCommit: " + newCommit);
     final String logMessage = newCommit.getFullMessage();
-    System.out.println("LogMessage: " + logMessage);
+    logger.trace("LogMessage: " + logMessage);
     // Diff of the commit with the previous one.
     return getDiffOfCommit(repository, newCommit);
   }
@@ -118,14 +122,13 @@ public class GitUtils {
    * @return commit
    */
   public RevCommit extractCommit(final String repoPath, final String hashId)
-      throws MissingObjectException, IncorrectObjectTypeException, 
-      IOException, AmbiguousObjectException {
+      throws IOException {
     final Repository repository = startRepo(repoPath);
     return extractCommit(repository, hashId);
   }
 
   /**
-   * Extracts the commit given the commit id
+   * Extracts the commit given the commit id.
    * 
    * @param repository
    *          folder that contains the .git folder
@@ -134,8 +137,7 @@ public class GitUtils {
    * @return commit for the commit id
    */
   public RevCommit extractCommit(final Repository repository, final String hashId)
-      throws MissingObjectException, IncorrectObjectTypeException, 
-      IOException, AmbiguousObjectException {
+      throws IOException {
     RevCommit newCommit;
     try (RevWalk walk = new RevWalk(repository)) {
       newCommit = walk.parseCommit(repository.resolve(hashId));
@@ -156,8 +158,7 @@ public class GitUtils {
    * @return file from commit
    */
   public String fileCommit2(final String repoPath, final String file, final String hashId)
-      throws MissingObjectException, IncorrectObjectTypeException, 
-      AmbiguousObjectException, IOException {
+      throws IOException {
     final Repository repository = startRepo(repoPath);
     final RevCommit commit = extractCommit(repoPath, hashId);
     // and using commit's tree find the path
@@ -172,21 +173,19 @@ public class GitUtils {
       }
       final ObjectId objectId = treeWalk.getObjectId(0);
       final ObjectLoader loader = repository.open(objectId);
-      final String str = new String(loader.getBytes(), "UTF-8");
-      return str;
+      return  new String(loader.getBytes(), "UTF-8");
     }
   }
 
   /**
-   * Gets the commit given a repository
+   * Gets the commit given a repository.
    * 
    * @param repo
    *          path to the folder that contains the .git folder
    * @return current commit
    */
   public String getCommit(final String repo)
-      throws MissingObjectException, IncorrectObjectTypeException, 
-      IOException, AmbiguousObjectException {
+      throws IOException {
     final Repository repository = startRepo(repo);
     try (RevWalk walk = new RevWalk(repository)) {
       final ObjectId current = repository.resolve(Constants.HEAD);
@@ -203,9 +202,7 @@ public class GitUtils {
    */
   private Repository startRepo(final String repoPath) throws IOException {
     final FileRepositoryBuilder builder = new FileRepositoryBuilder();
-    final Repository repository = builder.setGitDir(new File(repoPath + "/.git"))
-        .setMustExist(true).build();
-    return repository;
+    return builder.setGitDir(new File(repoPath + "/.git")).setMustExist(true).build();
   }
 
   /**
@@ -214,8 +211,8 @@ public class GitUtils {
    * @param commit
    *          commit id
    */
-  private String getDiffOfCommit(final Repository repository, final RevCommit commit) 
-      throws IOException {
+  private String getDiffOfCommit(final Repository repository, 
+      final RevCommit commit) throws IOException {
     // Get commit that is previous to the current one.
     final RevCommit oldCommit = getPrevHash(repository, commit);
     if (oldCommit == null) {
@@ -229,8 +226,7 @@ public class GitUtils {
       formatter.setRepository(repository);
       formatter.format(oldTreeIterator, newTreeIterator);
     }
-    final String diff = outputStream.toString();
-    return diff;
+    return outputStream.toString();
   }
 
   /**
@@ -254,8 +250,8 @@ public class GitUtils {
    *          commit id
    * @return previous commit
    */
-  public RevCommit getPrevHash(final Repository repository, final RevCommit commit) 
-      throws IOException {
+  public RevCommit getPrevHash(final Repository repository, 
+      final RevCommit commit) throws IOException {
     try (RevWalk walk = new RevWalk(repository)) {
       // Starting point
       walk.markStart(commit);
@@ -280,20 +276,19 @@ public class GitUtils {
    *          repository
    * @return log identification
    */
-  public List<String> gitLog(final String repoPath) throws IOException, NoHeadException,
-      GitAPIException {
+  public List<String> gitLog(final String repoPath) throws IOException, GitAPIException {
     final Repository repository = startRepo(repoPath);
     try (Git git = new Git(repository)) {
       final Iterable<RevCommit> logs = git.log().call();
       final List<String> log = new ArrayList<>();
       for (final RevCommit rev : logs) {
-        System.out.println("Commit: " + rev.getId().getName());
+        logger.trace("Commit: " + rev.getId().getName());
         log.add(rev.getId().getName());
       }
       return log;
     }
   }
-  
+
   /**
    * Extracts log identifications.
    * 
@@ -301,14 +296,13 @@ public class GitUtils {
    *          repository
    * @return log identification
    */
-  public List<String> getEmail(final String repoPath) throws IOException, NoHeadException,
-      GitAPIException {
+  public List<String> getEmail(final String repoPath) throws IOException, GitAPIException {
     final Repository repository = startRepo(repoPath);
     try (Git git = new Git(repository)) {
       final Iterable<RevCommit> logs = git.log().call();
       final Set<String> log = new HashSet<>();
       for (final RevCommit rev : logs) {
-        System.out.println("Commit: " + rev.getId().getName());
+        logger.trace("Commit: " + rev.getId().getName());
         final String email = rev.getAuthorIdent().getEmailAddress().trim();
         if (EmailValidator.getInstance().isValid(email)) {
           log.add(email);
@@ -328,7 +322,8 @@ public class GitUtils {
    * @return tree of the changes in a commit
    */
   private AbstractTreeIterator getCanonicalTreeParser(final Repository repository, 
-      final ObjectId commitId) throws IOException {
+      final ObjectId commitId)
+      throws IOException {
     try (RevWalk walk = new RevWalk(repository)) {
       final RevCommit commit = walk.parseCommit(commitId);
       final ObjectId treeId = commit.getTree().getId();
@@ -339,7 +334,7 @@ public class GitUtils {
   }
 
   /**
-   * Gets the modified files
+   * Gets the modified files.
    * 
    * @param repoPath
    *          path to the folder that contains the .git folder
@@ -361,11 +356,11 @@ public class GitUtils {
       final int size = parents.length;
       // does not analyze commits that are merges
       if (size > 1) {
-        return new ArrayList<String>();
+        return new ArrayList<>();
       }
       // does not analyze commits that are merges
       if (commit.getFullMessage().toLowerCase().contains("merge")) {
-        return new ArrayList<String>();
+        return new ArrayList<>();
       }
       try (DiffFormatter df = new DiffFormatter(DisabledOutputStream.INSTANCE)) {
         df.setRepository(repo);
@@ -389,9 +384,9 @@ public class GitUtils {
     }
     return null;
   }
-  
+
   /**
-   * Gets the modified files
+   * Gets the modified files.
    * 
    * @param repoPath
    *          path to the folder that contains the .git folder
@@ -405,8 +400,7 @@ public class GitUtils {
       final Repository repo = startRepo(repoPath);
       // Get the commit you are looking for.
       final RevCommit commit = extractCommit(repo, hashId);
-      final PersonIdent ident = commit.getAuthorIdent();
-      return ident;
+      return commit.getAuthorIdent();
     } catch (final Exception e) {
       e.printStackTrace();
     }
@@ -419,15 +413,15 @@ public class GitUtils {
    * @param repoPath
    *          repository
    */
-  public void clearLocalEdits(final String repoPath) 
-      throws IOException, NoFilepatternException, GitAPIException {
+  public void clearLocalEdits(final String repoPath) throws IOException, GitAPIException {
     final Repository repo = startRepo(repoPath);
     try (Git git = new Git(repo)) {
-      System.out.print(repoPath);
+      logger.trace(repoPath);
       git.clean().setCleanDirectories(true).setIgnore(true).setForce(true).call();
       git.reset().setMode(ResetType.HARD).call();
-      //final RevCommit stash = git.stashCreate().setIncludeUntracked(true).call();
-      //System.out.print("DEBUG: " + stash);
+      // final RevCommit stash =
+      // git.stashCreate().setIncludeUntracked(true).call();
+      // System.out.print("DEBUG: " + stash);
     }
   }
 }
