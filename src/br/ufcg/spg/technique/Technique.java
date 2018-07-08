@@ -13,10 +13,6 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.api.errors.NoFilepatternException;
-import org.eclipse.jgit.errors.AmbiguousObjectException;
-import org.eclipse.jgit.errors.IncorrectObjectTypeException;
-import org.eclipse.jgit.errors.MissingObjectException;
 
 /**
  * Main class for the technique.
@@ -77,7 +73,7 @@ public final class Technique {
   }
   
   public static void computeDepedence() 
-      throws GitAPIException, MissingObjectException, IncorrectObjectTypeException, AmbiguousObjectException, IOException, ExecutionException {
+      throws GitAPIException, IOException, ExecutionException {
     DependenceUtils.dependences();
   }
   

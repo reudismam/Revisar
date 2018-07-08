@@ -47,7 +47,8 @@ public class TypeBodyConfig implements IConfigBody {
       final ASTNode nodeForType = TypeUtils.nodeForType(node);
       Type typeToAnalyze = TypeUtils.extractType(nodeForType, ast);
       final MethodDeclaration targetMethod = targetMethod();
-      final ReturnStatement returnStm = (ReturnStatement) targetMethod.getBody().statements().get(0);
+      final ReturnStatement returnStm = (ReturnStatement) 
+          targetMethod.getBody().statements().get(0);
       final MethodInvocation invocation = (MethodInvocation) returnStm.getExpression();
       invocation.typeArguments().remove(0);
       Expression expression = null;

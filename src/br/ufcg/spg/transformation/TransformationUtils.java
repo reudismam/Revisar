@@ -27,22 +27,23 @@ import org.apache.logging.log4j.Logger;
  * Utility class to perform transformations.
  */
 public final class TransformationUtils {
+  
   /**
-   * Learned scripts
+   * Learned scripts.
    */
   private static List<Script> scripts = new ArrayList<>();
   /**
-   * Rename scripts
+   * Rename scripts.
    */
   private static List<Script> renameScripts = new ArrayList<>();
   
   /**
-   * Logger
+   * Logger.
    */
   private static final Logger logger = LogManager.getLogger(TransformationUtils.class.getName());
   
   /**
-   * Field only for test purpose
+   * Field only for test purpose.
    */
   private static int clusterIndex = 1;
   
@@ -84,8 +85,31 @@ public final class TransformationUtils {
   }
   
   /**
+   * Computes transformations for a set of clusters.
+   */
+  public static void transformations(final List<Cluster> srcClusters) {
+    try {
+      for (int i = 0; i < srcClusters.size(); i++) {
+        logger.trace(((double) i) / srcClusters.size() + " % completed.");
+        final Cluster clusteri = srcClusters.get(i);
+        // Analyze clusters with two or more elements.
+        if (clusteri.getNodes().size() < 2) {
+          continue;
+        }
+        Edit edit = clusteri.getNodes().get(0);
+        Transformation transformation = tranformation(clusteri, edit);
+        //TransformationDao.getInstance().save(transformation);
+        //logger.trace("Saving transformations: ");
+        saveTransformation(transformation);
+        //return;
+      }
+    } catch (final Exception e) {
+      logger.error(e.getStackTrace());
+    }
+  }
+  
+  /**
    * Computes the template for some cluster.
-   * @param clusterId label of the cluster
    */
   public static void transformationsLargestClusters() {
     final List<Cluster> clusters = getLargestClusters();
@@ -94,7 +118,6 @@ public final class TransformationUtils {
   
   /**
    * Computes the template for some cluster.
-   * @param clusterId label of the cluster
    */
   public static void transformationsMoreProjects() {
     final List<Cluster> clusters = getClusterMoreProjects();
@@ -128,7 +151,6 @@ public final class TransformationUtils {
   
   /**
    * Computes the template for some cluster.
-   * @param clusterId label of the cluster
    */
   public static void transformationsMoreProjects_Why_Distinct_Clusters() {
     final List<Cluster> clusters = getClusterMoreProjects();
@@ -140,7 +162,8 @@ public final class TransformationUtils {
     for (Script sc : list) {
       edits.addAll(sc.getCluster().getNodes());
     }
-    Tuple<Tuple<List<Cluster>, List<Cluster>>, Tuple<Edit, Edit>> toAnalyze = ClusterUnifier.getInstance().clusterEditsAnalyzeInvalid(edits);
+    Tuple<Tuple<List<Cluster>, List<Cluster>>, Tuple<Edit, Edit>> toAnalyze = 
+        ClusterUnifier.getInstance().clusterEditsAnalyzeInvalid(edits);
     Edit srcEdit = toAnalyze.getItem2().getItem1();
     Edit dstEdit = toAnalyze.getItem2().getItem2();
     List<Cluster> src = toAnalyze.getItem1().getItem1();
@@ -152,7 +175,8 @@ public final class TransformationUtils {
   }
 
   private static void saveCluster(int countCluster, List<Script> list) {
-    StringBuilder content = new StringBuilder("NUMBER OF NODES IN THIS CLUSTER: " + list.size()).append("\n\n");
+    StringBuilder content = new StringBuilder("NUMBER OF NODES IN THIS CLUSTER: " 
+        + list.size()).append("\n\n");
     for (Script sc : list) {
       content.append("EDITS\n");
       content.append(sc.getList()).append('\n');
@@ -166,28 +190,6 @@ public final class TransformationUtils {
     try {
       FileUtils.writeStringToFile(clusterFile, content.toString());
     } catch (IOException e) {
-      logger.error(e.getStackTrace());
-    }
-  }
-  
-  /**
-   * Computes transformations for a set of clusters.
-   */
-  public static void transformations(final List<Cluster> srcClusters) {
-    try {
-      for (int i = 0; i < srcClusters.size(); i++) {
-        logger.trace(((double) i) / srcClusters.size() + " % completed.");
-        final Cluster clusteri = srcClusters.get(i);
-        // Analyze clusters with two or more elements.
-        if (clusteri.getNodes().size() < 2) {
-          continue;
-        }
-        Edit edit = clusteri.getNodes().get(0);
-        Transformation transformation = tranformation(clusteri, edit);
-        //TransformationDao.getInstance().save(transformation);
-        saveTransformation(transformation);
-      }
-    } catch (final Exception e) {
       logger.error(e.getStackTrace());
     }
   }
@@ -235,6 +237,7 @@ public final class TransformationUtils {
     } catch (final Exception e) {
       logger.error(e.getStackTrace());
     }
+    //logger.trace("In transformation: saving...");
     
     boolean isSameBeforeAfter = isSameBeforeAfter(clusteri);
     String path;
@@ -263,6 +266,7 @@ public final class TransformationUtils {
     } else {
       path = "../Projects/cluster/" + trans.isValid() + '/' + clusterIndex++ + ".txt";
     }
+    //logger.trace(path);
     final File clusterFile = new File(path);
     FileUtils.writeStringToFile(clusterFile, content.toString());
   }
@@ -272,7 +276,7 @@ public final class TransformationUtils {
     return dao.getSrcClusters();
   }
   
-  public static boolean isSameBeforeAfter(final Cluster clusteri) {
+  private static boolean isSameBeforeAfter(final Cluster clusteri) {
     for (Edit c : clusteri.getNodes()) {
       Edit dstEdit = c.getDst();
       if (!c.getText().equals(dstEdit.getText())) {

@@ -15,14 +15,13 @@ import org.eclipse.jdt.internal.core.dom.rewrite.RewriteEventStore;
 public final class ASTNodeUtils {
   
   private ASTNodeUtils() {
-    throw new RuntimeException("Utility class cannot be instantiated.");
   }
   
   /**
    * Get children of an ASTNode.
    */
   public static List<Object> getChildren(final ASTNode node) {
-    final List<Object> children = new ArrayList<Object>();
+    final List<Object> children = new ArrayList<>();
     final List<?> list = node.structuralPropertiesForType();
     for (int i = 0; i < list.size(); i++) {
       final Object child = node.getStructuralProperty((StructuralPropertyDescriptor) list.get(i));
@@ -79,7 +78,7 @@ public final class ASTNodeUtils {
    * @return normalized children.
    */
   public static List<ASTNode> normalize(final List<Object> children) {
-    final List<ASTNode> nodes = new ArrayList<ASTNode>();
+    final List<ASTNode> nodes = new ArrayList<>();
     for (final Object obj : children) {
       if (obj instanceof ASTNode) {
         final ASTNode node = (ASTNode) obj;
@@ -93,6 +92,9 @@ public final class ASTNodeUtils {
     return nodes;
   }
 
+  /**
+   * Get top node.
+   */
   public static ASTNode getTopNode(final ASTNode node) {
     if (node.getParent() == null) {
       return node;

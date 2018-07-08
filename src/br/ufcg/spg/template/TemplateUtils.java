@@ -1,13 +1,16 @@
 package br.ufcg.spg.template;
 
 import br.ufcg.spg.equation.EquationUtils;
-import br.ufcg.spg.tree.RevisarTreeParser;
 import br.ufcg.spg.tree.RevisarTree;
+import br.ufcg.spg.tree.RevisarTreeParser;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TemplateUtils {
+  
+  private TemplateUtils() {
+  }
 
   /**
    * Removes information.
@@ -17,14 +20,15 @@ public class TemplateUtils {
    * @param toRemove nodes to be removed.
    * @return the type information
    */
-  private static RevisarTree<String> remove(final RevisarTree<String> au, final List<String> toRemove) {
+  private static RevisarTree<String> remove(final RevisarTree<String> au, 
+      final List<String> toRemove) {
     if (au.getChildren().isEmpty()) {
       if (!containsAny(au.getValue(), toRemove)) {
         return au;
       }
       return null;
     }
-    final RevisarTree<String> newAu = new RevisarTree<String>(au.getValue());
+    final RevisarTree<String> newAu = new RevisarTree<>(au.getValue());
     for (final RevisarTree<String> aui : au.getChildren()) {
       final RevisarTree<String> rau = remove(aui, toRemove);
       if (rau != null) {
@@ -47,11 +51,14 @@ public class TemplateUtils {
     return remove(au, list);
   }
   
+  /**
+   * Remove type.
+   * @param template template
+   */
   public static String removeType(final String template) {
     final RevisarTree<String> atree = RevisarTreeParser.parser(template);
     final RevisarTree<String> atreeplain = TemplateUtils.removeType(atree);
-    final String srcEq = EquationUtils.convertToEq(atreeplain);
-    return srcEq;
+    return EquationUtils.convertToEq(atreeplain);
   }
   
   /**
@@ -67,12 +74,14 @@ public class TemplateUtils {
     return remove(au, list);
   }
   
-  
+  /**
+   * Remove name.
+   * @param template template
+   */
   public static String removeName(final String template) {
     final RevisarTree<String> atree = RevisarTreeParser.parser(template);
     final RevisarTree<String> atreeplain = TemplateUtils.removeName(atree);
-    final String srcEq = EquationUtils.convertToEq(atreeplain);
-    return srcEq;
+    return EquationUtils.convertToEq(atreeplain);
   }
   
   /**
@@ -88,11 +97,13 @@ public class TemplateUtils {
     return remove(au, list);
   }
   
+  /**
+   * Remove all.
+   */
   public static String removeAll(final String template) {
     final RevisarTree<String> atree = RevisarTreeParser.parser(template);
     final RevisarTree<String> atreeplain = TemplateUtils.removeAll(atree);
-    final String srcEq = EquationUtils.convertToEq(atreeplain);
-    return srcEq;
+    return EquationUtils.convertToEq(atreeplain);
   }
   
   /**

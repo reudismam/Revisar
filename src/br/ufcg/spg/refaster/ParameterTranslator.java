@@ -16,6 +16,10 @@ import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Type;
 
 public class ParameterTranslator {
+  
+  private ParameterTranslator() {
+  }
+  
   /**
    * Configure parameter.
    * @param targetList target list
@@ -45,7 +49,7 @@ public class ParameterTranslator {
   }
 
   /**
-   * Adds parameter to method
+   * Adds parameter to method.
    * @param types types to be analyzed
    * @param cuUnit compilation unit
    * @param method method 
@@ -74,5 +78,4 @@ public class ParameterTranslator {
     method.parameters().addAll(parameters);
     return method;
   }
-
 }

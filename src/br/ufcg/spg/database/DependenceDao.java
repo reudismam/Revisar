@@ -9,7 +9,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-public class DependenceDao extends GenericDao<Dependence, Long> {
+public final class DependenceDao extends GenericDao<Dependence, Long> {
+  
   private static DependenceDao instance;
 
   private DependenceDao() {
@@ -28,14 +29,14 @@ public class DependenceDao extends GenericDao<Dependence, Long> {
   }
 
   /**
-   * Gets last edit
+   * Gets last edit.
    * 
    * @return source code edits.
    */
   public Edit lastDependence() {
     final CriteriaBuilder builder = em.getCriteriaBuilder();
     final CriteriaQuery<Dependence> query = builder.createQuery(Dependence.class);
-    Root<Dependence> root = query.from(Dependence.class);
+    final Root<Dependence> root = query.from(Dependence.class);
     query.orderBy(builder.desc(root.get("id")));
     final List<Dependence> list = em.createQuery(query).setMaxResults(1).getResultList();
     if (list.isEmpty()) {

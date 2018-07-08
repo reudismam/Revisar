@@ -10,6 +10,9 @@ import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Type;
 
 public class ReturnTypeTranslator {
+  
+  private ReturnTypeTranslator() {
+  }
 
   /**
    * Configures return type.
@@ -22,8 +25,9 @@ public class ReturnTypeTranslator {
    *          before method and after method
    * @return return type
    */
-  public static Tuple<MethodDeclaration, MethodDeclaration> config(final ASTNode nodei, final ASTNode nodej,
-      final CompilationUnit refasterRule, final Tuple<MethodDeclaration, MethodDeclaration> ba) {
+  public static Tuple<MethodDeclaration, MethodDeclaration> config(final ASTNode nodei, 
+      final ASTNode nodej, final CompilationUnit refasterRule, 
+      final Tuple<MethodDeclaration, MethodDeclaration> ba) {
     MethodDeclaration before = ba.getItem1();
     MethodDeclaration after = ba.getItem2();
     final int type = nodei.getNodeType();
@@ -70,7 +74,8 @@ public class ReturnTypeTranslator {
    *          method declaration to match the after version
    * @return configures return type for simple type
    */
-  public static Tuple<MethodDeclaration, MethodDeclaration> configForType(final ASTNode nodei, final ASTNode nodej,
+  public static Tuple<MethodDeclaration, MethodDeclaration> configForType(
+      final ASTNode nodei, final ASTNode nodej,
       final CompilationUnit refasterRule, MethodDeclaration before, MethodDeclaration after) {
     final ASTNode nodeForBefore = TypeUtils.nodeForType(nodei);
     final ASTNode nodeForAfter = TypeUtils.nodeForType(nodej);
@@ -78,8 +83,7 @@ public class ReturnTypeTranslator {
     final Type returnTypeForAfter = TypeUtils.extractType(nodeForAfter, refasterRule.getAST());
     before = setReturnType(returnTypeForBefore, refasterRule, before);
     after = setReturnType(returnTypeForAfter, refasterRule, after);
-    final Tuple<MethodDeclaration, MethodDeclaration> ba = new Tuple<>(before, after);
-    return ba;
+    return new Tuple<>(before, after);
   }
 
 }

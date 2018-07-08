@@ -2,12 +2,16 @@ package br.ufcg.spg.dcap;
 
 import br.ufcg.spg.antiunification.AntiUnifier;
 import br.ufcg.spg.equation.EquationUtils;
-import br.ufcg.spg.tree.RevisarTreeParser;
 import br.ufcg.spg.tree.RevisarTree;
+import br.ufcg.spg.tree.RevisarTreeParser;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 
 public class DcapCalculator {
+  
+  private DcapCalculator() {
+  }
+  
   /**
    * Gets d-cap for anti-unification.
    * @param au anti-unification

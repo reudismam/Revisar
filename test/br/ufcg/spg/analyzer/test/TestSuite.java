@@ -41,7 +41,10 @@ import org.junit.Test;
 
 public class TestSuite {
   
-  static final Logger logger = LogManager.getLogger(TestSuite.class.getName());
+  private static final Logger logger = LogManager.getLogger(TestSuite.class.getName());
+  
+  public TestSuite() {
+  }
   
   @Test
   public void exp() throws IOException, JustificationException, ControlledException, CoreException {

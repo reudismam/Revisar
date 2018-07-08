@@ -81,8 +81,7 @@ public class EditDao extends GenericDao<Edit, Long> {
     final Predicate n3 = builder.greaterThan(id, editId);
     query.where(builder.and(n1, n2, n3));
     query.orderBy(builder.asc(id));
-    final List<Edit> list = em.createQuery(query).setMaxResults(limit).getResultList();
-    return list;
+    return em.createQuery(query).setMaxResults(limit).getResultList();
   }
   
   /**
@@ -111,8 +110,7 @@ public class EditDao extends GenericDao<Edit, Long> {
         + " AND e.dcap" + d + " = '" + srcDcap + "'"
         + " AND d.dcap" + d + " = '" + dstDcap + "'"
         + " ORDER BY e.id";
-    final List<Edit> list = em.createQuery(query, Edit.class).getResultList();
-    return list;
+    return em.createQuery(query, Edit.class).getResultList();
   }
   
   /**
@@ -121,8 +119,7 @@ public class EditDao extends GenericDao<Edit, Long> {
    */
   public List<String> getAllDcaps(final int d) {
     final String query = "SELECT DISTINCT(e.dcap" + d + ") FROM Edit e WHERE e.dcap" + d + " IS NOT NULL";
-    final List<String> list = em.createQuery(query, String.class).getResultList();
-    return list;
+    return em.createQuery(query, String.class).getResultList();
   }
   
   /**
@@ -133,12 +130,11 @@ public class EditDao extends GenericDao<Edit, Long> {
     final String query = "select e.commit FROM Edit e WHERE e.dst IS NOT NULL AND e.context IS NOT NULL"
         + " AND e.project like '%" + project + "_old%'"
         + " ORDER BY e.id asc";
-    final List<String> list = em.createQuery(query, String.class).getResultList();
-    return list;
+    return em.createQuery(query, String.class).getResultList();
   }
   
   /**
-   * Gets last edit
+   * Gets last edit.
    * @return source code edits.
    */
   public Edit getLastEdit() {
@@ -160,7 +156,6 @@ public class EditDao extends GenericDao<Edit, Long> {
     final String query = "SELECT i FROM Edit e JOIN fetch e.imports i "
                          + "WHERE e.id = " + edit.getId() + ""
                          + " ORDER BY i.id";
-    final List<Import> list = em.createQuery(query, Import.class).getResultList();
-    return list;
+    return em.createQuery(query, Import.class).getResultList(); 
   }
 }

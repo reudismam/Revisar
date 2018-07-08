@@ -8,6 +8,9 @@ import java.io.IOException;
 
 public class ProjectAnalyzer {
   
+  private ProjectAnalyzer() {
+  }
+  
   /**
    * Configures project.
    * @param project project
@@ -15,7 +18,8 @@ public class ProjectAnalyzer {
    * @param dstFile destination list
    * @return project
    */
-  public static ProjectInfo project(final String project, final String srcFile, final String dstFile) {
+  public static ProjectInfo project(final String project, 
+      final String srcFile, final String dstFile) {
     final String srcFolder = srcFolder(project);
     final String[] classpathSrc = classpath(srcFolder + "sources.txt");
     final String [] sourcesSrc = sources(srcFile);
@@ -23,8 +27,8 @@ public class ProjectAnalyzer {
     src.setProject(srcFolder);
     src.setSource(sourcesSrc);
     src.setClasspath(classpathSrc);
-    final ProjectInfo pi = new ProjectInfo();
-    pi.setSrcVersion(src);
+    final ProjectInfo pinfo = new ProjectInfo();
+    pinfo.setSrcVersion(src);
     final Version dst = new Version();
     final String dstFolder = dstFolder(project);
     dst.setProject(dstFolder);
@@ -32,8 +36,8 @@ public class ProjectAnalyzer {
     dst.setSource(sourcesDst);
     final String[] classpathDst = classpath(dstFolder + "sources.txt");
     dst.setClasspath(classpathDst);
-    pi.setDstVersion(dst);
-    return pi;
+    pinfo.setDstVersion(dst);
+    return pinfo;
   }
   
   /**
@@ -46,18 +50,15 @@ public class ProjectAnalyzer {
     final String project = dstEdit.getProject();
     final String srcFile = srcEdit.getPath();
     final String dstFile = dstEdit.getPath();
-    final ProjectInfo pi = project(project, srcFile, dstFile);
-    return pi;
+    return project(project, srcFile, dstFile);
   }
   
-  public static String srcFolder(final String project) {
-    final String projectFolderSrc = "../Projects/" + project + "_old/";
-    return projectFolderSrc;
+  private static String srcFolder(final String project) {
+    return "../Projects/" + project + "_old/";
   }
   
-  public static String dstFolder(final String project) {
-    final String projectFolderDst = "../Projects/" + project + "/";
-    return projectFolderDst;
+  private static String dstFolder(final String project) {
+    return "../Projects/" + project + "/";
   }
   
   /**
@@ -86,11 +87,14 @@ public class ProjectAnalyzer {
   public static String[] classpath(final String sourcesPath) {
     String[] classpath;
     if (OpSysUtils.isWindows()) {
-     classpath = new String [] { "C:\\Program Files (x86)\\Java\\jre1.8.0_121\\lib\\rt.jar" };
+      classpath = new String [] { 
+        "C:\\Program Files (x86)\\Java\\jre1.8.0_121\\lib\\rt.jar" };
     } else if (OpSysUtils.isMac()) {
-     classpath = new String [] {"/Library/Java/JavaVirtualMachines/jdk1.8.0_144.jdk/Contents/Home/jre/lib/rt.jar"};
+      classpath = new String [] {
+        "/Library/Java/JavaVirtualMachines/jdk1.8.0_144.jdk/Contents/Home/jre/lib/rt.jar"};
     } else if (OpSysUtils.isUnix()) {
-     classpath = new String [] {"/usr/lib/jvm/java-8-oracle/jre/lib/rt.jar"};
+      classpath = new String [] {
+        "/usr/lib/jvm/java-8-oracle/jre/lib/rt.jar"};
     } else {
       throw new RuntimeException("Could not determine classpath.");
     }

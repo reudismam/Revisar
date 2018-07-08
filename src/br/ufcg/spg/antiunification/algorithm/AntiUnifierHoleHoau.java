@@ -13,6 +13,7 @@ import br.ufcg.spg.antiunification.substitution.HoleWithSubstutings;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class AntiUnifierHoleHoau extends AntiUnify {
 
@@ -29,16 +30,22 @@ public class AntiUnifierHoleHoau extends AntiUnify {
     final TermNode hedge = res.getSigma().get(var);
     List<AntiUnifyProblem> store = res.getStore();
     List<HoleWithSubstutings> holes = new ArrayList<>();
+    String regex = Pattern.quote("$");
     for (AntiUnifyProblem p : store) {
       HoleWithSubstutings hole = new HoleWithSubstutings();
-      hole.setHole(p.getGeneralizationVar().toString());
-      hole.setLeftSubstuting(p.getLeft().toString());
-      hole.setRightSubstuting(p.getRight().toString());
+      String generalizedVariable = p.getGeneralizationVar().toString().replaceAll(regex, "#");
+      hole.setHole(generalizedVariable);
+      String leftSub = p.getLeft().toString().replaceAll(regex, "#");
+      hole.setLeftSubstuting(leftSub);
+      String rightSub = p.getRight().toString().replaceAll(regex, "#");
+      hole.setRightSubstuting(rightSub);
       holes.add(hole);
     }
-    final AntiUnificationData data = new AntiUnificationData(hedge.toString(), holes);
+    String hedgeStr = hedge.toString().replaceAll(regex, "#");
+    final AntiUnificationData data = new AntiUnificationData(hedgeStr, holes);
     unifications.add(data);
   }
+  
 
   /**
    * Gets the ant-unification.

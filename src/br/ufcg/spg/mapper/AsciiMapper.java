@@ -1,6 +1,10 @@
 package br.ufcg.spg.mapper;
 
 public class AsciiMapper {
+  
+  private AsciiMapper() {
+  }
+  
   /**
    * Gets description of a character.
    * @param c character to describe
