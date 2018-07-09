@@ -30,7 +30,9 @@ import org.eclipse.jdt.core.dom.ASTNode;
 
 public final class AntiUnifierUtils {
   
-  static final Logger logger = LogManager.getLogger(AntiUnifierUtils.class.getName());
+  private static final Logger logger = LogManager.getLogger(AntiUnifierUtils.class.getName());
+  
+  public static final String LARGER = "LARGER()";
   
   private AntiUnifierUtils(){
   }
@@ -56,9 +58,9 @@ public final class AntiUnifierUtils {
       return createAntiUnification(first, second, ASTNodeUtils.getLabel(
           ASTNode.METHOD_DECLARATION), unify);
     }
-    evaluator = new LargerThanMatcher(100);
+    evaluator = new LargerThanMatcher(1000);
     if (isSome(trees, evaluator)) {
-      return new AntiUnifier("LARGER()");
+      return new AntiUnifier(LARGER);
     }
     evaluator = new KindNodeMatcher(ASTNode.FIELD_DECLARATION);
     if (isSome(trees, evaluator)) {
@@ -81,7 +83,7 @@ public final class AntiUnifierUtils {
       final AntiUnifier auRight = antiUnify(right);
       final AntiUnifier root = maxContext(
           parentFirst, parentSecond, firstUpper, secondUpper, false);
-      if (root.getValue().getUnifier().equals("LARGER()")) {
+      if (root.getValue().getUnifier().equals(LARGER)) {
         return root;
       }
       root.addChildren(auLeft, au, auRight);
@@ -270,11 +272,11 @@ public final class AntiUnifierUtils {
    */
   public static AntiUnifier antiUnify(final String eq1, final String eq2) {
     if (eq1.length() > 1000 || eq2.length() > 1000) {
-      return new AntiUnifier("LARGER()");
+      return new AntiUnifier(LARGER);
     }
     tryUnify(eq1, eq2);
     if (unification == null) {
-      return new AntiUnifier("LARGER()");
+      return new AntiUnifier(LARGER);
     }
     return new AntiUnifier(unification);
   }
@@ -317,7 +319,7 @@ public final class AntiUnifierUtils {
         executor.shutdownNow();
       }
     } catch (final InterruptedException e) {
-      logger.error(e.getStackTrace());
+      e.printStackTrace();
     }
   }
 

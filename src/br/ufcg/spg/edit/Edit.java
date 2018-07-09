@@ -274,8 +274,7 @@ public class Edit {
    */
   @Override
   public String toString() {
-    final String str = this.getText() + ", " + this.getPath() + ", " + this.getCommit() + "\n";
-    return str;
+    return this.id + ", " + this.getText() + ", " + this.getPath() + ", " + this.getCommit() + "\n";
   }
 }
 

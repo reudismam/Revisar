@@ -32,7 +32,7 @@ public class ClusterValidator {
   }
   
   /**
-   * Verifies the validity of the transformation
+   * Verifies the validity of the transformation.
    * @param csrcEdits source code cluster
    * @param srcAu source unification for all edits
    * @param dstAu destination unification for all edits

@@ -58,11 +58,11 @@ public class MappingTemplateValidator implements ITemplateValidator {
       if (!sameSize) {
         return false;
       }
-      if (!isOuputSubstituingInInput(firstEdit, dstAu)) {
+      if (!isOuputSubstituingInInput(firstEdit, srcAu, dstAu)) {
         return false;
       }
       final List<Match> matchesLast = getInputOuputMatches(lastEdit, srcAu, dstAu);
-      if (!isOuputSubstituingInInput(lastEdit, dstAu)) {
+      if (!isOuputSubstituingInInput(lastEdit, srcAu, dstAu)) {
         return false;
       }
       if (matchesFirst.size() != matchesLast.size()) {
@@ -77,13 +77,27 @@ public class MappingTemplateValidator implements ITemplateValidator {
   /**
    * Verifies whether substituting nodes in output is present on input tree.
    */
-  private boolean isOuputSubstituingInInput(final Edit srcEdit, final String dstAu) {
+  private boolean isOuputSubstituingInInput(
+      final Edit srcEdit, final String srcAu, final String dstAu) {
     final Edit dstEdit = srcEdit.getDst();
     final String srcTemplate = srcEdit.getPlainTemplate();
     final Map<String, RevisarTree<String>> srcMapping = getStringRevisarTreeMapping(srcTemplate);
     final Set<String> dstSubstitutings = AntiUnifierUtils.getSubstitutings(dstEdit, dstAu);
     for (final String str : dstSubstitutings) {
       if (!srcMapping.containsKey(str)) {
+        return false;
+      }
+    }
+    final Map<String, String> holeSubstitutingsSrc = AntiUnifierUtils.getUnifierMatching(
+        srcAu, srcTemplate);
+    for (final String str : dstSubstitutings) {
+      boolean isAbstractedInInput = false;
+      for (final Entry<String, String> entry : holeSubstitutingsSrc.entrySet()) {
+        if (entry.getValue().equals(str)) {
+          isAbstractedInInput = true;
+        }
+      }
+      if (!isAbstractedInInput) {
         return false;
       }
     }
@@ -133,7 +147,7 @@ public class MappingTemplateValidator implements ITemplateValidator {
         srcAu, srcTemplate);
     final Map<String, String> holeSubstitutingsDst = AntiUnifierUtils.getUnifierMatching(
         dstAu, dstTemplate);
-    Map<String, List<String>> substitutingHolesDst = inverte(holeSubstitutingsDst);
+    Map<String, List<String>> substitutingHolesDst = reverse(holeSubstitutingsDst);
     final List<Match> matches = new ArrayList<>();
     for (final Entry<String, String> entry : holeSubstitutingsSrc.entrySet()) {
       if (substitutingHolesDst.containsKey(entry.getValue())) {
@@ -150,7 +164,7 @@ public class MappingTemplateValidator implements ITemplateValidator {
   /**
    * Invert the mapping.
    */
-  public Map<String, List<String>> inverte(final Map<String, String> holeSubstutings) {
+  public Map<String, List<String>> reverse(final Map<String, String> holeSubstutings) {
     final Map<String, List<String>> inverted = new HashMap<>();
     for (final Entry<String, String> entry : holeSubstutings.entrySet()) {
       if (!holeSubstutings.containsKey(entry.getValue())) {

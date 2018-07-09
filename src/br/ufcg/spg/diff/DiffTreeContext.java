@@ -29,7 +29,8 @@ public class DiffTreeContext extends DiffCalculator {
     try {
       matcher = Matchers.getInstance().getMatcher(src.getRoot(), dst.getRoot());
       matcher.match();
-      final ActionGenerator g = new ActionGenerator(src.getRoot(), dst.getRoot(), matcher.getMappings());
+      final ActionGenerator g = new ActionGenerator(
+          src.getRoot(), dst.getRoot(), matcher.getMappings());
       g.generate();
       final List<Action> actions = g.getActions(); // return the actions
       return actions;

@@ -41,7 +41,7 @@ public final class ClusterUnifier {
    */
   private static ClusterUnifier instance;
 
-  static final Logger logger = LogManager.getLogger(ClusterUnifier.class.getName());
+  public static final Logger logger = LogManager.getLogger(ClusterUnifier.class.getName());
 
   private ClusterUnifier() {
   }
@@ -143,6 +143,10 @@ public final class ClusterUnifier {
         continue;
       }
       final Edit dstEdit = srcEdit.getDst();
+      if (srcEdit.getPlainTemplate().contains(AntiUnifierUtils.LARGER)
+          || dstEdit.getPlainTemplate().contains(AntiUnifierUtils.LARGER)) {
+        continue;
+      }
       try {
         final List<Tuple<Cluster, Double>> costs = bestCluster(src, dst, srcEdit, dstEdit);
         Cluster valid = searchForValid(srcEdit, dstEdit, costs);
@@ -326,7 +330,10 @@ public final class ClusterUnifier {
     return totalCosts;
   }
 
-  private boolean isValid(final Cluster srcCluster, final Cluster dstCluster, 
+  /**
+   * Verifies whether a cluster is valid.
+   */
+  public boolean isValid(final Cluster srcCluster, final Cluster dstCluster, 
       final Edit src, final Edit dst) {
     try {
       final List<Edit> srcEdits = srcCluster.getNodes();

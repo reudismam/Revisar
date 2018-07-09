@@ -136,12 +136,8 @@ public class Cluster {
     final RevisarTree<String> atree = RevisarTreeParser.parser(au);
     final String output =  PrintUtils.prettyPrint(atree);
     result.append(getLabel()).append('\n').append(output)
-    //result.append('\n').append(au).append('\n')
-    .append("\nList of nodes ").append(nodes.size()).append(":\n");
+    .append("\nList of nodes ").append(nodes.size()).append(":\n\n");
     int count = 0;
-    final RevisarTree<String> nodeTemplate = RevisarTreeParser.parser(
-        nodes.get(0).getPlainTemplate());
-    result.append(PrintUtils.prettyPrint(nodeTemplate)).append('\n');
     for (final Edit node : nodes) {
       result.append(node.getText()).append(", ")
       .append(node.getPath()).append(", ").append(node.getCommit()).append('\n');

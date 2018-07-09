@@ -117,7 +117,7 @@ public class EditStorage {
   }
   
   public void incrementNumberEdits() {
-    numberEdits ++;
+    numberEdits++;
   }
 
   public int getNumberEdits() {
@@ -183,8 +183,7 @@ public class EditStorage {
    */
   public List<Edit> getSrcList() {
     final EditDao dao = EditDao.getInstance();
-    final List<Edit> edits = dao.getAll();
-    return edits;
+    return dao.getAll();
   }
   
   /**
@@ -194,8 +193,7 @@ public class EditStorage {
    */
   public List<Edit> getSrcList(final String commit) {
     final EditDao dao = EditDao.getInstance();
-    final List<Edit> edits = dao.getSrcEdits(commit);
-    return edits;
+    return dao.getSrcEdits(commit);
   }
   
   /**
@@ -205,8 +203,7 @@ public class EditStorage {
    */
   public List<Edit> getSrcListByDCap(final String dcap, final int d) {
     final EditDao dao = EditDao.getInstance();
-    final List<Edit> edits = dao.getSrcEditsByDcap(dcap, d);
-    return edits;
+    return dao.getSrcEditsByDcap(dcap, d);
   }
 
   /**
@@ -215,7 +212,6 @@ public class EditStorage {
    */
   public List<String> getAllDCaps(final int d) {
     final EditDao editDao = EditDao.getInstance();
-    final List<String> result = editDao.getAllDcaps(d);
-    return result;
+    return editDao.getAllDcaps(d);
   }
 }

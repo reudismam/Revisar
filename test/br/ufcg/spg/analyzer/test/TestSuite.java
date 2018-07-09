@@ -93,7 +93,22 @@ public class TestSuite {
   public void exp_TranslateMoreProjects() 
       throws IOException, JustificationException, ControlledException, CoreException {
     configMainArguments();
-    TransformationUtils.transformationsMoreProjects();
+    List<Cluster> clusters = TransformationUtils.getClusterMoreProjects();
+    List<Edit> allEdits = new ArrayList<>();
+    int i = clusters.size();
+    logger.trace(i);
+    for (Cluster c : clusters) {
+      allEdits.addAll(c.getNodes());
+    }
+    Map<String, List<Edit>> dcaps = ClusterUnifier.getInstance().groupEditsByDCap(
+        allEdits, TechniqueConfig.getInstance());
+    List<Cluster> clustersDcap = new ArrayList<>();
+    for (Entry<String, List<Edit>> entry : dcaps.entrySet()) {
+      List<Cluster> clusterForDcap = ClusterUnifier.getInstance().clusterEdits(entry.getValue());
+      clustersDcap.addAll(clusterForDcap);
+    }
+    //TransformationUtils.transformations(clustersDcap);
+    TransformationUtils.transformationsMoreProjects(clustersDcap);
     logger.trace("END.");
   }
   
@@ -124,6 +139,28 @@ public class TestSuite {
   public void exp_cluster_more_projects2() throws IOException {
     configMainArguments();
     List<Cluster> clusters = TransformationUtils.getClusterMoreProjects();
+    List<Edit> allEdits = new ArrayList<>();
+    int i = clusters.size();
+    logger.trace(i);
+    for (Cluster c : clusters) {
+      allEdits.addAll(c.getNodes());
+    }
+    Map<String, List<Edit>> dcaps = ClusterUnifier.getInstance().groupEditsByDCap(
+        allEdits, TechniqueConfig.getInstance());
+    List<Cluster> clustersDcap = new ArrayList<>();
+    for (Entry<String, List<Edit>> entry : dcaps.entrySet()) {
+      List<Cluster> clusterForDcap = ClusterUnifier.getInstance().clusterEdits(entry.getValue());
+      clustersDcap.addAll(clusterForDcap);
+    }
+    TransformationUtils.transformations(clustersDcap);
+    logger.trace("END.");
+  }
+  
+  @Test
+  public void exp_cluster_more_projects_resolve_bug() throws IOException {
+    configMainArguments();
+    List<Cluster> clusters = TransformationUtils.getClusterMoreProjects();
+    //clusters = clusters.subList(50, 200);
     List<Edit> allEdits = new ArrayList<>();
     int i = clusters.size();
     logger.trace(i);
@@ -226,8 +263,7 @@ public class TestSuite {
     final long estimatedTime = System.nanoTime() - startTime;
     TimeLogger.getInstance().setTimeExtract(estimatedTime);
     Technique.clusterEdits();
-    Technique.translateEdits();
-    
+    Technique.translateEdits();    
     logger.trace("DEBUG: TOTAL COMMITS");
     final EditStorage storage = EditStorage.getInstance();
     for (final Tuple<String, String> project: projects) {

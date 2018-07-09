@@ -99,9 +99,7 @@ public final class TransformationUtils {
         Edit edit = clusteri.getNodes().get(0);
         Transformation transformation = tranformation(clusteri, edit);
         //TransformationDao.getInstance().save(transformation);
-        //logger.trace("Saving transformations: ");
         saveTransformation(transformation);
-        //return;
       }
     } catch (final Exception e) {
       logger.error(e.getStackTrace());
@@ -119,8 +117,7 @@ public final class TransformationUtils {
   /**
    * Computes the template for some cluster.
    */
-  public static void transformationsMoreProjects() {
-    final List<Cluster> clusters = getClusterMoreProjects();
+  public static void transformationsMoreProjects(List<Cluster> clusters) {
     transformations(clusters);
     List<ArrayList<Script>> clusteredScripts =  DbScanClustering.cluster(scripts);
     int countCluster = 0;
@@ -237,16 +234,13 @@ public final class TransformationUtils {
     } catch (final Exception e) {
       logger.error(e.getStackTrace());
     }
-    //logger.trace("In transformation: saving...");
-    
     boolean isSameBeforeAfter = isSameBeforeAfter(clusteri);
     String path;
     if (isSameBeforeAfter) {
       return;
     }
-    
     Script script = DbScanClustering.getCluster(clusteri);    
-    String beforePattern = "VARIABLE_DECLARATION_FRAGMENT\\(SIMPLE_NAME\\(hash_[0-9]+\\)\\)";
+    /*String beforePattern = "VARIABLE_DECLARATION_FRAGMENT\\(SIMPLE_NAME\\(hash_[0-9]+\\)\\)";
     String afterPattern = "VARIABLE_DECLARATION_FRAGMENT\\(SIMPLE_NAME\\([a-zA-Z0-9_]+\\)\\)";
     String returnBp = "RETURN_STATEMENT\\(SIMPLE_NAME\\(hash_[0-9]\\)\\)";
     String returnAp = "RETURN_STATEMENT\\(SIMPLE_NAME\\([a-zA-Z0-9_]+\\)\\)";
@@ -256,17 +250,16 @@ public final class TransformationUtils {
         || srcOutput.matches(returnBp) && dstOutput.matches(returnAp)) {
       renameScripts.add(script);
       return;
-    }
-      
+    }*/
     if (!script.getList().isEmpty()) {
       scripts.add(script);
     }
+    
     if (isRename) {
       path = "../Projects/cluster/rename/" + clusterIndex++ + ".txt";
     } else {
       path = "../Projects/cluster/" + trans.isValid() + '/' + clusterIndex++ + ".txt";
     }
-    //logger.trace(path);
     final File clusterFile = new File(path);
     FileUtils.writeStringToFile(clusterFile, content.toString());
   }

@@ -1,8 +1,8 @@
 package br.ufcg.spg.matcher.calculator;
 
-import com.github.gumtreediff.tree.ITree;
-
 import br.ufcg.spg.matcher.IMatcher;
+
+import com.github.gumtreediff.tree.ITree;
 
 import java.util.List;
 
@@ -23,7 +23,6 @@ public class TreeMatchCalculator extends MatchCalculator<ITree> {
    * {@inheritDoc}
    */
   public List<ITree> chilren(ITree st) {
-    final List<ITree> children = st.getChildren();
-    return children;
+    return st.getChildren();
   }
 }
