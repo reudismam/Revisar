@@ -126,7 +126,9 @@ public final class TransformationUtils {
       clusteredScriptsList.addAll(list);
       saveCluster(++countCluster, list);
     }
-    saveCluster(++countCluster, renameScripts);
+    if (!renameScripts.isEmpty()) {
+      saveCluster(++countCluster, renameScripts);
+    }
     for (final Script sc : scripts) {
       if (!clusteredScriptsList.contains(sc)) {
         StringBuilder content = new StringBuilder("EDITS\n");

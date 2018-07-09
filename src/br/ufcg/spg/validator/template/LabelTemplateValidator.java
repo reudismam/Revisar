@@ -2,8 +2,6 @@ package br.ufcg.spg.validator.template;
 
 import br.ufcg.spg.antiunification.AntiUnifier;
 import br.ufcg.spg.antiunification.AntiUnifierUtils;
-import br.ufcg.spg.antiunification.algorithm.Urauc;
-import br.ufcg.spg.config.TechniqueConfig;
 import br.ufcg.spg.edit.Edit;
 import br.ufcg.spg.matcher.IMatcher;
 import br.ufcg.spg.matcher.ValueTemplateMatcher;
@@ -11,7 +9,6 @@ import br.ufcg.spg.matcher.calculator.MatchCalculator;
 import br.ufcg.spg.matcher.calculator.RevisarTreeMatchCalculator;
 import br.ufcg.spg.tree.RevisarTree;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -53,9 +50,6 @@ public class LabelTemplateValidator implements ITemplateValidator {
 
   /**
    * Verifies whether template abstract any node with given label.
-   * @throws IOException 
-   * @throws ControlledException 
-   * @throws JustificationException 
    */
   private boolean isHoleLabel() {
     final Edit firstEdit = srcEdits.get(0);

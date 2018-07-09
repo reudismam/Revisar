@@ -1,13 +1,13 @@
 package br.ufcg.spg.ml.traversal;
 
+import br.ufcg.spg.ml.editoperation.IEditNode;
+import br.ufcg.spg.ml.editoperation.Script;
+
 import java.util.HashSet;
 import java.util.Set;
 
 import org.christopherfrantz.dbscan.DBSCANClusteringException;
 import org.christopherfrantz.dbscan.DistanceMetric;
-
-import br.ufcg.spg.ml.editoperation.IEditNode;
-import br.ufcg.spg.ml.editoperation.Script;
 
 public class ScriptDistanceMetric implements DistanceMetric<Script> {
 

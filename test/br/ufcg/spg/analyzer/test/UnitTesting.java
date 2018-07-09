@@ -1,14 +1,15 @@
 package br.ufcg.spg.analyzer.test;
 
-import br.ufcg.spg.node.NodesExtractor;
-import br.ufcg.spg.node.util.ASTNodeUtils;
 import at.jku.risc.stout.urauc.algo.JustificationException;
 import at.jku.risc.stout.urauc.util.ControlledException;
+
 import br.ufcg.spg.main.MainArguments;
 import br.ufcg.spg.matcher.IMatcher;
 import br.ufcg.spg.matcher.KindNodeMatcher;
 import br.ufcg.spg.matcher.calculator.MatchCalculator;
 import br.ufcg.spg.matcher.calculator.NodeMatchCalculator;
+import br.ufcg.spg.node.NodesExtractor;
+import br.ufcg.spg.node.util.ASTNodeUtils;
 import br.ufcg.spg.parser.JParser;
 import br.ufcg.spg.path.PathUtils;
 
@@ -56,7 +57,8 @@ public class UnitTesting {
     nodes.addAll(listFields);
     for (ASTNode node : nodes) {
       ASTNode top = ASTNodeUtils.getTopNode(node);
-      assertTrue(top.getNodeType() == ASTNode.METHOD_DECLARATION || top.getNodeType() == ASTNode.FIELD_DECLARATION);
+      assertTrue(top.getNodeType() == ASTNode.METHOD_DECLARATION 
+          || top.getNodeType() == ASTNode.FIELD_DECLARATION);
     }
   }
 

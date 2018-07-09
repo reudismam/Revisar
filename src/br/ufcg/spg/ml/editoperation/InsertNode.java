@@ -1,12 +1,28 @@
 package br.ufcg.spg.ml.editoperation;
 
 public class InsertNode implements IEditNode {
-  public String parent;
-  public String node;
+  private String parent;
+  private String node;
 
   public InsertNode(String parent, String node) {
     this.node = node;
     this.parent = parent;
+  }
+  
+  public String getParent() {
+    return parent;
+  }
+
+  public void setParent(String parent) {
+    this.parent = parent;
+  }
+
+  public String getNode() {
+    return node;
+  }
+
+  public void setNode(String node) {
+    this.node = node;
   }
 
   @Override
@@ -20,23 +36,30 @@ public class InsertNode implements IEditNode {
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj)
+    if (this == obj) {
       return true;
-    if (obj == null)
+    }
+    if (obj == null) {
       return false;
-    if (getClass() != obj.getClass())
+    }
+    if (getClass() != obj.getClass()) {
       return false;
+    }
     InsertNode other = (InsertNode) obj;
     if (node == null) {
-      if (other.node != null)
+      if (other.node != null) {
         return false;
-    } else if (!node.equals(other.node))
+      }
+    } else if (!node.equals(other.node)) {
       return false;
+    }
     if (parent == null) {
-      if (other.parent != null)
+      if (other.parent != null) {
         return false;
-    } else if (!parent.equals(other.parent))
+      }
+    } else if (!parent.equals(other.parent)) {
       return false;
+    }
     return true;
   }
 

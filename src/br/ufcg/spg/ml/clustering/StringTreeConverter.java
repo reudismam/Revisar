@@ -1,10 +1,13 @@
 package br.ufcg.spg.ml.clustering;
 
-import java.util.List;
-
 import br.ufcg.spg.tree.RevisarTree;
 
+import java.util.List;
+
 public class StringTreeConverter {
+  
+  private StringTreeConverter() {
+  }
   
   /**
    * Convert a RevisarTree to a string tree representation e.g., {a{b}{c}}.

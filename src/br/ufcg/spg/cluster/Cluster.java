@@ -126,6 +126,68 @@ public class Cluster {
   public void setDst(final Cluster dst) {
     this.dst = dst;
   }
+  
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((au == null) ? 0 : au.hashCode());
+    result = prime * result + ((dst == null) ? 0 : dst.hashCode());
+    result = prime * result + ((id == null) ? 0 : id.hashCode());
+    result = prime * result + ((label == null) ? 0 : label.hashCode());
+    result = prime * result + ((nodes == null) ? 0 : nodes.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    Cluster other = (Cluster) obj;
+    if (au == null) {
+      if (other.au != null) {
+        return false;
+      }
+    } else if (!au.equals(other.au)) {
+      return false;
+    }
+    if (dst == null) {
+      if (other.dst != null) {
+        return false;
+      }
+    } else if (!dst.equals(other.dst)) {
+      return false;
+    }
+    if (id == null) {
+      if (other.id != null) {
+        return false;
+      }
+    } else if (!id.equals(other.id)) {
+      return false;
+    }
+    if (label == null) {
+      if (other.label != null) {
+        return false;
+      }
+    } else if (!label.equals(other.label)) {
+      return false;
+    }
+    if (nodes == null) {
+      if (other.nodes != null) {
+        return false;
+      }
+    } else if (!nodes.equals(other.nodes)) {
+      return false;
+    }
+    return true;
+  }
 
   /**
    * {@inheritDoc}

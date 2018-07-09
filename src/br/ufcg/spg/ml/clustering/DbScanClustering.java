@@ -1,18 +1,11 @@
 package br.ufcg.spg.ml.clustering;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.christopherfrantz.dbscan.DBSCANClusterer;
-import org.christopherfrantz.dbscan.DBSCANClusteringException;
-
 import at.unisalzburg.dbresearch.apted.costmodel.StringUnitCostModel;
 import at.unisalzburg.dbresearch.apted.distance.APTED;
 import at.unisalzburg.dbresearch.apted.node.Node;
 import at.unisalzburg.dbresearch.apted.node.StringNodeData;
 import at.unisalzburg.dbresearch.apted.parser.BracketStringInputParser;
+
 import br.ufcg.spg.cluster.Cluster;
 import br.ufcg.spg.ml.editoperation.DeleteNode;
 import br.ufcg.spg.ml.editoperation.IEditNode;
@@ -24,10 +17,24 @@ import br.ufcg.spg.ml.traversal.ScriptDistanceMetric;
 import br.ufcg.spg.tree.RevisarTree;
 import br.ufcg.spg.tree.RevisarTreeParser;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.christopherfrantz.dbscan.DBSCANClusterer;
+import org.christopherfrantz.dbscan.DBSCANClusteringException;
+
 public class DbScanClustering {
   
-  static final Logger logger = LogManager.getLogger(DbScanClustering.class.getName());
+  private DbScanClustering() {
+  }
+  
+  private static final Logger logger = LogManager.getLogger(DbScanClustering.class.getName());
 
+  /**
+   * Gets the cluster.
+   */
   public static Script getCluster(final Cluster srcCluster) {
     String srcAu = srcCluster.getAu();
     RevisarTree<String> srcTree = RevisarTreeParser.parser(srcAu);
@@ -46,8 +53,7 @@ public class DbScanClustering {
     List<Node<StringNodeData>> left = postOrder.postOrderTraversal(t1);
     List<Node<StringNodeData>> right = postOrder.postOrderTraversal(t2);
     List<IEditNode> edits = edits(t1, t2, mapping, left, right);
-    Script script = new Script(edits, srcCluster);
-    return script;
+    return new Script(edits, srcCluster);
   }
 
   /**
@@ -58,7 +64,8 @@ public class DbScanClustering {
    * @param left nodes in first tree in a in-order traversal.
    * @param right nodes in the second tree in a in-order traversal.
    */
-  private static List<IEditNode> edits(Node<StringNodeData> t1, Node<StringNodeData> t2, List<int[]> mapping,
+  private static List<IEditNode> edits(
+      Node<StringNodeData> t1, Node<StringNodeData> t2, List<int[]> mapping,
       List<Node<StringNodeData>> left, List<Node<StringNodeData>> right) {
     List<IEditNode> edits = new ArrayList<>();
     for (final int[] map : mapping) {
@@ -79,10 +86,16 @@ public class DbScanClustering {
         edits.add(delete);
         logger.trace(delete);
       } else {
-        String label1 = left.get(map[0] - 1).getNodeData().getLabel().toString();
-        String label2 = right.get(map[1] - 1).getNodeData().getLabel().toString();
+        String label1 = left.get(map[0] - 1).getNodeData().getLabel();
+        String label2 = right.get(map[1] - 1).getNodeData().getLabel();
         label1 = configLabel(label1);
+        if (!label1.contains("hash")) {
+          label1 = "node";
+        }
         label2 = configLabel(label2);
+        if (!label2.contains("hash")) {
+          label2 = "node";
+        }
         if (!label1.equals(label2)) {
           UpdateNode update = new UpdateNode(label1, label2);
           edits.add(update);
@@ -100,11 +113,14 @@ public class DbScanClustering {
     return label;
   }
 
+  /**
+   * Cluster scripts.
+   */
   public static List<ArrayList<Script>> cluster(List<Script> scripts) {
     try {
-      DBSCANClusterer<Script> dbscan = new DBSCANClusterer<Script>(scripts, 2, 0.5, new ScriptDistanceMetric());
-      List<ArrayList<Script>> clusters = dbscan.performClustering();
-      return clusters;
+      final DBSCANClusterer<Script> dbscan = new DBSCANClusterer<>(
+          scripts, 2, 0.1, new ScriptDistanceMetric());
+      return dbscan.performClustering();
     } catch (DBSCANClusteringException e) {
       e.printStackTrace();
       return null;

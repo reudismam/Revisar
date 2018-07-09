@@ -107,7 +107,6 @@ public class TestSuite {
       List<Cluster> clusterForDcap = ClusterUnifier.getInstance().clusterEdits(entry.getValue());
       clustersDcap.addAll(clusterForDcap);
     }
-    //TransformationUtils.transformations(clustersDcap);
     TransformationUtils.transformationsMoreProjects(clustersDcap);
     logger.trace("END.");
   }

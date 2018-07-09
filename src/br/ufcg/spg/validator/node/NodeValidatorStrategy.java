@@ -10,7 +10,7 @@ import br.ufcg.spg.replacement.ReplacementUtils;
 import br.ufcg.spg.validator.template.ITransformationValidatorStrategy;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +28,7 @@ public class NodeValidatorStrategy implements ITransformationValidatorStrategy {
    */
   @Override
   public boolean isValidTrans(final List<Edit> srcEdits, final String srcAu, final String dstAu) {
-    final Map<String, List<String>> dstMap = new Hashtable<>();
+    final Map<String, List<String>> dstMap = new HashMap<>();
     try {
       // Since all edits are consistent in the cluster, we only need two edits.
       INodeChecker ch = RuleNodeChecker.create(0, srcEdits);
@@ -43,9 +43,11 @@ public class NodeValidatorStrategy implements ITransformationValidatorStrategy {
         final Version srcVersion = pi.getSrcVersion();
         final Version dstVersion = pi.getDstVersion();
         final CompilationUnit srcUnit = CompilerUtils.getCunit(srcEdit, commit, srcVersion, pi);
-        final List<Replacement<ASTNode>> src = ReplacementUtils.replacements(srcEdit, srcAu, srcUnit);
+        final List<Replacement<ASTNode>> src = ReplacementUtils.replacements(
+            srcEdit, srcAu, srcUnit);
         final CompilationUnit dstUnit = CompilerUtils.getCunit(dstEdit, commit, dstVersion, pi);
-        final List<Replacement<ASTNode>> dst = ReplacementUtils.replacements(dstEdit, dstAu, dstUnit);
+        final List<Replacement<ASTNode>> dst = ReplacementUtils.replacements(
+            dstEdit, dstAu, dstUnit);
         for (final Replacement<ASTNode> re : dst) {
           if (!dstMap.containsKey(re.getUnification())) {
             dstMap.put(re.getUnification(), new ArrayList<>());

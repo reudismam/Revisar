@@ -43,7 +43,7 @@ public class UnmappedDstChecker implements INodeChecker {
   private final transient Map<String, List<String>> dstMap;
   
   /**
-   * Checks unmapped nodes
+   * Checks unmapped nodes.
    * @param srcEdits source code edit
    * @param srcAu anti-unification source cluster
    * @param dstAu anti-unification destination cluster
@@ -71,7 +71,8 @@ public class UnmappedDstChecker implements INodeChecker {
       final List<Replacement<ASTNode>> src = ReplacementUtils.replacements(srcEdit, srcAu, srcUnit);
       final CompilationUnit dstUnit = CompilerUtils.getCunit(dstEdit, commit, dstVersion, pi);
       final List<Replacement<ASTNode>> dst = ReplacementUtils.replacements(dstEdit, dstAu, dstUnit);
-      final Tuple<List<ASTNode>, List<ASTNode>> baList = ReplacementUtils.ba(srcEdit, dstEdit, pi, src,dst);
+      final Tuple<List<ASTNode>, List<ASTNode>> baList = 
+          ReplacementUtils.ba(srcEdit, dstEdit, pi, src,dst);
       final List<String> unmapped =  new ArrayList<>();
       for (final Replacement<ASTNode> re : dst) {
         final ASTNode reNode = re.getNode();

@@ -20,7 +20,7 @@ public final class CompositeTemplateValidator implements ITemplateValidator {
   private final transient List<ITemplateValidator> rules;
 
   /**
-   * Constructor
+   * Constructor.
    * 
    * @param depth
    *          depth on the AST tree.

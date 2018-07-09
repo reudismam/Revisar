@@ -1,8 +1,8 @@
 package br.ufcg.spg.matcher;
 
-import com.google.common.base.Objects;
-
 import br.ufcg.spg.tree.RevisarTree;
+
+import com.google.common.base.Objects;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 

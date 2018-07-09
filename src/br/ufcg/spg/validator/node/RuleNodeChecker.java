@@ -32,7 +32,7 @@ public final class RuleNodeChecker implements INodeChecker {
   private final transient List<Edit> srcEdits;
 
   /**
-   * Constructor
+   * Constructor.
    * 
    * @param depth
    *          depth on the AST tree.
@@ -86,7 +86,7 @@ public final class RuleNodeChecker implements INodeChecker {
    * @return a new instance of a rule checker.
    */
   public static RuleNodeChecker create(final int depth, final List<Edit> srcEdits) {
-    final List<IValidationNodeRule> rules = new ArrayList<IValidationNodeRule>();
+    final List<IValidationNodeRule> rules = new ArrayList<>();
     final MethodInvocationNodeChecker minvo = new MethodInvocationNodeChecker();
     rules.add(minvo);
     return new RuleNodeChecker(rules, srcEdits);

@@ -2,21 +2,13 @@ package br.ufcg.spg.validator.node;
 
 import br.ufcg.spg.equation.EquationUtils;
 import br.ufcg.spg.node.util.ASTNodeUtils;
-import br.ufcg.spg.tree.RevisarTreeParser;
 import br.ufcg.spg.tree.RevisarTree;
+import br.ufcg.spg.tree.RevisarTreeParser;
 import br.ufcg.spg.tree.RevisarTreeUtils;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.MethodInvocation;
-import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.api.errors.NoFilepatternException;
-import org.eclipse.jgit.errors.AmbiguousObjectException;
-import org.eclipse.jgit.errors.IncorrectObjectTypeException;
-import org.eclipse.jgit.errors.MissingObjectException;
 
 /**
  * Rule that check for valid method invocation.
@@ -61,9 +53,7 @@ public class MethodInvocationNodeChecker implements IValidationNodeRule {
    * Verifies if the name of the method is the same.
    * @return true if the name of the method is the same
    */
-  private boolean isSameMethodName(List<ASTNode> nodes) 
-      throws IOException, MissingObjectException, IncorrectObjectTypeException,
-      AmbiguousObjectException, NoFilepatternException, GitAPIException, ExecutionException {
+  private boolean isSameMethodName(List<ASTNode> nodes) {
     String methodName = null;
     for (final ASTNode node : nodes) {
       if (!(node instanceof MethodInvocation)) {
@@ -85,9 +75,7 @@ public class MethodInvocationNodeChecker implements IValidationNodeRule {
    * Verifies if the name of the method is the same.
    * @return true if the name of the method is the same
    */
-  private boolean isSameMethodNameTemplate(List<String> templates) 
-      throws IOException, MissingObjectException, IncorrectObjectTypeException,
-      AmbiguousObjectException, NoFilepatternException, GitAPIException, ExecutionException {
+  private boolean isSameMethodNameTemplate(List<String> templates) {
     String methodName = null;
     for (final String template : templates) {
       if (!isRootMethodInvocation(template)) {
