@@ -7,7 +7,6 @@ public class BindingLocator {
 
   /**
    * Resolves biding.
-   * @param javaElement.
    */
   public static void resolveBinding(final IJavaElement javaElement) 
       throws CoreException {

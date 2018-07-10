@@ -1,7 +1,7 @@
 package br.ufcg.spg.editpair;
 
-import br.ufcg.spg.antiunification.AntiUnifierUtils;
 import br.ufcg.spg.antiunification.AntiUnifier;
+import br.ufcg.spg.antiunification.AntiUnifierUtils;
 import br.ufcg.spg.bean.Tuple;
 import br.ufcg.spg.comparer.ActionComparer;
 import br.ufcg.spg.comparer.TreeComparer;
@@ -339,6 +339,7 @@ public class EditPairCalculator {
   }
 
   /**
+   * Computes before and after nodes.
    * @param mapping
    *          mapping between before and after tree.
    * @param root
@@ -347,7 +348,8 @@ public class EditPairCalculator {
    *          tree context
    * @return before and after version of the file.
    */
-  public static Tuple<ITree, ITree> beforeAfter(final MappingStore mapping, final ITree root, final TreeContext src) {
+  public static Tuple<ITree, ITree> beforeAfter(
+      final MappingStore mapping, final ITree root, final TreeContext src) {
     ITree srcNode = null;
     ITree dstNode = null;
     if (mapping.hasDst(root)) {
@@ -390,7 +392,8 @@ public class EditPairCalculator {
    *          Destination
    * @return maximum unchanged context
    */
-  public static ITree unchagedContext(final String srcPath, final TreeContext src, final TreeContext dst, final ITree srcNode, final ITree dstNode,
+  public static ITree unchagedContext(final String srcPath, final TreeContext src, 
+      final TreeContext dst, final ITree srcNode, final ITree dstNode,
       final String commit, final MappingStore mapping) {
     ITree tempSrc = srcNode;
     ITree tempDst = dstNode;

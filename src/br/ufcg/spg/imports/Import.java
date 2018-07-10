@@ -43,8 +43,6 @@ public class Import {
   
   /**
    * Constructor.
-   * @param start start position
-   * @param end end position
    */
   public Import(final int startPos, final int endPos, final String text) {
     super();

@@ -31,7 +31,9 @@ public class JCompiler {
     String classPath = System.getProperty("java.class.path");
     BatchCompiler.compile(
         "-d build -cp " + classPath
-            + ";C:\\Users\\SPG-04\\workspace\\Projects\\ant_old\\lib\\commons-net-1.4.1.jar;C:\\Users\\SPG-04\\workspace\\Projects\\ant_old\\lib\\regexp-1.3.jar;C:\\Users\\SPG-04\\workspace\\Projects\\ant_old\\lib\\oro-2.0.8.jar"
+            + ";C:\\Users\\SPG-04\\workspace\\Projects\\ant_old\\lib\\commons-net-1.4.1.jar;C:\\"
+            + "Users\\SPG-04\\workspace\\Projects\\ant_old\\lib\\regexp-1.3.jar;C:\\Users\\"
+            + "SPG-04\\workspace\\Projects\\ant_old\\lib\\oro-2.0.8.jar"
             + " @C:\\Users\\SPG-04\\workspace\\Projects\\ant_old\\sources.txt -target 1.8 -1.8",
         output, error, progress);
     String content = new String(baos.toByteArray(), StandardCharsets.UTF_8);
@@ -88,7 +90,8 @@ public class JCompiler {
           System.err.println("Node: " + code.substring(startPosition, code.length()));
         }
         String description = separated[i];
-        br.ufcg.spg.bean.Error er = new br.ufcg.spg.bean.Error(id, line, file, code, startPosition, endPosition, description);
+        br.ufcg.spg.bean.Error er = new br.ufcg.spg.bean.Error(
+            id, line, file, code, startPosition, endPosition, description);
         errors.add(er);
         System.err.print(errorLine);
         System.err.print(code);

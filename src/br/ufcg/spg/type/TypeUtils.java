@@ -1,5 +1,7 @@
 package br.ufcg.spg.type;
 
+import br.ufcg.spg.binding.BindingSolver;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,9 +19,10 @@ import org.eclipse.jdt.core.dom.TypeParameter;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.jdt.core.dom.WildcardType;
 
-import br.ufcg.spg.binding.BindingSolver;
-
 public class TypeUtils {
+  
+  private TypeUtils() {
+  }
 
   /**
    * Extracts the type of the node.
@@ -46,7 +49,7 @@ public class TypeUtils {
       final WildcardType type = ast.newWildcardType();
       final List<?> boundList = tparam.typeBounds();
       Type bound = null;
-      if (boundList.size() > 0) {
+      if (!boundList.isEmpty()) {
         bound = (Type) boundList.get(0);
         bound = (Type) ASTNode.copySubtree(ast, bound);
       }

@@ -1,23 +1,27 @@
 package br.ufcg.spg.ml.editoperation;
 
 import br.ufcg.spg.cluster.Cluster;
+import de.jail.geometry.schemas.Point;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.math3.ml.clustering.Clusterable;
-
-public class Script implements Clusterable {
+public class Script extends Point {
   private List<IEditNode> list;
   
   private Cluster cluster;
 
+  /**
+   * Constructor.
+   */
   public Script(List<IEditNode> edits, Cluster cluster) {
+    super(new double[] {});
     this.list = edits;
     this.cluster = cluster;
   }
 
   public Script() {
+    super(new double[] {});
     list = new ArrayList<>();
   }
 
@@ -37,10 +41,10 @@ public class Script implements Clusterable {
     this.cluster = cluster;
   }
 
-  @Override
-  public double[] getPoint() {
-    return null;
-  }
+//  @Override
+//  public double[] getPoint() {
+//    return null;
+//  }
   
   @Override
   public int hashCode() {

@@ -1,8 +1,5 @@
 package br.ufcg.spg.path;
 
-import java.util.List;
-import org.eclipse.jdt.core.dom.ASTNode;
-
 import br.ufcg.spg.matcher.ASTNodeMatcher;
 import br.ufcg.spg.matcher.IMatcher;
 import br.ufcg.spg.matcher.calculator.MatchCalculator;
@@ -10,8 +7,17 @@ import br.ufcg.spg.matcher.calculator.RevisarTreeMatchCalculator;
 import br.ufcg.spg.tree.RevisarTree;
 import br.ufcg.spg.tree.RevisarTreeUtils;
 
+import java.util.List;
+import org.eclipse.jdt.core.dom.ASTNode;
+
 public class PathUtils {
   
+  private PathUtils() {
+  }
+  
+  /**
+   * Gets the path to root node.
+   */
   public static String computePathRoot(ASTNode node) {
     String startPath = "";
     ASTNode root = node.getRoot();
@@ -33,6 +39,9 @@ public class PathUtils {
     return computePathRoot(parent, newPath);
   }
   
+  /**
+   * Gets node given an path.
+   */
   public static ASTNode getNode(ASTNode root2, String path) {
     RevisarTree<ASTNode> root = RevisarTreeUtils.convertToRevisarTree(root2);
     if (path.isEmpty()) {

@@ -118,7 +118,8 @@ public class EditDao extends GenericDao<Edit, Long> {
    * @return source code edits.
    */
   public List<String> getAllDcaps(final int d) {
-    final String query = "SELECT DISTINCT(e.dcap" + d + ") FROM Edit e WHERE e.dcap" + d + " IS NOT NULL";
+    final String query = "SELECT DISTINCT(e.dcap" + d + ") FROM Edit e "
+        + "WHERE e.dcap" + d + " IS NOT NULL";
     return em.createQuery(query, String.class).getResultList();
   }
   
@@ -127,7 +128,8 @@ public class EditDao extends GenericDao<Edit, Long> {
    * @return source code edits.
    */
   public List<String> getAllCommits(final String project) {
-    final String query = "select e.commit FROM Edit e WHERE e.dst IS NOT NULL AND e.context IS NOT NULL"
+    final String query = "select e.commit FROM Edit e "
+        + "WHERE e.dst IS NOT NULL AND e.context IS NOT NULL"
         + " AND e.project like '%" + project + "_old%'"
         + " ORDER BY e.id asc";
     return em.createQuery(query, String.class).getResultList();

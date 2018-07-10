@@ -9,8 +9,11 @@ import java.util.List;
 public class PostOrderTraversal {
   public List<Node<StringNodeData>> list;
 
+  /**
+   * Performs a post-order traversal.
+   */
   public List<Node<StringNodeData>> postOrderTraversal(Node<StringNodeData> t) {
-    list = new ArrayList<Node<StringNodeData>>();
+    list = new ArrayList<>();
     postOrder(t);
     return list;
   }

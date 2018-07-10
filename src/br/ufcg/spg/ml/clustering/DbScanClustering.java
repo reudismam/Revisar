@@ -13,7 +13,6 @@ import br.ufcg.spg.ml.editoperation.InsertNode;
 import br.ufcg.spg.ml.editoperation.Script;
 import br.ufcg.spg.ml.editoperation.UpdateNode;
 import br.ufcg.spg.ml.traversal.PostOrderTraversal;
-import br.ufcg.spg.ml.traversal.ScriptDistanceMetric;
 import br.ufcg.spg.tree.RevisarTree;
 import br.ufcg.spg.tree.RevisarTreeParser;
 
@@ -22,8 +21,6 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.christopherfrantz.dbscan.DBSCANClusterer;
-import org.christopherfrantz.dbscan.DBSCANClusteringException;
 
 public class DbScanClustering {
   
@@ -113,17 +110,17 @@ public class DbScanClustering {
     return label;
   }
 
-  /**
-   * Cluster scripts.
-   */
-  public static List<ArrayList<Script>> cluster(List<Script> scripts) {
-    try {
-      final DBSCANClusterer<Script> dbscan = new DBSCANClusterer<>(
-          scripts, 2, 0.1, new ScriptDistanceMetric());
-      return dbscan.performClustering();
-    } catch (DBSCANClusteringException e) {
-      e.printStackTrace();
-      return null;
-    }
-  }
+//  /**
+//   * Cluster scripts.
+//   */
+//  public static List<ArrayList<Script>> cluster(List<Script> scripts) {
+//    try {
+//      final DBSCANClusterer<Script> dbscan = new DBSCANClusterer<>(
+//          scripts, 2, 0.1, new ScriptDistanceMetric());
+//      return dbscan.performClustering();
+//    } catch (DBSCANClusteringException e) {
+//      e.printStackTrace();
+//      return null;
+//    }
+//  }
 }

@@ -9,14 +9,18 @@ import br.ufcg.spg.database.TransformationDao;
 import br.ufcg.spg.edit.Edit;
 import br.ufcg.spg.ml.clustering.DbScanClustering;
 import br.ufcg.spg.ml.editoperation.Script;
+import br.ufcg.spg.ml.metric.ScriptDistanceMetric;
 import br.ufcg.spg.refaster.RefasterTranslator;
 import br.ufcg.spg.validator.ClusterValidator;
 import br.ufcg.spg.validator.RenameChecker;
 import br.ufcg.spg.validator.node.INodeChecker;
+import de.jail.geometry.schemas.Point;
+import de.jail.statistic.clustering.density.DBScan;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -31,7 +35,7 @@ public final class TransformationUtils {
   /**
    * Learned scripts.
    */
-  private static List<Script> scripts = new ArrayList<>();
+  private static List<Point> scripts = new ArrayList<>();
   /**
    * Rename scripts.
    */
@@ -119,17 +123,24 @@ public final class TransformationUtils {
    */
   public static void transformationsMoreProjects(List<Cluster> clusters) {
     transformations(clusters);
-    List<ArrayList<Script>> clusteredScripts =  DbScanClustering.cluster(scripts);
+    DBScan dbscan = new DBScan(0.01, 1, new ScriptDistanceMetric());
+    List<de.jail.statistic.clustering.Cluster> clusteres = dbscan.cluster(scripts);
     int countCluster = 0;
     List<Script> clusteredScriptsList = new ArrayList<>();
-    for (ArrayList<Script> list : clusteredScripts) {
-      clusteredScriptsList.addAll(list);
-      saveCluster(++countCluster, list);
+    for (de.jail.statistic.clustering.Cluster list : clusteres) {
+      List<Script> ls = new ArrayList<>();
+      for (Point p : list.getAllPoints()) {
+        Script sc = (Script) p;
+        ls.add(sc);
+      }
+      clusteredScriptsList.addAll(ls);
+      saveCluster(++countCluster, ls);
     }
     if (!renameScripts.isEmpty()) {
       saveCluster(++countCluster, renameScripts);
     }
-    for (final Script sc : scripts) {
+    for (final Point point : scripts) {
+      Script sc = (Script) point;
       if (!clusteredScriptsList.contains(sc)) {
         StringBuilder content = new StringBuilder("EDITS\n");
         content.append(sc.getList()).append('\n');
@@ -152,25 +163,25 @@ public final class TransformationUtils {
    * Computes the template for some cluster.
    */
   public static void transformationsMoreProjects_Why_Distinct_Clusters() {
-    final List<Cluster> clusters = getClusterMoreProjects();
-    transformations(clusters);
-    final List<ArrayList<Script>> clusteredScripts =  DbScanClustering.cluster(scripts);
-    final List<Edit> edits = new ArrayList<>();
-    ArrayList<Script> list = clusteredScripts.get(0);
-    list = new ArrayList<>(list.subList(2, 4));
-    for (Script sc : list) {
-      edits.addAll(sc.getCluster().getNodes());
-    }
-    Tuple<Tuple<List<Cluster>, List<Cluster>>, Tuple<Edit, Edit>> toAnalyze = 
-        ClusterUnifier.getInstance().clusterEditsAnalyzeInvalid(edits);
-    Edit srcEdit = toAnalyze.getItem2().getItem1();
-    Edit dstEdit = toAnalyze.getItem2().getItem2();
-    List<Cluster> src = toAnalyze.getItem1().getItem1();
-    List<Cluster> dst = toAnalyze.getItem1().getItem2();
-    List<Tuple<Cluster, Double>> costs;
-    costs = ClusterUnifier.getInstance().bestCluster(src, dst, srcEdit, dstEdit);
-    Cluster valid = ClusterUnifier.getInstance().searchForValid(srcEdit, dstEdit, costs);
-    logger.trace(valid);
+//    final List<Cluster> clusters = getClusterMoreProjects();
+//    transformations(clusters);
+//    final List<ArrayList<Script>> clusteredScripts =  DbScanClustering.cluster(scripts);
+//    final List<Edit> edits = new ArrayList<>();
+//    ArrayList<Script> list = clusteredScripts.get(0);
+//    list = new ArrayList<>(list.subList(2, 4));
+//    for (Script sc : list) {
+//      edits.addAll(sc.getCluster().getNodes());
+//    }
+//    Tuple<Tuple<List<Cluster>, List<Cluster>>, Tuple<Edit, Edit>> toAnalyze = 
+//        ClusterUnifier.getInstance().clusterEditsAnalyzeInvalid(edits);
+//    Edit srcEdit = toAnalyze.getItem2().getItem1();
+//    Edit dstEdit = toAnalyze.getItem2().getItem2();
+//    List<Cluster> src = toAnalyze.getItem1().getItem1();
+//    List<Cluster> dst = toAnalyze.getItem1().getItem2();
+//    List<Tuple<Cluster, Double>> costs;
+//    costs = ClusterUnifier.getInstance().bestCluster(src, dst, srcEdit, dstEdit);
+//    Cluster valid = ClusterUnifier.getInstance().searchForValid(srcEdit, dstEdit, costs);
+//    logger.trace(valid);
   }
 
   private static void saveCluster(int countCluster, List<Script> list) {

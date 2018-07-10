@@ -1,12 +1,16 @@
 package br.ufcg.spg.tree;
 
+import br.ufcg.spg.node.util.ASTNodeUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jdt.core.dom.ASTNode;
-import br.ufcg.spg.node.util.ASTNodeUtils;
 
 public class RevisarTreeUtils {
+  
+  private RevisarTreeUtils() {
+  }
   
   /**
    * Gets root.
@@ -16,8 +20,7 @@ public class RevisarTreeUtils {
   public static String root(final String template) {
     final String value = template;
     final RevisarTree<String> tree = RevisarTreeParser.parser(value); 
-    final String root = tree.getValue().trim();    
-    return root;
+    return tree.getValue().trim();
   }
   
   /**
@@ -26,7 +29,7 @@ public class RevisarTreeUtils {
   public static RevisarTree<ASTNode> convertToRevisarTree(final ASTNode astNode) {
     final List<Object> children = ASTNodeUtils.getChildren(astNode);
     final List<ASTNode> normalizedChildren = ASTNodeUtils.normalize(children);
-    RevisarTree<ASTNode> rtree = new RevisarTree<ASTNode>(astNode);
+    RevisarTree<ASTNode> rtree = new RevisarTree<>(astNode);
     if (normalizedChildren.isEmpty()) {
       return rtree;
     }
@@ -77,7 +80,6 @@ public class RevisarTreeUtils {
     }
     int childIndex = path.get(currentIndex);
     if (childIndex >= node.getChildren().size()) {
-      System.out.println();
       return null;
     }
     RevisarTree<ASTNode> child = node.getChildren().get(childIndex);

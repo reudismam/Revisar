@@ -9,16 +9,20 @@ import org.eclipse.jdt.core.dom.ASTNode;
 
 public class ITreeParser {
   
+  private ITreeParser() {
+  }
+  
   /**
    * parse the ant-unification.
    * @param unifier - ant-unification
    * @param node - node
    * @return parsed ant-unification
    */
-  public static RevisarTree<Tuple<ASTNode, String>> parse(final RevisarTree<String> unifier, final ASTNode node) {
+  public static RevisarTree<Tuple<ASTNode, String>> parse(
+      final RevisarTree<String> unifier, final ASTNode node) {
     final String value = "\n" + PrintUtils.prettyPrint(unifier);
     final Tuple<ASTNode, String> t = new Tuple<>(node, value);
-    final RevisarTree<Tuple<ASTNode, String>> tree = new RevisarTree<Tuple<ASTNode, String>>(t);
+    final RevisarTree<Tuple<ASTNode, String>> tree = new RevisarTree<>(t);
     final List<RevisarTree<String>> auChildren = unifier.getChildren();
     if (auChildren.isEmpty()) {
       return tree;
