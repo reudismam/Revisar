@@ -120,5 +120,6 @@
 	<classpathentry kind="lib" path="lib/urau.jar"/>
 	<classpathentry kind="lib" path="lib/hoau.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Usuário/workspace/Revisar/lib/dbscan.jar"/>
+	<classpathentry kind="lib" path="lib/changedistiller-0.0.1-SNAPSHOT-jar-with-dependencies.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

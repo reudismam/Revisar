@@ -16,9 +16,13 @@ import br.ufcg.spg.edit.EditStorage;
 import br.ufcg.spg.exp.ExpUtils;
 import br.ufcg.spg.log.TimeLogger;
 import br.ufcg.spg.main.MainArguments;
+import br.ufcg.spg.string.StringUtils;
 import br.ufcg.spg.technique.Technique;
 import br.ufcg.spg.technique.TechniqueUtils;
 import br.ufcg.spg.transformation.TransformationUtils;
+import br.ufcg.spg.tree.RevisarTree;
+import br.ufcg.spg.tree.RevisarTreeParser;
+import br.ufcg.spg.util.PrintUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -108,14 +112,6 @@ public class TestSuite {
       clustersDcap.addAll(clusterForDcap);
     }
     TransformationUtils.transformationsMoreProjects(clustersDcap);
-    logger.trace("END.");
-  }
-  
-  @Test
-  public void exp_TranslateMoreProjects_Why_Distinct_Clusters() 
-      throws IOException, JustificationException, ControlledException, CoreException {
-    configMainArguments();
-    TransformationUtils.transformationsMoreProjects_Why_Distinct_Clusters();
     logger.trace("END.");
   }
   

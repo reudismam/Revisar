@@ -71,6 +71,10 @@ public class DbScanClustering {
         String label = right.get(map[1] - 1).getNodeData().getLabel();
         label = configLabel(label);
         String parentLabel = parent != null ? parent.getNodeData().getLabel() : null;
+        /*label = configLabel(label);
+        if (!label.contains("hash")) {
+          label = "node";
+        }*/
         InsertNode insert = new InsertNode(parentLabel, label);
         logger.trace(insert);
         edits.add(insert);
@@ -79,25 +83,29 @@ public class DbScanClustering {
         String label = left.get(map[0] - 1).getNodeData().getLabel();
         label = configLabel(label);
         String parentLabel = parent != null ? parent.getNodeData().getLabel() : null;
+        /*label = configLabel(label);
+        if (!label.contains("hash")) {
+          label = "node";
+        }*/
         DeleteNode delete = new DeleteNode(parentLabel, label);
         edits.add(delete);
         logger.trace(delete);
       } else {
         String label1 = left.get(map[0] - 1).getNodeData().getLabel();
         String label2 = right.get(map[1] - 1).getNodeData().getLabel();
-        label1 = configLabel(label1);
-        if (!label1.contains("hash")) {
-          label1 = "node";
-        }
-        label2 = configLabel(label2);
-        if (!label2.contains("hash")) {
-          label2 = "node";
-        }
         if (!label1.equals(label2)) {
+          label1 = configLabel(label1);
+          if (!label1.contains("hash")) {
+            label1 = "node";
+          }
+          label2 = configLabel(label2);
+          if (!label2.contains("hash")) {
+            label2 = "node";
+          }   
           UpdateNode update = new UpdateNode(label1, label2);
           edits.add(update);
           logger.trace(update);
-        }
+        } 
       }
     }
     return edits;

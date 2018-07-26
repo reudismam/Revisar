@@ -194,11 +194,26 @@ public class Cluster {
    */
   @Override
   public String toString() {
-    final StringBuilder result = new StringBuilder(30);
+    final StringBuilder result = new StringBuilder();
     final RevisarTree<String> atree = RevisarTreeParser.parser(au);
     final String output =  PrintUtils.prettyPrint(atree);
     result.append(getLabel()).append('\n').append(output)
-    .append("\nList of nodes ").append(nodes.size()).append(":\n\n");
+    .append('\n').append(formatStringNodes());
+    int count = 0;
+    for (final Edit node : nodes) {
+      result.append(node.getText()).append(", ")
+      .append(node.getPath()).append(", ").append(node.getCommit()).append('\n');
+      if (++count == 4) {
+        result.append("...\n");
+        break;
+      }
+    }
+    return result.toString();
+  }
+  
+  private String formatStringNodes() {
+    StringBuilder result = new StringBuilder();
+    result.append("List of nodes ").append(nodes.size()).append(":\n\n");
     int count = 0;
     for (final Edit node : nodes) {
       result.append(node.getText()).append(", ")

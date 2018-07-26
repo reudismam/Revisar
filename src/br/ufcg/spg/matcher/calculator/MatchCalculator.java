@@ -43,8 +43,8 @@ public abstract class MatchCalculator<T> {
    */
   public void fillNode(final T root) {
     currentIndex = 0;
-    nodes = new ArrayList<T>();
-    indexes = new ArrayList<Integer>();
+    nodes = new ArrayList<>();
+    indexes = new ArrayList<>();
     buildNodesFromRoot(root);
   }
 

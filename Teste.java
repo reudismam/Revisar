@@ -1,6 +1,8 @@
 package br.ufcg.spg.transformation;
 
+import br.ufcg.spg.bean.Tuple;
 import br.ufcg.spg.cluster.Cluster;
+import br.ufcg.spg.cluster.ClusterUnifier;
 import br.ufcg.spg.config.TechniqueConfig;
 import br.ufcg.spg.database.ClusterDao;
 import br.ufcg.spg.database.TransformationDao;
@@ -14,12 +16,15 @@ import br.ufcg.spg.tree.RevisarTree;
 import br.ufcg.spg.tree.RevisarTreeParser;
 import br.ufcg.spg.util.PrintUtils;
 import br.ufcg.spg.validator.ClusterValidator;
+import br.ufcg.spg.validator.RenameChecker;
+import br.ufcg.spg.validator.node.INodeChecker;
 import de.jail.geometry.schemas.Point;
 import de.jail.statistic.clustering.density.DBScan;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -29,7 +34,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * Utility class to perform transformations.
  */
-public final class TransformationUtils {
+public final class Teste {
   
   /**
    * Learned scripts.
@@ -50,7 +55,7 @@ public final class TransformationUtils {
    */
   private static int clusterIndex = 1;
   
-  private TransformationUtils() {
+  private Teste () {
   }
   
   /**
@@ -101,7 +106,7 @@ public final class TransformationUtils {
         }
         Edit edit = clusteri.getNodes().get(0);
         Transformation transformation = tranformation(clusteri, edit);
-        TransformationDao.getInstance().save(transformation);
+        //TransformationDao.getInstance().save(transformation);
         saveTransformation(transformation);
       }
     } catch (final Exception e) {
@@ -158,6 +163,31 @@ public final class TransformationUtils {
         }
       }
     }
+  }
+  
+  /**
+   * Computes the template for some cluster.
+   */
+  public static void transformationsMoreProjects_Why_Distinct_Clusters() {
+//    final List<Cluster> clusters = getClusterMoreProjects();
+//    transformations(clusters);
+//    final List<ArrayList<Script>> clusteredScripts =  DbScanClustering.cluster(scripts);
+//    final List<Edit> edits = new ArrayList<>();
+//    ArrayList<Script> list = clusteredScripts.get(0);
+//    list = new ArrayList<>(list.subList(2, 4));
+//    for (Script sc : list) {
+//      edits.addAll(sc.getCluster().getNodes());
+//    }
+//    Tuple<Tuple<List<Cluster>, List<Cluster>>, Tuple<Edit, Edit>> toAnalyze = 
+//        ClusterUnifier.getInstance().clusterEditsAnalyzeInvalid(edits);
+//    Edit srcEdit = toAnalyze.getItem2().getItem1();
+//    Edit dstEdit = toAnalyze.getItem2().getItem2();
+//    List<Cluster> src = toAnalyze.getItem1().getItem1();
+//    List<Cluster> dst = toAnalyze.getItem1().getItem2();
+//    List<Tuple<Cluster, Double>> costs;
+//    costs = ClusterUnifier.getInstance().bestCluster(src, dst, srcEdit, dstEdit);
+//    Cluster valid = ClusterUnifier.getInstance().searchForValid(srcEdit, dstEdit, costs);
+//    logger.trace(valid);
   }
 
   private static void saveCluster(int countCluster, List<Script> list) {
@@ -240,7 +270,7 @@ public final class TransformationUtils {
       return;
     }
     scripts.add(script);
-    String path = "../Projects/cluster/" + trans.isValid() + '/' + clusteri.getId() + ".txt";
+    String path = "../Projects/cluster/" + trans.isValid() + '/' + clusterIndex++ + ".txt";
     final File clusterFile = new File(path);
     FileUtils.writeStringToFile(clusterFile, content.toString());
   }

@@ -4,6 +4,7 @@ import br.ufcg.spg.bean.Tuple;
 import br.ufcg.spg.exp.ExpUtils;
 import br.ufcg.spg.main.command.ExtractConcreteEditsCommand;
 import br.ufcg.spg.main.command.ICommand;
+import br.ufcg.spg.string.StringUtils;
 import br.ufcg.spg.technique.Technique;
 
 import java.util.List;
