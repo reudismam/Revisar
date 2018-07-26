@@ -235,11 +235,11 @@ public final class TransformationUtils {
     content.append(refaster).append('\n');
     content.append(formatClusterContent(clusteri, clusterj));
     content.append(formatHeader());
-    Script script = DbScanClustering.getCluster(clusteri);    
+    //Script script = DbScanClustering.getCluster(clusteri);    
     if (isSameBeforeAfter(clusteri)) {
       return;
     }
-    scripts.add(script);
+    //scripts.add(script);
     String path = "../Projects/cluster/" + trans.isValid() + '/' + clusteri.getId() + ".txt";
     final File clusterFile = new File(path);
     FileUtils.writeStringToFile(clusterFile, content.toString());

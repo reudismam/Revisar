@@ -111,15 +111,14 @@
 	<classpathentry kind="lib" path="lib/log4j/log4j-core-2.11.0.jar"/>
 	<classpathentry kind="lib" path="lib/apted/apted.jar"/>
 	<classpathentry kind="lib" path="lib/dbscan/dbscan-0.1.jar"/>
+	<classpathentry kind="lib" path="lib/urauc.jar"/>
+	<classpathentry kind="lib" path="lib/urau.jar"/>
+	<classpathentry kind="lib" path="lib/hoau.jar"/>
+	<classpathentry kind="lib" path="lib/dbscan.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/EclipseLink 2.5.2">
 		<attributes>
 			<attribute name="owner.project.facets" value="jpt.jpa"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/urauc.jar"/>
-	<classpathentry kind="lib" path="lib/urau.jar"/>
-	<classpathentry kind="lib" path="lib/hoau.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Usuário/workspace/Revisar/lib/dbscan.jar"/>
-	<classpathentry kind="lib" path="lib/changedistiller-0.0.1-SNAPSHOT-jar-with-dependencies.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
