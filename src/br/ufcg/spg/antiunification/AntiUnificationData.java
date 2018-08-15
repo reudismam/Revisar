@@ -5,12 +5,12 @@ import br.ufcg.spg.antiunification.substitution.HoleWithSubstutings;
 import java.util.List;
 
 public class AntiUnificationData {
-  /*
+  /**
    * Unifier
    */
   private String unifier;
 
-  /*
+  /**
    * Variables
    */
   private List<HoleWithSubstutings> variables;

@@ -9,7 +9,13 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.validation.Valid;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public abstract class GenericDao<T, I extends Serializable> {
+  
+  private static final Logger logger = LogManager.getLogger(GenericDao.class.getName());
+  
   protected EntityManager em;
 
   private Class<T> persistedClass;
@@ -45,9 +51,12 @@ public abstract class GenericDao<T, I extends Serializable> {
     t.begin();
     for (int i = 0; i < entities.size(); i++) {
       final T entity = entities.get(i);
-      System.out.println(((double)i) / entities.size() + " % saved");
+      logger.warn((((double)i) / entities.size()) * 100 + " % saved");
       em.persist(entity);
-      em.flush(); 
+      if (i % 20 == 0) {
+        em.flush(); 
+        em.clear();
+      }
     }
     t.commit();
     return entities;

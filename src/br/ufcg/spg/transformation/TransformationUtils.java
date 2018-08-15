@@ -1,18 +1,15 @@
 package br.ufcg.spg.transformation;
 
 import br.ufcg.spg.cluster.Cluster;
+import br.ufcg.spg.cluster.ClusterFormatter;
 import br.ufcg.spg.config.TechniqueConfig;
 import br.ufcg.spg.database.ClusterDao;
 import br.ufcg.spg.database.TransformationDao;
 import br.ufcg.spg.edit.Edit;
-import br.ufcg.spg.ml.clustering.DbScanClustering;
+import br.ufcg.spg.filter.PatternFilter;
 import br.ufcg.spg.ml.editoperation.Script;
 import br.ufcg.spg.ml.metric.ScriptDistanceMetric;
 import br.ufcg.spg.refaster.RefasterTranslator;
-import br.ufcg.spg.string.StringUtils;
-import br.ufcg.spg.tree.RevisarTree;
-import br.ufcg.spg.tree.RevisarTreeParser;
-import br.ufcg.spg.util.PrintUtils;
 import br.ufcg.spg.validator.ClusterValidator;
 import de.jail.geometry.schemas.Point;
 import de.jail.statistic.clustering.density.DBScan;
@@ -101,7 +98,7 @@ public final class TransformationUtils {
         }
         Edit edit = clusteri.getNodes().get(0);
         Transformation transformation = tranformation(clusteri, edit);
-        TransformationDao.getInstance().save(transformation);
+        //TransformationDao.getInstance().save(transformation);
         saveTransformation(transformation);
       }
     } catch (final Exception e) {
@@ -133,10 +130,10 @@ public final class TransformationUtils {
         ls.add(sc);
       }
       clusteredScriptsList.addAll(ls);
-      saveCluster(++countCluster, ls);
+      saveClusterToFile(++countCluster, ls);
     }
     if (!renameScripts.isEmpty()) {
-      saveCluster(++countCluster, renameScripts);
+      saveClusterToFile(++countCluster, renameScripts);
     }
     for (final Point point : scripts) {
       Script sc = (Script) point;
@@ -145,9 +142,9 @@ public final class TransformationUtils {
       if (!clusteredScriptsList.contains(sc)) {
         StringBuilder content = new StringBuilder("");
         content.append(sc.getList()).append('\n');
-        content.append(formatHeader());
-        content.append(formatClusterContent(clusteri, clusterj));
-        content.append(formatHeader());
+        content.append(ClusterFormatter.getInstance().formatHeader());
+        content.append(ClusterFormatter.getInstance().formatClusterContent(clusteri, clusterj));
+        content.append(ClusterFormatter.getInstance().formatFooter());
         String counterFormated =  String.format("%03d", ++ countCluster);
         String path = "../Projects/cluster/clusters/" + counterFormated + ".txt";
         final File clusterFile = new File(path);
@@ -160,19 +157,19 @@ public final class TransformationUtils {
     }
   }
 
-  private static void saveCluster(int countCluster, List<Script> list) {
+  private static void saveClusterToFile(int countCluster, List<Script> list) {
     StringBuilder content = new StringBuilder("NUMBER OF NODES IN THIS CLUSTER: " 
         + list.size()).append("\n\n");
     int count = 0;
     for (Script sc : list) {
-      content.append(formatHeader());
+      content.append(ClusterFormatter.getInstance().formatHeader());
       content.append(sc.getList()).append('\n');
       String cnumber = String.format("%03d", ++count);
       content.append("CLUSTER ").append(cnumber).append('\n');
       Cluster clusteri = sc.getCluster();
       Cluster clusterj = clusteri.getDst();
-      content.append(formatClusterContent(clusteri, clusterj));
-      content.append(formatFooter());
+      content.append(ClusterFormatter.getInstance().formatClusterContent(clusteri, clusterj));
+      content.append(ClusterFormatter.getInstance().formatFooter());
     }
     String counterFormated =  String.format("%03d", countCluster);
     String path = "../Projects/cluster/clusters/" + counterFormated + ".txt";
@@ -182,22 +179,6 @@ public final class TransformationUtils {
     } catch (IOException e) {
       logger.error(e.getStackTrace());
     }
-  }
-
-  private static String formatHeader() {
-    StringBuilder content = new StringBuilder();
-    content.append("================================================================================\n");
-    content.append("=================================CLUSTER DATA===================================\n");
-    content.append("================================================================================\n");
-    return content.toString();
-  }
-  
-  private static String formatFooter() {
-    StringBuilder content = new StringBuilder();
-    content.append("================================================================================\n");
-    content.append("==============================END OF CLUSTER DATA===============================\n");
-    content.append("================================================================================\n\n");
-    return content.toString();
   }
 
   /**
@@ -231,74 +212,87 @@ public final class TransformationUtils {
     final Cluster clusteri = trans.getCluster();
     final Cluster clusterj = clusteri.getDst();
     StringBuilder content = new StringBuilder("");
-    content.append(formatHeader());
+    content.append(ClusterFormatter.getInstance().formatHeader());
     content.append(refaster).append('\n');
-    content.append(formatClusterContent(clusteri, clusterj));
-    content.append(formatHeader());
+    content.append(ClusterFormatter.getInstance().formatClusterContent(clusteri, clusterj));
+    content.append(ClusterFormatter.getInstance().formatFooter());
     //Script script = DbScanClustering.getCluster(clusteri);    
     if (isSameBeforeAfter(clusteri)) {
       return;
-    }
-    //scripts.add(script);
-    String path = "../Projects/cluster/" + trans.isValid() + '/' + clusteri.getId() + ".txt";
+    } 
+    List<PatternFilter> filters = filterFactory();
+    for (PatternFilter filter : filters) {
+      final String srcOutput =  clusteri.getAu();
+      final String dstOutput = clusterj.getAu();
+      if (filter.match(srcOutput, dstOutput)) {
+        String counterFormated =  String.format("%03d", clusterIndex++);
+        String path = "../Projects/cluster/filtered/" + trans.isValid() 
+            + '/' + counterFormated + ".txt";
+        final File clusterFile = new File(path);
+        FileUtils.writeStringToFile(clusterFile, content.toString());
+        return;
+      }
+    }  
+    String counterFormated =  String.format("%03d", clusterIndex++);
+    String path = "../Projects/cluster/" + trans.isValid() + '/' + counterFormated + ".txt";
     final File clusterFile = new File(path);
     FileUtils.writeStringToFile(clusterFile, content.toString());
   }
   
-  private static String formatClusterContent(final Cluster clusteri, final Cluster clusterj) {
-    StringBuilder content = new StringBuilder();
-    RevisarTree<String> tempBefore = RevisarTreeParser.parser(clusteri.getAu());
-    String before = PrintUtils.prettyPrint(tempBefore);
-    RevisarTree<String> tempAfter = RevisarTreeParser.parser(clusterj.getAu());
-    String after = PrintUtils.prettyPrint(tempAfter);
-    String addToLines = "          ";
-    String afterFormated = formatOutput(after, addToLines);
-    String output = StringUtils.printStringSideBySide(before, afterFormated);
-    content.append(output);
-    content.append(formatStringNodes(clusteri.getNodes()));
-    return content.toString();
-  }
-  
-  private static String formatStringNodes(final List<Edit> srcNodes) {
-    StringBuilder result = new StringBuilder();
-    result.append("\nEXAMPLES IN THIS CLUSTER ").append(srcNodes.size()).append(":\n\n");
-    StringBuilder beforeNodes = new StringBuilder();
-    StringBuilder afterNodes = new StringBuilder();
-    int count = 0;
-    for (final Edit node : srcNodes) {
-      beforeNodes.append(node.getText()).append('\n');
-      afterNodes.append(node.getDst().getText()).append('\n');
-      if (++count == 4) {
-        break;
-      }
-    }
-    String addToLines = "    >>    ";
-    String afterOutput = formatOutput(afterNodes.toString(), addToLines);
-    String output = StringUtils.printStringSideBySide(beforeNodes.toString(), afterOutput);
-    result.append(output);
-    result.append("...\n");
-    return result.toString();
-  }
-  
-  /**
-   * Format output.
-   * @param pattern pattern
-   */
-  private static String formatOutput(final String pattern, final String addToLines) {
-    String newPattern = "";
-    String addToMid = "    >>    ";
-    String[] lines = pattern.split("\n");
-    int mid = lines.length / 2;
-    for (int i = 0; i < lines.length; i++) {
-      if (i == mid) {
-        newPattern += addToMid + lines[i] + '\n';
-      } else {
-        newPattern += addToLines + lines[i] + '\n';
-      }
-    }
-    return newPattern;
-  }
+  private static List<PatternFilter> filterFactory() {
+    PatternFilter varrename = new PatternFilter(
+        "VARIABLE_DECLARATION_FRAGMENT\\(SIMPLE_NAME\\(hash_[0-9]+\\)\\)", 
+        "VARIABLE_DECLARATION_FRAGMENT\\(SIMPLE_NAME\\([a-zA-Z0-9_]+\\)\\)");
 
+    /*PatternFilter returnrename = new PatternFilter(
+        "RETURN_STATEMENT\\(SIMPLE_NAME\\(hash_[0-9]+\\)\\)",
+        "RETURN_STATEMENT\\(SIMPLE_NAME\\([a-zA-Z0-9_]+\\)\\)");*/
+    List<PatternFilter> pfilters = new ArrayList<>();
+    
+    PatternFilter trueFalse = new PatternFilter(
+        "RETURN_STATEMENT\\([A-Z]+_[A-Z]+\\([a-zA-Z0-9_]+\\)\\)", 
+        "RETURN_STATEMENT\\([A-Z]+_[A-Z]+\\([a-zA-Z0-9_]+\\)\\)");
+    
+    PatternFilter trueFalseVariable = new PatternFilter(
+        "VARIABLE_DECLARATION_FRAGMENT\\(SIMPLE_NAME\\([_0-9a-zA-Z]+\\), BOOLEAN_LITERAL\\([a-z]+\\)\\)", 
+        "VARIABLE_DECLARATION_FRAGMENT\\(SIMPLE_NAME\\([_0-9a-zA-Z]+\\), BOOLEAN_LITERAL\\([a-z]+\\)\\)");
+    
+    PatternFilter changeNumber = new PatternFilter(
+        "VARIABLE_DECLARATION_FRAGMENT\\(SIMPLE_NAME\\(hash_[0-9]+\\), NUMBER_LITERAL\\(hash_[0-9]+\\)\\)", 
+        "VARIABLE_DECLARATION_FRAGMENT\\(SIMPLE_NAME\\([_0-9A-Za-z]+\\), NUMBER_LITERAL\\([0-9]+\\)\\)");
+    
+    PatternFilter constructor = new PatternFilter(
+        "SUPER_CONSTRUCTOR_INVOCATION\\([ _,a-zA-Z0-9\\(\\)]+\\)", 
+        "SUPER_CONSTRUCTOR_INVOCATION\\([ _,a-zA-Z0-9\\(\\)]+\\)");
+    
+    PatternFilter swithcaseDefault = new PatternFilter(
+        "SWITCH_CASE\\([\\(\\)_a-zA-Z0-9]+\\)", 
+        "SWITCH_CASE\\([\\(\\)_a-zA-Z0-9]+\\)");
+    
+    PatternFilter markerAnnotationFilter = new PatternFilter(
+        "MARKER_ANNOTATION\\(SIMPLE_NAME\\([a-zA-Z0-9_]+\\)\\)",
+        "MARKER_ANNOTATION\\(SIMPLE_NAME\\([a-zA-Z0-9_]+\\)\\)");
+   
+    PatternFilter toSingleVariable = new PatternFilter(
+        ".+", 
+        "VARIABLE_DECLARATION_FRAGMENT\\(SIMPLE_NAME\\([a-zA-Z0-9_]+\\)\\)");
+    
+    PatternFilter infixes = new PatternFilter(
+        "^(INFIX_EXPRESSION|POSTFIX_EXPRESSION)\\([, a-zA-Z0-9\\)\\(_]+\\)", 
+        "^(INFIX_EXPRESSION|POSTFIX_EXPRESSION)\\([, a-zA-Z0-9\\)\\(_]+\\)");
+    pfilters.add(varrename);
+    //pfilters.add(returnrename);
+    pfilters.add(trueFalse);
+    pfilters.add(changeNumber);
+    pfilters.add(trueFalseVariable);
+    pfilters.add(swithcaseDefault);
+    pfilters.add(constructor);
+    pfilters.add(markerAnnotationFilter);
+    pfilters.add(toSingleVariable);
+    pfilters.add(infixes);
+    return pfilters;
+  }
+  
   private static List<Cluster> getClusters() {
     final ClusterDao dao = ClusterDao.getInstance();
     return dao.getSrcClusters();
