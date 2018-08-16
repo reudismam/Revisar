@@ -102,7 +102,7 @@ public final class TransformationUtils {
         saveTransformation(transformation);
       }
     } catch (final Exception e) {
-      logger.error(e.getStackTrace());
+      e.printStackTrace();
     }
   }
   
@@ -199,7 +199,7 @@ public final class TransformationUtils {
       trans.setValid(isValid);
       return trans;
     } catch (final Exception e) {
-      logger.error(e.getStackTrace());
+      e.printStackTrace();
     }
     return null;
   }
@@ -243,10 +243,7 @@ public final class TransformationUtils {
     PatternFilter varrename = new PatternFilter(
         "VARIABLE_DECLARATION_FRAGMENT\\(SIMPLE_NAME\\(hash_[0-9]+\\)\\)", 
         "VARIABLE_DECLARATION_FRAGMENT\\(SIMPLE_NAME\\([a-zA-Z0-9_]+\\)\\)");
-
-    /*PatternFilter returnrename = new PatternFilter(
-        "RETURN_STATEMENT\\(SIMPLE_NAME\\(hash_[0-9]+\\)\\)",
-        "RETURN_STATEMENT\\(SIMPLE_NAME\\([a-zA-Z0-9_]+\\)\\)");*/
+    
     List<PatternFilter> pfilters = new ArrayList<>();
     
     PatternFilter trueFalse = new PatternFilter(
@@ -281,7 +278,6 @@ public final class TransformationUtils {
         "^(INFIX_EXPRESSION|POSTFIX_EXPRESSION)\\([, a-zA-Z0-9\\)\\(_]+\\)", 
         "^(INFIX_EXPRESSION|POSTFIX_EXPRESSION)\\([, a-zA-Z0-9\\)\\(_]+\\)");
     pfilters.add(varrename);
-    //pfilters.add(returnrename);
     pfilters.add(trueFalse);
     pfilters.add(changeNumber);
     pfilters.add(trueFalseVariable);

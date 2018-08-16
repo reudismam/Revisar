@@ -20,7 +20,6 @@ import br.ufcg.spg.replacement.ReplacementUtils;
 import java.io.IOException;
 import java.util.List;
 
-import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
@@ -29,20 +28,18 @@ import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.api.errors.NoFilepatternException;
-import org.eclipse.jgit.errors.AmbiguousObjectException;
-import org.eclipse.jgit.errors.IncorrectObjectTypeException;
-import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.text.edits.TextEdit;
 
 public class RefasterTranslator {
+  
+  private RefasterTranslator() {
+  }
 
   /**
    * Translate edit to Refaster rule.
    */
   public static String translate(final Cluster clusteri, final Edit srcEdit)
-      throws BadLocationException, IOException, JavaModelException, 
-      IllegalArgumentException, NoFilepatternException, GitAPIException {
+      throws BadLocationException, IOException, GitAPIException {
     final JParser refasterRuleParser = new JParser();
     final String refasterFile = RefasterConstants.RefasterPath;
     final CompilationUnit rule = refasterRuleParser.parseWithDocument(refasterFile);
@@ -50,8 +47,7 @@ public class RefasterTranslator {
     // Learn before and after method
     final Tuple<MethodDeclaration, MethodDeclaration> ba = beforeAfter(clusteri, rule, srcEdit);
     // Replace before and after method in Refaster rule.
-    final String refaster = replaceBeforeAfter(rule, document, ba);
-    return refaster;
+    return replaceBeforeAfter(rule, document, ba);
   }
 
   /**
@@ -74,8 +70,7 @@ public class RefasterTranslator {
     rewrite.replace(methods[1], ba.getItem2(), null);
     final TextEdit edits = rewrite.rewriteAST(document, null);
     edits.apply(document);
-    final String refaster = document.get();
-    return refaster;
+    return document.get();
   }
 
   /**
@@ -93,7 +88,7 @@ public class RefasterTranslator {
    */
   private static Tuple<MethodDeclaration, MethodDeclaration> beforeAfter(
       final Cluster srcCluster, final CompilationUnit rule, Edit srcEdit)
-      throws BadLocationException, IOException, NoFilepatternException, GitAPIException {
+      throws BadLocationException, IOException, GitAPIException {
     final Cluster dstCluster = srcCluster.getDst();
     //gets only first location, since other locations
     //follow the same template
@@ -168,9 +163,7 @@ public class RefasterTranslator {
    * @param srcEdit source edit
    */
   private static ProjectInfo checkoutIfDiffer(final Edit srcEdit) 
-      throws MissingObjectException, IncorrectObjectTypeException,
-      AmbiguousObjectException, IOException, 
-      NoFilepatternException, GitAPIException {
+      throws IOException, GitAPIException {
     final Edit dstEdit = srcEdit.getDst();
     final ProjectInfo pi = ProjectAnalyzer.project(srcEdit);
     final String commit = dstEdit.getCommit();
@@ -192,7 +185,6 @@ public class RefasterTranslator {
     final List<ASTNode> nodes = mcal.getNodes(refasterRule);
     final MethodDeclaration before = (MethodDeclaration) nodes.get(0);
     final MethodDeclaration after = (MethodDeclaration) nodes.get(1);
-    final Tuple<MethodDeclaration, MethodDeclaration> ba = new Tuple<>(before, after);
-    return ba;
+    return new Tuple<>(before, after);
   }
 }

@@ -46,8 +46,7 @@ public class ReplacementUtils {
    * @return replacements
    */
   public static List<Replacement<ASTNode>> replacements(final Edit edit, final String au, 
-      final CompilationUnit unit) 
-      throws IOException, NoFilepatternException, GitAPIException {
+      final CompilationUnit unit) {
     IMatcher<ASTNode> matcher = new PositionNodeMatcher(edit.getStartPos(), 
         edit.getEndPos());
     final MatchCalculator<ASTNode> mcalc = new NodeMatchCalculator(matcher);
@@ -66,18 +65,6 @@ public class ReplacementUtils {
       targetList.add(replacement);
     }
     return targetList;
-  }
-  
-  /**
-   * Calculates the replacements.
-   * @param edit edit
-   * @param au anti-unification
-   * @return replacements
-   */
-  public static List<Replacement<String>> replacements(final Edit edit, final String au) 
-      throws IOException, NoFilepatternException, GitAPIException {
-    //return targetList;
-    return null;
   }
   
   private static Map<String, List<ASTNode>> getAbstractionMap(final String clAu, 
@@ -113,7 +100,7 @@ public class ReplacementUtils {
     addConcreteEditsGumTree(config.getSrcList(), config.getDiff(), 
         config.getDstCu(), befores, afters);
     addConcreteEditsStructure(config.getSrcList(), config.getDstList(), befores, afters);
-    return new Tuple<List<ASTNode>, List<ASTNode>>(befores, afters);
+    return new Tuple<>(befores, afters);
   }
 
   /**
@@ -191,7 +178,7 @@ public class ReplacementUtils {
   public static Tuple<List<ASTNode>, List<ASTNode>> ba(final Edit srcEdit,
       final Edit dstEdit, final ProjectInfo pi, final List<Replacement<ASTNode>> src,
       final List<Replacement<ASTNode>> dst) 
-          throws IOException, NoFilepatternException, GitAPIException, ExecutionException {
+          throws ExecutionException {
     final DiffCalculator diff = DiffUtils.diff(srcEdit, dstEdit);
     final Version dstv = pi.getDstVersion();
     final String dstCommit = dstEdit.getCommit();
