@@ -221,12 +221,7 @@ public final class TransformationUtils {
       throws IOException, BadLocationException, GitAPIException {
     final Cluster clusteri = trans.getCluster();
     final Cluster clusterj = clusteri.getDst();
-    final String refaster = createRefasterRule(clusteri, edit);
-    StringBuilder content = new StringBuilder("");
-    content.append(ClusterFormatter.getInstance().formatHeader());
-    content.append(refaster).append('\n');
-    content.append(ClusterFormatter.getInstance().formatClusterContent(clusteri, clusterj));
-    content.append(ClusterFormatter.getInstance().formatFooter());
+    
     //Script script = DbScanClustering.getCluster(clusteri);    
     if (isSameBeforeAfter(clusteri)) {
       return;
@@ -240,14 +235,29 @@ public final class TransformationUtils {
         String path = "../Projects/cluster/filtered/" + trans.isValid() 
             + '/' + counterFormated + ".txt";
         final File clusterFile = new File(path);
+        StringBuilder content = formatCluster(clusteri, clusterj, "");
         FileUtils.writeStringToFile(clusterFile, content.toString());
         return;
       }
     }  
+    //Create rules only if the transformation is not a noise.
+    final String refaster = createRefasterRule(clusteri, edit);
+    trans.setTransformation(refaster);
     String counterFormated =  String.format("%03d", clusterIndex++);
     String path = "../Projects/cluster/" + trans.isValid() + '/' + counterFormated + ".txt";
     final File clusterFile = new File(path);
+    StringBuilder content = formatCluster(clusteri, clusterj, refaster);
     FileUtils.writeStringToFile(clusterFile, content.toString());
+  }
+
+  private static StringBuilder formatCluster(final Cluster clusteri, 
+      final Cluster clusterj, final String refaster) {
+    StringBuilder content = new StringBuilder("");
+    content.append(ClusterFormatter.getInstance().formatHeader());
+    content.append(refaster).append('\n');
+    content.append(ClusterFormatter.getInstance().formatClusterContent(clusteri, clusterj));
+    content.append(ClusterFormatter.getInstance().formatFooter());
+    return content;
   }
   
   private static List<PatternFilter> filterFactory() {
