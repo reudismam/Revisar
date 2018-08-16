@@ -22,6 +22,8 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jgit.api.errors.GitAPIException;
 
 /**
  * Utility class to perform transformations.
@@ -184,18 +186,13 @@ public final class TransformationUtils {
   /**
    * Learns a transformation for a cluster.
    */
-  public static Transformation tranformation(final Cluster clusteri, final Edit srcEdit) {
-    try {
-      String refaster;
-      if (TechniqueConfig.getInstance().isCreateRule()) {    
-        refaster = RefasterTranslator.translate(clusteri, srcEdit);
-      } else {
-        refaster = "";
-      }
-      final boolean isValid = ClusterValidator.isValidTrans(clusteri);
+  public static Transformation tranformation(final Cluster srcCluster, final Edit edit) {
+    try {     
+      final boolean isValid = ClusterValidator.isValidTrans(srcCluster);
+      final String refaster = createRefasterRule(srcCluster, edit);
       final Transformation trans = new Transformation();
       trans.setTransformation(refaster);
-      trans.setCluster(clusteri);
+      trans.setCluster(srcCluster);
       trans.setValid(isValid);
       return trans;
     } catch (final Exception e) {
@@ -204,10 +201,22 @@ public final class TransformationUtils {
     return null;
   }
 
+  private static String createRefasterRule(final Cluster srcCluster, final Edit srcEdit)
+      throws BadLocationException, IOException, GitAPIException {
+    String refaster;
+    if (TechniqueConfig.getInstance().isCreateRule()) {    
+      refaster = RefasterTranslator.translate(srcCluster, srcEdit);
+    } else {
+      refaster = "";
+    }
+    return refaster;
+  }
+
   /**
    * Saves a transformation.
    */
-  public static void saveTransformation(final Transformation trans) throws IOException {
+  public static void saveTransformation(final Transformation trans) 
+      throws IOException {
     final String refaster = trans.getTransformation();
     final Cluster clusteri = trans.getCluster();
     final Cluster clusterj = clusteri.getDst();
