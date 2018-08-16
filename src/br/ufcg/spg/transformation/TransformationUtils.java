@@ -98,10 +98,10 @@ public final class TransformationUtils {
         if (clusteri.getNodes().size() < 2) {
           continue;
         }
-        Edit edit = clusteri.getNodes().get(0);
-        Transformation transformation = tranformation(clusteri, edit);
+        Transformation transformation = tranformation(clusteri);
         //TransformationDao.getInstance().save(transformation);
-        saveTransformation(transformation);
+        Edit edit = clusteri.getNodes().get(0);
+        saveTransformation(transformation, edit);
       }
     } catch (final Exception e) {
       e.printStackTrace();
@@ -186,12 +186,10 @@ public final class TransformationUtils {
   /**
    * Learns a transformation for a cluster.
    */
-  public static Transformation tranformation(final Cluster srcCluster, final Edit edit) {
+  public static Transformation tranformation(final Cluster srcCluster) {
     try {     
       final boolean isValid = ClusterValidator.isValidTrans(srcCluster);
-      final String refaster = createRefasterRule(srcCluster, edit);
       final Transformation trans = new Transformation();
-      trans.setTransformation(refaster);
       trans.setCluster(srcCluster);
       trans.setValid(isValid);
       return trans;
@@ -201,7 +199,11 @@ public final class TransformationUtils {
     return null;
   }
 
-  private static String createRefasterRule(final Cluster srcCluster, final Edit srcEdit)
+  /**
+   * Create a Refaster rule.
+   */
+  public static String createRefasterRule(final Cluster srcCluster, 
+      final Edit srcEdit)
       throws BadLocationException, IOException, GitAPIException {
     String refaster;
     if (TechniqueConfig.getInstance().isCreateRule()) {    
@@ -213,13 +215,13 @@ public final class TransformationUtils {
   }
 
   /**
-   * Saves a transformation.
+   * Saves a transformation. 
    */
-  public static void saveTransformation(final Transformation trans) 
-      throws IOException {
-    final String refaster = trans.getTransformation();
+  public static void saveTransformation(final Transformation trans, final Edit edit) 
+      throws IOException, BadLocationException, GitAPIException {
     final Cluster clusteri = trans.getCluster();
     final Cluster clusterj = clusteri.getDst();
+    final String refaster = createRefasterRule(clusteri, edit);
     StringBuilder content = new StringBuilder("");
     content.append(ClusterFormatter.getInstance().formatHeader());
     content.append(refaster).append('\n');
@@ -260,12 +262,16 @@ public final class TransformationUtils {
         "RETURN_STATEMENT\\([A-Z]+_[A-Z]+\\([a-zA-Z0-9_]+\\)\\)");
     
     PatternFilter trueFalseVariable = new PatternFilter(
-        "VARIABLE_DECLARATION_FRAGMENT\\(SIMPLE_NAME\\([_0-9a-zA-Z]+\\), BOOLEAN_LITERAL\\([a-z]+\\)\\)", 
-        "VARIABLE_DECLARATION_FRAGMENT\\(SIMPLE_NAME\\([_0-9a-zA-Z]+\\), BOOLEAN_LITERAL\\([a-z]+\\)\\)");
+        "VARIABLE_DECLARATION_FRAGMENT\\(SIMPLE_NAME"
+        + "\\([_0-9a-zA-Z]+\\), BOOLEAN_LITERAL\\([a-z]+\\)\\)", 
+        "VARIABLE_DECLARATION_FRAGMENT\\(SIMPLE_NAME"
+        + "\\([_0-9a-zA-Z]+\\), BOOLEAN_LITERAL\\([a-z]+\\)\\)");
     
     PatternFilter changeNumber = new PatternFilter(
-        "VARIABLE_DECLARATION_FRAGMENT\\(SIMPLE_NAME\\(hash_[0-9]+\\), NUMBER_LITERAL\\(hash_[0-9]+\\)\\)", 
-        "VARIABLE_DECLARATION_FRAGMENT\\(SIMPLE_NAME\\([_0-9A-Za-z]+\\), NUMBER_LITERAL\\([0-9]+\\)\\)");
+        "VARIABLE_DECLARATION_FRAGMENT"
+        + "\\(SIMPLE_NAME\\(hash_[0-9]+\\), NUMBER_LITERAL\\(hash_[0-9]+\\)\\)", 
+        "VARIABLE_DECLARATION_FRAGMENT"
+        + "\\(SIMPLE_NAME\\([_0-9A-Za-z]+\\), NUMBER_LITERAL\\([0-9]+\\)\\)");
     
     PatternFilter constructor = new PatternFilter(
         "SUPER_CONSTRUCTOR_INVOCATION\\([ _,a-zA-Z0-9\\(\\)]+\\)", 

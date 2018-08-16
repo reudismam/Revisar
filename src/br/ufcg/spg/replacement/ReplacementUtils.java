@@ -22,7 +22,6 @@ import br.ufcg.spg.tree.RevisarTreeParser;
 
 import com.github.gumtreediff.tree.ITree;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -33,8 +32,6 @@ import java.util.regex.Pattern;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.CompilationUnit;
-import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.api.errors.NoFilepatternException;
 
 public class ReplacementUtils {
   public static final String REGEX = "(hash.\\d+)";

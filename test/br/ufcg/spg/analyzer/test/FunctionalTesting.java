@@ -30,10 +30,10 @@ public class FunctionalTesting {
       for (final Cluster cluster : srcClusters) {
         final List<String> refasterRules = new ArrayList<>();
         for (final Edit edit : cluster.getNodes()) {
-          final Transformation transformation = TransformationUtils.tranformation(cluster, edit);
-          final String refaster = transformation.getTransformation();
+          final Transformation transformation = TransformationUtils.tranformation(cluster);
+          final String refaster = TransformationUtils.createRefasterRule(cluster, edit);
           refasterRules.add(refaster);
-          TransformationUtils.saveTransformation(transformation);
+          TransformationUtils.saveTransformation(transformation, edit);
         }
         final boolean equals = refasterRules.stream().allMatch(o -> o.equals(refasterRules.get(0)));
         assertTrue(equals);

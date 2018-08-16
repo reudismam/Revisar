@@ -117,18 +117,4 @@ public class DbScanClustering {
     }
     return label;
   }
-
-//  /**
-//   * Cluster scripts.
-//   */
-//  public static List<ArrayList<Script>> cluster(List<Script> scripts) {
-//    try {
-//      final DBSCANClusterer<Script> dbscan = new DBSCANClusterer<>(
-//          scripts, 2, 0.1, new ScriptDistanceMetric());
-//      return dbscan.performClustering();
-//    } catch (DBSCANClusteringException e) {
-//      e.printStackTrace();
-//      return null;
-//    }
-//  }
 }

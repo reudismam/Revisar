@@ -6,12 +6,12 @@ import java.util.List;
 
 public class AntiUnificationData {
   /**
-   * Unifier
+   * Unifier.
    */
   private String unifier;
 
   /**
-   * Variables
+   * Variables.
    */
   private List<HoleWithSubstutings> variables;
 

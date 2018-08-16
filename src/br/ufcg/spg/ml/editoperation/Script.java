@@ -40,11 +40,6 @@ public class Script extends Point {
   public void setCluster(Cluster cluster) {
     this.cluster = cluster;
   }
-
-//  @Override
-//  public double[] getPoint() {
-//    return null;
-//  }
   
   @Override
   public int hashCode() {
