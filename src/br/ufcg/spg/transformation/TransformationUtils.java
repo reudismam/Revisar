@@ -182,7 +182,7 @@ public final class TransformationUtils {
       logger.error(e.getStackTrace());
     }
   }
-
+  
   /**
    * Learns a transformation for a cluster.
    */
@@ -207,7 +207,11 @@ public final class TransformationUtils {
       throws BadLocationException, IOException, GitAPIException {
     String refaster;
     if (TechniqueConfig.getInstance().isCreateRule()) {    
-      refaster = RefasterTranslator.translate(srcCluster, srcEdit);
+      try {
+        refaster = RefasterTranslator.translate(srcCluster, srcEdit);
+      } catch (Exception e) {
+        refaster = "";
+      }
     } else {
       refaster = "";
     }
