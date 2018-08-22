@@ -217,15 +217,24 @@ public final class TransformationUtils {
     }
     return refaster;
   }
-
+  
   /**
    * Saves a transformation. 
    */
   public static void saveTransformation(final Transformation trans, final Edit edit) 
       throws IOException, BadLocationException, GitAPIException {
+    String path = "../Projects/cluster/";
+    saveTransformation(path, trans, edit);
+  }
+
+  /**
+   * Saves a transformation. 
+   */
+  public static void saveTransformation(final String folderPath, 
+      final Transformation trans, final Edit edit) 
+      throws IOException, BadLocationException, GitAPIException {
     final Cluster clusteri = trans.getCluster();
     final Cluster clusterj = clusteri.getDst();
-    
     //Script script = DbScanClustering.getCluster(clusteri);    
     if (isSameBeforeAfter(clusteri)) {
       return;
@@ -236,7 +245,7 @@ public final class TransformationUtils {
       final String dstOutput = clusterj.getAu();
       if (filter.match(srcOutput, dstOutput)) {
         String counterFormated =  String.format("%03d", clusterIndex++);
-        String path = "../Projects/cluster/filtered/" + trans.isValid() 
+        String path = folderPath + "filtered/" + trans.isValid() 
             + '/' + counterFormated + ".txt";
         final File clusterFile = new File(path);
         StringBuilder content = formatCluster(clusteri, clusterj, "");
@@ -248,7 +257,7 @@ public final class TransformationUtils {
     final String refaster = createRefasterRule(clusteri, edit);
     trans.setTransformation(refaster);
     String counterFormated =  String.format("%03d", clusterIndex++);
-    String path = "../Projects/cluster/" + trans.isValid() + '/' + counterFormated + ".txt";
+    String path = folderPath + trans.isValid() + '/' + counterFormated + ".txt";
     final File clusterFile = new File(path);
     StringBuilder content = formatCluster(clusteri, clusterj, refaster);
     FileUtils.writeStringToFile(clusterFile, content.toString());
@@ -304,8 +313,8 @@ public final class TransformationUtils {
         "VARIABLE_DECLARATION_FRAGMENT\\(SIMPLE_NAME\\([a-zA-Z0-9_]+\\)\\)");
     
     PatternFilter infixes = new PatternFilter(
-        "^(INFIX_EXPRESSION|POSTFIX_EXPRESSION)\\([, a-zA-Z0-9\\)\\(_]+\\)", 
-        "^(INFIX_EXPRESSION|POSTFIX_EXPRESSION)\\([, a-zA-Z0-9\\)\\(_]+\\)");
+        "(INFIX_EXPRESSION|PREFIX_EXPRESSION|POSTFIX_EXPRESSION)\\([, a-zA-Z0-9\\)\\(_]+\\)", 
+        "(INFIX_EXPRESSION|PREFIX_EXPRESSION|POSTFIX_EXPRESSION)\\([, a-zA-Z0-9\\)\\(_]+\\)");
     pfilters.add(varrename);
     pfilters.add(trueFalse);
     pfilters.add(changeNumber);

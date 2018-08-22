@@ -18,7 +18,11 @@ import br.ufcg.spg.log.TimeLogger;
 import br.ufcg.spg.main.MainArguments;
 import br.ufcg.spg.technique.Technique;
 import br.ufcg.spg.technique.TechniqueUtils;
+import br.ufcg.spg.transformation.Transformation;
 import br.ufcg.spg.transformation.TransformationUtils;
+
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,12 +43,12 @@ import org.eclipse.jgit.errors.MissingObjectException;
 import org.junit.Test;
 
 public class TestSuite {
-  
+
   private static final Logger logger = LogManager.getLogger(TestSuite.class.getName());
-  
+
   public TestSuite() {
   }
-  
+
   @Test
   public void exp() throws IOException, JustificationException, ControlledException, CoreException {
     configMainArguments();
@@ -61,35 +65,31 @@ public class TestSuite {
     arguments.setProjects("projects.txt");
     arguments.setProjectFolder("../Projects");
   }
-  
+
   @Test
-  public void exp_Cluster() 
-      throws IOException, JustificationException, ControlledException, CoreException {
+  public void exp_Cluster() throws IOException, JustificationException, ControlledException, CoreException {
     configMainArguments();
     Technique.clusterEdits();
     Technique.translateEdits();
     logger.trace("END.");
   }
-  
+
   @Test
-  public void exp_Dependence() 
-      throws MissingObjectException, IncorrectObjectTypeException, 
-      AmbiguousObjectException, IOException, ExecutionException,
-      NoFilepatternException, GitAPIException {
+  public void exp_Dependence() throws MissingObjectException, IncorrectObjectTypeException, AmbiguousObjectException,
+      IOException, ExecutionException, NoFilepatternException, GitAPIException {
     configMainArguments();
     DependenceUtils.dependences();
   }
-  
+
   @Test
-  public void exp_Translate() 
-      throws IOException, JustificationException, ControlledException, CoreException {
+  public void exp_Translate() throws IOException, JustificationException, ControlledException, CoreException {
     configMainArguments();
     Technique.translateEdits();
     logger.trace("END.");
   }
-  
+
   @Test
-  public void exp_TranslateMoreProjects() 
+  public void exp_TranslateMoreProjects()
       throws IOException, JustificationException, ControlledException, CoreException {
     configMainArguments();
     List<Cluster> clusters = TransformationUtils.getClusterMoreProjects();
@@ -99,8 +99,8 @@ public class TestSuite {
     for (Cluster c : clusters) {
       allEdits.addAll(c.getNodes());
     }
-    Map<String, List<Edit>> dcaps = ClusterUnifier.getInstance().groupEditsByDCap(
-        allEdits, TechniqueConfig.getInstance());
+    Map<String, List<Edit>> dcaps = ClusterUnifier.getInstance().groupEditsByDCap(allEdits,
+        TechniqueConfig.getInstance());
     List<Cluster> clustersDcap = new ArrayList<>();
     for (Entry<String, List<Edit>> entry : dcaps.entrySet()) {
       List<Cluster> clusterForDcap = ClusterUnifier.getInstance().clusterEdits(entry.getValue());
@@ -109,7 +109,7 @@ public class TestSuite {
     TransformationUtils.transformationsMoreProjects(clustersDcap);
     logger.trace("END.");
   }
-  
+
   @Test
   public void exp_translate_cluster_more_projects() throws IOException {
     configMainArguments();
@@ -119,14 +119,44 @@ public class TestSuite {
     TransformationUtils.transformations(clusters);
     logger.trace("END.");
   }
-  
+
+  @Test
+  public void buildRefasterRules() 
+      throws IOException, JustificationException, ControlledException, CoreException {
+    configMainArguments();
+    List<Cluster> clusters = TransformationUtils.getClusterMoreProjects();
+    int j = clusters.size();
+    logger.trace(j);
+    int i = 0;
+    for (Cluster clusteri : clusters) {
+      i++;
+      try {
+        final List<Cluster> srcClusters = ClusterUtils.segmentByType(clusteri);
+        for (final Cluster cluster : srcClusters) {
+          final List<String> refasterRules = new ArrayList<>();
+          for (final Edit edit : cluster.getNodes()) {
+            final Transformation transformation = TransformationUtils.tranformation(cluster);
+            final String refaster = TransformationUtils.createRefasterRule(cluster, edit);
+            refasterRules.add(refaster);
+            String counterFormated =  String.format("%03d", i);
+            String path = "../Projects/cluster/" +  counterFormated + "/";
+            TransformationUtils.saveTransformation(path, transformation, edit);
+          }
+        }
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+    logger.trace("END.");
+  }
+
   @Test
   public void exp_translate_id() 
       throws IOException, JustificationException, ControlledException, CoreException {
     Technique.translateEdits("1365589");
     logger.trace("END.");
   }
-  
+
   @Test
   public void exp_cluster_id() 
       throws IOException, JustificationException, ControlledException, CoreException {
@@ -134,7 +164,7 @@ public class TestSuite {
     ClusterUtils.buildClusters("1290970");
     logger.trace("END.");
   }
-  
+
   @Test
   public void exp_cluster_more_projects2() throws IOException {
     configMainArguments();
@@ -145,8 +175,8 @@ public class TestSuite {
     for (Cluster c : clusters) {
       allEdits.addAll(c.getNodes());
     }
-    Map<String, List<Edit>> dcaps = ClusterUnifier.getInstance().groupEditsByDCap(
-        allEdits, TechniqueConfig.getInstance());
+    Map<String, List<Edit>> dcaps = ClusterUnifier.getInstance().groupEditsByDCap(allEdits,
+        TechniqueConfig.getInstance());
     List<Cluster> clustersDcap = new ArrayList<>();
     for (Entry<String, List<Edit>> entry : dcaps.entrySet()) {
       List<Cluster> clusterForDcap = ClusterUnifier.getInstance().clusterEdits(entry.getValue());
@@ -155,20 +185,20 @@ public class TestSuite {
     TransformationUtils.transformations(clustersDcap);
     logger.trace("END.");
   }
-  
+
   @Test
   public void exp_cluster_more_projects_resolve_bug() throws IOException {
     configMainArguments();
     List<Cluster> clusters = TransformationUtils.getClusterMoreProjects();
-    //clusters = clusters.subList(50, 200);
+    // clusters = clusters.subList(50, 200);
     List<Edit> allEdits = new ArrayList<>();
     int i = clusters.size();
     logger.trace(i);
     for (Cluster c : clusters) {
       allEdits.addAll(c.getNodes());
     }
-    Map<String, List<Edit>> dcaps = ClusterUnifier.getInstance().groupEditsByDCap(
-        allEdits, TechniqueConfig.getInstance());
+    Map<String, List<Edit>> dcaps = ClusterUnifier.getInstance().groupEditsByDCap(allEdits,
+        TechniqueConfig.getInstance());
     List<Cluster> clustersDcap = new ArrayList<>();
     for (Entry<String, List<Edit>> entry : dcaps.entrySet()) {
       List<Cluster> clusterForDcap = ClusterUnifier.getInstance().clusterEdits(entry.getValue());
@@ -177,7 +207,7 @@ public class TestSuite {
     TransformationUtils.transformations(clustersDcap);
     logger.trace("END.");
   }
-  
+
   @Test
   public void exp_cluster_more_projects_no_dcap() throws IOException {
     configMainArguments();
@@ -188,14 +218,13 @@ public class TestSuite {
     for (Cluster c : clusters) {
       allEdits.addAll(c.getNodes());
     }
-    List<Cluster> newClusters =  ClusterUnifier.getInstance().clusterEdits(allEdits);
+    List<Cluster> newClusters = ClusterUnifier.getInstance().clusterEdits(allEdits);
     TransformationUtils.transformations(newClusters);
     logger.trace("END.");
   }
-  
+
   @Test
-  public void test_d_cap() 
-      throws IOException, JustificationException, ControlledException, CoreException {
+  public void test_d_cap() throws IOException, JustificationException, ControlledException, CoreException {
     configMainArguments();
     final ClusterDao dao = ClusterDao.getInstance();
     final List<Cluster> clusters = dao.getClusters("113406");
@@ -204,20 +233,18 @@ public class TestSuite {
     final String srcDcap = srcEdit.getDcap3();
     final String dstDcap = srcEdit.getDst().getDcap3();
     final EditDao editDao = EditDao.getInstance();
-    final List<Edit> srcList = editDao.getSrcEditsByDcap(srcDcap, dstDcap,  3);
-    final Map<String, List<Edit>> groups = 
-        srcList.stream().collect(Collectors.groupingBy(w -> w.getDst().getDcap3()));
-    for (final Entry<String, List<Edit>> entry: groups.entrySet()) {
+    final List<Edit> srcList = editDao.getSrcEditsByDcap(srcDcap, dstDcap, 3);
+    final Map<String, List<Edit>> groups = srcList.stream().collect(Collectors.groupingBy(w -> w.getDst().getDcap3()));
+    for (final Entry<String, List<Edit>> entry : groups.entrySet()) {
       final List<Edit> toAnalyze = entry.getValue();
-      final List<Cluster> clts =  
-          ClusterUnifier.getInstance().clusters(toAnalyze);
+      final List<Cluster> clts = ClusterUnifier.getInstance().clusters(toAnalyze);
       final ClusterDao cdao = ClusterDao.getInstance();
-      cdao.saveAll(clts);     
+      cdao.saveAll(clts);
       TransformationUtils.transformations(clts);
     }
     logger.trace("END.");
   }
-  
+
   @Test
   public void exp_learn_dependence_clusters() {
     configMainArguments();
@@ -239,7 +266,7 @@ public class TestSuite {
       }
     }
   }
- 
+
   /**
    * Gets e-mails.
    */
@@ -252,40 +279,42 @@ public class TestSuite {
 
   /**
    * Test for many projects.
-   * @param projects projects.
+   * 
+   * @param projects
+   *          projects.
    */
   public void testBaseTableExpProjects(final List<Tuple<String, String>> projects)
       throws IOException, JustificationException, ControlledException, CoreException {
-    final long startTime = System.nanoTime();     
+    final long startTime = System.nanoTime();
     for (final Tuple<String, String> project : projects) {
       TechniqueUtils.concreteEdits(project);
     }
     final long estimatedTime = System.nanoTime() - startTime;
     TimeLogger.getInstance().setTimeExtract(estimatedTime);
     Technique.clusterEdits();
-    Technique.translateEdits();    
+    Technique.translateEdits();
     logger.trace("DEBUG: TOTAL COMMITS");
     final EditStorage storage = EditStorage.getInstance();
-    for (final Tuple<String, String> project: projects) {
+    for (final Tuple<String, String> project : projects) {
       logger.trace("=====================");
       logger.trace(project.getItem1());
       logger.trace("TOTAL: " + storage.getCommitProjects().get(project.getItem1()).size());
-      logger.trace("=====================");   
+      logger.trace("=====================");
     }
     logger.trace("END.");
   }
 
   /**
    * Test base method.
-   * @throws ExecutionException 
+   * 
+   * @throws ExecutionException
    * 
    */
   public void testBaseTable(final String project, final List<String> files)
-      throws IOException, JustificationException, ControlledException, 
-      CoreException, ExecutionException {
+      throws IOException, JustificationException, ControlledException, CoreException, ExecutionException {
     testBaseTable(project, files, "");
   }
-  
+
   /**
    * Test base method.
    * 
@@ -296,15 +325,15 @@ public class TestSuite {
     Technique.clusterEdits();
     Technique.translateEdits();
   }
-  
+
   /**
    * Test base method.
-   * @throws ExecutionException 
+   * 
+   * @throws ExecutionException
    * 
    */
   public void testBaseTable(final String project, final List<String> files, final String commit)
-      throws IOException, JustificationException, ControlledException, 
-      CoreException, ExecutionException {
+      throws IOException, JustificationException, ControlledException, CoreException, ExecutionException {
     // Computing before after edits
     Technique.addEdits(project, files, commit);
     Technique.clusterEdits();
