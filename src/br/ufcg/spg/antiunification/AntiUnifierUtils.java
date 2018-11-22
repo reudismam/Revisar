@@ -104,7 +104,6 @@ public final class AntiUnifierUtils {
 
   /**
    * Learn unification template.
-   * 
    * @param first
    *          first target node
    * @param second

@@ -21,16 +21,21 @@ import br.ufcg.spg.technique.TechniqueUtils;
 import br.ufcg.spg.transformation.Transformation;
 import br.ufcg.spg.transformation.TransformationUtils;
 
-import static org.junit.Assert.assertTrue;
-
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
@@ -65,9 +70,19 @@ public class TestSuite {
     arguments.setProjects("projects.txt");
     arguments.setProjectFolder("../Projects");
   }
+  
+  private List<Edit> getAllEdits(List<Cluster> clusters) {
+    List<Edit> allEdits = new ArrayList<>();
+    for (Cluster c : clusters) {
+      allEdits.addAll(c.getNodes());
+    }
+    return allEdits;
+  }
 
   @Test
-  public void exp_Cluster() throws IOException, JustificationException, ControlledException, CoreException {
+  public void exp_Cluster() 
+      throws IOException, JustificationException, 
+      ControlledException, CoreException {
     configMainArguments();
     Technique.clusterEdits();
     Technique.translateEdits();
@@ -75,14 +90,16 @@ public class TestSuite {
   }
 
   @Test
-  public void exp_Dependence() throws MissingObjectException, IncorrectObjectTypeException, AmbiguousObjectException,
+  public void exp_Dependence() throws 
+      MissingObjectException, IncorrectObjectTypeException, AmbiguousObjectException,
       IOException, ExecutionException, NoFilepatternException, GitAPIException {
     configMainArguments();
     DependenceUtils.dependences();
   }
 
   @Test
-  public void exp_Translate() throws IOException, JustificationException, ControlledException, CoreException {
+  public void exp_Translate() throws 
+      IOException, JustificationException, ControlledException, CoreException {
     configMainArguments();
     Technique.translateEdits();
     logger.trace("END.");
@@ -119,9 +136,94 @@ public class TestSuite {
     TransformationUtils.transformations(clusters);
     logger.trace("END.");
   }
-
+  
   @Test
   public void buildRefasterRules() 
+      throws IOException, JustificationException, ControlledException, CoreException {
+    configMainArguments();
+    List<Cluster> clusters = TransformationUtils.getClusterMoreProjects();
+    int j = clusters.size();
+    logger.trace(j);
+    int i = 0;
+    for (Cluster cluster : clusters) {
+      i++;
+      try {
+        final List<String> refasterRules = new ArrayList<>();
+        final Edit edit = cluster.getNodes().get(0);
+        final Transformation transformation = TransformationUtils.tranformation(cluster);
+        final String refaster = TransformationUtils.createRefasterRule(cluster, edit);
+        refasterRules.add(refaster);
+        String counterFormated =  String.format("%03d", i);
+        String path = "../Projects/cluster/" +  counterFormated + "/";
+        TransformationUtils.saveTransformation(path, transformation, edit); 
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+    logger.trace("END.");
+  }
+  
+  @Test
+  public void buildAllPairsOfEdits() 
+      throws IOException, JustificationException, ControlledException, CoreException {
+    configMainArguments();
+    List<Cluster> clusters = TransformationUtils.getClusterMoreProjects();
+    int j = clusters.size();
+    logger.trace(j);
+    List<Edit> allEdits = getAllEdits(clusters);
+    /*Edit ed11579 = null;
+    Edit ed615341 = null;
+    for (Edit e: allEdits) {
+    	if (e.getId() == 11579) {
+    		ed11579 = e;
+    	}
+    	if (e.getId() == 615341) {
+    		ed615341 = e;
+    	}
+    }
+    Cluster srcCluster1 = new Cluster(ed11579.getTemplate(), "");
+    srcCluster1.getNodes().add(ed11579);
+    Cluster dstCluster1 = new Cluster(ed11579.getDst().getTemplate(), "");
+    dstCluster1.getNodes().add(ed11579.getDst());
+    srcCluster1.setDst(dstCluster1);
+    boolean isValid1 = ClusterUnifier.getInstance()
+            .isValid(srcCluster1, dstCluster1, ed615341, ed615341.getDst());*/
+    Set<Tuple<Edit, Edit>> pairs = new HashSet<>();
+    for (Edit editi: allEdits) {
+      for (Edit editj: allEdits) {
+        if (!(editi == editj || pairs.contains(new Tuple<>(editj, editi)))) {
+          pairs.add(new Tuple<>(editi, editj));
+          Cluster srcCluster = new Cluster(editi.getTemplate(), "");
+          srcCluster.getNodes().add(editi);
+          Cluster dstCluster = new Cluster(editi.getDst().getTemplate(), "");
+          dstCluster.getNodes().add(editi.getDst());
+          srcCluster.setDst(dstCluster);
+          boolean isValid = ClusterUnifier.getInstance()
+              .isValid(srcCluster, dstCluster, editj, editj.getDst());
+          if (isValid) {
+            String path = "../Projects/cluster/pairs_of_edits.txt";
+            final File clusterFile = new File(path);
+            String content = "\n============BEGIN PAIR========================\n";
+            content += "ID: " + editi.getId() + " " + editi.getText() + " => " + editi.getDst().getText() + "\n";
+            content += "ID: " + editj.getId() + " " + editj.getText() + " => " + editj.getDst().getText();
+            content += "\n============END PAIR========================\n\n";
+            try {
+              if (!clusterFile.exists()) {
+                clusterFile.createNewFile();
+              }
+              Files.write(clusterFile.toPath(), content.getBytes(), StandardOpenOption.APPEND);
+            } catch (IOException e) {
+              throw new RuntimeException(e);
+            }
+          }
+        }
+      }
+    }
+    logger.trace("END.");
+  }
+
+  @Test
+  public void buildRefasterRulesAllEdits() 
       throws IOException, JustificationException, ControlledException, CoreException {
     configMainArguments();
     List<Cluster> clusters = TransformationUtils.getClusterMoreProjects();
@@ -169,12 +271,9 @@ public class TestSuite {
   public void exp_cluster_more_projects2() throws IOException {
     configMainArguments();
     List<Cluster> clusters = TransformationUtils.getClusterMoreProjects();
-    List<Edit> allEdits = new ArrayList<>();
     int i = clusters.size();
     logger.trace(i);
-    for (Cluster c : clusters) {
-      allEdits.addAll(c.getNodes());
-    }
+    List<Edit> allEdits = getAllEdits(clusters);
     Map<String, List<Edit>> dcaps = ClusterUnifier.getInstance().groupEditsByDCap(allEdits,
         TechniqueConfig.getInstance());
     List<Cluster> clustersDcap = new ArrayList<>();
@@ -224,7 +323,8 @@ public class TestSuite {
   }
 
   @Test
-  public void test_d_cap() throws IOException, JustificationException, ControlledException, CoreException {
+  public void test_d_cap() throws 
+      IOException, JustificationException, ControlledException, CoreException {
     configMainArguments();
     final ClusterDao dao = ClusterDao.getInstance();
     final List<Cluster> clusters = dao.getClusters("113406");
@@ -234,7 +334,8 @@ public class TestSuite {
     final String dstDcap = srcEdit.getDst().getDcap3();
     final EditDao editDao = EditDao.getInstance();
     final List<Edit> srcList = editDao.getSrcEditsByDcap(srcDcap, dstDcap, 3);
-    final Map<String, List<Edit>> groups = srcList.stream().collect(Collectors.groupingBy(w -> w.getDst().getDcap3()));
+    final Map<String, List<Edit>> groups = 
+        srcList.stream().collect(Collectors.groupingBy(w -> w.getDst().getDcap3()));
     for (final Entry<String, List<Edit>> entry : groups.entrySet()) {
       final List<Edit> toAnalyze = entry.getValue();
       final List<Cluster> clts = ClusterUnifier.getInstance().clusters(toAnalyze);
@@ -311,7 +412,8 @@ public class TestSuite {
    * 
    */
   public void testBaseTable(final String project, final List<String> files)
-      throws IOException, JustificationException, ControlledException, CoreException, ExecutionException {
+      throws IOException, JustificationException, 
+      ControlledException, CoreException, ExecutionException {
     testBaseTable(project, files, "");
   }
 
@@ -333,7 +435,8 @@ public class TestSuite {
    * 
    */
   public void testBaseTable(final String project, final List<String> files, final String commit)
-      throws IOException, JustificationException, ControlledException, CoreException, ExecutionException {
+      throws IOException, JustificationException, 
+      ControlledException, CoreException, ExecutionException {
     // Computing before after edits
     Technique.addEdits(project, files, commit);
     Technique.clusterEdits();

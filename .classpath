@@ -53,7 +53,7 @@
 	<classpathentry kind="lib" path="lib/gumtree/jtidy-r938.jar"/>
 	<classpathentry kind="lib" path="lib/gumtree/junit-4.8.2.jar"/>
 	<classpathentry kind="lib" path="lib/gumtree/org.eclipse.core.resources-3.10.0.v20150423-0755.jar"/>
-	<classpathentry kind="lib" path="lib/gumtree/org.eclipse.jdt.core-3.11.0.v20150602-1242.jar"/>
+	<classpathentry kind="lib" path="lib/gumtree/org.eclipse.jdt.core-3.11.0.v20150602-1242.jar" sourcepath="C:/Users/SPG-04/.m2/repository/org/eclipse/scout/sdk/deps/org.eclipse.jdt.core/3.11.0.v20150602-1242/org.eclipse.jdt.core-3.11.0.v20150602-1242-sources.jar"/>
 	<classpathentry kind="lib" path="lib/gumtree/osgi-3.10.0-v20140606-1445.jar"/>
 	<classpathentry kind="lib" path="lib/gumtree/ph-commons-8.3.0.jar"/>
 	<classpathentry kind="lib" path="lib/gumtree/ph-css-5.0.1.jar"/>

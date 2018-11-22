@@ -18,6 +18,8 @@ import br.ufcg.spg.refaster.config.ReturnStatementConfig;
 import br.ufcg.spg.refaster.config.TransformationConfigObject;
 import br.ufcg.spg.replacement.Replacement;
 import br.ufcg.spg.replacement.ReplacementUtils;
+import br.ufcg.spg.type.TypeUtils;
+
 import com.github.gumtreediff.matchers.Matcher;
 import com.github.gumtreediff.tree.ITree;
 import com.github.gumtreediff.tree.TreeContext;
@@ -33,6 +35,7 @@ import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.ReturnStatement;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
+import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -136,6 +139,7 @@ public class ReturnStmTranslator {
         getHolesAndSubstutingTrees(rconfig.getTarget(), rconfig.getNodes(), ast);
     List<ASTNode> holeVariables = holeAndSubstutings.getItem1(); 
     List<ASTNode> substutings = holeAndSubstutings.getItem2();
+    removeCouldNotBeAbstracted(ast, holeVariables, substutings);
     final Document document = rewrite(file, substutings, holeVariables, rconfig.getVersion());
     final String srcModified = document.get();
     final Tuple<TreeContext, TreeContext> baEdit = EditUtils.beforeAfterCxt(file, srcModified);
@@ -163,6 +167,48 @@ public class ReturnStmTranslator {
     return dstAstNode;
   }
 
+  private static void removeCouldNotBeAbstracted(
+      final AST ast, List<ASTNode> holeVariables, List<ASTNode> substutings) {
+    try {
+      List<ASTNode> toRemoveHoles = new ArrayList<>();
+      List<ASTNode> toRemoveSubtt = new ArrayList<>();
+      for (int i = 0; i < substutings.size(); i++) {
+        if (!(substutings.get(i) instanceof Type)) {
+          continue;
+        }
+        Type tmp = (Type) substutings.get(i);
+        if (tmp.isParameterizedType() || tmp.isPrimitiveType() || tmp.isArrayType() 
+            || tmp.isAnnotatable() || tmp.isIntersectionType() || tmp.isNameQualifiedType() 
+            || tmp.isSimpleType() || tmp.isQualifiedType() || tmp.isUnionType() 
+            || tmp.isWildcardType()) {
+          toRemoveHoles.add(holeVariables.get(i));
+          toRemoveSubtt.add(substutings.get(i));
+        }
+      }
+      List<ASTNode> newHoles = new ArrayList<>();
+      List<ASTNode> newSubs = new ArrayList<>();
+      for (int i = 0; i < substutings.size(); i++) {
+        boolean toRemove = false;
+        for (int j = 0; j < toRemoveSubtt.size(); j++) {
+          if (substutings.get(i).toString().equals(
+              toRemoveSubtt.get(j).toString())) {
+            toRemove = true;
+          }
+        }
+        if (!toRemove) {
+          newHoles.add(holeVariables.get(i));
+          newSubs.add(substutings.get(i));
+        }
+      }
+      holeVariables.clear();
+      holeVariables.addAll(newHoles);
+      substutings.clear();
+      substutings.addAll(newSubs);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
   /**
    * Gets substituting trees associated to each role.
    * @param target target tree.
@@ -171,8 +217,7 @@ public class ReturnStmTranslator {
    * @param names to store the name of the hole variables.
    */
   private static Tuple<List<ASTNode>, List<ASTNode>> getHolesAndSubstutingTrees(
-      final ASTNode target,
-      final List<ASTNode> substitutingTrees, final AST ast) {
+      final ASTNode target, final List<ASTNode> substitutingTrees, final AST ast) {
     final List<ASTNode> holeVariables = new ArrayList<ASTNode>();
     final List<ASTNode> targets = new ArrayList<>();
     for (int i = 0; i < substitutingTrees.size(); i++) {

@@ -62,6 +62,10 @@ public final class ClusterUtils {
     return clusterList;
   }
 
+  /**
+   * Segment by type.
+   * @param srcCluster source cluster.
+   */
   public static List<Cluster> segmentByType(Cluster srcCluster) throws 
       BadLocationException, IOException, GitAPIException {
     final Map<String, Cluster> map = new Hashtable<>();

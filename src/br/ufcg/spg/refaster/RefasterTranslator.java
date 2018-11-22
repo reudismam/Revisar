@@ -90,8 +90,6 @@ public class RefasterTranslator {
       final Cluster srcCluster, final CompilationUnit rule, Edit srcEdit)
       throws BadLocationException, IOException, GitAPIException {
     final Cluster dstCluster = srcCluster.getDst();
-    //gets only first location, since other locations
-    //follow the same template
     final Edit dstEdit = srcEdit.getDst();
     final ProjectInfo pi = checkoutIfDiffer(srcEdit);
     final CompilationUnit dstUnit = JParser.parse(dstEdit.getPath(), pi.getDstVersion());
