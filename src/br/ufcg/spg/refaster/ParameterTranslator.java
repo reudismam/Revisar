@@ -1,9 +1,5 @@
 package br.ufcg.spg.refaster;
 
-import br.ufcg.spg.bean.Tuple;
-import br.ufcg.spg.replacement.Replacement;
-import br.ufcg.spg.type.TypeUtils;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,53 +16,6 @@ public class ParameterTranslator {
   private ParameterTranslator() {
   }
   
-//  /**
-//   * Configure parameter.
-//   * @param targetList target list
-//   * @param refasterRule Refaster rule current
-//   * @param ba before and after node
-//   * @return new before and after version with parameters modified.
-//   */
-//  public static Tuple<MethodDeclaration, MethodDeclaration> config(
-//      List<Replacement<ASTNode>> targetList,
-//      final CompilationUnit refasterRule, 
-//      final Tuple<MethodDeclaration, MethodDeclaration> ba) {
-//    List<ASTNode> nodes = getNodes(targetList);
-//    List<Integer> filtered = ReturnStmTranslator.filterTypes(nodes);
-//    List<Replacement<ASTNode>> newTargetList = new ArrayList<>();
-//    for (int i = 0; i < targetList.size(); i++) {
-//      if (!filtered.contains(i)) {
-//        newTargetList.add(targetList.get(i));
-//      }
-//    }
-//    targetList = newTargetList;
-//    final List<Type> paramTypes = extractTypes(getNodes(targetList), refasterRule.getAST());
-//    MethodDeclaration before = ba.getItem1();
-//    MethodDeclaration after = ba.getItem2();
-//    before = addParameter(paramTypes, refasterRule, before);
-//    after = addParameter(paramTypes, refasterRule, after);
-//    return new Tuple<>(before, after);
-//  }
-
-//  private static List<ASTNode> getNodes(List<Replacement<ASTNode>> targetList) {
-//    List<ASTNode> nodes = new ArrayList<>();
-//    for (Replacement<ASTNode> node : targetList) {
-//      nodes.add(node.getNode());
-//    }
-//    return nodes;
-//  }
-
-  public static List<Type> extractTypes(List<ASTNode> targetList, 
-      final AST refasterRule) {
-    final List<Type> paramTypes = new ArrayList<>();
-    for (int i = 0; i < targetList.size(); i++) {
-      final ASTNode tbefore = targetList.get(i);
-      final Type paramType = TypeUtils.extractType(tbefore, refasterRule);
-      paramTypes.add(paramType);
-    }
-    return paramTypes;
-  }
-
   /**
    * Adds parameter to method.
    * @param types types to be analyzed

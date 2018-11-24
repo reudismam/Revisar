@@ -175,4 +175,18 @@ public class TypeUtils {
     return type;
   }
 
+  /**
+   * Extract types.
+   */
+  public static List<Type> extractTypes(List<ASTNode> targetList, 
+      final AST refasterRule) {
+    final List<Type> paramTypes = new ArrayList<>();
+    for (int i = 0; i < targetList.size(); i++) {
+      final ASTNode tbefore = targetList.get(i);
+      final Type paramType = extractType(tbefore, refasterRule);
+      paramTypes.add(paramType);
+    }
+    return paramTypes;
+  }
+
 }

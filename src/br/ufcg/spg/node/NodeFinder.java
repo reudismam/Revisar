@@ -1,0 +1,30 @@
+package br.ufcg.spg.node;
+
+import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.CompilationUnit;
+
+import com.github.gumtreediff.tree.ITree;
+
+import br.ufcg.spg.matcher.IMatcher;
+import br.ufcg.spg.matcher.PositionNodeMatcher;
+import br.ufcg.spg.matcher.PositionTreeMatcher;
+import br.ufcg.spg.matcher.calculator.MatchCalculator;
+import br.ufcg.spg.matcher.calculator.NodeMatchCalculator;
+import br.ufcg.spg.matcher.calculator.TreeMatchCalculator;
+
+public class NodeFinder {
+
+  public static ASTNode getNode(final CompilationUnit cunit, final ITree dstTree,
+      final ITree dstMatch) {
+    IMatcher<ITree> match;
+    MatchCalculator<ITree> mcalc;
+    match = new PositionTreeMatcher(dstMatch);
+    mcalc = new TreeMatchCalculator(match);
+    final ITree dstTarget = mcalc.getNode(dstTree);
+    IMatcher<ASTNode> nodematch = new PositionNodeMatcher(dstTarget);
+    MatchCalculator<ASTNode> nodecalc = new NodeMatchCalculator(nodematch);
+    final ASTNode dstAstNode = nodecalc.getNode(cunit);
+    return dstAstNode;
+  }
+
+}

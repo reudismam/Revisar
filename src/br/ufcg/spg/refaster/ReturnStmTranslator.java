@@ -13,12 +13,15 @@ import br.ufcg.spg.matcher.ValueNodeMatcher;
 import br.ufcg.spg.matcher.calculator.MatchCalculator;
 import br.ufcg.spg.matcher.calculator.NodeMatchCalculator;
 import br.ufcg.spg.matcher.calculator.TreeMatchCalculator;
+import br.ufcg.spg.node.NodeFinder;
 import br.ufcg.spg.parser.JParser;
 import br.ufcg.spg.project.Version;
 import br.ufcg.spg.refaster.config.ReturnStatementConfig;
 import br.ufcg.spg.refaster.config.TransformationConfigObject;
 import br.ufcg.spg.replacement.Replacement;
 import br.ufcg.spg.replacement.ReplacementUtils;
+import br.ufcg.spg.type.TypeUtils;
+
 import com.github.gumtreediff.matchers.Matcher;
 import com.github.gumtreediff.tree.ITree;
 import com.github.gumtreediff.tree.TreeContext;
@@ -111,7 +114,7 @@ public class ReturnStmTranslator {
     final IConfigBody body = ConfigBodyFactory.getConfigBody(rconf, 
         template.getTemplate(), rstm, ast);
     MethodDeclaration method = body.config();
-    List<Type> types = ParameterTranslator.extractTypes(template.getVariables(), ast);
+    List<Type> types = TypeUtils.extractTypes(template.getVariables(), ast);
     method = ParameterTranslator.addParameter(types, template.getHoles(), 
         rconf.getRefasterRule(), method);
     return method;
@@ -161,12 +164,7 @@ public class ReturnStmTranslator {
       System.out.println("DEBUG: could not find match for: " + srcTarget);
       return null;
     }
-    match = new PositionTreeMatcher(dstMatch);
-    mcalc = new TreeMatchCalculator(match);
-    final ITree dstTarget = mcalc.getNode(dstTree);
-    IMatcher<ASTNode> nodematch = new PositionNodeMatcher(dstTarget);
-    MatchCalculator<ASTNode> nodecalc = new NodeMatchCalculator(nodematch);
-    final ASTNode dstAstNode = nodecalc.getNode(cunit.getItem2());
+    final ASTNode dstAstNode = NodeFinder.getNode(cunit.getItem2(), dstTree, dstMatch);
     return new Template(dstAstNode, substutings, holeVariables);
   }
 
