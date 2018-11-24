@@ -189,4 +189,30 @@ public class TypeUtils {
     return paramTypes;
   }
 
+  /**
+   * Filter types.
+   * @param nodes to be filtered
+   * @return index of nodes to be removed
+   */
+  public static List<Integer> filterTypes(List<ASTNode> nodes) {
+    try {
+      List<Integer> toRemove = new ArrayList<>();
+      for (int i = 0; i < nodes.size(); i++) {
+        if (!(nodes.get(i) instanceof Type)) {
+          continue;
+        }
+        Type tmp = (Type) nodes.get(i);
+        if (tmp.isParameterizedType() || tmp.isPrimitiveType() || tmp.isArrayType() 
+            || tmp.isAnnotatable() || tmp.isIntersectionType() || tmp.isNameQualifiedType() 
+            || tmp.isSimpleType() || tmp.isQualifiedType() || tmp.isUnionType() 
+            || tmp.isWildcardType()) {
+          toRemove.add(i);
+        }
+      }
+      return toRemove;
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
 }

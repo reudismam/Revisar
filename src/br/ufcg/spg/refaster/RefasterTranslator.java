@@ -103,8 +103,6 @@ public class RefasterTranslator {
     // Return statement
     Tuple<MethodDeclaration, MethodDeclaration> ba = getBeforeAfterMethod(rule);
     ba = ReturnTypeTranslator.config(srcNode, dstNode, rule, ba);
-    // Add parameters
-    //ba = ParameterTranslator.config(src, rule, ba);
     // Replace method body
     final DiffCalculator diff = new DiffPath(srcEdit.getPath(), dstEdit.getPath());
     diff.diff();

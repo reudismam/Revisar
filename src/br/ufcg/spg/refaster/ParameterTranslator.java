@@ -11,7 +11,10 @@ import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Type;
 
-public class ParameterTranslator {
+/**
+ * Configure parameters.
+ */
+public final class ParameterTranslator {
   
   private ParameterTranslator() {
   }

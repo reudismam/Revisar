@@ -169,23 +169,6 @@ public class TestSuite {
     int j = clusters.size();
     logger.trace(j);
     List<Edit> allEdits = getAllEdits(clusters);
-    /*Edit ed11579 = null;
-    Edit ed615341 = null;
-    for (Edit e: allEdits) {
-    	if (e.getId() == 11579) {
-    		ed11579 = e;
-    	}
-    	if (e.getId() == 615341) {
-    		ed615341 = e;
-    	}
-    }
-    Cluster srcCluster1 = new Cluster(ed11579.getTemplate(), "");
-    srcCluster1.getNodes().add(ed11579);
-    Cluster dstCluster1 = new Cluster(ed11579.getDst().getTemplate(), "");
-    dstCluster1.getNodes().add(ed11579.getDst());
-    srcCluster1.setDst(dstCluster1);
-    boolean isValid1 = ClusterUnifier.getInstance()
-            .isValid(srcCluster1, dstCluster1, ed615341, ed615341.getDst());*/
     Set<Tuple<Edit, Edit>> pairs = new HashSet<>();
     for (Edit editi: allEdits) {
       for (Edit editj: allEdits) {
