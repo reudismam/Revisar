@@ -1,14 +1,13 @@
 package br.ufcg.spg.refaster;
 
-import com.github.gumtreediff.matchers.Matcher;
-import com.github.gumtreediff.tree.ITree;
-
 import br.ufcg.spg.diff.DiffCalculator;
 import br.ufcg.spg.matcher.IMatcher;
 import br.ufcg.spg.matcher.PositionTreeMatcher;
 import br.ufcg.spg.matcher.calculator.MatchCalculator;
 import br.ufcg.spg.matcher.calculator.TreeMatchCalculator;
 import br.ufcg.spg.refaster.config.ReturnStatementConfig;
+import com.github.gumtreediff.matchers.Matcher;
+import com.github.gumtreediff.tree.ITree;
 
 public class RefasterUtils {
 
