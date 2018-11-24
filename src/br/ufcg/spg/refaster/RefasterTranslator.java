@@ -89,28 +89,22 @@ public class RefasterTranslator {
   private static Tuple<MethodDeclaration, MethodDeclaration> beforeAfter(
       final Cluster srcCluster, final CompilationUnit rule, Edit srcEdit)
       throws BadLocationException, IOException, GitAPIException {
-    final Cluster dstCluster = srcCluster.getDst();
     final Edit dstEdit = srcEdit.getDst();
     final ProjectInfo pi = checkoutIfDiffer(srcEdit);
     final CompilationUnit dstUnit = JParser.parse(dstEdit.getPath(), pi.getDstVersion());
     final CompilationUnit srcUnit = JParser.parse(srcEdit.getPath(), pi.getSrcVersion());
-    IMatcher<ASTNode> srcMatch = new PositionNodeMatcher(srcEdit.getStartPos(), 
-        srcEdit.getEndPos());
-    MatchCalculator<ASTNode> mcalc = new NodeMatchCalculator(srcMatch);
-    final ASTNode srcNode = mcalc.getNode(srcUnit);
-    IMatcher<ASTNode> dstMatch = new PositionNodeMatcher(dstEdit.getStartPos(), 
-        dstEdit.getEndPos());
-    mcalc = new NodeMatchCalculator(dstMatch);
-    final ASTNode dstNode = mcalc.getNode(dstUnit);
-    Tuple<MethodDeclaration, MethodDeclaration> ba = getBeforeAfterMethod(rule);
+    final ASTNode srcNode = getNode(srcEdit, srcUnit);
+    final ASTNode dstNode = getNode(dstEdit, dstUnit);
     final String srcAu = srcCluster.getAu();
+    final Cluster dstCluster = srcCluster.getDst();
     final String dstAu = dstCluster.getAu();    
     final List<Replacement<ASTNode>> src = ReplacementUtils.replacements(srcEdit, srcAu, srcUnit);
     final List<Replacement<ASTNode>> dst = ReplacementUtils.replacements(dstEdit, dstAu, dstUnit);
     // Return statement
+    Tuple<MethodDeclaration, MethodDeclaration> ba = getBeforeAfterMethod(rule);
     ba = ReturnTypeTranslator.config(srcNode, dstNode, rule, ba);
     // Add parameters
-    ba = ParameterTranslator.config(src, rule, ba);
+    //ba = ParameterTranslator.config(src, rule, ba);
     // Replace method body
     final DiffCalculator diff = new DiffPath(srcEdit.getPath(), dstEdit.getPath());
     diff.diff();
@@ -122,6 +116,14 @@ public class RefasterTranslator {
         dstUnit, srcNode, dstNode, ba, src, dst, diff);
     ba = ReturnStmTranslator.config(config);
     return ba;
+  }
+
+  private static ASTNode getNode(Edit edit, final CompilationUnit unit) {
+    IMatcher<ASTNode> srcMatch = new PositionNodeMatcher(edit.getStartPos(), 
+        edit.getEndPos());
+    MatchCalculator<ASTNode> mcalc = new NodeMatchCalculator(srcMatch);
+    final ASTNode srcNode = mcalc.getNode(unit);
+    return srcNode;
   }
 
   /**

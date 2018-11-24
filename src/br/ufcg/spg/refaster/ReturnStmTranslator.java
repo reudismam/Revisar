@@ -1,5 +1,6 @@
 package br.ufcg.spg.refaster;
 
+import br.ufcg.spg.bean.Template;
 import br.ufcg.spg.bean.Tuple;
 import br.ufcg.spg.diff.DiffCalculator;
 import br.ufcg.spg.diff.DiffTreeContext;
@@ -18,8 +19,6 @@ import br.ufcg.spg.refaster.config.ReturnStatementConfig;
 import br.ufcg.spg.refaster.config.TransformationConfigObject;
 import br.ufcg.spg.replacement.Replacement;
 import br.ufcg.spg.replacement.ReplacementUtils;
-import br.ufcg.spg.type.TypeUtils;
-
 import com.github.gumtreediff.matchers.Matcher;
 import com.github.gumtreediff.tree.ITree;
 import com.github.gumtreediff.tree.TreeContext;
@@ -34,8 +33,8 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.ReturnStatement;
 import org.eclipse.jdt.core.dom.SimpleName;
-import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.Type;
+import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -103,14 +102,18 @@ public class ReturnStmTranslator {
   private static MethodDeclaration addReturnStatement(ReturnStatementConfig rconf) 
           throws BadLocationException, IOException, NoFilepatternException, GitAPIException {
     final AST ast = rconf.getRefasterRule().getAST();
-    final ASTNode template = getTemplate(rconf);
+    final Template template = getTemplate(rconf);
     if (template == null) {
       return rconf.getMethod();
     }
     ReturnStatement rstm = (ReturnStatement) rconf.getMethod().getBody().statements().get(0);
     rstm = (ReturnStatement) ASTNode.copySubtree(ast, rstm);
-    final IConfigBody body = ConfigBodyFactory.getConfigBody(rconf, template, rstm, ast);
+    final IConfigBody body = ConfigBodyFactory.getConfigBody(rconf, 
+        template.getTemplate(), rstm, ast);
     MethodDeclaration method = body.config();
+    List<Type> types = ParameterTranslator.extractTypes(template.getVariables(), ast);
+    method = ParameterTranslator.addParameter(types, template.getHoles(), 
+        rconf.getRefasterRule(), method);
     return method;
   }
   
@@ -129,7 +132,7 @@ public class ReturnStmTranslator {
    * @param document
    *          document that will be edited.
    */
-  private static ASTNode getTemplate(final ReturnStatementConfig rconfig) 
+  private static Template getTemplate(final ReturnStatementConfig rconfig) 
           throws BadLocationException, IOException, NoFilepatternException, GitAPIException {
     final String commit = rconfig.getCommit();
     CommitUtils.checkoutIfDiffer(commit, rconfig.getPi());
@@ -164,7 +167,7 @@ public class ReturnStmTranslator {
     IMatcher<ASTNode> nodematch = new PositionNodeMatcher(dstTarget);
     MatchCalculator<ASTNode> nodecalc = new NodeMatchCalculator(nodematch);
     final ASTNode dstAstNode = nodecalc.getNode(cunit.getItem2());
-    return dstAstNode;
+    return new Template(dstAstNode, substutings, holeVariables);
   }
 
   private static void removeCouldNotBeAbstracted(
@@ -172,18 +175,10 @@ public class ReturnStmTranslator {
     try {
       List<ASTNode> toRemoveHoles = new ArrayList<>();
       List<ASTNode> toRemoveSubtt = new ArrayList<>();
-      for (int i = 0; i < substutings.size(); i++) {
-        if (!(substutings.get(i) instanceof Type)) {
-          continue;
-        }
-        Type tmp = (Type) substutings.get(i);
-        if (tmp.isParameterizedType() || tmp.isPrimitiveType() || tmp.isArrayType() 
-            || tmp.isAnnotatable() || tmp.isIntersectionType() || tmp.isNameQualifiedType() 
-            || tmp.isSimpleType() || tmp.isQualifiedType() || tmp.isUnionType() 
-            || tmp.isWildcardType()) {
-          toRemoveHoles.add(holeVariables.get(i));
-          toRemoveSubtt.add(substutings.get(i));
-        }
+      List<Integer> filtered = filterTypes(substutings);
+      for (int i = 0; i < filtered.size(); i++) {
+        toRemoveHoles.add(holeVariables.get(filtered.get(i)));
+        toRemoveSubtt.add(substutings.get(filtered.get(i)));
       }
       List<ASTNode> newHoles = new ArrayList<>();
       List<ASTNode> newSubs = new ArrayList<>();
@@ -206,6 +201,32 @@ public class ReturnStmTranslator {
       substutings.addAll(newSubs);
     } catch (Exception e) {
       e.printStackTrace();
+    }
+  }
+  
+  /**
+   * Filter types.
+   * @param nodes to be filtered
+   * @return index of nodes to be removed
+   */
+  public static List<Integer> filterTypes(List<ASTNode> nodes) {
+    try {
+      List<Integer> toRemove = new ArrayList<>();
+      for (int i = 0; i < nodes.size(); i++) {
+        if (!(nodes.get(i) instanceof Type)) {
+          continue;
+        }
+        Type tmp = (Type) nodes.get(i);
+        if (tmp.isParameterizedType() || tmp.isPrimitiveType() || tmp.isArrayType() 
+            || tmp.isAnnotatable() || tmp.isIntersectionType() || tmp.isNameQualifiedType() 
+            || tmp.isSimpleType() || tmp.isQualifiedType() || tmp.isUnionType() 
+            || tmp.isWildcardType()) {
+          toRemove.add(i);
+        }
+      }
+      return toRemove;
+    } catch (Exception e) {
+      throw new RuntimeException(e);
     }
   }
 
