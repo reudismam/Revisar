@@ -185,8 +185,10 @@ public class TestSuite {
             String path = "../Projects/cluster/pairs_of_edits.txt";
             final File clusterFile = new File(path);
             String content = "\n============BEGIN PAIR========================\n";
-            content += "ID: " + editi.getId() + " " + editi.getText() + " => " + editi.getDst().getText() + "\n";
-            content += "ID: " + editj.getId() + " " + editj.getText() + " => " + editj.getDst().getText();
+            content += "ID: " + editi.getId() + " " + editi.getText() + " => " +
+            editi.getDst().getText() + "\n";
+            content += "ID: " + editj.getId() + " " + editj.getText() + " => " +
+            editj.getDst().getText();
             content += "\n============END PAIR========================\n\n";
             try {
               if (!clusterFile.exists()) {

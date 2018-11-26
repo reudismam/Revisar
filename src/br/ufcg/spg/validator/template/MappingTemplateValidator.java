@@ -1,5 +1,6 @@
 package br.ufcg.spg.validator.template;
 
+import br.ufcg.spg.antiunification.AntiUnifier;
 import br.ufcg.spg.antiunification.AntiUnifierUtils;
 import br.ufcg.spg.bean.Tuple;
 import br.ufcg.spg.edit.Edit;
@@ -52,8 +53,21 @@ public class MappingTemplateValidator implements ITemplateValidator {
   public boolean isValidUnification() {
     try {
       final Edit firstEdit = srcEdits.get(0);
-      final List<Match> matchesFirst = getInputOuputMatches(firstEdit, srcAu, dstAu);
       final Edit lastEdit = srcEdits.get(srcEdits.size() - 1);
+      String templateCluster = "JOIN(" + srcAu + ", " + dstAu + ")";
+      String templateEdit = "JOIN(" + lastEdit.getPlainTemplate() + ", "
+          + lastEdit.getDst().getPlainTemplate() + ")";
+      final AntiUnifier srcAu2 = AntiUnifierUtils.antiUnify(templateCluster, 
+          templateEdit);
+      final String srcUnifier2 = EquationUtils.convertToEquation(srcAu2);
+      RevisarTree<String> tree = RevisarTreeParser.parser(srcUnifier2);
+      RevisarTree<String> before = tree.getChildren().get(0);
+      RevisarTree<String> after = tree.getChildren().get(1);
+      List<String> beforeHoles = getHoles(before);
+      List<String> afterHoles = getHoles(after);
+      boolean valid = beforeHoles.containsAll(afterHoles);
+      return valid;
+      /*final List<Match> matchesFirst = getInputOuputMatches(firstEdit, srcAu, dstAu);
       final boolean sameSize = isHolesSameSize(firstEdit, lastEdit);
       if (!sameSize) {
         return false;
@@ -68,10 +82,21 @@ public class MappingTemplateValidator implements ITemplateValidator {
       if (matchesFirst.size() != matchesLast.size()) {
         return false;
       }
-      return isCompatible(matchesFirst, matchesLast);
+      return isCompatible(matchesFirst, matchesLast);*/
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
+  }
+
+  private List<String> getHoles(RevisarTree<String> before) {
+    final Map<String, RevisarTree<String>> mapping = getStringRevisarTreeMapping(before);
+    List<String> holes = new ArrayList<>();
+    for (Entry<String, RevisarTree<String>> entry : mapping.entrySet()) {
+      if (entry.getKey().matches("hash_[0-9]+")) {
+        holes.add(entry.getKey());
+      }
+    }
+    return holes;
   }
 
   /**
@@ -183,8 +208,20 @@ public class MappingTemplateValidator implements ITemplateValidator {
    * @return mapping between and tree.
    */
   private Map<String, RevisarTree<String>> getStringRevisarTreeMapping(final String template) {
-    final Map<String, RevisarTree<String>> mapping = new HashMap<>();
     final RevisarTree<String> revisarTree = RevisarTreeParser.parser(template);
+    return getStringRevisarTreeMapping(revisarTree);
+  }
+  
+  /**
+   * Gets mapping between string and tree.
+   * 
+   * @param edit
+   *          edit.
+   * @return mapping between and tree.
+   */
+  private Map<String, RevisarTree<String>> getStringRevisarTreeMapping(
+      final RevisarTree<String> revisarTree) {
+    final Map<String, RevisarTree<String>> mapping = new HashMap<>();
     final List<RevisarTree<String>> treeNodes = NodesExtractor.getNodes(revisarTree);
     for (final RevisarTree<String> node : treeNodes) {
       final String str = EquationUtils.convertToEq(node);
