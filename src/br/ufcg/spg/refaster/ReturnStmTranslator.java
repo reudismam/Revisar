@@ -107,6 +107,7 @@ public class ReturnStmTranslator {
     List<Type> types = TypeUtils.extractTypes(template.getVariables(), ast);
     method = ParameterTranslator.addParameter(types, template.getHoles(), 
         rconf.getRefasterRule(), method);
+    method = body.configReturnType(rconf.getTarget(), rconf.getRefasterRule(), method);
     return method;
   }
   

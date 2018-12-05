@@ -10,6 +10,7 @@ import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ArrayType;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.ParameterizedType;
 import org.eclipse.jdt.core.dom.PrimitiveType;
 import org.eclipse.jdt.core.dom.SimpleType;
@@ -198,6 +199,12 @@ public class TypeUtils {
     try {
       List<Integer> toRemove = new ArrayList<>();
       for (int i = 0; i < nodes.size(); i++) {
+        if (nodes.get(i).getParent() instanceof MethodInvocation) {
+          MethodInvocation parent = (MethodInvocation) nodes.get(i).getParent();
+          if (parent.getName().equals(nodes.get(i))) {
+            toRemove.add(i);
+          }
+        }
         if (!(nodes.get(i) instanceof Type)) {
           continue;
         }

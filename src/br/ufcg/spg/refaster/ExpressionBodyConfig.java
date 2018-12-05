@@ -2,6 +2,7 @@ package br.ufcg.spg.refaster;
 
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.ReturnStatement;
@@ -31,6 +32,13 @@ public class ExpressionBodyConfig implements IConfigBody {
     reStatement.setExpression(expression);
     method.getBody().statements().remove(0);
     method.getBody().statements().add(reStatement);
+    return method;
+  }
+
+  @Override
+  public MethodDeclaration configReturnType(ASTNode node, 
+      CompilationUnit rule, MethodDeclaration method) {
+    method = ReturnTypeTranslator.config(node, rule, method);
     return method;
   }
 }

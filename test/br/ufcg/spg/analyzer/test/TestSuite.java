@@ -130,6 +130,7 @@ public class TestSuite {
     configMainArguments();
     List<Cluster> clusters = TransformationUtils.getClusterMoreProjects();
     int i = clusters.size();
+    //clusters = clusters.subList(4, clusters.size());
     logger.trace(i);
     TransformationUtils.transformations(clusters);
     logger.trace("END.");
@@ -238,7 +239,7 @@ public class TestSuite {
   @Test
   public void exp_translate_id() 
       throws IOException, JustificationException, ControlledException, CoreException {
-    Technique.translateEdits("1365589");
+    Technique.translateEdits("16471");
     logger.trace("END.");
   }
 

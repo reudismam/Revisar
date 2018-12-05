@@ -41,6 +41,28 @@ public class ReturnTypeTranslator {
   }
   
   /**
+   * Configures return type.
+   * 
+   * @param node
+   *          node to be analyzed
+   * @param refasterRule
+   *          Refaster template
+   * @param method
+   *          before method and after method
+   * @return return type
+   */
+  public static MethodDeclaration config(final ASTNode node, final CompilationUnit refasterRule, 
+      MethodDeclaration method) {
+    final int type = node.getNodeType();
+    if (type == ASTNode.SIMPLE_TYPE || type == ASTNode.PARAMETERIZED_TYPE) {
+      return configForType(node, refasterRule, method);
+    }
+    final Type returnType = TypeUtils.extractType(node, refasterRule.getAST());
+    method = setReturnType(returnType, refasterRule, method);
+    return method;
+  }
+  
+  /**
    * Sets the return type for Refaster Rules.
    * 
    * @param astNode
@@ -85,5 +107,28 @@ public class ReturnTypeTranslator {
     after = setReturnType(returnTypeForAfter, refasterRule, after);
     return new Tuple<>(before, after);
   }
+  
+  /**
+  * Configures return type for simple type.
+  * 
+  * @param nodei
+  *          node for before version
+  * @param node
+  *          node for after version
+  * @param refasterRule
+  *          Refaster template
+  * @param method
+  *          method declaration to match before version
+  * @param after
+  *          method declaration to match the after version
+  * @return configures return type for simple type
+  */
+ public static MethodDeclaration configForType(final ASTNode node,
+     final CompilationUnit refasterRule, MethodDeclaration method) {
+   final ASTNode nodeForAfter = TypeUtils.nodeForType(node);
+   final Type returnTypeForAfter = TypeUtils.extractType(nodeForAfter, refasterRule.getAST());
+   method = setReturnType(returnTypeForAfter, refasterRule, method);
+   return method;
+ }
 
 }

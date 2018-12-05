@@ -7,8 +7,10 @@ import java.util.List;
 
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.Dimension;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.PrimitiveType;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Type;
@@ -59,6 +61,14 @@ public class SingleVariableDeclarationBodyConfig implements IConfigBody {
     method.getBody().statements().remove(0);
     method.getBody().setFlags(2);
     method.getBody().statements().add(statement);
+    return method;
+  }
+  
+  @Override
+  public MethodDeclaration configReturnType(ASTNode node, 
+      CompilationUnit rule, MethodDeclaration method) {
+    ASTNode voidNode = ast.newPrimitiveType(PrimitiveType.VOID);
+    method = ReturnTypeTranslator.config(voidNode, rule, method);
     return method;
   }
 }

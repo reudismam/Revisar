@@ -2,6 +2,7 @@ package br.ufcg.spg.refaster;
 
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Statement;
 
@@ -28,6 +29,13 @@ public class StatementBodyConfig implements IConfigBody {
     statement = (Statement) ASTNode.copySubtree(ast, statement);
     method.getBody().statements().remove(0);
     method.getBody().statements().add(statement);
+    return method;
+  }
+  
+  @Override
+  public MethodDeclaration configReturnType(ASTNode node, 
+      CompilationUnit rule, MethodDeclaration method) {
+    method = ReturnTypeTranslator.config(node, rule, method);
     return method;
   }
 }

@@ -54,7 +54,7 @@ public class MappingTemplateValidator implements ITemplateValidator {
     try {
       final Edit firstEdit = srcEdits.get(0);
       final Edit lastEdit = srcEdits.get(srcEdits.size() - 1);
-      String templateCluster = "JOIN(" + srcAu + ", " + dstAu + ")";
+      /*String templateCluster = "JOIN(" + srcAu + ", " + dstAu + ")";
       String templateEdit = "JOIN(" + lastEdit.getPlainTemplate() + ", "
           + lastEdit.getDst().getPlainTemplate() + ")";
       final AntiUnifier srcAu2 = AntiUnifierUtils.antiUnify(templateCluster, 
@@ -66,8 +66,8 @@ public class MappingTemplateValidator implements ITemplateValidator {
       List<String> beforeHoles = getHoles(before);
       List<String> afterHoles = getHoles(after);
       boolean valid = beforeHoles.containsAll(afterHoles);
-      return valid;
-      /*final List<Match> matchesFirst = getInputOuputMatches(firstEdit, srcAu, dstAu);
+      return valid;*/
+      final List<Match> matchesFirst = getInputOuputMatches(firstEdit, srcAu, dstAu);
       final boolean sameSize = isHolesSameSize(firstEdit, lastEdit);
       if (!sameSize) {
         return false;
@@ -82,7 +82,7 @@ public class MappingTemplateValidator implements ITemplateValidator {
       if (matchesFirst.size() != matchesLast.size()) {
         return false;
       }
-      return isCompatible(matchesFirst, matchesLast);*/
+      return isCompatible(matchesFirst, matchesLast);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }

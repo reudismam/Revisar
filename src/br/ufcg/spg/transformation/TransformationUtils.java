@@ -94,6 +94,10 @@ public final class TransformationUtils {
       for (int i = 0; i < srcClusters.size(); i++) {
         logger.trace(((double) i) / srcClusters.size() + " % completed.");
         final Cluster clusteri = srcClusters.get(i);
+        /*if (!clusteri.getNodes().get(0).getText().contains(
+            "LogConfigurationException e")) {
+          continue;
+        }*/
         // Analyze clusters with two or more elements.
         if (clusteri.getNodes().size() < 2) {
           continue;
@@ -101,6 +105,7 @@ public final class TransformationUtils {
         Transformation transformation = tranformation(clusteri);
         //TransformationDao.getInstance().save(transformation);
         Edit edit = clusteri.getNodes().get(0);
+        clusterIndex = i;
         saveTransformation(transformation, edit);
       }
     } catch (final Exception e) {
@@ -267,6 +272,7 @@ public final class TransformationUtils {
       final Cluster clusterj, final String refaster) {
     StringBuilder content = new StringBuilder("");
     content.append(ClusterFormatter.getInstance().formatHeader());
+    content.append("Cluster ID: " + clusteri.getId()).append('\n');
     content.append(refaster).append('\n');
     content.append(ClusterFormatter.getInstance().formatClusterContent(clusteri, clusterj));
     content.append(ClusterFormatter.getInstance().formatFooter());

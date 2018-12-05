@@ -97,5 +97,11 @@ public class TypeBodyConfig implements IConfigBody {
     }
     return targetMethod;
   }
-
+  
+  @Override
+  public MethodDeclaration configReturnType(ASTNode node, 
+      CompilationUnit rule, MethodDeclaration method) {
+    method = ReturnTypeTranslator.config(node, rule, method);
+    return method;
+  }
 }

@@ -345,7 +345,7 @@ public final class ClusterUnifier {
       final String dstUnifier = EquationUtils.convertToEquation(dstAu);
       final List<Edit> newSrcEdits = new ArrayList<>(srcEdits);
       newSrcEdits.add(src);
-      return ClusterValidator.isValidTrans(newSrcEdits, srcCluster.getAu(), dstCluster.getAu());
+      return ClusterValidator.isValidTrans(newSrcEdits, srcUnifier, dstUnifier);
     } catch (final Exception e) {
       e.printStackTrace();
     }

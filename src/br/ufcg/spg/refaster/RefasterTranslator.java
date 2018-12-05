@@ -102,7 +102,7 @@ public class RefasterTranslator {
     final List<Replacement<ASTNode>> dst = ReplacementUtils.replacements(dstEdit, dstAu, dstUnit);
     // Return statement
     Tuple<MethodDeclaration, MethodDeclaration> ba = getBeforeAfterMethod(rule);
-    ba = ReturnTypeTranslator.config(srcNode, dstNode, rule, ba);
+    // ba = ReturnTypeTranslator.config(srcNode, dstNode, rule, ba);
     // Replace method body
     final DiffCalculator diff = new DiffPath(srcEdit.getPath(), dstEdit.getPath());
     diff.diff();

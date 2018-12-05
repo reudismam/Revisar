@@ -132,7 +132,7 @@ public class ClusterDao extends GenericDao<Cluster, String> {
                           + "e.context is not null "
                           + "group by c.id) as t "
                           + "where s >= " + numberProjects + " "
-                          + "order by s desc";
+                          + "order by s desc, t.id asc";
     final Query q = em.createNativeQuery(query);
     @SuppressWarnings("unchecked")
     final List<Long> list = q.getResultList();
