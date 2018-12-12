@@ -56,8 +56,9 @@ public class ReturnStmTranslator {
         config.getNodeDst(), config.getDstList(),
         config.getBa().getItem2(), config.getPi().getDstVersion(), 
         config, afters);
-    MethodDeclaration before = addReturnStatement(bconfig);
-    MethodDeclaration after = addReturnStatement(aconfig);
+    final Type returnType = TypeUtils.extractType(bconfig.getTarget(), bconfig.getRefasterRule().getAST());
+    MethodDeclaration before = addReturnStatement(bconfig, returnType);
+    MethodDeclaration after = addReturnStatement(aconfig, returnType);
     return new Tuple<>(before, after);
   }
 
@@ -92,7 +93,7 @@ public class ReturnStmTranslator {
    * Add a return statement to a method body.
    * @param rconf return statement configuration.
    */
-  private static MethodDeclaration addReturnStatement(ReturnStatementConfig rconf) 
+  private static MethodDeclaration addReturnStatement(ReturnStatementConfig rconf, Type returnType) 
           throws BadLocationException, IOException, NoFilepatternException, GitAPIException {
     final AST ast = rconf.getRefasterRule().getAST();
     final Template template = getTemplate(rconf);
@@ -107,7 +108,7 @@ public class ReturnStmTranslator {
     List<Type> types = TypeUtils.extractTypes(template.getVariables(), ast);
     method = ParameterTranslator.addParameter(types, template.getHoles(), 
         rconf.getRefasterRule(), method);
-    method = body.configReturnType(rconf.getTarget(), rconf.getRefasterRule(), method);
+    method = body.configReturnType(returnType, rconf.getRefasterRule(), method);
     return method;
   }
   

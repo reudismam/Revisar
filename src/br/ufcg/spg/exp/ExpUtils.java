@@ -14,12 +14,19 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 
+import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.osgi.service.resolver.extras.Sortable;
 
 public class ExpUtils {
 
@@ -46,11 +53,13 @@ public class ExpUtils {
    */
   public static List<String> getAllProjects() {
     try {
+      System.out.println(new File("projects.txt").getAbsolutePath());
       final List<String> projects = Files.readLines(new File("projects.txt"), 
           Charset.defaultCharset());
       final List<String> names = new ArrayList<>();
       for (final String project : projects) {
-        final String pname = project.substring(project.lastIndexOf('/') + 1, project.length() - 4);
+        final String pname = project; 
+        //project.substring(project.lastIndexOf('/') + 1, project.length() - 4);
         names.add(pname);
       }
       return names;
@@ -58,6 +67,46 @@ public class ExpUtils {
       throw new RuntimeException(e);
     }
   }
+  
+  /**
+   * Gets projects.
+   */
+  public static void saveStatisticsProjects() {
+    try {
+      System.out.println(new File("projects.txt").getAbsolutePath());
+      final List<String> projects = Files.readLines(new File("projects.txt"), 
+          Charset.defaultCharset());
+      Map<String, Integer> map = new LinkedHashMap<>();
+      
+      for (final String project : projects) {
+        File file = new File(project + ".txt");
+        if (file.exists()) {
+          final List<String> lines = Files.readLines(
+              file, Charset.defaultCharset());
+          map.put(project, lines.size());
+          
+        }
+      }
+      List<Map.Entry<String, Integer>> stde = sort(map);
+      StringBuilder bf = new StringBuilder();
+      for (Map.Entry<String, Integer> item : stde) {
+        bf.append(item.getKey() + "  " + item.getValue() + "\n");
+      }
+      FileUtils.writeStringToFile(new File("statistics.txt"), bf.toString());
+    } catch (final IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+  
+  private static <K, V extends Comparable<? super V>> List<Entry<K, V>> sort(Map<K, V> map)     {
+    List<Map.Entry<K, V>> list = new LinkedList<Map.Entry<K, V>>(map.entrySet());
+    Collections.sort(list, new Comparator<Map.Entry<K, V>>() {
+        public int compare(Map.Entry<K, V> o1, Map.Entry<K, V> o2) {
+            return -1 * o1.getValue().compareTo(o2.getValue());
+        }
+    });
+    return list;
+}
 
   /**
    * Return the e-mails in a list of commits.
@@ -71,12 +120,32 @@ public class ExpUtils {
       try {
         final List<String> pemails = git.getEmail(repoPath);
         emails.addAll(pemails);
-        ExpUtils.saveEmails(pemails, project + ".txt");
+        ExpUtils.save(pemails, project + ".txt");
       } catch (final Exception e) {
         e.printStackTrace();
       }
     }
     return new ArrayList<>(emails);
+  }
+  
+  /**
+   * Return the e-mails in a list of commits.
+   */
+  public static List<String> filterCommits() throws IOException, GitAPIException {
+    final List<String> projects = getAllProjects();
+    final List<String> commits = new ArrayList<>();
+    final GitUtils git = new GitUtils();
+    for (final String project : projects) {
+      final String repoPath = "../AllProjects/" + project + "/";
+      try {
+        final List<String> pcommits = git.filterCommits(repoPath);
+        commits.addAll(pcommits);
+        ExpUtils.save(pcommits, project + ".txt");
+      } catch (final Exception e) {
+        e.printStackTrace();
+      }
+    }
+    return new ArrayList<>(commits);
   }
 
   /**
@@ -96,7 +165,7 @@ public class ExpUtils {
    * @param fileName
    *          file name.
    */
-  public static void saveEmails(final List<String> list, final String fileName) throws IOException {
+  public static void save(final List<String> list, final String fileName) throws IOException {
     try (FileWriter writer = new FileWriter(fileName)) {
       for (final String str : list) {
         writer.write(str + ",\n");

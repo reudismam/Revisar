@@ -311,6 +311,47 @@ public class GitUtils {
       return new ArrayList<>(log);
     }
   }
+  
+  /**
+   * Extracts log identifications.
+   * 
+   * @param repoPath
+   *          repository
+   * @return log identification
+   */
+  public List<String> filterCommits(final String repoPath) throws IOException, GitAPIException {
+    final Repository repository = startRepo(repoPath);
+    try (Git git = new Git(repository)) {
+      final Iterable<RevCommit> logs = git.log().call();
+      final List<String> log = new ArrayList<>();
+      for (final RevCommit rev : logs) {
+        logger.trace("Commit: " + rev.getId().getName());
+        final String commit = rev.getId().getName() + " " +  rev.getShortMessage();
+        if (evaluateCommitMessage(rev.getFullMessage())) {
+          log.add(commit);
+        }
+      }
+      return new ArrayList<>(log);
+    }
+  }
+
+  private boolean evaluateCommitMessage(String fullMessage) {
+    if (fullMessage.contains("add") || fullMessage.contains("new")
+        || fullMessage.contains("modify") || fullMessage.contains("update")){
+      return true;
+    }
+    if (fullMessage.contains("fix") || fullMessage.contains("problem")
+        || fullMessage.contains("incorrect") || fullMessage.contains("correct")){
+      return true;
+    }
+    if (fullMessage.contains("cleanup") || fullMessage.contains("unneeded")
+        || fullMessage.contains("remove") || fullMessage.contains("rework")
+        || fullMessage.contains("refactor")) {
+      return true;
+      
+    }
+    return false;
+  }
 
   /**
    * Helper function to get the tree of the changes in a commit.

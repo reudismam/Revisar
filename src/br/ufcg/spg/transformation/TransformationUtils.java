@@ -95,7 +95,7 @@ public final class TransformationUtils {
         logger.trace(((double) i) / srcClusters.size() + " % completed.");
         final Cluster clusteri = srcClusters.get(i);
         /*if (!clusteri.getNodes().get(0).getText().contains(
-            "LogConfigurationException e")) {
+            "new ArrayList<Task>(children.size())")) {
           continue;
         }*/
         // Analyze clusters with two or more elements.

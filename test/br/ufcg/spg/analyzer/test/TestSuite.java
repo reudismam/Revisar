@@ -357,9 +357,28 @@ public class TestSuite {
    */
   public void getEmails() throws IOException, NoHeadException, GitAPIException {
     final List<String> emails = ExpUtils.allEmails();
-    ExpUtils.saveEmails(emails, "email.txt");
+    ExpUtils.save(emails, "email.txt");
     final List<String> shiffle = ExpUtils.shuffleList(emails);
-    ExpUtils.saveEmails(shiffle, "shuffle_email.txt");
+    ExpUtils.save(shiffle, "shuffle_email.txt");
+  }
+  
+  /**
+   * Gets e-mails.
+   */
+  @Test
+  public void filterCommitsByMessage() throws IOException, NoHeadException, GitAPIException {
+    final List<String> filtered = ExpUtils.filterCommits();
+    ExpUtils.save(filtered, "filtered_commits.txt");
+    //final List<String> shiffle = ExpUtils.shuffleList(emails);
+    //ExpUtils.save(shiffle, "shuffle_email.txt");
+  }
+  
+  /**
+   * Gets e-mails.
+   */
+  @Test
+  public void getStatistics() throws IOException, NoHeadException, GitAPIException {
+    ExpUtils.saveStatisticsProjects();
   }
 
   /**

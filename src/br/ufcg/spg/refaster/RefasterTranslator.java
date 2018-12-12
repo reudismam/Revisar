@@ -17,12 +17,15 @@ import br.ufcg.spg.project.ProjectInfo;
 import br.ufcg.spg.refaster.config.TransformationConfigObject;
 import br.ufcg.spg.replacement.Replacement;
 import br.ufcg.spg.replacement.ReplacementUtils;
+import br.ufcg.spg.type.TypeUtils;
+
 import java.io.IOException;
 import java.util.List;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jface.text.BadLocationException;
@@ -102,7 +105,7 @@ public class RefasterTranslator {
     final List<Replacement<ASTNode>> dst = ReplacementUtils.replacements(dstEdit, dstAu, dstUnit);
     // Return statement
     Tuple<MethodDeclaration, MethodDeclaration> ba = getBeforeAfterMethod(rule);
-    // ba = ReturnTypeTranslator.config(srcNode, dstNode, rule, ba);
+    ba = ReturnTypeTranslator.config(srcNode, dstNode, rule, ba);
     // Replace method body
     final DiffCalculator diff = new DiffPath(srcEdit.getPath(), dstEdit.getPath());
     diff.diff();

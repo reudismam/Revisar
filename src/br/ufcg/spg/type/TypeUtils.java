@@ -32,6 +32,9 @@ public class TypeUtils {
    * @return the type of the node.
    */
   public static Type extractType(final ASTNode astNode, final AST ast) {
+    if (astNode instanceof Type) {
+      return (Type) astNode;
+    }
     // for simple variable declaration
     if (astNode instanceof SingleVariableDeclaration) {
       final SingleVariableDeclaration decl = (SingleVariableDeclaration) astNode;
