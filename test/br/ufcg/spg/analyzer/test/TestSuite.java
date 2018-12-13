@@ -380,6 +380,14 @@ public class TestSuite {
   public void getStatistics() throws IOException, NoHeadException, GitAPIException {
     ExpUtils.saveStatisticsProjects();
   }
+  
+  /**
+   * Gets e-mails.
+   */
+  @Test
+  public void extractProjects() throws IOException, NoHeadException, GitAPIException {
+    ExpUtils.extractProjects();
+  }
 
   /**
    * Test for many projects.

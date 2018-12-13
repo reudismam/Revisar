@@ -23,6 +23,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -71,9 +73,37 @@ public class ExpUtils {
   /**
    * Gets projects.
    */
+  public static void extractProjects() {
+    try {
+      List<String> allProjects = new ArrayList<>();
+      for (int i = 1; i <= 10; i++) {
+        String text = FileUtils.readFileToString(new File("repositories_page_" + i + ".txt"));
+        List<String> allMatches = new ArrayList<String>();
+        Matcher m = Pattern.compile("clone_url\\\"\\: .*\\.git")
+            .matcher(text);
+        while (m.find()) {
+          String project = m.group().substring(13);
+          allMatches.add(project);
+        }
+        allProjects.addAll(allMatches);
+      }
+      StringBuffer bf = new StringBuffer();
+      for (String project : allProjects) {
+        String projectName = project.substring(19, project.lastIndexOf(".git"));
+        String projectNameFiltered = projectName.replace('/', '_');
+        bf.append("git clone " + project + " " + projectNameFiltered + "\n");
+      }
+      FileUtils.writeStringToFile(new File("all_clones.txt"), bf.toString());
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+  
+  /**
+   * Gets projects.
+   */
   public static void saveStatisticsProjects() {
     try {
-      System.out.println(new File("projects.txt").getAbsolutePath());
       final List<String> projects = Files.readLines(new File("projects.txt"), 
           Charset.defaultCharset());
       Map<String, Integer> map = new LinkedHashMap<>();
