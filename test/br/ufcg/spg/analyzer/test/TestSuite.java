@@ -13,6 +13,7 @@ import br.ufcg.spg.database.EditDao;
 import br.ufcg.spg.dependence.DependenceUtils;
 import br.ufcg.spg.edit.Edit;
 import br.ufcg.spg.edit.EditStorage;
+import br.ufcg.spg.emerging.EmergingPatternsUtils;
 import br.ufcg.spg.exp.ExpUtils;
 import br.ufcg.spg.log.TimeLogger;
 import br.ufcg.spg.main.MainArguments;
@@ -130,9 +131,18 @@ public class TestSuite {
     configMainArguments();
     List<Cluster> clusters = TransformationUtils.getClusterMoreProjects();
     int i = clusters.size();
-    //clusters = clusters.subList(4, clusters.size());
     logger.trace(i);
     TransformationUtils.transformations(clusters);
+    logger.trace("END.");
+  }
+  
+  @Test
+  public void exp_compute_emerging_patterns() throws IOException {
+    configMainArguments();
+    List<Cluster> clusters = TransformationUtils.getClusterMoreProjects();
+    int i = clusters.size();
+    logger.trace(i);
+    EmergingPatternsUtils.emergingPatterns(clusters);
     logger.trace("END.");
   }
   

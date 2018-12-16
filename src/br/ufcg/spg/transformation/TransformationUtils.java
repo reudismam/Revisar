@@ -114,6 +114,33 @@ public final class TransformationUtils {
   }
   
   /**
+   * Computes transformations for a set of clusters.
+   */
+  public static void transformations(final String folderPath,final List<Cluster> srcClusters) {
+    try {
+      for (int i = 0; i < srcClusters.size(); i++) {
+        logger.trace(((double) i) / srcClusters.size() + " % completed.");
+        final Cluster clusteri = srcClusters.get(i);
+        /*if (!clusteri.getNodes().get(0).getText().contains(
+            "new ArrayList<Task>(children.size())")) {
+          continue;
+        }*/
+        // Analyze clusters with two or more elements.
+        if (clusteri.getNodes().size() < 2) {
+          continue;
+        }
+        Transformation transformation = tranformation(clusteri);
+        //TransformationDao.getInstance().save(transformation);
+        Edit edit = clusteri.getNodes().get(0);
+        clusterIndex = i;
+        saveTransformation(folderPath, transformation, edit);
+      }
+    } catch (final Exception e) {
+      e.printStackTrace();
+    }
+  }
+  
+  /**
    * Computes the template for some cluster.
    */
   public static void transformationsLargestClusters() {
