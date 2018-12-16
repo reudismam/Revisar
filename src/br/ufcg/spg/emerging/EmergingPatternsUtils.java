@@ -5,7 +5,10 @@ import br.ufcg.spg.edit.Edit;
 import br.ufcg.spg.transformation.TransformationUtils;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -36,13 +39,15 @@ public final class EmergingPatternsUtils {
       // Sorting
       Collections.sort(edits, Collections.reverseOrder(new SortbyDate()));
       Edit last = edits.get(edits.size() - 1);
-      if (last.getDate().getYear() > 2015) {
+      System.out.println(last.getDate());
+      Date threshould = new GregorianCalendar(2011, Calendar.JANUARY, 01).getTime();
+      if (last.getDate().after(threshould)) {
         emerging.add(srcCluster);
       } else {
         old.add(srcCluster);
       }
     }
-    TransformationUtils.transformations("Projects/Emerging/", emerging);
-    TransformationUtils.transformations("Projects/Old/", old);
+    TransformationUtils.transformations("../Projects/Emerging/", emerging);
+    TransformationUtils.transformations("../Projects/Old/", old);
   }
 }

@@ -91,23 +91,8 @@ public final class TransformationUtils {
    */
   public static void transformations(final List<Cluster> srcClusters) {
     try {
-      for (int i = 0; i < srcClusters.size(); i++) {
-        logger.trace(((double) i) / srcClusters.size() + " % completed.");
-        final Cluster clusteri = srcClusters.get(i);
-        /*if (!clusteri.getNodes().get(0).getText().contains(
-            "new ArrayList<Task>(children.size())")) {
-          continue;
-        }*/
-        // Analyze clusters with two or more elements.
-        if (clusteri.getNodes().size() < 2) {
-          continue;
-        }
-        Transformation transformation = tranformation(clusteri);
-        //TransformationDao.getInstance().save(transformation);
-        Edit edit = clusteri.getNodes().get(0);
-        clusterIndex = i;
-        saveTransformation(transformation, edit);
-      }
+      String folderPath = "../Projects/cluster/";
+      transformations(folderPath, srcClusters);
     } catch (final Exception e) {
       e.printStackTrace();
     }
