@@ -373,6 +373,13 @@ public final class TransformationUtils {
    */
   public static List<Cluster> getClusterMoreProjects() {
     final ClusterDao dao = ClusterDao.getInstance();
-    return dao.getClusterMoreProjects(3);
+    List<Cluster> clusters = new ArrayList<>(dao.getClusterMoreProjects(3));
+    List<Cluster> newList = new ArrayList<>();
+    for (Cluster cluster : clusters) {
+      if (!isSameBeforeAfter(cluster)) {
+        newList.add(cluster); 
+      }
+    }
+    return newList;
   }
 }
