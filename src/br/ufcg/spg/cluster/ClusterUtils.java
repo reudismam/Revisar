@@ -2,14 +2,17 @@ package br.ufcg.spg.cluster;
 
 import br.ufcg.spg.database.ClusterDao;
 import br.ufcg.spg.edit.Edit;
+import br.ufcg.spg.ml.editoperation.Script;
 import br.ufcg.spg.transformation.TransformationUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jgit.api.errors.GitAPIException;
 
@@ -87,5 +90,29 @@ public final class ClusterUtils {
       cluster.getDst().getNodes().add(edit.getDst());
     }
     return new ArrayList<>(map.values());
+  }
+
+  public static void saveClusterToFile(int countCluster, List<Script> list) {
+    StringBuilder content = new StringBuilder("NUMBER OF NODES IN THIS CLUSTER: " 
+        + list.size()).append("\n\n");
+    int count = 0;
+    for (Script sc : list) {
+      content.append(ClusterFormatter.getInstance().formatHeader());
+      content.append(sc.getList()).append('\n');
+      String cnumber = String.format("%03d", ++count);
+      content.append("CLUSTER ").append(cnumber).append('\n');
+      Cluster clusteri = sc.getCluster();
+      Cluster clusterj = clusteri.getDst();
+      content.append(ClusterFormatter.getInstance().formatClusterContent(clusteri, clusterj));
+      content.append(ClusterFormatter.getInstance().formatFooter());
+    }
+    String counterFormated =  String.format("%03d", countCluster);
+    String path = "../Projects/cluster/clusters/" + counterFormated + ".txt";
+    final File clusterFile = new File(path);
+    try {
+      FileUtils.writeStringToFile(clusterFile, content.toString());
+    } catch (IOException e) {
+      TransformationUtils.logger.error(e.getStackTrace());
+    }
   }
 }

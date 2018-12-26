@@ -11,6 +11,9 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import br.ufcg.spg.cluster.Cluster;
+import br.ufcg.spg.cluster.ClusterFormatter;
+
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -91,7 +94,10 @@ public class ApachePOIExcelWriter {
 
         // Create COL-B from row-1 and set data
         HSSFCell cellB1 = row1.createCell((short) 1);
-        cellB1.setCellValue(qfs.get(i).getText());
+        Cluster c = qfs.get(i).getCluster();
+        String result = ClusterFormatter.getInstance().formatStringNodes(c.getNodes());
+        String [] lines = result.split("\n");
+        cellB1.setCellValue(lines[3]);
         cellStyle = workbook.createCellStyle();
         cellStyle.setFillForegroundColor(HSSFColor.LIGHT_CORNFLOWER_BLUE.index);
         // cellStyle.setFillPattern(0);

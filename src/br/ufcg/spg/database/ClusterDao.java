@@ -1,6 +1,7 @@
 package br.ufcg.spg.database;
 
 import br.ufcg.spg.cluster.Cluster;
+import br.ufcg.spg.filter.FilterManager;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -168,6 +169,21 @@ public class ClusterDao extends GenericDao<Cluster, String> {
       if (!set.contains(s)) {
         set.add(s);
         newList.add(s);
+      }
+    }
+    return newList;
+  }
+
+  /**
+   * Get clusters with the largest number of examples.
+   */
+  public static List<Cluster> getClusterMoreProjects() {
+    final ClusterDao dao = getInstance();
+    List<Cluster> clusters = new ArrayList<>(dao.getClusterMoreProjects(3));
+    List<Cluster> newList = new ArrayList<>();
+    for (Cluster cluster : clusters) {
+      if (!FilterManager.isSameBeforeAfter(cluster)) {
+        newList.add(cluster); 
       }
     }
     return newList;

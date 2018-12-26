@@ -108,7 +108,7 @@ public class TestSuite {
   public void exp_TranslateMoreProjects()
       throws IOException, JustificationException, ControlledException, CoreException {
     configMainArguments();
-    List<Cluster> clusters = TransformationUtils.getClusterMoreProjects();
+    List<Cluster> clusters = ClusterDao.getClusterMoreProjects();
     List<Edit> allEdits = new ArrayList<>();
     int i = clusters.size();
     logger.trace(i);
@@ -129,7 +129,7 @@ public class TestSuite {
   @Test
   public void exp_translate_cluster_more_projects() throws IOException {
     configMainArguments();
-    List<Cluster> clusters = TransformationUtils.getClusterMoreProjects();
+    List<Cluster> clusters = ClusterDao.getClusterMoreProjects();
     int i = clusters.size();
     logger.trace(i);
     TransformationUtils.transformations(clusters);
@@ -139,7 +139,7 @@ public class TestSuite {
   @Test
   public void exp_compute_emerging_patterns() throws IOException {
     configMainArguments();
-    List<Cluster> clusters = TransformationUtils.getClusterMoreProjects();
+    List<Cluster> clusters = ClusterDao.getClusterMoreProjects();
     int i = clusters.size();
     logger.trace(i);
     EmergingPatternsUtils.emergingPatterns(clusters);
@@ -150,7 +150,7 @@ public class TestSuite {
   public void buildRefasterRules() 
       throws IOException, JustificationException, ControlledException, CoreException {
     configMainArguments();
-    List<Cluster> clusters = TransformationUtils.getClusterMoreProjects();
+    List<Cluster> clusters = ClusterDao.getClusterMoreProjects();
     int j = clusters.size();
     logger.trace(j);
     int i = 0;
@@ -176,7 +176,7 @@ public class TestSuite {
   public void buildAllPairsOfEdits() 
       throws IOException, JustificationException, ControlledException, CoreException {
     configMainArguments();
-    List<Cluster> clusters = TransformationUtils.getClusterMoreProjects();
+    List<Cluster> clusters = ClusterDao.getClusterMoreProjects();
     int j = clusters.size();
     logger.trace(j);
     List<Edit> allEdits = getAllEdits(clusters);
@@ -196,10 +196,10 @@ public class TestSuite {
             String path = "../Projects/cluster/pairs_of_edits.txt";
             final File clusterFile = new File(path);
             String content = "\n============BEGIN PAIR========================\n";
-            content += "ID: " + editi.getId() + " " + editi.getText() + " => " +
-            editi.getDst().getText() + "\n";
-            content += "ID: " + editj.getId() + " " + editj.getText() + " => " +
-            editj.getDst().getText();
+            content += "ID: " + editi.getId() + " " + editi.getText() + " => " 
+              + editi.getDst().getText() + "\n";
+            content += "ID: " + editj.getId() + " " + editj.getText() + " => " 
+              + editj.getDst().getText();
             content += "\n============END PAIR========================\n\n";
             try {
               if (!clusterFile.exists()) {
@@ -220,7 +220,7 @@ public class TestSuite {
   public void buildRefasterRulesAllEdits() 
       throws IOException, JustificationException, ControlledException, CoreException {
     configMainArguments();
-    List<Cluster> clusters = TransformationUtils.getClusterMoreProjects();
+    List<Cluster> clusters = ClusterDao.getClusterMoreProjects();
     int j = clusters.size();
     logger.trace(j);
     int i = 0;
@@ -264,7 +264,7 @@ public class TestSuite {
   @Test
   public void exp_cluster_more_projects2() throws IOException {
     configMainArguments();
-    List<Cluster> clusters = TransformationUtils.getClusterMoreProjects();
+    List<Cluster> clusters = ClusterDao.getClusterMoreProjects();
     int i = clusters.size();
     logger.trace(i);
     List<Edit> allEdits = getAllEdits(clusters);
@@ -282,7 +282,7 @@ public class TestSuite {
   @Test
   public void exp_cluster_more_projects_resolve_bug() throws IOException {
     configMainArguments();
-    List<Cluster> clusters = TransformationUtils.getClusterMoreProjects();
+    List<Cluster> clusters = ClusterDao.getClusterMoreProjects();
     // clusters = clusters.subList(50, 200);
     List<Edit> allEdits = new ArrayList<>();
     int i = clusters.size();
@@ -304,7 +304,7 @@ public class TestSuite {
   @Test
   public void exp_cluster_more_projects_no_dcap() throws IOException {
     configMainArguments();
-    List<Cluster> clusters = TransformationUtils.getClusterMoreProjects();
+    List<Cluster> clusters = ClusterDao.getClusterMoreProjects();
     List<Edit> allEdits = new ArrayList<>();
     int i = clusters.size();
     logger.trace(i);

@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Format cluster data.
  */
-public class ClusterFormatter {
+public final class ClusterFormatter {
   
   private static ClusterFormatter instance;
   
@@ -102,7 +102,7 @@ public class ClusterFormatter {
    * Format output.
    * @param pattern pattern
    */
-  private String formatOutput(final String pattern, final String addToLines) {
+  public String formatOutput(final String pattern, final String addToLines) {
     StringBuilder newPattern = new StringBuilder();
     String addToMid = "    >>    ";
     String[] lines = pattern.split("\n");
@@ -117,7 +117,10 @@ public class ClusterFormatter {
     return newPattern.toString();
   }
 
-  private String formatStringNodes(final List<Edit> srcNodes) {
+  /**
+   * Format list of nodes.
+   */
+  public String formatStringNodes(final List<Edit> srcNodes) {
     StringBuilder result = new StringBuilder();
     result.append("\nEXAMPLES IN THIS CLUSTER ").append(srcNodes.size()).append(":\n\n");
     StringBuilder beforeNodes = new StringBuilder();
@@ -136,5 +139,19 @@ public class ClusterFormatter {
     result.append(output);
     result.append("...\n");
     return result.toString();
+  }
+
+  /**
+   * Format cluster.
+   */
+  public StringBuilder formatCluster(final Cluster clusteri, 
+      final Cluster clusterj, final String refaster) {
+    StringBuilder content = new StringBuilder("");
+    content.append(formatHeader());
+    content.append("Cluster ID: " + clusteri.getId()).append('\n');
+    content.append(refaster).append('\n');
+    content.append(formatClusterContent(clusteri, clusterj));
+    content.append(formatFooter());
+    return content;
   }
 }

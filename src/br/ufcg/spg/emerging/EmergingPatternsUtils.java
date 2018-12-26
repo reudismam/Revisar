@@ -3,6 +3,8 @@ package br.ufcg.spg.emerging;
 import br.ufcg.spg.bean.Tuple;
 import br.ufcg.spg.cluster.Cluster;
 import br.ufcg.spg.edit.Edit;
+import br.ufcg.spg.excel.ApachePOIExcelWriter;
+import br.ufcg.spg.excel.QuickFixManager;
 import br.ufcg.spg.transformation.TransformationUtils;
 
 import java.io.File;
@@ -17,6 +19,7 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 /**
  * Utility class to perform transformations.
@@ -36,7 +39,7 @@ public final class EmergingPatternsUtils {
   public static void emergingPatterns(List<Cluster> srcClusters) {
     logger.trace("COMPUTING EMERGING CLUSTERS");
     StringBuilder builder = new StringBuilder();
-    for (int year = 2018; year >= 2000; year--) {
+    for (int year = 2011; year >= 2011; year--) {
       Tuple<List<Cluster>, List<Cluster>> tu = emergingPatterns(year, srcClusters);
       List<Cluster> emerging = tu.getItem1();
       List<Cluster> old = tu.getItem2();
@@ -44,7 +47,13 @@ public final class EmergingPatternsUtils {
       String emergingPath = "../Projects/" + year + "/Emerging/";
       String oldPath = "../Projects/" + year + "/Old/";
       TransformationUtils.transformations(emergingPath, emerging);
+      QuickFixManager.getInstance().getQuickFixes().clear();
       TransformationUtils.transformations(oldPath, old);
+      try {
+        ApachePOIExcelWriter.save(QuickFixManager.getInstance().getQuickFixes());
+      } catch (InvalidFormatException | IOException e) {
+        e.printStackTrace();
+      }
     }
     try {
       FileUtils.writeStringToFile(new File("../Projects/emerging_by_year.txt"), builder.toString());

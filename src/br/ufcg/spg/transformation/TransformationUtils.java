@@ -2,11 +2,14 @@ package br.ufcg.spg.transformation;
 
 import br.ufcg.spg.cluster.Cluster;
 import br.ufcg.spg.cluster.ClusterFormatter;
+import br.ufcg.spg.cluster.ClusterUtils;
 import br.ufcg.spg.config.TechniqueConfig;
 import br.ufcg.spg.database.ClusterDao;
 import br.ufcg.spg.database.TransformationDao;
 import br.ufcg.spg.edit.Edit;
-import br.ufcg.spg.filter.PatternFilter;
+import br.ufcg.spg.excel.QuickFix;
+import br.ufcg.spg.excel.QuickFixManager;
+import br.ufcg.spg.filter.FilterManager;
 import br.ufcg.spg.ml.editoperation.Script;
 import br.ufcg.spg.ml.metric.ScriptDistanceMetric;
 import br.ufcg.spg.refaster.RefasterTranslator;
@@ -42,12 +45,12 @@ public final class TransformationUtils {
   /**
    * Logger.
    */
-  private static final Logger logger = LogManager.getLogger(TransformationUtils.class.getName());
+  public static final Logger logger = LogManager.getLogger(TransformationUtils.class.getName());
   
   /**
    * Field only for test purpose.
    */
-  private static int clusterIndex = 1;
+  public static int clusterIndex = 1;
   
   private TransformationUtils() {
   }
@@ -58,7 +61,7 @@ public final class TransformationUtils {
   public static void transformations() {
     final TransformationDao dao = TransformationDao.getInstance();
     final Long clusterId = dao.getLastClusterId();
-    final List<Cluster> srcClusters = getClusters();
+    final List<Cluster> srcClusters = ClusterDao.getInstance().getSrcClusters();
     final List<Cluster> remainingClusters = new ArrayList<>();
     if (clusterId == -1) {
       transformations(srcClusters);
@@ -115,6 +118,7 @@ public final class TransformationUtils {
           continue;
         }
         Transformation transformation = tranformation(clusteri);
+        //save the transformation, for debug purpose let's comment it for now.
         //TransformationDao.getInstance().save(transformation);
         Edit edit = clusteri.getNodes().get(0);
         clusterIndex = i;
@@ -129,7 +133,7 @@ public final class TransformationUtils {
    * Computes the template for some cluster.
    */
   public static void transformationsLargestClusters() {
-    final List<Cluster> clusters = getLargestClusters();
+    final List<Cluster> clusters = ClusterDao.getInstance().getLargestClusters();
     transformations(clusters);
   }
   
@@ -149,10 +153,10 @@ public final class TransformationUtils {
         ls.add(sc);
       }
       clusteredScriptsList.addAll(ls);
-      saveClusterToFile(++countCluster, ls);
+      ClusterUtils.saveClusterToFile(++countCluster, ls);
     }
     if (!renameScripts.isEmpty()) {
-      saveClusterToFile(++countCluster, renameScripts);
+      ClusterUtils.saveClusterToFile(++countCluster, renameScripts);
     }
     for (final Point point : scripts) {
       Script sc = (Script) point;
@@ -176,30 +180,6 @@ public final class TransformationUtils {
     }
   }
 
-  private static void saveClusterToFile(int countCluster, List<Script> list) {
-    StringBuilder content = new StringBuilder("NUMBER OF NODES IN THIS CLUSTER: " 
-        + list.size()).append("\n\n");
-    int count = 0;
-    for (Script sc : list) {
-      content.append(ClusterFormatter.getInstance().formatHeader());
-      content.append(sc.getList()).append('\n');
-      String cnumber = String.format("%03d", ++count);
-      content.append("CLUSTER ").append(cnumber).append('\n');
-      Cluster clusteri = sc.getCluster();
-      Cluster clusterj = clusteri.getDst();
-      content.append(ClusterFormatter.getInstance().formatClusterContent(clusteri, clusterj));
-      content.append(ClusterFormatter.getInstance().formatFooter());
-    }
-    String counterFormated =  String.format("%03d", countCluster);
-    String path = "../Projects/cluster/clusters/" + counterFormated + ".txt";
-    final File clusterFile = new File(path);
-    try {
-      FileUtils.writeStringToFile(clusterFile, content.toString());
-    } catch (IOException e) {
-      logger.error(e.getStackTrace());
-    }
-  }
-  
   /**
    * Learns a transformation for a cluster.
    */
@@ -252,134 +232,21 @@ public final class TransformationUtils {
       throws IOException, BadLocationException, GitAPIException {
     final Cluster clusteri = trans.getCluster();
     final Cluster clusterj = clusteri.getDst();
-    //Script script = DbScanClustering.getCluster(clusteri);    
-    if (isSameBeforeAfter(clusteri)) {
-      return;
-    } 
-    List<PatternFilter> filters = filterFactory();
-    for (PatternFilter filter : filters) {
-      final String srcOutput =  clusteri.getAu();
-      final String dstOutput = clusterj.getAu();
-      if (filter.match(srcOutput, dstOutput)) {
-        String counterFormated =  String.format("%03d", clusterIndex++);
-        String path = folderPath + "filtered/" + trans.isValid() 
-            + '/' + counterFormated + ".txt";
-        final File clusterFile = new File(path);
-        StringBuilder content = formatCluster(clusteri, clusterj, "");
-        FileUtils.writeStringToFile(clusterFile, content.toString());
-        return;
-      }
-    }  
-    //Create rules only if the transformation is not a noise.
-    final String refaster = createRefasterRule(clusteri, edit);
-    trans.setTransformation(refaster);
-    String counterFormated =  String.format("%03d", clusterIndex++);
-    String path = folderPath + trans.isValid() + '/' + counterFormated + ".txt";
-    final File clusterFile = new File(path);
-    StringBuilder content = formatCluster(clusteri, clusterj, refaster);
-    FileUtils.writeStringToFile(clusterFile, content.toString());
-  }
-
-  private static StringBuilder formatCluster(final Cluster clusteri, 
-      final Cluster clusterj, final String refaster) {
-    StringBuilder content = new StringBuilder("");
-    content.append(ClusterFormatter.getInstance().formatHeader());
-    content.append("Cluster ID: " + clusteri.getId()).append('\n');
-    content.append(refaster).append('\n');
-    content.append(ClusterFormatter.getInstance().formatClusterContent(clusteri, clusterj));
-    content.append(ClusterFormatter.getInstance().formatFooter());
-    return content;
-  }
-  
-  private static List<PatternFilter> filterFactory() {
-    PatternFilter varrename = new PatternFilter(
-        "VARIABLE_DECLARATION_FRAGMENT\\(SIMPLE_NAME\\(hash_[0-9]+\\)\\)", 
-        "VARIABLE_DECLARATION_FRAGMENT\\(SIMPLE_NAME\\([a-zA-Z0-9_]+\\)\\)");
-    
-    List<PatternFilter> pfilters = new ArrayList<>();
-    
-    PatternFilter trueFalse = new PatternFilter(
-        "RETURN_STATEMENT\\([A-Z]+_[A-Z]+\\([a-zA-Z0-9_]+\\)\\)", 
-        "RETURN_STATEMENT\\([A-Z]+_[A-Z]+\\([a-zA-Z0-9_]+\\)\\)");
-    
-    PatternFilter trueFalseVariable = new PatternFilter(
-        "VARIABLE_DECLARATION_FRAGMENT\\(SIMPLE_NAME"
-        + "\\([_0-9a-zA-Z]+\\), BOOLEAN_LITERAL\\([a-z]+\\)\\)", 
-        "VARIABLE_DECLARATION_FRAGMENT\\(SIMPLE_NAME"
-        + "\\([_0-9a-zA-Z]+\\), BOOLEAN_LITERAL\\([a-z]+\\)\\)");
-    
-    PatternFilter changeNumber = new PatternFilter(
-        "VARIABLE_DECLARATION_FRAGMENT"
-        + "\\(SIMPLE_NAME\\(hash_[0-9]+\\), NUMBER_LITERAL\\(hash_[0-9]+\\)\\)", 
-        "VARIABLE_DECLARATION_FRAGMENT"
-        + "\\(SIMPLE_NAME\\([_0-9A-Za-z]+\\), NUMBER_LITERAL\\([0-9]+\\)\\)");
-    
-    PatternFilter constructor = new PatternFilter(
-        "SUPER_CONSTRUCTOR_INVOCATION\\([ _,a-zA-Z0-9\\(\\)]+\\)", 
-        "SUPER_CONSTRUCTOR_INVOCATION\\([ _,a-zA-Z0-9\\(\\)]+\\)");
-    
-    PatternFilter swithcaseDefault = new PatternFilter(
-        "SWITCH_CASE\\([\\(\\)_a-zA-Z0-9]+\\)", 
-        "SWITCH_CASE\\([\\(\\)_a-zA-Z0-9]+\\)");
-    
-    PatternFilter markerAnnotationFilter = new PatternFilter(
-        "MARKER_ANNOTATION\\(SIMPLE_NAME\\([a-zA-Z0-9_]+\\)\\)",
-        "MARKER_ANNOTATION\\(SIMPLE_NAME\\([a-zA-Z0-9_]+\\)\\)");
-   
-    PatternFilter toSingleVariable = new PatternFilter(
-        ".+", 
-        "VARIABLE_DECLARATION_FRAGMENT\\(SIMPLE_NAME\\([a-zA-Z0-9_]+\\)\\)");
-    
-    PatternFilter infixes = new PatternFilter(
-        "(INFIX_EXPRESSION|PREFIX_EXPRESSION|POSTFIX_EXPRESSION)\\([, a-zA-Z0-9\\)\\(_]+\\)", 
-        "(INFIX_EXPRESSION|PREFIX_EXPRESSION|POSTFIX_EXPRESSION)\\([, a-zA-Z0-9\\)\\(_]+\\)");
-    pfilters.add(varrename);
-    pfilters.add(trueFalse);
-    pfilters.add(changeNumber);
-    pfilters.add(trueFalseVariable);
-    pfilters.add(swithcaseDefault);
-    pfilters.add(constructor);
-    pfilters.add(markerAnnotationFilter);
-    pfilters.add(toSingleVariable);
-    pfilters.add(infixes);
-    return pfilters;
-  }
-  
-  private static List<Cluster> getClusters() {
-    final ClusterDao dao = ClusterDao.getInstance();
-    return dao.getSrcClusters();
-  }
-  
-  private static boolean isSameBeforeAfter(final Cluster clusteri) {
-    for (Edit c : clusteri.getNodes()) {
-      Edit dstEdit = c.getDst();
-      if (!c.getText().equals(dstEdit.getText())) {
-        return false;
-      }
+    //Script script = DbScanClustering.getCluster(clusteri); 
+    boolean isNoise = FilterManager.isNoise(folderPath, trans, clusteri, clusterj);
+    if (!isNoise) {
+      final String refaster = createRefasterRule(clusteri, edit);
+      trans.setTransformation(refaster);
+      QuickFix qf = new QuickFix();
+      qf.setId(clusterIndex);
+      qf.setCluster(clusteri);
+      QuickFixManager.getInstance().getQuickFixes().add(qf);
+      String counterFormated =  String.format("%03d", clusterIndex++);
+      String path = folderPath + trans.isValid() + '/' + counterFormated + ".txt";
+      final File clusterFile = new File(path);
+      StringBuilder content = ClusterFormatter.getInstance()
+          .formatCluster(clusteri, clusterj, refaster);
+      FileUtils.writeStringToFile(clusterFile, content.toString());
     }
-    return true;
-  }
-  
-  /**
-   * Get clusters with the largest number of nodes.
-   */
-  public static List<Cluster> getLargestClusters() {
-    final ClusterDao dao = ClusterDao.getInstance();
-    return dao.getLargestClusters();
-  }
-  
-  /**
-   * Get clusters with the largest number of examples.
-   */
-  public static List<Cluster> getClusterMoreProjects() {
-    final ClusterDao dao = ClusterDao.getInstance();
-    List<Cluster> clusters = new ArrayList<>(dao.getClusterMoreProjects(3));
-    List<Cluster> newList = new ArrayList<>();
-    for (Cluster cluster : clusters) {
-      if (!isSameBeforeAfter(cluster)) {
-        newList.add(cluster); 
-      }
-    }
-    return newList;
   }
 }
