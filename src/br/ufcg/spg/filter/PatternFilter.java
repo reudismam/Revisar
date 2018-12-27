@@ -11,8 +11,13 @@ public class PatternFilter {
   /**
    * Constructor.
    */
+  public PatternFilter() {
+  }
+  
+  /**
+   * Constructor.
+   */
   public PatternFilter(String beforePattern, String afterPattern) {
-    super();
     this.beforePattern = beforePattern;
     this.afterPattern = afterPattern;
   }

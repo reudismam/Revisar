@@ -1,6 +1,7 @@
 package br.ufcg.spg.antiunification;
 
 import br.ufcg.spg.antiunification.substitution.HoleWithSubstutings;
+import br.ufcg.spg.bean.Tuple;
 import br.ufcg.spg.config.TechniqueConfig;
 import br.ufcg.spg.edit.Edit;
 import br.ufcg.spg.equation.EquationUtils;
@@ -8,6 +9,8 @@ import br.ufcg.spg.matcher.IMatcher;
 import br.ufcg.spg.matcher.KindNodeMatcher;
 import br.ufcg.spg.matcher.LargerThanMatcher;
 import br.ufcg.spg.node.util.ASTNodeUtils;
+import br.ufcg.spg.tree.RevisarTree;
+import br.ufcg.spg.tree.RevisarTreeParser;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -278,6 +281,22 @@ public final class AntiUnifierUtils {
       return new AntiUnifier(LARGER);
     }
     return new AntiUnifier(unification);
+  }
+  
+  /**
+   * Join anti-unify.
+   */
+  public static Tuple<RevisarTree<String>, RevisarTree<String>> joinAntiUnify(
+      String srcTemplate, String dstTemplate, String srcAu, String dstAu) {
+    String templateCluster = "JOIN(" + srcAu + ", " + dstAu + ")";
+    String templateEdit = "JOIN(" + srcTemplate + ", " + dstTemplate + ")";
+    final AntiUnifier srcUni = AntiUnifierUtils.antiUnify(templateCluster, 
+        templateEdit);
+    final String srcUnifier2 = EquationUtils.convertToEquation(srcUni);
+    RevisarTree<String> tree = RevisarTreeParser.parser(srcUnifier2);
+    RevisarTree<String> before = tree.getChildren().get(0);
+    RevisarTree<String> after = tree.getChildren().get(1);
+    return new Tuple<>(before, after);  
   }
 
   private static AntiUnificationData unification = null;

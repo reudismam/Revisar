@@ -44,6 +44,7 @@ import org.eclipse.jgit.api.errors.NoHeadException;
 import org.eclipse.jgit.errors.AmbiguousObjectException;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
+import org.junit.Before;
 import org.junit.Test;
 
 public class TestSuite {
@@ -52,10 +53,14 @@ public class TestSuite {
 
   public TestSuite() {
   }
+  
+  @Before
+  public void setup() {
+    configMainArguments();
+  }
 
   @Test
   public void exp() throws IOException, JustificationException, ControlledException, CoreException {
-    configMainArguments();
     final TechniqueConfig config = TechniqueConfig.getInstance();
     config.setAllCommits(true);
     config.setEditsToAnalyze(100);
@@ -82,7 +87,6 @@ public class TestSuite {
   public void exp_Cluster() 
       throws IOException, JustificationException, 
       ControlledException, CoreException {
-    configMainArguments();
     Technique.clusterEdits();
     Technique.translateEdits();
     logger.trace("END.");
@@ -92,14 +96,12 @@ public class TestSuite {
   public void exp_Dependence() throws 
       MissingObjectException, IncorrectObjectTypeException, AmbiguousObjectException,
       IOException, ExecutionException, NoFilepatternException, GitAPIException {
-    configMainArguments();
     DependenceUtils.dependences();
   }
 
   @Test
   public void exp_Translate() throws 
       IOException, JustificationException, ControlledException, CoreException {
-    configMainArguments();
     Technique.translateEdits();
     logger.trace("END.");
   }
@@ -107,7 +109,6 @@ public class TestSuite {
   @Test
   public void exp_TranslateMoreProjects()
       throws IOException, JustificationException, ControlledException, CoreException {
-    configMainArguments();
     List<Cluster> clusters = ClusterDao.getClusterMoreProjects();
     List<Edit> allEdits = new ArrayList<>();
     int i = clusters.size();
@@ -128,7 +129,6 @@ public class TestSuite {
 
   @Test
   public void exp_translate_cluster_more_projects() throws IOException {
-    configMainArguments();
     List<Cluster> clusters = ClusterDao.getClusterMoreProjects();
     int i = clusters.size();
     logger.trace(i);
@@ -138,7 +138,6 @@ public class TestSuite {
   
   @Test
   public void exp_compute_emerging_patterns() throws IOException {
-    configMainArguments();
     List<Cluster> clusters = ClusterDao.getClusterMoreProjects();
     int i = clusters.size();
     logger.trace(i);
@@ -149,7 +148,6 @@ public class TestSuite {
   @Test
   public void buildRefasterRules() 
       throws IOException, JustificationException, ControlledException, CoreException {
-    configMainArguments();
     List<Cluster> clusters = ClusterDao.getClusterMoreProjects();
     int j = clusters.size();
     logger.trace(j);
@@ -175,7 +173,6 @@ public class TestSuite {
   @Test
   public void buildAllPairsOfEdits() 
       throws IOException, JustificationException, ControlledException, CoreException {
-    configMainArguments();
     List<Cluster> clusters = ClusterDao.getClusterMoreProjects();
     int j = clusters.size();
     logger.trace(j);
@@ -219,7 +216,6 @@ public class TestSuite {
   @Test
   public void buildRefasterRulesAllEdits() 
       throws IOException, JustificationException, ControlledException, CoreException {
-    configMainArguments();
     List<Cluster> clusters = ClusterDao.getClusterMoreProjects();
     int j = clusters.size();
     logger.trace(j);
@@ -256,14 +252,12 @@ public class TestSuite {
   @Test
   public void exp_cluster_id() 
       throws IOException, JustificationException, ControlledException, CoreException {
-    configMainArguments();
     ClusterUtils.buildClusters("1290970");
     logger.trace("END.");
   }
 
   @Test
   public void exp_cluster_more_projects2() throws IOException {
-    configMainArguments();
     List<Cluster> clusters = ClusterDao.getClusterMoreProjects();
     int i = clusters.size();
     logger.trace(i);
@@ -281,9 +275,7 @@ public class TestSuite {
 
   @Test
   public void exp_cluster_more_projects_resolve_bug() throws IOException {
-    configMainArguments();
     List<Cluster> clusters = ClusterDao.getClusterMoreProjects();
-    // clusters = clusters.subList(50, 200);
     List<Edit> allEdits = new ArrayList<>();
     int i = clusters.size();
     logger.trace(i);
@@ -303,7 +295,6 @@ public class TestSuite {
 
   @Test
   public void exp_cluster_more_projects_no_dcap() throws IOException {
-    configMainArguments();
     List<Cluster> clusters = ClusterDao.getClusterMoreProjects();
     List<Edit> allEdits = new ArrayList<>();
     int i = clusters.size();
@@ -319,7 +310,6 @@ public class TestSuite {
   @Test
   public void test_d_cap() throws 
       IOException, JustificationException, ControlledException, CoreException {
-    configMainArguments();
     final ClusterDao dao = ClusterDao.getInstance();
     final List<Cluster> clusters = dao.getClusters("113406");
     final Cluster cluster = clusters.get(0);
@@ -342,7 +332,6 @@ public class TestSuite {
 
   @Test
   public void exp_learn_dependence_clusters() {
-    configMainArguments();
     final ClusterDao dao = ClusterDao.getInstance();
     final List<String> commits = dao.getAllCommitsClusters();
     DependenceDao dependenceDao = DependenceDao.getInstance();

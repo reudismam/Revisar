@@ -10,6 +10,7 @@ import br.ufcg.spg.edit.Edit;
 import br.ufcg.spg.edit.EditStorage;
 import br.ufcg.spg.equation.EquationUtils;
 import br.ufcg.spg.transformation.TransformationUtils;
+import br.ufcg.spg.tree.RevisarTree;
 import br.ufcg.spg.validator.ClusterValidator;
 import br.ufcg.spg.validator.node.NodeValidator;
 
@@ -232,12 +233,11 @@ public final class ClusterUnifier {
     final Cluster dstCluster = valid.getDst();
     srcCluster.getNodes().add(srcEdit);
     dstCluster.getNodes().add(dstEdit);
-    AntiUnifier srcUni;
-    srcUni = AntiUnifierUtils.antiUnify(srcCluster.getAu(), srcEdit.getPlainTemplate());
-    final String srcAu = EquationUtils.convertToEquation(srcUni);
-    final AntiUnifier dstUni = AntiUnifierUtils.antiUnify(dstCluster.getAu(), 
-        dstEdit.getPlainTemplate());
-    final String dstAu = EquationUtils.convertToEquation(dstUni);
+    final Tuple<RevisarTree<String>, RevisarTree<String>> au = AntiUnifierUtils.joinAntiUnify(
+        srcEdit.getPlainTemplate(), dstEdit.getPlainTemplate(), 
+        valid.getAu(), valid.getDst().getAu());
+    final String srcAu = EquationUtils.convertToEq(au.getItem1());
+    final String dstAu = EquationUtils.convertToEq(au.getItem2());
     srcCluster.setAu(srcAu);
     dstCluster.setAu(dstAu);
   }
@@ -337,15 +337,9 @@ public final class ClusterUnifier {
       final Edit src, final Edit dst) {
     try {
       final List<Edit> srcEdits = srcCluster.getNodes();
-      final AntiUnifier srcAu = AntiUnifierUtils.antiUnify(srcCluster.getAu(), 
-          src.getPlainTemplate());
-      final String srcUnifier = EquationUtils.convertToEquation(srcAu);
-      final AntiUnifier dstAu = AntiUnifierUtils.antiUnify(dstCluster.getAu(), 
-          dst.getPlainTemplate());
-      final String dstUnifier = EquationUtils.convertToEquation(dstAu);
       final List<Edit> newSrcEdits = new ArrayList<>(srcEdits);
       newSrcEdits.add(src);
-      return ClusterValidator.isValidTrans(newSrcEdits, srcUnifier, dstUnifier);
+      return ClusterValidator.isValidTrans(newSrcEdits, srcCluster.getAu(), dstCluster.getAu());
     } catch (final Exception e) {
       e.printStackTrace();
     }

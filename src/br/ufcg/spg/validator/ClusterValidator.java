@@ -40,12 +40,12 @@ public class ClusterValidator {
    */
   public static boolean isValidTrans(final List<Edit> csrcEdits, 
       final String srcAu, final String dstAu) {
-    final ITransformationValidatorStrategy strategy = new TemplateValidatorStrategy();
     // Since edits are consistent in cluster, we only need two edits
     final Edit firstEdit = csrcEdits.get(0);
     final Edit lastEdit = csrcEdits.get(csrcEdits.size() - 1);
     final Edit[] srcAnalyzed = { firstEdit, lastEdit };
     final List<Edit> srcEdits = Arrays.asList(srcAnalyzed);
+    final ITransformationValidatorStrategy strategy = new TemplateValidatorStrategy();
     return strategy.isValidTrans(srcEdits, srcAu, dstAu);
   }
 }

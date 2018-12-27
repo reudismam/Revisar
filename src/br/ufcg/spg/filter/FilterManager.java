@@ -43,11 +43,10 @@ public class FilterManager {
   }
 
   private static List<PatternFilter> filterFactory() {
+    List<PatternFilter> pfilters = new ArrayList<>();
     PatternFilter varrename = new PatternFilter(
         "VARIABLE_DECLARATION_FRAGMENT\\(SIMPLE_NAME\\(hash_[0-9]+\\)\\)", 
         "VARIABLE_DECLARATION_FRAGMENT\\(SIMPLE_NAME\\([a-zA-Z0-9_]+\\)\\)");
-    
-    List<PatternFilter> pfilters = new ArrayList<>();
     
     PatternFilter trueFalse = new PatternFilter(
         "RETURN_STATEMENT\\([A-Z]+_[A-Z]+\\([a-zA-Z0-9_]+\\)\\)", 

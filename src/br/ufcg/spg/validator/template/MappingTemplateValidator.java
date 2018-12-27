@@ -1,6 +1,5 @@
 package br.ufcg.spg.validator.template;
 
-import br.ufcg.spg.antiunification.AntiUnifier;
 import br.ufcg.spg.antiunification.AntiUnifierUtils;
 import br.ufcg.spg.bean.Tuple;
 import br.ufcg.spg.edit.Edit;
@@ -51,41 +50,15 @@ public class MappingTemplateValidator implements ITemplateValidator {
    */
   @Override
   public boolean isValidUnification() {
-    try {
-      final Edit firstEdit = srcEdits.get(0);
-      final Edit lastEdit = srcEdits.get(srcEdits.size() - 1);
-      /*String templateCluster = "JOIN(" + srcAu + ", " + dstAu + ")";
-      String templateEdit = "JOIN(" + lastEdit.getPlainTemplate() + ", "
-          + lastEdit.getDst().getPlainTemplate() + ")";
-      final AntiUnifier srcAu2 = AntiUnifierUtils.antiUnify(templateCluster, 
-          templateEdit);
-      final String srcUnifier2 = EquationUtils.convertToEquation(srcAu2);
-      RevisarTree<String> tree = RevisarTreeParser.parser(srcUnifier2);
-      RevisarTree<String> before = tree.getChildren().get(0);
-      RevisarTree<String> after = tree.getChildren().get(1);
-      List<String> beforeHoles = getHoles(before);
-      List<String> afterHoles = getHoles(after);
-      boolean valid = beforeHoles.containsAll(afterHoles);
-      return valid;*/
-      final List<Match> matchesFirst = getInputOuputMatches(firstEdit, srcAu, dstAu);
-      final boolean sameSize = isHolesSameSize(firstEdit, lastEdit);
-      if (!sameSize) {
-        return false;
-      }
-      if (!isOuputSubstituingInInput(firstEdit, srcAu, dstAu)) {
-        return false;
-      }
-      final List<Match> matchesLast = getInputOuputMatches(lastEdit, srcAu, dstAu);
-      if (!isOuputSubstituingInInput(lastEdit, srcAu, dstAu)) {
-        return false;
-      }
-      if (matchesFirst.size() != matchesLast.size()) {
-        return false;
-      }
-      return isCompatible(matchesFirst, matchesLast);
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
+    final Edit lastEdit = srcEdits.get(srcEdits.size() - 1);
+    Tuple<RevisarTree<String>, RevisarTree<String>> tree = AntiUnifierUtils.joinAntiUnify(
+        lastEdit.getPlainTemplate(), lastEdit.getDst().getPlainTemplate(), srcAu, dstAu);
+    RevisarTree<String> before = tree.getItem1();
+    RevisarTree<String> after = tree.getItem2();
+    List<String> beforeHoles = getHoles(before);
+    List<String> afterHoles = getHoles(after);
+    boolean valid = beforeHoles.containsAll(afterHoles);
+    return valid;
   }
 
   private List<String> getHoles(RevisarTree<String> before) {
@@ -102,6 +75,7 @@ public class MappingTemplateValidator implements ITemplateValidator {
   /**
    * Verifies whether substituting nodes in output is present on input tree.
    */
+  @Deprecated
   private boolean isOuputSubstituingInInput(
       final Edit srcEdit, final String srcAu, final String dstAu) {
     final Edit dstEdit = srcEdit.getDst();
@@ -138,6 +112,7 @@ public class MappingTemplateValidator implements ITemplateValidator {
    * @param matchesLast
    *          second list of matches.
    */
+  @Deprecated
   private boolean isCompatible(final List<Match> matchesFirst, final List<Match> matchesLast) {
     Set<Tuple<String, String>> set = new HashSet<>();
     for (final Match match : matchesFirst) {
@@ -155,6 +130,7 @@ public class MappingTemplateValidator implements ITemplateValidator {
    * Verifies whether the size of holes when we anti-unify the first edit and
    * anti-unify the second edit is the same.
    */
+  @Deprecated
   private boolean isHolesSameSize(final Edit first, final Edit last) {
     final Map<String, String> substutingsFirst = AntiUnifierUtils.getUnifierMatching(
         srcAu, first.getPlainTemplate());
@@ -163,6 +139,7 @@ public class MappingTemplateValidator implements ITemplateValidator {
     return substutingsFirst.size() == substitutingsLast.size();
   }
 
+  @Deprecated
   private List<Match> getInputOuputMatches(
       final Edit srcEdit, final String srcAu, final String dstAu) {
     final Edit dstEdit = srcEdit.getDst();
