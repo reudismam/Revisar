@@ -2,21 +2,17 @@ package br.ufcg.spg.ml.editoperation;
 
 import br.ufcg.spg.tree.RevisarTree;
 
-public class InsertNode<T> extends EditNode<T> {
-
-  /**
-   * Constructor.
-   */
-  public InsertNode(RevisarTree<T> parent, RevisarTree<T> node, int k) {
+public class MoveNode<T> extends EditNode<T> {
+  public MoveNode(RevisarTree<T> parent, RevisarTree<T> node, int k) {
     super(node, parent, null, k);
   }
 
   /**
-   * String representation of this object.
+   * String represent on this object.
    */
   @Override
   public String toString() {
-    return "Insert(" + getT1Node().getLabel() + ", " + getParent().getLabel() + ", " + getK() + ")";
+    return "Move(" + getT1Node().getLabel() + " to " + getParent().getLabel() + ", " + getK() + ")";
   }
   
   @Override
@@ -26,13 +22,13 @@ public class InsertNode<T> extends EditNode<T> {
 
   @Override
   public boolean equals(Object obj) {
-    if (!(obj instanceof InsertNode<?>)) {
+    if (!(obj instanceof MoveNode<?>)) {
       return false;
     }
-    return thisEquals((InsertNode<T>) obj);
+    return thisEquals((MoveNode<T>) obj);
   }
 
-  public boolean thisEquals(InsertNode<T> other) {
+  private boolean thisEquals(MoveNode<T> other) {
     boolean isParentLabel = false;
     if (getParent() != null && other.getParent() != null) {
       isParentLabel = other.getParent().getLabel().equals(getParent().getLabel());

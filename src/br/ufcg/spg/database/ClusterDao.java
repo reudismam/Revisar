@@ -146,6 +146,21 @@ public class ClusterDao extends GenericDao<Cluster, String> {
   }
   
   /**
+   * Get clusters with the largest number of examples.
+   */
+  public static List<Cluster> getClusterMoreProjects() {
+    final ClusterDao dao = getInstance();
+    List<Cluster> clusters = new ArrayList<>(dao.getClusterMoreProjects(3));
+    List<Cluster> newList = new ArrayList<>();
+    for (Cluster cluster : clusters) {
+      if (!FilterManager.isSameBeforeAfter(cluster)) {
+        newList.add(cluster); 
+      }
+    }
+    return newList;
+  }
+  
+  /**
    * Gets source code edits.
    * @return source code edits.
    */
@@ -169,21 +184,6 @@ public class ClusterDao extends GenericDao<Cluster, String> {
       if (!set.contains(s)) {
         set.add(s);
         newList.add(s);
-      }
-    }
-    return newList;
-  }
-
-  /**
-   * Get clusters with the largest number of examples.
-   */
-  public static List<Cluster> getClusterMoreProjects() {
-    final ClusterDao dao = getInstance();
-    List<Cluster> clusters = new ArrayList<>(dao.getClusterMoreProjects(3));
-    List<Cluster> newList = new ArrayList<>();
-    for (Cluster cluster : clusters) {
-      if (!FilterManager.isSameBeforeAfter(cluster)) {
-        newList.add(cluster); 
       }
     }
     return newList;

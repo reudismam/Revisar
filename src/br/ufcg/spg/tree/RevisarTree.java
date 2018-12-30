@@ -27,6 +27,8 @@ public class RevisarTree<T> {
    */
   private T value;
   
+  private Object label;
+  
   /**
    * String value of tree.
    */
@@ -40,6 +42,17 @@ public class RevisarTree<T> {
   public RevisarTree(final T value) {
     this.value = value;
     children = new ArrayList<RevisarTree<T>>();
+  }
+  
+  public RevisarTree(final T value, final Object label) {
+    this.value = value;
+    this.label = label;
+  }
+
+  public RevisarTree(T value, Object label, List<RevisarTree<T>> children) {
+    this.value = value;
+    this.label = label;
+    this.children = children;
   }
 
   public RevisarTree<T> getParent() {
@@ -72,6 +85,14 @@ public class RevisarTree<T> {
 
   public void setValue(final T value) {
     this.value = value;
+  }
+  
+  public Object getLabel() {
+    return label;
+  }
+
+  public void setLabel(Object label) {
+    this.label = label;
   }
 
   public List<RevisarTree<T>> getChildren() {

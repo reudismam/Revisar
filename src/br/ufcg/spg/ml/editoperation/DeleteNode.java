@@ -1,54 +1,38 @@
 package br.ufcg.spg.ml.editoperation;
 
-public class DeleteNode implements IEditNode {
-  private String parent;
-  private String node;
+import br.ufcg.spg.tree.RevisarTree;
 
-  public DeleteNode(String parent, String node) {
-    this.parent = parent;
-    this.node = node;
+public class DeleteNode<T> extends EditNode<T> {
+
+  public DeleteNode(RevisarTree<T> node, RevisarTree<T> parent) {
+    super(node, parent, null, -1);
   }
 
-  @Override
-  public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((node == null) ? 0 : node.hashCode());
-    result = prime * result + ((parent == null) ? 0 : parent.hashCode());
-    return result;
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
-      return false;
-    }
-    DeleteNode other = (DeleteNode) obj;
-    if (node == null) {
-      if (other.node != null) {
-        return false;
-      }
-    } else if (!node.equals(other.node)) {
-      return false;
-    }
-    if (parent == null) {
-      if (other.parent != null) {
-        return false;
-      }
-    } else if (!parent.equals(other.parent)) {
-      return false;
-    }
-    return true;
+  public DeleteNode(RevisarTree<T> node) {
+    super(node, node.getParent(), null, -1);
   }
 
   @Override
   public String toString() {
-    return "DeleteNode [parent=" + parent + ", node=" + node + "]";
+    return "Delete(" + getT1Node() + ")";
+  }
+  
+  @Override
+  public int hashCode() {
+    return toString().hashCode();
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (!(obj instanceof DeleteNode<?>)) {
+      return false;
+    }
+    return thisEquals((DeleteNode<T>) obj);
+  }
+
+  private boolean thisEquals(DeleteNode<T> other) {
+    return this.getK() == other.getK() 
+        && other.getT1Node().getLabel().equals(this.getT1Node().getLabel()) 
+        && other.getParent().getLabel().equals(this.getParent().getLabel());
   }
 }

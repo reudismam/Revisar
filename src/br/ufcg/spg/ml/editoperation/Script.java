@@ -7,14 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Script extends Point {
-  private List<IEditNode> list;
+  private List<EditNode> list;
   
   private Cluster cluster;
 
   /**
    * Constructor.
    */
-  public Script(List<IEditNode> edits, Cluster cluster) {
+  public Script(List<EditNode> edits, Cluster cluster) {
     super(new double[] {});
     this.list = edits;
     this.cluster = cluster;
@@ -25,11 +25,11 @@ public class Script extends Point {
     list = new ArrayList<>();
   }
 
-  public List<IEditNode> getList() {
+  public List<EditNode> getList() {
     return list;
   }
 
-  public void setList(List<IEditNode> list) {
+  public void setList(List<EditNode> list) {
     this.list = list;
   }
 

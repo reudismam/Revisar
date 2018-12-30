@@ -247,6 +247,7 @@ public final class TransformationUtils {
       StringBuilder content = ClusterFormatter.getInstance()
           .formatCluster(clusteri, clusterj, refaster);
       FileUtils.writeStringToFile(clusterFile, content.toString());
+      //Script script = MLClustering.getCluster(clusteri);
     }
   }
 }
