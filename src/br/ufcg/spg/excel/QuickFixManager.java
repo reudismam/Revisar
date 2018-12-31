@@ -12,6 +12,9 @@ public class QuickFixManager {
     quickFixes = new ArrayList<>();
   }
   
+  /**
+   * gets singleton instance.
+   */
   public static QuickFixManager getInstance() {
     if (instance == null) {
       instance = new QuickFixManager();

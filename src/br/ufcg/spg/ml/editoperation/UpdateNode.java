@@ -29,14 +29,21 @@ public class UpdateNode<T> extends EditNode<T> {
   public void setTo(RevisarTree<T> to) {
     this.to = to;
   }
+  
+  public RevisarTree<T> getToParent() {
+    return toParent;
+  }
+
+  public void setToParent(RevisarTree<T> toParent) {
+    this.toParent = toParent;
+  }
 
   /**
    * String representation of this object.
    */
   @Override
   public String toString() {
-    return "Update(" + getT1Node().getLabel() 
-        + " - (" + getT1Node() + ") to " + to.getLabel() + " - (" + to + "))";
+    return "Update(" + getT1Node().getLabel() + " to " + to.getLabel() + ")";
   }
   
   @Override
@@ -44,6 +51,7 @@ public class UpdateNode<T> extends EditNode<T> {
     return toString().hashCode();
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public boolean equals(Object obj) {
     if (!(obj instanceof UpdateNode<?>)) {

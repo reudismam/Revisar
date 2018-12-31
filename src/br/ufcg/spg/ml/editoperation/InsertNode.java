@@ -24,6 +24,7 @@ public class InsertNode<T> extends EditNode<T> {
     return toString().hashCode();
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public boolean equals(Object obj) {
     if (!(obj instanceof InsertNode<?>)) {
@@ -32,6 +33,9 @@ public class InsertNode<T> extends EditNode<T> {
     return thisEquals((InsertNode<T>) obj);
   }
 
+  /**
+   * Equals.
+   */
   public boolean thisEquals(InsertNode<T> other) {
     boolean isParentLabel = false;
     if (getParent() != null && other.getParent() != null) {

@@ -6,15 +6,15 @@ import de.jail.geometry.schemas.Point;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Script extends Point {
-  private List<EditNode> list;
+public class Script<T> extends Point {
+  private List<EditNode<T>> list;
   
   private Cluster cluster;
 
   /**
    * Constructor.
    */
-  public Script(List<EditNode> edits, Cluster cluster) {
+  public Script(List<EditNode<T>> edits, Cluster cluster) {
     super(new double[] {});
     this.list = edits;
     this.cluster = cluster;
@@ -25,11 +25,11 @@ public class Script extends Point {
     list = new ArrayList<>();
   }
 
-  public List<EditNode> getList() {
+  public List<EditNode<T>> getList() {
     return list;
   }
 
-  public void setList(List<EditNode> list) {
+  public void setList(List<EditNode<T>> list) {
     this.list = list;
   }
 
@@ -61,7 +61,8 @@ public class Script extends Point {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    Script other = (Script) obj;
+    @SuppressWarnings("unchecked")
+    Script<T> other = (Script<T>) obj;
     if (cluster == null) {
       if (other.cluster != null) {
         return false;
@@ -81,7 +82,18 @@ public class Script extends Point {
 
   @Override
   public String toString() {
-    return "Script [list=" + list + ", \ncluster="
+    return "Script [list=" + formatList() + ", \ncluster="
       + cluster.getNodes().get(0) + "->" + cluster.getDst().getNodes().get(0) + "]\n\n";
+  }
+  
+  /**
+   * Format list of edit.
+   */
+  public String formatList() {
+    String content = "\n";
+    for (EditNode<T> t: list) {
+      content += t + "\n";
+    }
+    return content;
   }
 }

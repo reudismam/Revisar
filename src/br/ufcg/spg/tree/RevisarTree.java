@@ -44,11 +44,18 @@ public class RevisarTree<T> {
     children = new ArrayList<RevisarTree<T>>();
   }
   
+  /**
+   * Constructor.
+   */
   public RevisarTree(final T value, final Object label) {
     this.value = value;
     this.label = label;
+    children = new ArrayList<RevisarTree<T>>();
   }
 
+  /**
+   * Constructor.
+   */
   public RevisarTree(T value, Object label, List<RevisarTree<T>> children) {
     this.value = value;
     this.label = label;

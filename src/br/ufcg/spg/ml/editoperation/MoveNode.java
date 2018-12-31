@@ -20,6 +20,7 @@ public class MoveNode<T> extends EditNode<T> {
     return toString().hashCode();
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public boolean equals(Object obj) {
     if (!(obj instanceof MoveNode<?>)) {

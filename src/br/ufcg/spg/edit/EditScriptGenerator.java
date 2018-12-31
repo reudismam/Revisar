@@ -14,6 +14,9 @@ import br.ufcg.spg.tree.TreeTraversal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import javax.swing.tree.TreeNode;
 
@@ -35,10 +38,8 @@ public class EditScriptGenerator<T> {
     for (RevisarTree<T> x : bfs) {
       // Combines the update, insert, align, and move phases
       RevisarTree<T> y = x.getParent();
-      RevisarTree<T> z = m.entrySet().stream().filter(
-          o -> o.getValue().equals(y)).findFirst().get().getKey();
-      RevisarTree<T> w = m.entrySet().stream().filter(
-          o -> o.getValue().equals(x)).findFirst().get().getKey();
+      RevisarTree<T> z = findNode(m, y);
+      RevisarTree<T> w = findNode(m, x);
       if (w == null) {
         int k = findPos(x, m);
         RevisarTree<T> xnode = new RevisarTree<T>(x.getValue(), x.getLabel());
@@ -136,6 +137,16 @@ public class EditScriptGenerator<T> {
       editScript.remove(v.getItem2());
     }
     return editScript;
+  }
+
+  private RevisarTree<T> findNode(Map<RevisarTree<T>, RevisarTree<T>> m, RevisarTree<T> y) {
+    Optional<Entry<RevisarTree<T>, RevisarTree<T>>> zs = m.entrySet().stream().filter(
+        o -> o.getValue().equals(y)).findFirst();
+    if (zs.isPresent()) {
+      RevisarTree<T> z = zs.get().getKey();
+      return z;
+    }
+    return null;
   }
 
   /**

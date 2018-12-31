@@ -10,6 +10,7 @@ import br.ufcg.spg.edit.Edit;
 import br.ufcg.spg.excel.QuickFix;
 import br.ufcg.spg.excel.QuickFixManager;
 import br.ufcg.spg.filter.FilterManager;
+import br.ufcg.spg.ml.clustering.EditScriptUtils;
 import br.ufcg.spg.ml.editoperation.Script;
 import br.ufcg.spg.ml.metric.ScriptDistanceMetric;
 import br.ufcg.spg.refaster.RefasterTranslator;
@@ -27,6 +28,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jgit.api.errors.GitAPIException;
+
+import at.unisalzburg.dbresearch.apted.node.StringNodeData;
 
 /**
  * Utility class to perform transformations.
@@ -247,7 +250,7 @@ public final class TransformationUtils {
       StringBuilder content = ClusterFormatter.getInstance()
           .formatCluster(clusteri, clusterj, refaster);
       FileUtils.writeStringToFile(clusterFile, content.toString());
-      //Script script = MLClustering.getCluster(clusteri);
+      Script<StringNodeData> script = EditScriptUtils.getCluster(clusteri);
     }
   }
 }
