@@ -7,6 +7,8 @@ import at.unisalzburg.dbresearch.apted.node.StringNodeData;
 import at.unisalzburg.dbresearch.apted.parser.BracketStringInputParser;
 
 import br.ufcg.spg.cluster.Cluster;
+import br.ufcg.spg.component.ConnectedComponentManager;
+import br.ufcg.spg.component.FullConnectedEditNode;
 import br.ufcg.spg.converter.ConverterHelper;
 import br.ufcg.spg.edit.EditScriptGenerator;
 import br.ufcg.spg.ml.editoperation.EditNode;
@@ -55,6 +57,9 @@ public class EditScriptUtils {
     List<EditNode<StringNodeData>> edits = 
         new EditScriptGenerator<StringNodeData>().editScript(rt1, rt2, m);
     Script<StringNodeData> script = new Script<StringNodeData>(edits, srcCluster);
+    ConnectedComponentManager<EditNode<StringNodeData>> con = new ConnectedComponentManager<>();
+    List<List<EditNode<StringNodeData>>> c = con.connectedComponents(script.getList(), 
+        new FullConnectedEditNode<StringNodeData>(script.getList()));
     return script;
   }
 

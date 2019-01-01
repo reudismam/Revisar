@@ -60,6 +60,9 @@ public class RevisarTree<T> {
     this.value = value;
     this.label = label;
     this.children = children;
+    for (RevisarTree<T> child : children) {
+      child.setParent(this);
+    }
   }
 
   public RevisarTree<T> getParent() {
@@ -94,8 +97,27 @@ public class RevisarTree<T> {
     this.value = value;
   }
   
+  /**
+   * Gets the label.
+   */
   public Object getLabel() {
     return label;
+  }
+  
+  /**
+   * Gets the string label.
+   */
+  public Object getStrLabel() {
+    String  labelSub = label.toString().substring(1);
+    if (labelSub.startsWith("hash")) {
+      return labelSub.substring(0, labelSub.length() - 1);
+    } else if (labelSub.indexOf("{") != -1) {
+      return labelSub.substring(0, labelSub.indexOf("{"));
+    }
+    if (label.toString().startsWith("{")) {
+      return label.toString().substring(1, label.toString().length() - 1);
+    }
+    return label.toString();
   }
 
   public void setLabel(Object label) {
@@ -105,14 +127,31 @@ public class RevisarTree<T> {
   public List<RevisarTree<T>> getChildren() {
     return children;
   }
-
+  
   public void setChildren(final List<RevisarTree<T>> children) {
     this.children = children;
   }
   
-  public void addChild(final RevisarTree<T> child) {
-    this.children.add(child);
+  /**
+   * Add a child at k position.
+   * 
+   * @param child
+   *          Child
+   * @param k
+   *          position
+   */
+  public void addChild(RevisarTree<T> child, int k) {
     child.setParent(this);
+    children.add(k, child);
+  }
+  
+  public void addChild(final RevisarTree<T> child) {
+    child.setParent(this);
+    this.children.add(child);
+  }
+  
+  public void removeChild(int k) {
+    this.children.remove(k);
   }
   
   public String getStrValue() {
@@ -122,14 +161,9 @@ public class RevisarTree<T> {
   public void setStrValue(final String strValue) {
     this.strValue = strValue;
   }
-
-  @Override
-  public String toString() {
-    return "ATree : " + value;
-  }
   
   /**
-   * Converts a ASTNode to an anti-unification equation.
+   * Computer size.
    */
   public int size() {
     if (children.isEmpty()) {
@@ -142,4 +176,39 @@ public class RevisarTree<T> {
     }
     return treeSize + 1;
   }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int hashCode() {
+    return toString().hashCode();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String toString() {
+    return "ATree : " + value;
+  }
+  
+  /**
+   * {@inheritDoc}.
+   */
+  @Override
+  public boolean equals(Object obj) {
+    if (!(obj instanceof RevisarTree<?>)) {
+      return false;
+    }
+    @SuppressWarnings("unchecked")
+    RevisarTree<T> compare = (RevisarTree<T>) obj;
+    if (compare.getLabel().equals("root") && getLabel().equals("root")) {
+      return true;
+    } else if (compare.getLabel().equals("root") || getLabel().equals("root")) {
+      return false;
+    }
+    return value.equals(compare.getValue());
+  }
+
 }

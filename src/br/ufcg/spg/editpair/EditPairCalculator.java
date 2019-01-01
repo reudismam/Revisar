@@ -6,6 +6,7 @@ import br.ufcg.spg.bean.Tuple;
 import br.ufcg.spg.comparer.ActionComparer;
 import br.ufcg.spg.comparer.TreeComparer;
 import br.ufcg.spg.component.ConnectedComponentManager;
+import br.ufcg.spg.component.FullConnectedGumTree;
 import br.ufcg.spg.dcap.DcapCalculator;
 import br.ufcg.spg.diff.DiffCalculator;
 import br.ufcg.spg.diff.DiffPath;
@@ -126,8 +127,10 @@ public class EditPairCalculator {
         // if no action is found process the next file.
         continue;
       }
-      final ConnectedComponentManager con = new ConnectedComponentManager();
-      final List<List<Action>> actionList = con.connectedComponents(actions);
+      final ConnectedComponentManager<Action> con = 
+          new ConnectedComponentManager<>();
+      final List<List<Action>> actionList = 
+          con.connectedComponents(actions, new FullConnectedGumTree(actions));
       // Comparer
       final Comparator<Action> actionComparer = new ActionComparer();
       final Comparator<ITree> itreeComparer = new TreeComparer();

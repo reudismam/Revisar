@@ -44,7 +44,7 @@ public class EditScriptGenerator<T> {
         int k = findPos(x, m);
         RevisarTree<T> xnode = new RevisarTree<T>(x.getValue(), x.getLabel());
         EditNode<T> insert = new InsertNode<T>(xnode, z, k);
-        z.getChildren().add(k - 1, xnode);
+        z.addChild(xnode, k - 1);
         m.put(xnode, x);
         editScript.add(insert);
       } else { // x has a partner in M
@@ -54,26 +54,25 @@ public class EditScriptGenerator<T> {
           // int index = v.Children.TakeWhile(item => !item.Equals(w)).Count();
           final EditNode<T> update = new UpdateNode<T>(w, x, z, y);
           int index = v.getChildren().indexOf(w); 
-          v.getChildren().remove(index);
+          v.removeChild(index);
           RevisarTree<T> xnode = new RevisarTree<T>(x.getValue(), x.getLabel());
-          v.getChildren().add(index, xnode);
+          v.addChild(xnode, index);
           m.put(xnode, x);
           m.remove(w);
           w = xnode;
           editScript.add(update);
         }
-        if (z != null && m.entrySet().stream().filter(
-            o -> o.getValue().equals(y) && o.getKey().equals(v)).findFirst()
-            .get().getKey() == null) {
+        if (z != null && findNode(m, y, v) == null) {
           int k = findPos(x, m);
           RevisarTree<T> znode = ConverterHelper.makeACopy(z);
           RevisarTree<T> wnode = ConverterHelper.makeACopy(w);
           EditNode<T> move = new MoveNode<T>(wnode, znode, k);
           move.setPreviousParent(w.getParent());
-          z.getChildren().add(k - 1, w);
+          z.addChild(w, k - 1);
           int index = v.getChildren().indexOf(w);
-          // int index = v.Children.TakeWhile(item => !item.Equals(w)).Count();
-          v.getChildren().remove(index);
+          // int index = v.Children.TakeWhile(
+          //item => !item.Equals(w)).Count();
+          v.removeChild(index);
           editScript.add(move);
         }
       }
@@ -89,7 +88,7 @@ public class EditScriptGenerator<T> {
         int index = v.getChildren().indexOf(w);
         // int index = v.Children.TakeWhile(item => !item.Equals(w)).Count();
         delete.setK(index);
-        v.getChildren().remove(index);
+        v.removeChild(index);
         editScript.add(delete);
       }
     }
@@ -139,6 +138,16 @@ public class EditScriptGenerator<T> {
     return editScript;
   }
 
+  private RevisarTree<T> findNode(Map<RevisarTree<T>, RevisarTree<T>> m,
+      RevisarTree<T> y, RevisarTree<T> v) {
+    Optional<Entry<RevisarTree<T>, RevisarTree<T>>> node = m.entrySet().stream()
+        .filter(o -> o.getValue().equals(y) && o.getKey().equals(v)).findFirst();
+    if (node.isPresent()) {
+      return node.get().getKey();
+    }
+    return null;
+  }
+
   private RevisarTree<T> findNode(Map<RevisarTree<T>, RevisarTree<T>> m, RevisarTree<T> y) {
     Optional<Entry<RevisarTree<T>, RevisarTree<T>>> zs = m.entrySet().stream().filter(
         o -> o.getValue().equals(y)).findFirst();
@@ -161,8 +170,6 @@ public class EditScriptGenerator<T> {
   private int findPos(RevisarTree<T> x, 
       Map<RevisarTree<T>, RevisarTree<T>> m) {
     RevisarTree<T> y = x.getParent();
-    //RevisarTree<T> w = m.entrySet().stream().filter(
-    //    o -> o.getValue().equals(x)).findFirst().get().getKey();
     RevisarTree<T> firstChild = y.getChildren().get(0);
     if (firstChild.equals(x)) {
       return 1;
@@ -178,7 +185,8 @@ public class EditScriptGenerator<T> {
     RevisarTree<T> u = m.entrySet().stream().filter(
         o -> o.getValue().equals(n)).findFirst().get().getKey();
     int count = 1;
-    for (RevisarTree<T> c : u.getParent().getChildren()) {
+    List<RevisarTree<T>> children = u.getParent().getChildren();
+    for (RevisarTree<T> c : children) {
       if (c.equals(u)) {
         return count + 1;
       }

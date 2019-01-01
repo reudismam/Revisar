@@ -4,12 +4,28 @@ import br.ufcg.spg.tree.RevisarTree;
 
 public class DeleteNode<T> extends EditNode<T> {
 
+  /**
+   * Constructor.
+   */
   public DeleteNode(RevisarTree<T> node, RevisarTree<T> parent) {
     super(node, parent, null, -1);
+    if (getParent() == null) {
+      parent = new RevisarTree<T>(null, "root");
+      parent.addChild(getT1Node());
+      setParent(parent);
+    }
   }
 
+  /**
+   * Constructor.
+   */
   public DeleteNode(RevisarTree<T> node) {
     super(node, node.getParent(), null, -1);
+    if (getParent() == null) {
+      RevisarTree<T> parent = new RevisarTree<T>(null, "root");
+      parent.addChild(getT1Node());
+      setParent(parent);
+    }
   }
 
   @Override

@@ -54,13 +54,13 @@ public class RevisarTreeParser {
         index++;
         foundComma = false;
         final RevisarTree<String> child = parser();
-        tree.getChildren().add(child);
-        child.setParent(tree);
+        tree.addChild(child);
+        //child.setParent(tree);
       } else if (foundComma && character != ' ') {
         foundComma = false;
         final RevisarTree<String> child = parser();
-        tree.getChildren().add(child);
-        child.setParent(tree);
+        tree.addChild(child);
+        //child.setParent(tree);
       //end of node definition
       } else if (character == ')') {
         tree.setEnd(index);

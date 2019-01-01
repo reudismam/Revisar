@@ -3,6 +3,7 @@ package br.ufcg.spg.imports;
 import br.ufcg.spg.bean.Tuple;
 import br.ufcg.spg.comparer.ActionComparer;
 import br.ufcg.spg.component.ConnectedComponentManager;
+import br.ufcg.spg.component.FullConnectedGumTree;
 import br.ufcg.spg.diff.DiffCalculator;
 import br.ufcg.spg.diff.DiffUtils;
 import br.ufcg.spg.edit.Edit;
@@ -44,8 +45,9 @@ public class ImportUtils {
     if (actions.isEmpty()) {
       return imports;
     }
-    ConnectedComponentManager con = new ConnectedComponentManager();
-    List<List<Action>> actionList = con.connectedComponents(actions);
+    ConnectedComponentManager<Action> con = new ConnectedComponentManager<>();
+    List<List<Action>> actionList = con.connectedComponents(
+        actions, new FullConnectedGumTree(actions));
     // Comparer
     Comparator<Action> actionComparer = new ActionComparer();
     for (List<Action> list : actionList) {

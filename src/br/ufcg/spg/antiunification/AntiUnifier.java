@@ -226,13 +226,13 @@ public class AntiUnifier {
   public RevisarTree<String> toRevisarTree() {
     final RevisarTree<String> tree = RevisarTreeParser.parser(this.getValue().getUnifier());
     if (left != null && left.getValue() != null) {
-      tree.getChildren().add(left.toRevisarTree());
+      tree.addChild(left.toRevisarTree());
     }
     if (mid != null) {
-      tree.getChildren().add(mid.toRevisarTree());
+      tree.addChild(mid.toRevisarTree());
     }
     if (right != null && right.getValue() != null) {
-      tree.getChildren().add(right.toRevisarTree());
+      tree.addChild(right.toRevisarTree());
     }
     return tree;
   }

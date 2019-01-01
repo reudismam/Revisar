@@ -1,16 +1,8 @@
 package br.ufcg.spg.component;
 
-import com.github.gumtreediff.actions.model.Action;
-import com.github.gumtreediff.actions.model.Delete;
-import com.github.gumtreediff.actions.model.Insert;
-import com.github.gumtreediff.actions.model.Move;
-import com.github.gumtreediff.actions.model.Update;
-import com.github.gumtreediff.tree.ITree;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import org.eclipse.jdt.core.dom.ASTNode;
 
 /**
  * Compute connected components.
@@ -18,37 +10,37 @@ import org.eclipse.jdt.core.dom.ASTNode;
  * @author SPG-04
  *
  */
-public class ConnectedComponentManager {
+public class ConnectedComponentManager<T> {
 
   /**
    * Visited edit operations. Required to compute connected components (DFS
    * implementation).
    */
-  private static HashMap<Action, Integer> visited;
+  private HashMap<T, Integer> visited;
 
   /**
    * Edit operations graph.
    */
-  private static HashMap<Action, List<Action>> graph;
+  private HashMap<T, List<T>> graph;
 
-  private FullConnected connectionComparer;
+  private ConnectionStrategy connectionComparer;
 
   /**
    * Compute connected components.
    */
-  private static List<List<Action>> computeConnectedComponents(final List<Action> editOperations) {
+  private List<List<T>> computeConnectedComponents(final List<T> editOperations) {
     visited = new HashMap<>();
     int i = 0;
-    final HashMap<Integer, List<Action>> dic = new HashMap<>();
-    for (final Action edit : editOperations) {
-      final Action t = edit;
+    final HashMap<Integer, List<T>> dic = new HashMap<>();
+    for (final T edit : editOperations) {
+      final T t = edit;
       if (!visited.containsKey(t)) {
-        dic.put(i, new ArrayList<Action>());
+        dic.put(i, new ArrayList<T>());
         depthFirstSearch(edit, i++);
       }
     }
-    for (final Action edit : editOperations) {
-      final Action t = edit;
+    for (final T edit : editOperations) {
+      final T t = edit;
       final int cc = visited.get(t);
       dic.get(cc).add(edit);
     }
@@ -61,11 +53,11 @@ public class ConnectedComponentManager {
    * @param editOperation edit operation
    * @param i index of he edit operation
    */
-  private static void depthFirstSearch(final Action editOperation, final int i) {
-    final Action t = editOperation;
+  private void depthFirstSearch(final T editOperation, final int i) {
+    final T t = editOperation;
     visited.put(t, i);
-    for (final Action edit : graph.get(t)) {
-      final Action te = edit;
+    for (final T edit : graph.get(t)) {
+      final T te = edit;
       if (!visited.containsKey(te)) {
         depthFirstSearch(edit, i);
       }
@@ -77,8 +69,9 @@ public class ConnectedComponentManager {
    * @param editOperations edit operations.
    * @return connected components
    */
-  public List<List<Action>> connectedComponents(final List<Action> editOperations) {
-    connectionComparer = new FullConnected(editOperations);
+  public List<List<T>> connectedComponents(final List<T> editOperations, 
+      ConnectionStrategy connectionComparer) {
+    this.connectionComparer = connectionComparer;
     buildDigraph(editOperations);
     return computeConnectedComponents(editOperations);
   }
@@ -87,96 +80,30 @@ public class ConnectedComponentManager {
    * Build a directed graph of the transformation. An edition i is connected to
    * edition j if edit j depends that edit i insert a node in the tree.
    * 
-   * @param script list of actions
+   * @param script list of Ts
    */
-  private void buildDigraph(final List<Action> script) {
+  private void buildDigraph(final List<T> script) {
     graph = new HashMap<>();
-    for (final Action edit : script) {
-      final Action t = edit;
-      graph.put(t, new ArrayList<Action>());
+    for (final T edit : script) {
+      final T t = edit;
+      graph.put(t, new ArrayList<T>());
     }
     for (int i = 0; i < script.size(); i++) {
-      final Action editI = script.get(i);
-      final Action ti = editI;
+      final T editI = script.get(i);
+      final T ti = editI;
 
       for (int j = 0; j < script.size(); j++) {
         if (i == j) {
           continue;
         }
-        final Action editJ = script.get(j);
-        final Action tj = editJ;
+        final T editJ = script.get(j);
+        final T tj = editJ;
 
         if (connectionComparer.isConnected(i, j)) {
           graph.get(ti).add(editJ);
           graph.get(tj).add(editI);
         }
       }
-    }
-  }
-
-  private class FullConnected {
-
-    private List<Action> script;
-
-    public FullConnected(final List<Action> script) {
-      this.script = script;
-    }
-
-    public boolean isConnected(final int indexI, final int indexJ) {
-      final Action editi = script.get(indexI);
-      ITree parenti = null;
-      ITree parentj = null;
-
-      if (editi instanceof Insert) {
-        final Insert insert = (Insert) editi;
-        parenti = insert.getParent();
-      }
-      if (editi instanceof Move) {
-        final Move move = (Move) editi;
-        parenti = move.getParent();
-        return false;
-      }
-      if (editi instanceof Delete) {
-        final Delete delete = (Delete) editi;
-        parenti = delete.getNode().getParent();
-      }
-      if (editi instanceof Update) {
-        final Update update = (Update) editi;
-        parenti = update.getNode().getParent();
-      }
-
-      final Action editj = script.get(indexJ);
-      if (editj instanceof Insert) {
-        final Insert insert = (Insert) editj;
-        parentj = insert.getParent();
-      }
-
-      if (editj instanceof Move) {
-        final Move move = (Move) editj;
-        parentj = move.getParent();
-      }
-
-      if (editj instanceof Delete) {
-        final Delete delete = (Delete) editj;
-        parentj = delete.getNode().getParent();
-      }
-
-      if (editj instanceof Update) {
-        final Update update = (Update) editj;  
-        parentj = update.getNode().getParent();
-      }
-
-      if (parenti != null && parentj != null) {
-        // The nodes have the same parent then they are connected
-        final int compilationUnitId = ASTNode.COMPILATION_UNIT;
-        final boolean isParent = parenti.equals(parentj);
-        if (isParent && parenti.getType() != compilationUnitId) {
-          return true;
-        }
-      }
-      // In a sequence of inserts. The node from edit i will be equal to
-      // the parent of edit j.
-      return parentj != null && parentj.equals(editi.getNode());
     }
   }
 }

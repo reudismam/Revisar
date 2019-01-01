@@ -1,5 +1,7 @@
 package br.ufcg.spg.transformation;
 
+import at.unisalzburg.dbresearch.apted.node.StringNodeData;
+
 import br.ufcg.spg.cluster.Cluster;
 import br.ufcg.spg.cluster.ClusterFormatter;
 import br.ufcg.spg.cluster.ClusterUtils;
@@ -29,8 +31,6 @@ import org.apache.logging.log4j.Logger;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jgit.api.errors.GitAPIException;
 
-import at.unisalzburg.dbresearch.apted.node.StringNodeData;
-
 /**
  * Utility class to perform transformations.
  */
@@ -43,7 +43,7 @@ public final class TransformationUtils {
   /**
    * Rename scripts.
    */
-  private static List<Script> renameScripts = new ArrayList<>();
+  private static List<Script<StringNodeData>> renameScripts = new ArrayList<>();
   
   /**
    * Logger.
@@ -145,14 +145,15 @@ public final class TransformationUtils {
    */
   public static void transformationsMoreProjects(List<Cluster> clusters) {
     transformations(clusters);
-    DBScan dbscan = new DBScan(0.01, 1, new ScriptDistanceMetric());
+    DBScan dbscan = new DBScan(0.01, 1, new ScriptDistanceMetric<StringNodeData>());
     List<de.jail.statistic.clustering.Cluster> clusteres = dbscan.cluster(scripts);
     int countCluster = 0;
-    List<Script> clusteredScriptsList = new ArrayList<>();
+    List<Script<StringNodeData>> clusteredScriptsList = new ArrayList<>();
     for (de.jail.statistic.clustering.Cluster list : clusteres) {
-      List<Script> ls = new ArrayList<>();
+      List<Script<StringNodeData>> ls = new ArrayList<>();
       for (Point p : list.getAllPoints()) {
-        Script sc = (Script) p;
+        @SuppressWarnings("unchecked")
+        Script<StringNodeData> sc = (Script<StringNodeData>) p;
         ls.add(sc);
       }
       clusteredScriptsList.addAll(ls);
@@ -162,7 +163,8 @@ public final class TransformationUtils {
       ClusterUtils.saveClusterToFile(++countCluster, renameScripts);
     }
     for (final Point point : scripts) {
-      Script sc = (Script) point;
+      @SuppressWarnings("unchecked")
+      Script<StringNodeData> sc = (Script<StringNodeData>) point;
       Cluster clusteri = sc.getCluster();
       Cluster clusterj = clusteri.getDst();
       if (!clusteredScriptsList.contains(sc)) {
@@ -235,7 +237,6 @@ public final class TransformationUtils {
       throws IOException, BadLocationException, GitAPIException {
     final Cluster clusteri = trans.getCluster();
     final Cluster clusterj = clusteri.getDst();
-    //Script script = DbScanClustering.getCluster(clusteri); 
     boolean isNoise = FilterManager.isNoise(folderPath, trans, clusteri, clusterj);
     if (!isNoise) {
       final String refaster = createRefasterRule(clusteri, edit);
@@ -251,6 +252,7 @@ public final class TransformationUtils {
           .formatCluster(clusteri, clusterj, refaster);
       FileUtils.writeStringToFile(clusterFile, content.toString());
       Script<StringNodeData> script = EditScriptUtils.getCluster(clusteri);
+      scripts.add(script);
     }
   }
 }

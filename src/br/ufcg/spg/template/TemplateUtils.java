@@ -32,7 +32,7 @@ public class TemplateUtils {
     for (final RevisarTree<String> aui : au.getChildren()) {
       final RevisarTree<String> rau = remove(aui, toRemove);
       if (rau != null) {
-        newAu.getChildren().add(rau);
+        newAu.addChild(rau);
       }
     }
     return newAu;

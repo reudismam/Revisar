@@ -1,5 +1,7 @@
 package br.ufcg.spg.cluster;
 
+import at.unisalzburg.dbresearch.apted.node.StringNodeData;
+
 import br.ufcg.spg.database.ClusterDao;
 import br.ufcg.spg.edit.Edit;
 import br.ufcg.spg.ml.editoperation.Script;
@@ -92,11 +94,15 @@ public final class ClusterUtils {
     return new ArrayList<>(map.values());
   }
 
-  public static void saveClusterToFile(int countCluster, List<Script> list) {
+  /**
+   * Save cluster to file.
+   */
+  public static void saveClusterToFile(
+      int countCluster, List<Script<StringNodeData>> list) {
     StringBuilder content = new StringBuilder("NUMBER OF NODES IN THIS CLUSTER: " 
         + list.size()).append("\n\n");
     int count = 0;
-    for (Script sc : list) {
+    for (Script<StringNodeData> sc : list) {
       content.append(ClusterFormatter.getInstance().formatHeader());
       content.append(sc.getList()).append('\n');
       String cnumber = String.format("%03d", ++count);

@@ -15,13 +15,11 @@ public class ConverterHelper {
     if (list.isEmpty()) {
       return new RevisarTree<T>(st.getValue(), st.getLabel());
     }
-    List<RevisarTree<T>> children = new ArrayList<>();
+    RevisarTree<T> tree = new RevisarTree<T>(st.getValue(), st.getLabel());
     for (RevisarTree<T> sot : st.getChildren()) {
       RevisarTree<T> node = makeACopy(sot);
-      node.setParent(st);
-      children.add(node);
+      tree.addChild(node);
     }
-    RevisarTree<T> tree = new RevisarTree<T>(st.getValue(), st.getLabel(), children);
     return tree;
   }
   
@@ -33,13 +31,10 @@ public class ConverterHelper {
     if (list.isEmpty()) {
       return new RevisarTree<T>(st.getNodeData(), st.toString());
     }
-    List<RevisarTree<T>> children = new ArrayList<>();
-    RevisarTree<T> tree = new RevisarTree<T>(
-        st.getNodeData(), st.toString(), children);
+    RevisarTree<T> tree = new RevisarTree<T>(st.getNodeData(), st.toString());
     for (Node<T> sot : st.getChildren()) {
       RevisarTree<T> node = convertNodeToRevisarTree(sot);
-      node.setParent(tree);
-      children.add(node);
+      tree.addChild(node);
     }
     return tree;
   }
