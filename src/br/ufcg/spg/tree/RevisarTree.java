@@ -107,7 +107,7 @@ public class RevisarTree<T> {
   /**
    * Gets the string label.
    */
-  public Object getStrLabel() {
+  public String getStrLabel() {
     String  labelSub = label.toString().substring(1);
     if (labelSub.startsWith("hash")) {
       return labelSub.substring(0, labelSub.length() - 1);

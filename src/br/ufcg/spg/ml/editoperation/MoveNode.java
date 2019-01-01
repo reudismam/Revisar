@@ -32,12 +32,12 @@ public class MoveNode<T> extends EditNode<T> {
   private boolean thisEquals(MoveNode<T> other) {
     boolean isParentLabel = false;
     if (getParent() != null && other.getParent() != null) {
-      isParentLabel = other.getParent().getLabel().equals(getParent().getLabel());
+      isParentLabel = other.getParent().getStrLabel().equals(getParent().getStrLabel());
     } else if (getParent() == null && other.getParent() == null) {
       isParentLabel = true;
     }
     return getK() == other.getK() 
-        && other.getT1Node().getLabel().equals(getT1Node().getLabel()) 
+        && other.getT1Node().getStrLabel().equals(getT1Node().getStrLabel()) 
         && isParentLabel;
   }
 }

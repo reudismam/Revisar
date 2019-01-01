@@ -126,6 +126,28 @@ public class TestSuite {
     TransformationUtils.transformationsMoreProjects(clustersDcap);
     logger.trace("END.");
   }
+  
+  @Test
+  public void exp_TranslateMoreProjectsByDcap()
+      throws IOException, JustificationException, ControlledException, CoreException {
+    List<Cluster> clusters = ClusterDao.getClusterMoreProjects();
+    List<Edit> allEdits = new ArrayList<>();
+    int i = clusters.size();
+    logger.trace(i);
+    for (Cluster c : clusters) {
+      allEdits.addAll(c.getNodes());
+    }
+    Map<String, List<Edit>> dcaps = ClusterUnifier.getInstance().groupEditsByDCap(allEdits,
+        TechniqueConfig.getInstance());
+    List<Cluster> clustersDcap = new ArrayList<>();
+    for (Entry<String, List<Edit>> entry : dcaps.entrySet()) {
+      List<Cluster> clusterForDcap = ClusterUnifier.getInstance().clusterEdits(entry.getValue());
+      TransformationUtils.transformationsMoreProjects(clusterForDcap);
+      clustersDcap.addAll(clusterForDcap);
+    }
+    TransformationUtils.transformationsMoreProjects(clustersDcap);
+    logger.trace("END.");
+  }
 
   @Test
   public void exp_translate_cluster_more_projects() throws IOException {
@@ -133,6 +155,15 @@ public class TestSuite {
     int i = clusters.size();
     logger.trace(i);
     TransformationUtils.transformations(clusters);
+    logger.trace("END.");
+  }
+  
+  @Test
+  public void exp_ml_translate_cluster_more_projects() throws IOException {
+    List<Cluster> clusters = ClusterDao.getClusterMoreProjects();
+    int i = clusters.size();
+    logger.trace(i);
+    TransformationUtils.transformationsMoreProjects(clusters);
     logger.trace("END.");
   }
   

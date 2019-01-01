@@ -63,11 +63,11 @@ public class UpdateNode<T> extends EditNode<T> {
   private boolean thisEquals(UpdateNode<T> other) {
     boolean isParentLabel = false;
     if (getParent() != null && other.getParent() != null) {
-      isParentLabel = other.getParent().getLabel().equals(getParent().getLabel());
+      isParentLabel = other.getParent().getStrLabel().equals(getParent().getStrLabel());
     } else if (getParent() == null && other.getParent() == null) {
       isParentLabel = true;
     }
-    return other.getT1Node().getLabel().equals(getT1Node().getLabel())
-        && other.getTo().getLabel().equals(getTo().getLabel()) && isParentLabel;
+    return other.getT1Node().getStrLabel().equals(getT1Node().getStrLabel())
+        && other.getTo().getStrLabel().equals(getTo().getStrLabel()) && isParentLabel;
   }
 }

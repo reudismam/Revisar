@@ -9,8 +9,6 @@ import br.ufcg.spg.tree.RevisarTree;
 
 import java.util.List;
 
-import at.unisalzburg.dbresearch.apted.node.StringNodeData;
-
 public class FullConnectedEditNode<T> implements ConnectionStrategy {
 
   private List<EditNode<T>> script;

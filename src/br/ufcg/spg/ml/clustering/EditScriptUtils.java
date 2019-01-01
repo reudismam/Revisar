@@ -21,7 +21,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
-public class EditScriptUtils {
+public final class EditScriptUtils {
 
   private EditScriptUtils() {
   }
