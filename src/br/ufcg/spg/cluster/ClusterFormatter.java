@@ -1,6 +1,7 @@
 package br.ufcg.spg.cluster;
 
 import br.ufcg.spg.edit.Edit;
+import br.ufcg.spg.ml.editoperation.EditNode;
 import br.ufcg.spg.string.StringUtils;
 import br.ufcg.spg.tree.RevisarTree;
 import br.ufcg.spg.tree.RevisarTreeParser;
@@ -42,12 +43,12 @@ public final class ClusterFormatter {
   
   private void configtHeader() {
     StringBuilder content = new StringBuilder();
-    content.append("============================================="
-        + "===================================\n");
-    content.append("=================================CLUSTER DATA"
-        + "===================================\n");
-    content.append("=============================================="
-        + "==================================\n");
+    content.append("============================="
+        + "===============================\n");
+    content.append("=======================CLUSTER DATA"
+        + "=========================\n");
+    content.append("============================="
+        + "===============================\n");
     header = content.toString();
   }
   
@@ -61,11 +62,11 @@ public final class ClusterFormatter {
   
   private void configFooter() {
     StringBuilder content = new StringBuilder();
-    content.append("================================================="
+    content.append("============================="
         + "===============================\n");
-    content.append("==============================END OF CLUSTER DATA"
-        + "===============================\n");
-    content.append("================================================="
+    content.append("====================END OF CLUSTER DATA"
+        + "=====================\n");
+    content.append("============================="
         + "===============================\n\n");
     footer = content.toString();
   }
@@ -152,6 +153,17 @@ public final class ClusterFormatter {
     content.append(refaster).append('\n');
     content.append(formatClusterContent(clusteri, clusterj));
     content.append(formatFooter());
+    return content;
+  }
+  
+  /**
+   * Format list of edit.
+   */
+  public static <T> String formatList(List<EditNode<T>> list) {
+    String content = "\n";
+    for (EditNode<T> t: list) {
+      content += t + "\n";
+    }
     return content;
   }
 }

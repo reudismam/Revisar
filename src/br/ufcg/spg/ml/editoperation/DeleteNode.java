@@ -30,7 +30,7 @@ public class DeleteNode<T> extends EditNode<T> {
 
   @Override
   public String toString() {
-    return "Delete(" + getT1Node() + ")";
+    return "Delete(" + getT1Node().getStrLabel() + ")";
   }
   
   @Override
@@ -48,8 +48,8 @@ public class DeleteNode<T> extends EditNode<T> {
   }
 
   private boolean thisEquals(DeleteNode<T> other) {
-    return this.getK() == other.getK() 
-        && other.getT1Node().getStrLabel().equals(this.getT1Node().getStrLabel()) 
+    return /*this.getK() == other.getK() 
+        &&*/ other.getT1Node().getStrLabel().equals(this.getT1Node().getStrLabel()) 
         && other.getParent().getStrLabel().equals(this.getParent().getStrLabel());
   }
 }

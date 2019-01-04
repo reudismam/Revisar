@@ -1,6 +1,7 @@
 package br.ufcg.spg.ml.editoperation;
 
 import br.ufcg.spg.cluster.Cluster;
+import br.ufcg.spg.cluster.ClusterFormatter;
 import de.jail.geometry.schemas.Point;
 
 import java.util.ArrayList;
@@ -82,18 +83,7 @@ public class Script<T> extends Point {
 
   @Override
   public String toString() {
-    return "Script [list=" + formatList() + ", \ncluster="
+    return "Script [list=" + ClusterFormatter.formatList(list) + ", \ncluster="
       + cluster.getNodes().get(0) + "->" + cluster.getDst().getNodes().get(0) + "]\n\n";
-  }
-  
-  /**
-   * Format list of edit.
-   */
-  public String formatList() {
-    String content = "\n";
-    for (EditNode<T> t: list) {
-      content += t + "\n";
-    }
-    return content;
   }
 }

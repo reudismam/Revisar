@@ -16,7 +16,8 @@ public class InsertNode<T> extends EditNode<T> {
    */
   @Override
   public String toString() {
-    return "Insert(" + getT1Node().getLabel() + ", " + getParent().getLabel() + ", " + getK() + ")";
+    return "Insert(" + getT1Node().getStrLabel() + ", " 
+        + getParent().getStrLabel() + ", " + getK() + ")";
   }
   
   @Override
@@ -31,20 +32,5 @@ public class InsertNode<T> extends EditNode<T> {
       return false;
     }
     return thisEquals((InsertNode<T>) obj);
-  }
-
-  /**
-   * Equals.
-   */
-  public boolean thisEquals(InsertNode<T> other) {
-    boolean isParentLabel = false;
-    if (getParent() != null && other.getParent() != null) {
-      isParentLabel = other.getParent().getStrLabel().equals(getParent().getStrLabel());
-    } else if (getParent() == null && other.getParent() == null) {
-      isParentLabel = true;
-    }
-    return getK() == other.getK() 
-        && other.getT1Node().getStrLabel().equals(getT1Node().getStrLabel()) 
-        && isParentLabel;
   }
 }

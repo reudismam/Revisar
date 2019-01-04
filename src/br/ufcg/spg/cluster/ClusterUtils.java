@@ -99,12 +99,12 @@ public final class ClusterUtils {
    */
   public static void saveClusterToFile(
       int countCluster, List<Script<StringNodeData>> list) {
-    StringBuilder content = new StringBuilder("NUMBER OF NODES IN THIS CLUSTER: " 
+    StringBuilder content = new StringBuilder("NUMBER OF ITEMS IN THIS CLUSTER: " 
         + list.size()).append("\n\n");
     int count = 0;
     for (Script<StringNodeData> sc : list) {
       content.append(ClusterFormatter.getInstance().formatHeader());
-      content.append(sc.getList()).append('\n');
+      content.append(ClusterFormatter.formatList(sc.getList())).append('\n');
       String cnumber = String.format("%03d", ++count);
       content.append("CLUSTER ").append(cnumber).append('\n');
       Cluster clusteri = sc.getCluster();

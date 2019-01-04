@@ -268,19 +268,24 @@ public final class ClusterUnifier {
    * @return source and target cluster given parameters.
    */
   public Tuple<Cluster, Cluster> cluster(final List<Edit> srcEdits, final String clusterId) {
-    String srcUnifier = srcEdits.get(0).getPlainTemplate();
-    String dstUnifier = srcEdits.get(0).getDst().getPlainTemplate();
+    String srcAu = srcEdits.get(0).getPlainTemplate();
+    String dstAu = srcEdits.get(0).getDst().getPlainTemplate();
     for (int i = 1; i < srcEdits.size(); i++) {
       final String srcAuCluster = srcEdits.get(i).getPlainTemplate();
       final String dstAuCluster = srcEdits.get(i).getDst().getPlainTemplate();
-      AntiUnifier srcAu;
-      srcAu = AntiUnifierUtils.antiUnify(srcUnifier, srcAuCluster);
-      srcUnifier = EquationUtils.convertToEquation(srcAu);
-      final AntiUnifier dstAu = AntiUnifierUtils.antiUnify(dstUnifier, dstAuCluster);
-      dstUnifier = EquationUtils.convertToEquation(dstAu);
+      Tuple<RevisarTree<String>, RevisarTree<String>> tu = AntiUnifierUtils.joinAntiUnify(
+          srcAuCluster, dstAuCluster, srcAu, dstAu);
+      srcAu = EquationUtils.convertToEq(tu.getItem1());
+      dstAu = EquationUtils.convertToEq(tu.getItem2());
+      //AntiUnifier srcAu;
+      //srcAu = AntiUnifierUtils.antiUnify(srcUnifier, srcAuCluster);
+      //srcUnifier = EquationUtils.convertToEquation(srcAu);
+      //final AntiUnifier dstAu = AntiUnifierUtils.antiUnify(dstUnifier, dstAuCluster);
+      //dstUnifier = EquationUtils.convertToEquation(dstAu);
     }
-    final Cluster srcCluster = new Cluster(srcUnifier, clusterId);
-    final Cluster dstCluster = new Cluster(dstUnifier, clusterId);
+    final Cluster srcCluster = new Cluster(srcAu, clusterId);
+    final Cluster dstCluster = new Cluster(dstAu, clusterId);
+    srcCluster.setDst(dstCluster);
     srcCluster.setNodes(srcEdits);
     final List<Edit> dstEdits = new ArrayList<>();
     for (final Edit edit : srcEdits) {

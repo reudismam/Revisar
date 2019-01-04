@@ -51,4 +51,30 @@ public class EditNode<T> {
   public void setK(int k) {
     this.k = k;
   }
+  
+  /**
+   * Equals.
+   */
+  protected boolean thisEquals(EditNode<T> other) {
+    boolean isParentLabel = isParentLabel(other);
+    return evaluateElements(other) && isParentLabel;
+  }
+  
+  /**
+   * Evaluates is parent same label.
+   */
+  protected boolean isParentLabel(EditNode<T> other) {
+    boolean isParentLabel = false;
+    if (getParent() != null && other.getParent() != null) {
+      isParentLabel = other.getParent().getStrLabel().equals(getParent().getStrLabel());
+    } else if (getParent() == null && other.getParent() == null) {
+      isParentLabel = true;
+    }
+    return isParentLabel;
+  }
+  
+  private boolean evaluateElements(EditNode<T> other) {
+    return getK() == other.getK() 
+        && other.getT1Node().getStrLabel().equals(getT1Node().getStrLabel());
+  }
 }

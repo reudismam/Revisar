@@ -1,18 +1,17 @@
 package br.ufcg.spg.ml.metric;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import br.ufcg.spg.component.ConnectedComponentManager;
 import br.ufcg.spg.component.ConnectionStrategy;
 import br.ufcg.spg.component.FullConnectedEditNode;
 import br.ufcg.spg.ml.editoperation.EditNode;
-import br.ufcg.spg.ml.editoperation.InsertNode;
 import br.ufcg.spg.ml.editoperation.Script;
 import br.ufcg.spg.ml.editoperation.UpdateNode;
 import br.ufcg.spg.tree.RevisarTree;
 import de.jail.geometry.distancefunctions.PointBasedDistanceFunction;
 import de.jail.geometry.schemas.Point;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ScriptDistanceMetric<T> implements PointBasedDistanceFunction {
 

@@ -1,9 +1,10 @@
 package br.ufcg.spg.transformation;
 
 import at.unisalzburg.dbresearch.apted.node.StringNodeData;
-
+import br.ufcg.spg.bean.Tuple;
 import br.ufcg.spg.cluster.Cluster;
 import br.ufcg.spg.cluster.ClusterFormatter;
+import br.ufcg.spg.cluster.ClusterUnifier;
 import br.ufcg.spg.cluster.ClusterUtils;
 import br.ufcg.spg.config.TechniqueConfig;
 import br.ufcg.spg.database.ClusterDao;
@@ -15,6 +16,7 @@ import br.ufcg.spg.filter.FilterManager;
 import br.ufcg.spg.ml.clustering.EditScriptUtils;
 import br.ufcg.spg.ml.editoperation.Script;
 import br.ufcg.spg.ml.metric.ScriptDistanceMetric;
+import br.ufcg.spg.ml.metric.ScriptDistanceStringMetric;
 import br.ufcg.spg.refaster.RefasterTranslator;
 import br.ufcg.spg.validator.ClusterValidator;
 import de.jail.geometry.schemas.Point;
@@ -144,10 +146,17 @@ public final class TransformationUtils {
    * Computes the template for some cluster.
    */
   public static void transformationsMoreProjects(List<Cluster> clusters) {
+    clusters = rebuildClusters(clusters);
     transformations(clusters);
-    DBScan dbscan = new DBScan(0.01, 1, new ScriptDistanceMetric<StringNodeData>());
+    ScriptDistanceStringMetric<StringNodeData> metric = //new ScriptDistanceMetric<>();
+        new ScriptDistanceStringMetric<>();
+    DBScan dbscan = new DBScan(0.5, 1, metric);
     List<de.jail.statistic.clustering.Cluster> clusteres = dbscan.cluster(scripts);
     int countCluster = 0;
+    /*
+    Point p1 = clusteres.get(9).getPoint(0);
+    Point p2 = clusteres.get(12).getPoint(0);
+    double dist = metric.calculate(p1, p2);*/
     List<Script<StringNodeData>> clusteredScriptsList = new ArrayList<>();
     for (de.jail.statistic.clustering.Cluster list : clusteres) {
       List<Script<StringNodeData>> ls = new ArrayList<>();
@@ -162,6 +171,24 @@ public final class TransformationUtils {
     if (!renameScripts.isEmpty()) {
       ClusterUtils.saveClusterToFile(++countCluster, renameScripts);
     }
+    countCluster = saveSingleClusters(countCluster, clusteredScriptsList);
+  }
+
+  private static List<Cluster> rebuildClusters(List<Cluster> clusters) {
+    List<Cluster> clustersList = new ArrayList<>();
+    for (Cluster cluster : clusters) {
+      Tuple<Cluster, Cluster> clt = ClusterUnifier.getInstance().cluster(
+          cluster.getNodes(), cluster.getId() + "");
+      clustersList.add(clt.getItem1());
+    }
+    return clustersList;
+  }
+
+  /**
+   * Save single clusters.
+   */
+  private static int saveSingleClusters(
+      int countCluster, List<Script<StringNodeData>> clusteredScriptsList) {
     for (final Point point : scripts) {
       @SuppressWarnings("unchecked")
       Script<StringNodeData> sc = (Script<StringNodeData>) point;
@@ -169,7 +196,7 @@ public final class TransformationUtils {
       Cluster clusterj = clusteri.getDst();
       if (!clusteredScriptsList.contains(sc)) {
         StringBuilder content = new StringBuilder("");
-        content.append(sc.getList()).append('\n');
+        content.append(ClusterFormatter.formatList(sc.getList())).append('\n');
         content.append(ClusterFormatter.getInstance().formatHeader());
         content.append(ClusterFormatter.getInstance().formatClusterContent(clusteri, clusterj));
         content.append(ClusterFormatter.getInstance().formatFooter());
@@ -183,6 +210,7 @@ public final class TransformationUtils {
         }
       }
     }
+    return countCluster;
   }
 
   /**

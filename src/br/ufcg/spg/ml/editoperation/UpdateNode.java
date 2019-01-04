@@ -43,7 +43,7 @@ public class UpdateNode<T> extends EditNode<T> {
    */
   @Override
   public String toString() {
-    return "Update(" + getT1Node().getLabel() + " to " + to.getLabel() + ")";
+    return "Update(" + getT1Node().getStrLabel() + " to " + to.getStrLabel() + ")";
   }
   
   @Override
@@ -61,13 +61,9 @@ public class UpdateNode<T> extends EditNode<T> {
   }
 
   private boolean thisEquals(UpdateNode<T> other) {
-    boolean isParentLabel = false;
-    if (getParent() != null && other.getParent() != null) {
-      isParentLabel = other.getParent().getStrLabel().equals(getParent().getStrLabel());
-    } else if (getParent() == null && other.getParent() == null) {
-      isParentLabel = true;
-    }
+    boolean isParentLabel = isParentLabel(other);
     return other.getT1Node().getStrLabel().equals(getT1Node().getStrLabel())
-        && other.getTo().getStrLabel().equals(getTo().getStrLabel()) && isParentLabel;
+        && other.getTo().getStrLabel().equals(getTo().getStrLabel()) 
+        && isParentLabel;
   }
 }

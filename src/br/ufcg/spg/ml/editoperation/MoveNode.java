@@ -12,7 +12,8 @@ public class MoveNode<T> extends EditNode<T> {
    */
   @Override
   public String toString() {
-    return "Move(" + getT1Node().getLabel() + " to " + getParent().getLabel() + ", " + getK() + ")";
+    return "Move(" + getT1Node().getStrLabel() + " to " 
+        + getParent().getStrLabel() + ", " + getK() + ")";
   }
   
   @Override
@@ -27,17 +28,5 @@ public class MoveNode<T> extends EditNode<T> {
       return false;
     }
     return thisEquals((MoveNode<T>) obj);
-  }
-
-  private boolean thisEquals(MoveNode<T> other) {
-    boolean isParentLabel = false;
-    if (getParent() != null && other.getParent() != null) {
-      isParentLabel = other.getParent().getStrLabel().equals(getParent().getStrLabel());
-    } else if (getParent() == null && other.getParent() == null) {
-      isParentLabel = true;
-    }
-    return getK() == other.getK() 
-        && other.getT1Node().getStrLabel().equals(getT1Node().getStrLabel()) 
-        && isParentLabel;
   }
 }
