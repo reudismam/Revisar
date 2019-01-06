@@ -98,7 +98,7 @@ public final class ClusterUtils {
    * Save cluster to file.
    */
   public static void saveClusterToFile(
-      int countCluster, List<Script<StringNodeData>> list) {
+      int countCluster, String folder, List<Script<StringNodeData>> list) {
     StringBuilder content = new StringBuilder("NUMBER OF ITEMS IN THIS CLUSTER: " 
         + list.size()).append("\n\n");
     int count = 0;
@@ -113,7 +113,8 @@ public final class ClusterUtils {
       content.append(ClusterFormatter.getInstance().formatFooter());
     }
     String counterFormated =  String.format("%03d", countCluster);
-    String path = "../Projects/cluster/clusters/" + counterFormated + ".txt";
+    String path = "../Projects/cluster/clusters/" + folder
+        + counterFormated + ".txt";
     final File clusterFile = new File(path);
     try {
       FileUtils.writeStringToFile(clusterFile, content.toString());

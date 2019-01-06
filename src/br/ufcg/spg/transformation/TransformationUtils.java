@@ -10,15 +10,12 @@ import br.ufcg.spg.config.TechniqueConfig;
 import br.ufcg.spg.database.ClusterDao;
 import br.ufcg.spg.database.TransformationDao;
 import br.ufcg.spg.edit.Edit;
-import br.ufcg.spg.edit.EditScriptGenerator;
 import br.ufcg.spg.excel.QuickFix;
 import br.ufcg.spg.excel.QuickFixManager;
 import br.ufcg.spg.filter.FilterManager;
 import br.ufcg.spg.ml.clustering.EditScriptUtils;
 import br.ufcg.spg.ml.editoperation.Script;
-import br.ufcg.spg.ml.metric.ScriptDistanceContextMetric;
 import br.ufcg.spg.ml.metric.ScriptDistanceMetric;
-import br.ufcg.spg.ml.metric.ScriptDistanceStringMetric;
 import br.ufcg.spg.refaster.RefasterTranslator;
 import br.ufcg.spg.validator.ClusterValidator;
 import de.jail.geometry.schemas.Point;
@@ -44,10 +41,13 @@ public final class TransformationUtils {
    * Learned scripts.
    */
   private static List<Point> scripts = new ArrayList<>();
+  
+  private static List<Script<StringNodeData>> noise = new ArrayList<>();
+  
   /**
    * Rename scripts.
    */
-  private static List<Script<StringNodeData>> renameScripts = new ArrayList<>();
+  //private static List<Script<StringNodeData>> renameScripts = new ArrayList<>();
   
   /**
    * Logger.
@@ -152,7 +152,7 @@ public final class TransformationUtils {
     transformations(clusters);
     ScriptDistanceMetric<StringNodeData> metric = //new ScriptDistanceMetric<>();
         new ScriptDistanceMetric<>();
-    DBScan dbscan = new DBScan(0.5, 1, metric);
+    DBScan dbscan = new DBScan(0.51, 1, metric);
     List<de.jail.statistic.clustering.Cluster> clusteres = dbscan.cluster(scripts);
     @SuppressWarnings("unchecked")
     Script<StringNodeData> script = (Script<StringNodeData>) clusteres.get(2).getPoint(0);
@@ -167,10 +167,10 @@ public final class TransformationUtils {
         ls.add(sc);
       }
       clusteredScriptsList.addAll(ls);
-      ClusterUtils.saveClusterToFile(++countCluster, ls);
+      ClusterUtils.saveClusterToFile(++countCluster, "", ls);
     }
-    if (!renameScripts.isEmpty()) {
-      ClusterUtils.saveClusterToFile(++countCluster, renameScripts);
+    if (!noise.isEmpty()) {
+      ClusterUtils.saveClusterToFile(++countCluster, "noise/", noise);
     }
     countCluster = saveSingleClusters(countCluster, clusteredScriptsList);
   }
@@ -190,8 +190,8 @@ public final class TransformationUtils {
    */
   private static int saveSingleClusters(
       int countCluster, List<Script<StringNodeData>> clusteredScriptsList) {
-    Point point0 = null;
-    Point point1 = null;
+    /*Point point0 = null;
+    Point point1 = null;*/
     for (final Point point : scripts) {
       @SuppressWarnings("unchecked")
       Script<StringNodeData> sc = (Script<StringNodeData>) point;
@@ -203,14 +203,14 @@ public final class TransformationUtils {
         content.append(ClusterFormatter.getInstance().formatHeader());
         content.append(ClusterFormatter.getInstance().formatClusterContent(clusteri, clusterj));
         content.append(ClusterFormatter.getInstance().formatFooter());
-        if (countCluster == 36) {
+        /*if (countCluster == 36) {
           point0 = sc;
         } else if (countCluster == 42) {
           point1 = sc;
           ScriptDistanceMetric<StringNodeData> m =
               new ScriptDistanceMetric<>();
           m.calculate(point0, point1);
-        }
+        }*/
         String counterFormated =  String.format("%03d", ++ countCluster);
         String path = "../Projects/cluster/clusters/" + counterFormated + ".txt";
         final File clusterFile = new File(path);
@@ -291,7 +291,11 @@ public final class TransformationUtils {
           .formatCluster(clusteri, clusterj, refaster);
       FileUtils.writeStringToFile(clusterFile, content.toString());
       Script<StringNodeData> script = EditScriptUtils.getCluster(clusteri);
-      scripts.add(script);
+      if (FilterManager.isNoise(script)) {
+        noise.add(script);
+      } else {
+        scripts.add(script);
+      }
     }
   }
 }

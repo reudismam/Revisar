@@ -3,6 +3,8 @@ package br.ufcg.spg.filter;
 import br.ufcg.spg.cluster.Cluster;
 import br.ufcg.spg.cluster.ClusterFormatter;
 import br.ufcg.spg.edit.Edit;
+import br.ufcg.spg.ml.editoperation.EditNode;
+import br.ufcg.spg.ml.editoperation.Script;
 import br.ufcg.spg.transformation.Transformation;
 import br.ufcg.spg.transformation.TransformationUtils;
 
@@ -12,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+
+import at.unisalzburg.dbresearch.apted.node.StringNodeData;
 
 public class FilterManager {
 
@@ -37,6 +41,76 @@ public class FilterManager {
             .formatCluster(clusteri, clusterj, "");
         FileUtils.writeStringToFile(clusterFile, content.toString());
         return true;
+      }
+    }
+    return false;
+  }
+  
+  /**
+   * Evaluates whether the script is noise.
+   */
+  public static boolean isNoise(Script<StringNodeData> script) {
+    if (filterUpdate(script)) {
+      return true;
+    } else if (filterRemoveName(script)) {
+      return true;
+    } else if (filterRemoveQualifiedName(script)) {
+      return true;
+    } else if (filterUpdateHash(script)) {
+      return true;
+    }
+    return filterObject(script);
+  }
+  
+  private static boolean filterUpdate(Script<StringNodeData> script) {
+    if (script.getList().size() == 1) {
+      return script.getList().get(0).toString().matches("Update\\(hash_[0-9]+ to [a-z0-9]+\\)");
+    }
+    return false;
+  }
+  
+  private static boolean filterUpdateHash(Script<StringNodeData> script) {
+    if (script.getList().size() == 1) {
+      return script.getList().get(0).toString().matches("Update\\(hash_[0-9]+ to hash_[0-9]+\\)");
+    }
+    return script.getList().isEmpty();
+  }
+
+  private static boolean filterRemoveName(Script<StringNodeData> script) {
+    List<EditNode<StringNodeData>> list = script.getList();
+    for (int i = 0; i < list.size(); i++) {
+      EditNode<StringNodeData> edit = list.get(i);
+      if (edit.toString().matches("Delete\\(hash_[0-9]+\\)") 
+          && i + 1 < list.size()) {
+        if (list.get(i + 1).toString().matches("Delete\\(SIMPLE_NAME\\)")) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+  
+  private static boolean filterObject(Script<StringNodeData> script) {
+    List<EditNode<StringNodeData>> list = script.getList();
+    for (int i = 0; i < list.size(); i++) {
+      EditNode<StringNodeData> edit = list.get(i);
+      if (edit.toString()
+          .matches("Update\\(hash_[0-9]+ to (Object|String|[a-zA-Z]*Exception)\\)")) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
+  private static boolean filterRemoveQualifiedName(Script<StringNodeData> script) {
+    List<EditNode<StringNodeData>> list = script.getList();
+    for (int i = 0; i < list.size(); i++) {
+      EditNode<StringNodeData> edit = list.get(i);
+      if (edit.toString().matches("Delete\\(hash_[0-9]+\\)") 
+          && i + 1 < list.size()) {
+        if (list.get(i + 1).toString().matches("Delete\\(QUALIFIED_NAME\\)")) {
+          return true;
+        }
       }
     }
     return false;
