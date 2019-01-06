@@ -7,7 +7,7 @@ public class InsertNode<T> extends EditNode<T> {
   /**
    * Constructor.
    */
-  public InsertNode(RevisarTree<T> parent, RevisarTree<T> node, int k) {
+  public InsertNode(RevisarTree<T> node, RevisarTree<T> parent, int k) {
     super(node, parent, null, k);
   }
 

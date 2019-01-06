@@ -49,7 +49,8 @@ public class DeleteNode<T> extends EditNode<T> {
 
   private boolean thisEquals(DeleteNode<T> other) {
     return /*this.getK() == other.getK() 
-        &&*/ other.getT1Node().getStrLabel().equals(this.getT1Node().getStrLabel()) 
-        && other.getParent().getStrLabel().equals(this.getParent().getStrLabel());
+        &&*/ formatLabel(other.getT1Node().getStrLabel())
+        .equals(formatLabel(getT1Node().getStrLabel())) 
+        /*&& other.getParent().getStrLabel().equals(this.getParent().getStrLabel())*/;
   }
 }

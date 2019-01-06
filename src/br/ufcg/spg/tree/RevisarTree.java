@@ -3,6 +3,8 @@ package br.ufcg.spg.tree;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.ufcg.spg.ml.editoperation.UpdateNode;
+
 /**
  * Represents a tree.
  */
@@ -209,6 +211,10 @@ public class RevisarTree<T> {
       return false;
     }
     return value.equals(compare.getValue());
+  }
+  
+  public boolean isRoot() {
+    return getLabel().equals("root");
   }
 
 }

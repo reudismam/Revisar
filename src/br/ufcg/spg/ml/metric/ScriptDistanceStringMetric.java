@@ -5,7 +5,6 @@ import br.ufcg.spg.component.ConnectionStrategy;
 import br.ufcg.spg.component.FullConnectedEditNode;
 import br.ufcg.spg.hash.MD5;
 import br.ufcg.spg.ml.editoperation.EditNode;
-import br.ufcg.spg.ml.editoperation.InsertNode;
 import br.ufcg.spg.ml.editoperation.Script;
 import br.ufcg.spg.ml.editoperation.UpdateNode;
 import br.ufcg.spg.tree.RevisarTree;
@@ -25,6 +24,9 @@ public class ScriptDistanceStringMetric<T> implements PointBasedDistanceFunction
     String arg0 = getEdits(a0);
     String arg1 = getEdits(a1);
     double common = Levenshtein.calculate(arg0, arg1);
+    if (common == 0.0) {
+      return 0.0;
+    }
     return (double) common / (double) (Math.max(arg0.length(), arg1.length()));
   }
 
@@ -32,7 +34,6 @@ public class ScriptDistanceStringMetric<T> implements PointBasedDistanceFunction
     ConnectedComponentManager<EditNode<T>> con0 = new ConnectedComponentManager<>();
     ConnectionStrategy stt0 = new FullConnectedEditNode<>(arg0.getList());
     List<List<EditNode<T>>> a0 = con0.connectedComponents(arg0.getList(), stt0);
-    //List<EditNode<T>> l0 = getToCompareEdits(a0);
     List<List<EditNode<T>>> mean0 = getMeaningfulEdits(a0);
     String result = convertToString(mean0);
     return result;
@@ -44,7 +45,7 @@ public class ScriptDistanceStringMetric<T> implements PointBasedDistanceFunction
       String editStr = "";
       editStr += MD5.getMd5(edits.get(0).getClass().getSimpleName());
       for (EditNode<T> edit : edits) {
-        editStr += MD5.getMd5(edit.getT1Node().getStrLabel());
+        editStr += MD5.getMd5(edit.formatLabel(edit.getT1Node().getStrLabel()));
       }
       result += editStr;
     }
@@ -77,17 +78,9 @@ public class ScriptDistanceStringMetric<T> implements PointBasedDistanceFunction
     return editsList;
   }
   
-  /**
-   * Gets to compare edits.
-   */
-  /*private List<EditNode<T>> getToCompareEdits(List<List<EditNode<T>>> list) {
-    List<EditNode<T>> edits = new ArrayList<>();
-    for (List<EditNode<T>> editl : list) {
-      EditNode<T> edit = editl.get(editl.size() - 1);
-      edits.add(edit);
-    }
-    return edits;
-  }*/
+  public double getEpsilon() {
+    return 0.4;
+  }
 
   private boolean containsHash(RevisarTree<T> revisarTree) {
     return revisarTree.getStrLabel().contains("hash");

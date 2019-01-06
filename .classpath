@@ -124,5 +124,6 @@
 	<classpathentry kind="lib" path="lib/poi/poi-ooxml-3.17.jar"/>
 	<classpathentry kind="lib" path="lib/poi/xmlbeans-2.3.0.jar"/>
 	<classpathentry kind="lib" path="lib/poi/dom4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="lib/astview/org.eclipse.jdt.astview_1.1.9.201406161921.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

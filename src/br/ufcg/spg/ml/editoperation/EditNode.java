@@ -77,4 +77,14 @@ public class EditNode<T> {
     return getK() == other.getK() 
         && other.getT1Node().getStrLabel().equals(getT1Node().getStrLabel());
   }
+  
+  /**
+   * Formats label.
+   */
+  public String formatLabel(String label) {
+    if (label.startsWith("hash")) {
+      return "hash";
+    }
+    return label;
+  }
 }

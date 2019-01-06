@@ -3,7 +3,7 @@ package br.ufcg.spg.ml.editoperation;
 import br.ufcg.spg.tree.RevisarTree;
 
 public class MoveNode<T> extends EditNode<T> {
-  public MoveNode(RevisarTree<T> parent, RevisarTree<T> node, int k) {
+  public MoveNode(RevisarTree<T> node, RevisarTree<T> parent, int k) {
     super(node, parent, null, k);
   }
 

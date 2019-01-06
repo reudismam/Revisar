@@ -46,21 +46,22 @@ public class EditScriptGenerator<T> {
         editScript.add(insert);
       } else { // x has a partner in M
         RevisarTree<T> v = w.getParent();
-        if (w.getChildren().isEmpty()
+        if (/*w.getChildren().isEmpty()
             && x.getChildren().isEmpty() 
-            && !w.getStrLabel().equals(x.getStrLabel())) {
+            &&*/ !w.getStrLabel().equals(x.getStrLabel())) {
           // int index = v.Children.TakeWhile(item => !item.Equals(w)).Count();
           final EditNode<T> update = new UpdateNode<T>(w, x, z, y);
-          int index = v.getChildren().indexOf(w);
+          /*int index = v.getChildren().indexOf(w);
           v.removeChild(index);
           RevisarTree<T> xnode = new RevisarTree<T>(x.getValue(), x.getLabel());
           v.addChild(xnode, index);
           m.put(xnode, x);
           m.remove(w);
-          w = xnode;
+          w = xnode;*/
           editScript.add(update);
         }
-        if (z != null && findNode(m, y, v) == null) {
+        if (z != null && !y.isRoot() && !v.isRoot()
+            && findNode(m, y, v) == null) {
           int k = findPos(x, m);
           RevisarTree<T> znode = ConverterHelper.makeACopy(z);
           RevisarTree<T> wnode = ConverterHelper.makeACopy(w);
@@ -77,8 +78,8 @@ public class EditScriptGenerator<T> {
       // AlignChildren(x, w);
     }
     TreeTraversal<T> traversal = new TreeTraversal<T>();
-    List<RevisarTree<T>> nodes = traversal.postOrderTraversal(t1); // the delete
-                                                                   // phase
+    List<RevisarTree<T>> nodes = traversal
+        .postOrderTraversal(t1); // the delete phase 
     for (int i = 0; i < nodes.size(); i++) {
       RevisarTree<T> w = nodes.get(i);
       if (!m.containsKey(w)) {
@@ -105,12 +106,19 @@ public class EditScriptGenerator<T> {
     for (int i = 0; i < editScript.size(); i++) {
       EditNode<T> v = editScript.get(i);
       if (v instanceof InsertNode<?>) {
-        RevisarTree<T> xnode = new RevisarTree<T>(v.getT1Node().getValue(), v.getT1Node().getLabel());
-        RevisarTree<T> znode = new RevisarTree<T>(v.getParent().getValue(), v.getParent().getLabel());
+        RevisarTree<T> xnode = new RevisarTree<T>(
+            v.getT1Node().getValue(), v.getT1Node().getLabel());
+        RevisarTree<T> znode = new RevisarTree<T>(
+            v.getParent().getValue(), v.getParent().getLabel());
         EditNode<T> insert = new InsertNode<T>(xnode, znode, v.getK());
         editScript.set(i, insert);
       }
     }
+    //convertMoveToInsertDelete(editScript);
+    return editScript;
+  }
+
+  private void convertMoveToInsertDelete(List<EditNode<T>> editScript) {
     List<Tuple<EditNode<T>, List<EditNode<T>>>> removes = new ArrayList<>();
     for (EditNode<T> v : editScript) {
       if (v instanceof MoveNode<?>) {
@@ -130,12 +138,12 @@ public class EditScriptGenerator<T> {
     for (Tuple<EditNode<T>, List<EditNode<T>>> v : removes) {
       int index = editScript.indexOf(v.getItem1());
       editScript.addAll(index, v.getItem2());
-      editScript.remove(v.getItem2());
+      editScript.remove(v.getItem1());
     }
-    return editScript;
   }
 
-  private RevisarTree<T> findNode(Map<RevisarTree<T>, RevisarTree<T>> m, RevisarTree<T> y, RevisarTree<T> v) {
+  private RevisarTree<T> findNode(
+      Map<RevisarTree<T>, RevisarTree<T>> m, RevisarTree<T> y, RevisarTree<T> v) {
     Optional<Entry<RevisarTree<T>, RevisarTree<T>>> node = m.entrySet().stream()
         .filter(o -> o.getValue().equals(y) && o.getKey().equals(v)).findFirst();
     if (node.isPresent()) {
@@ -177,7 +185,8 @@ public class EditScriptGenerator<T> {
       v = c;
     }
     RevisarTree<T> n = v;
-    RevisarTree<T> u = m.entrySet().stream().filter(o -> o.getValue().equals(n)).findFirst().get().getKey();
+    RevisarTree<T> u = m.entrySet().stream()
+        .filter(o -> o.getValue().equals(n)).findFirst().get().getKey();
     int count = 1;
     List<RevisarTree<T>> children = u.getParent().getChildren();
     for (RevisarTree<T> c : children) {

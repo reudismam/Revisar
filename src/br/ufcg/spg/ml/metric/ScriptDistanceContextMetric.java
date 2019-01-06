@@ -13,30 +13,7 @@ import de.jail.geometry.schemas.Point;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ScriptDistanceMetric<T> implements PointBasedDistanceFunction {
-
-  /*@Override
-  public double calculate(Point point0, Point point1) {
-    @SuppressWarnings("unchecked")
-    Script<T> arg0 = (Script<T>) point0;
-    @SuppressWarnings("unchecked")
-    Script<T> arg1 = (Script<T>) point1;
-    double common = 0.0;
-    boolean[] duplicates = new boolean[arg0.getList().size()];
-    for (int i = 0; i < arg1.getList().size(); i++) {
-      EditNode<T> node1 = arg1.getList().get(i);
-      for (int j = 0; j < arg0.getList().size(); j++) {
-        EditNode<T> node0 = arg0.getList().get(j);
-        if (node1.equals(node0) && !duplicates[j]) {
-          common++;
-          duplicates[j] = true;
-          break;
-        }
-      }
-    }
-    return 1.0 - ((2.0 * common) / (arg0.getList().size() + arg1.getList().size()));
-  }*/
-  
+public class ScriptDistanceContextMetric<T> implements PointBasedDistanceFunction {
   @Override
   public double calculate(Point point0, Point point1) {
     @SuppressWarnings("unchecked")
@@ -45,12 +22,6 @@ public class ScriptDistanceMetric<T> implements PointBasedDistanceFunction {
     Script<T> a1 = (Script<T>) point1;
     List<EditNode<T>> arg0 = getEdits(a0);
     List<EditNode<T>> arg1 = getEdits(a1);
-    boolean containsOnlyUpdate0 = containsOnlyUpdate(arg0);
-    boolean containsOnlyUpdate1 = containsOnlyUpdate(arg1);
-    if (containsOnlyUpdate0 && containsOnlyUpdate1) {
-      return new ScriptDistanceStringMetric<T>()
-          .calculate(point0, point1);
-    }
     double common = 0.0;
     boolean[] duplicates = new boolean[arg0.size()];
     for (int i = 0; i < arg1.size(); i++) {
@@ -65,15 +36,6 @@ public class ScriptDistanceMetric<T> implements PointBasedDistanceFunction {
       }
     }
     return 1.0 - ((2.0 * common) / (arg0.size() + arg1.size()));
-  }
-
-  private boolean containsOnlyUpdate(List<EditNode<T>> arg0) {
-    for (EditNode<T> edit : arg0) {
-      if (!(edit instanceof UpdateNode<?>)) {
-        return false;
-      }
-    }
-    return true;
   }
 
   private List<EditNode<T>> getEdits(Script<T> arg0) {
@@ -93,13 +55,13 @@ public class ScriptDistanceMetric<T> implements PointBasedDistanceFunction {
     for (EditNode<T> edit : list) {
       if (edit instanceof UpdateNode<?>) {
         UpdateNode<T> update = (UpdateNode<T>) edit;
-        if (!(containsHash(update.getT1Node()) || containsHash(update.getTo()))) {
+        if (!(containsHash(update.getT1Node()) && containsHash(update.getTo()))) {
           edits.add(edit);
         }
       } else {
-        //if (!containsHash(edit.getT1Node())) {
+        if (!containsHash(edit.getT1Node())) {
           edits.add(edit);
-        //}
+        }
       }
     }
     return edits;
@@ -112,6 +74,7 @@ public class ScriptDistanceMetric<T> implements PointBasedDistanceFunction {
     List<EditNode<T>> edits = new ArrayList<>();
     for (List<EditNode<T>> editl : list) {
       EditNode<T> edit = editl.get(editl.size() - 1);
+      edit.setParent(editl.get(0).getParent());
       edits.add(edit);
     }
     return edits;

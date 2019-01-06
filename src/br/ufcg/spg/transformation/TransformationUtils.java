@@ -10,11 +10,13 @@ import br.ufcg.spg.config.TechniqueConfig;
 import br.ufcg.spg.database.ClusterDao;
 import br.ufcg.spg.database.TransformationDao;
 import br.ufcg.spg.edit.Edit;
+import br.ufcg.spg.edit.EditScriptGenerator;
 import br.ufcg.spg.excel.QuickFix;
 import br.ufcg.spg.excel.QuickFixManager;
 import br.ufcg.spg.filter.FilterManager;
 import br.ufcg.spg.ml.clustering.EditScriptUtils;
 import br.ufcg.spg.ml.editoperation.Script;
+import br.ufcg.spg.ml.metric.ScriptDistanceContextMetric;
 import br.ufcg.spg.ml.metric.ScriptDistanceMetric;
 import br.ufcg.spg.ml.metric.ScriptDistanceStringMetric;
 import br.ufcg.spg.refaster.RefasterTranslator;
@@ -148,15 +150,14 @@ public final class TransformationUtils {
   public static void transformationsMoreProjects(List<Cluster> clusters) {
     clusters = rebuildClusters(clusters);
     transformations(clusters);
-    ScriptDistanceStringMetric<StringNodeData> metric = //new ScriptDistanceMetric<>();
-        new ScriptDistanceStringMetric<>();
+    ScriptDistanceMetric<StringNodeData> metric = //new ScriptDistanceMetric<>();
+        new ScriptDistanceMetric<>();
     DBScan dbscan = new DBScan(0.5, 1, metric);
     List<de.jail.statistic.clustering.Cluster> clusteres = dbscan.cluster(scripts);
+    @SuppressWarnings("unchecked")
+    Script<StringNodeData> script = (Script<StringNodeData>) clusteres.get(2).getPoint(0);
+    EditScriptUtils.getCluster(script.getCluster());
     int countCluster = 0;
-    /*
-    Point p1 = clusteres.get(9).getPoint(0);
-    Point p2 = clusteres.get(12).getPoint(0);
-    double dist = metric.calculate(p1, p2);*/
     List<Script<StringNodeData>> clusteredScriptsList = new ArrayList<>();
     for (de.jail.statistic.clustering.Cluster list : clusteres) {
       List<Script<StringNodeData>> ls = new ArrayList<>();
@@ -189,6 +190,8 @@ public final class TransformationUtils {
    */
   private static int saveSingleClusters(
       int countCluster, List<Script<StringNodeData>> clusteredScriptsList) {
+    Point point0 = null;
+    Point point1 = null;
     for (final Point point : scripts) {
       @SuppressWarnings("unchecked")
       Script<StringNodeData> sc = (Script<StringNodeData>) point;
@@ -200,6 +203,14 @@ public final class TransformationUtils {
         content.append(ClusterFormatter.getInstance().formatHeader());
         content.append(ClusterFormatter.getInstance().formatClusterContent(clusteri, clusterj));
         content.append(ClusterFormatter.getInstance().formatFooter());
+        if (countCluster == 36) {
+          point0 = sc;
+        } else if (countCluster == 42) {
+          point1 = sc;
+          ScriptDistanceMetric<StringNodeData> m =
+              new ScriptDistanceMetric<>();
+          m.calculate(point0, point1);
+        }
         String counterFormated =  String.format("%03d", ++ countCluster);
         String path = "../Projects/cluster/clusters/" + counterFormated + ".txt";
         final File clusterFile = new File(path);
