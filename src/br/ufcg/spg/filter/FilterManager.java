@@ -70,8 +70,14 @@ public class FilterManager {
       return true;
     } else if (filterReturn(script)) {
       return true;
+    } else if (filterString(script)) {
+      return true;
+    } else if (filterDelete(script)) {
+      return true;
+    } else if (filterQualified(script)) {
+      return true;
     }
-    return filterString(script);
+    return filterInsert(script);
   }
   
   private static boolean filterMultipleUpdates(Script<StringNodeData> script) {
@@ -93,6 +99,14 @@ public class FilterManager {
   private static boolean filterUpdate(Script<StringNodeData> script) {
     if (script.getList().size() == 1) {
       return script.getList().get(0).toString().matches("Update\\(hash_[0-9]+ to [a-z0-9]+\\)");
+    }
+    return false;
+  }
+  
+  private static boolean filterDelete(Script<StringNodeData> script) {
+    if (script.getList().size() == 1) {
+      return script.getList().get(0).toString()
+          .matches("Delete\\(hash_[0-9]+\\)");
     }
     return false;
   }
@@ -135,7 +149,8 @@ public class FilterManager {
       EditNode<StringNodeData> edit = list.get(i);
       if (edit.toString()
           .matches("Insert\\(null, NULL_LITERAL, [0-9]+\\)") 
-          || edit.toString().matches("Update\\(.+ to null\\)")) {
+          || edit.toString().matches("Update\\(.+ to null\\)")
+          || edit.toString().matches("Delete\\(null\\)")) {
         return true;
       }
     }
@@ -148,7 +163,8 @@ public class FilterManager {
       EditNode<StringNodeData> edit = list.get(i);
       if (edit.toString()
           .matches("Insert\\([0-9]+, NUMBER_LITERAL, [0-9]+\\)")
-          || edit.toString().matches("Delete\\(NUMBER_LITERAL\\)")) {
+          || edit.toString().matches("Delete\\(NUMBER_LITERAL\\)")
+          || edit.toString().matches("Update\\(.+ to [0-9]+\\)")) {
         return true;
       }
     }
@@ -161,6 +177,30 @@ public class FilterManager {
       EditNode<StringNodeData> edit = list.get(i);
       if (edit.toString()
           .matches("Delete\\(STRING_LITERAL\\)")) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
+  private static boolean filterQualified(Script<StringNodeData> script) {
+    List<EditNode<StringNodeData>> list = script.getList();
+    for (int i = 0; i < list.size(); i++) {
+      EditNode<StringNodeData> edit = list.get(i);
+      if (edit.toString()
+          .matches("Insert\\(SIMPLE_NAME, QUALIFIED_NAME, [0-9]+\\)")) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
+  private static boolean filterInsert(Script<StringNodeData> script) {
+    List<EditNode<StringNodeData>> list = script.getList();
+    for (int i = 0; i < list.size(); i++) {
+      EditNode<StringNodeData> edit = list.get(i);
+      if (edit.toString()
+          .matches("Insert\\(METHOD_INVOCATION, VARIABLE_DECLARATION_FRAGMENT, [0-9]+\\)")) {
         return true;
       }
     }
