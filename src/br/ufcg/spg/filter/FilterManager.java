@@ -58,8 +58,36 @@ public class FilterManager {
       return true;
     } else if (filterUpdateHash(script)) {
       return true;
+    } else if (filterObject(script)) {
+      return true;
+    } else if (filterMultipleUpdates(script)) {
+      return true;
+    } else if (filterBoolean(script)) {
+      return true;
+    } else if (filterNull(script)) {
+      return true;
+    } else if (filterNumber(script)) {
+      return true;
+    } else if (filterReturn(script)) {
+      return true;
     }
-    return filterObject(script);
+    return filterString(script);
+  }
+  
+  private static boolean filterMultipleUpdates(Script<StringNodeData> script) {
+    for (EditNode<StringNodeData> edit : script.getList()) {
+      if (edit.toString().matches("Update\\(hash_[0-9]+ to [a-z0-9]+\\)")) {
+        continue;
+      } else if (edit.toString().matches("Update\\(hash_[0-9]+ to hash_[0-9]+\\)")) {
+        continue;
+      } else if (edit.toString()
+          .matches("Update\\(hash_[0-9]+ to (Object|Collection|Long|_STRING|[A-Za-z]*Error|String|[a-zA-Z]*Exception)\\)")) {
+        continue;
+      } else {
+        return false;
+      }
+    }
+    return true;
   }
   
   private static boolean filterUpdate(Script<StringNodeData> script) {
@@ -75,7 +103,83 @@ public class FilterManager {
     }
     return script.getList().isEmpty();
   }
+  
+  private static boolean filterObject(Script<StringNodeData> script) {
+    List<EditNode<StringNodeData>> list = script.getList();
+    for (int i = 0; i < list.size(); i++) {
+      EditNode<StringNodeData> edit = list.get(i);
+      if (edit.toString()
+          .matches("Update\\(hash_[0-9]+ to (Object|String|[a-zA-Z]*Exception)\\)")) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
+  private static boolean filterBoolean(Script<StringNodeData> script) {
+    List<EditNode<StringNodeData>> list = script.getList();
+    for (int i = 0; i < list.size(); i++) {
+      EditNode<StringNodeData> edit = list.get(i);
+      if (edit.toString()
+          .matches("Insert\\((true|false), BOOLEAN_LITERAL, [0-9]+\\)")
+          || edit.toString().matches("Delete\\(BOOLEAN_LITERAL\\)")) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
+  private static boolean filterNull(Script<StringNodeData> script) {
+    List<EditNode<StringNodeData>> list = script.getList();
+    for (int i = 0; i < list.size(); i++) {
+      EditNode<StringNodeData> edit = list.get(i);
+      if (edit.toString()
+          .matches("Insert\\(null, NULL_LITERAL, [0-9]+\\)") 
+          || edit.toString().matches("Update\\(.+ to null\\)")) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
+  private static boolean filterNumber(Script<StringNodeData> script) {
+    List<EditNode<StringNodeData>> list = script.getList();
+    for (int i = 0; i < list.size(); i++) {
+      EditNode<StringNodeData> edit = list.get(i);
+      if (edit.toString()
+          .matches("Insert\\([0-9]+, NUMBER_LITERAL, [0-9]+\\)")
+          || edit.toString().matches("Delete\\(NUMBER_LITERAL\\)")) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
+  private static boolean filterString(Script<StringNodeData> script) {
+    List<EditNode<StringNodeData>> list = script.getList();
+    for (int i = 0; i < list.size(); i++) {
+      EditNode<StringNodeData> edit = list.get(i);
+      if (edit.toString()
+          .matches("Delete\\(STRING_LITERAL\\)")) {
+        return true;
+      }
+    }
+    return false;
+  }
 
+  private static boolean filterReturn(Script<StringNodeData> script) {
+    List<EditNode<StringNodeData>> list = script.getList();
+    for (int i = 0; i < list.size(); i++) {
+      EditNode<StringNodeData> edit = list.get(i);
+      if (edit.toString()
+          .matches("Update\\(.+ to return\\)") 
+          || edit.toString().matches("Update\\(return to .+\\)")) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
   private static boolean filterRemoveName(Script<StringNodeData> script) {
     List<EditNode<StringNodeData>> list = script.getList();
     for (int i = 0; i < list.size(); i++) {
@@ -85,18 +189,6 @@ public class FilterManager {
         if (list.get(i + 1).toString().matches("Delete\\(SIMPLE_NAME\\)")) {
           return true;
         }
-      }
-    }
-    return false;
-  }
-  
-  private static boolean filterObject(Script<StringNodeData> script) {
-    List<EditNode<StringNodeData>> list = script.getList();
-    for (int i = 0; i < list.size(); i++) {
-      EditNode<StringNodeData> edit = list.get(i);
-      if (edit.toString()
-          .matches("Update\\(hash_[0-9]+ to (Object|String|[a-zA-Z]*Exception)\\)")) {
-        return true;
       }
     }
     return false;
