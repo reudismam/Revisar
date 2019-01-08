@@ -92,7 +92,7 @@ public class FilterManager {
         continue;
       } else if (edit.toString()
           .matches("Update\\(hash_[0-9]+ to "
-              + "(Object|Collection|Long|_STRING|[A-Za-z]*Error|String|[a-zA-Z]*Exception)\\)")) {
+              + "(Object|Before|After|Test|Collection|Long|_STRING|[A-Za-z]*Error|String|[a-zA-Z]*Exception)\\)")) {
         continue;
       } else {
         return false;
@@ -103,7 +103,8 @@ public class FilterManager {
   
   private static boolean filterUpdate(Script<StringNodeData> script) {
     if (script.getList().size() == 1) {
-      return script.getList().get(0).toString().matches("Update\\(hash_[0-9]+ to [a-z0-9]+[A-Za-z0-9]*\\)");
+      return script.getList().get(0).toString()
+          .matches("Update\\(hash_[0-9]+ to [a-z0-9]+[A-Za-z0-9]*\\)");
     }
     return false;
   }
