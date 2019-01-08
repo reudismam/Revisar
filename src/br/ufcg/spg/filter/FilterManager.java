@@ -25,6 +25,9 @@ public class FilterManager {
   public static boolean isNoise(final String folderPath, 
       final Transformation trans, final Cluster clusteri,
       final Cluster clusterj) throws IOException {
+    if ("a".equals("a")) {
+      return false;
+    }
     if (FilterManager.isSameBeforeAfter(clusteri)) {
       return true;
     } 
@@ -52,7 +55,8 @@ public class FilterManager {
   public static boolean isNoise(Script<StringNodeData> script) {
     if (filterUpdate(script)) {
       return true;
-    } else if (filterRemoveName(script)) {
+    } else 
+    if (filterRemoveName(script)) {
       return true;
     } else if (filterRemoveQualifiedName(script)) {
       return true;
@@ -87,7 +91,8 @@ public class FilterManager {
       } else if (edit.toString().matches("Update\\(hash_[0-9]+ to hash_[0-9]+\\)")) {
         continue;
       } else if (edit.toString()
-          .matches("Update\\(hash_[0-9]+ to (Object|Collection|Long|_STRING|[A-Za-z]*Error|String|[a-zA-Z]*Exception)\\)")) {
+          .matches("Update\\(hash_[0-9]+ to "
+              + "(Object|Collection|Long|_STRING|[A-Za-z]*Error|String|[a-zA-Z]*Exception)\\)")) {
         continue;
       } else {
         return false;
@@ -98,7 +103,7 @@ public class FilterManager {
   
   private static boolean filterUpdate(Script<StringNodeData> script) {
     if (script.getList().size() == 1) {
-      return script.getList().get(0).toString().matches("Update\\(hash_[0-9]+ to [a-z0-9]+\\)");
+      return script.getList().get(0).toString().matches("Update\\(hash_[0-9]+ to [a-z0-9]+[A-Za-z0-9]*\\)");
     }
     return false;
   }
@@ -136,7 +141,8 @@ public class FilterManager {
       EditNode<StringNodeData> edit = list.get(i);
       if (edit.toString()
           .matches("Insert\\((true|false), BOOLEAN_LITERAL, [0-9]+\\)")
-          || edit.toString().matches("Delete\\(BOOLEAN_LITERAL\\)")) {
+          || edit.toString().matches("Delete\\(BOOLEAN_LITERAL\\)")
+          || edit.toString().matches("Update\\((hash_[0-9]+|true|false) to (true|false)\\)")) {
         return true;
       }
     }
@@ -150,6 +156,7 @@ public class FilterManager {
       if (edit.toString()
           .matches("Insert\\(null, NULL_LITERAL, [0-9]+\\)") 
           || edit.toString().matches("Update\\(.+ to null\\)")
+          || edit.toString().matches("Update\\(null to .+\\)")
           || edit.toString().matches("Delete\\(null\\)")) {
         return true;
       }
