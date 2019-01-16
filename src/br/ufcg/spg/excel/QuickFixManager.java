@@ -8,8 +8,14 @@ public class QuickFixManager {
   
   private List<QuickFix> quickFixes;
   
+  private List<QuickFix> badPatterns;
+  
+  private List<QuickFix> potentialPatterns;
+  
   private QuickFixManager() {
     quickFixes = new ArrayList<>();
+    badPatterns = new ArrayList<>();
+    potentialPatterns = new ArrayList<>();
   }
   
   /**
@@ -28,5 +34,21 @@ public class QuickFixManager {
 
   public void setQuickFixes(List<QuickFix> quickFixes) {
     this.quickFixes = quickFixes;
+  }
+
+  public List<QuickFix> getBadPatterns() {
+    return badPatterns;
+  }
+
+  public void setBadPatterns(List<QuickFix> badPatterns) {
+    this.badPatterns = badPatterns;
+  }
+
+  public List<QuickFix> getPotentialPatterns() {
+    return potentialPatterns;
+  }
+
+  public void setPotentialPatterns(List<QuickFix> potentialPatterns) {
+    this.potentialPatterns = potentialPatterns;
   }
 }

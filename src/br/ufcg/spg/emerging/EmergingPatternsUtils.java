@@ -51,7 +51,7 @@ public final class EmergingPatternsUtils {
       TransformationUtils.transformations(oldPath, old);
       try {
         ApachePoiExcelWriter.save(QuickFixManager.getInstance().getQuickFixes());
-      } catch (InvalidFormatException | IOException e) {
+      } catch (IOException e) {
         e.printStackTrace();
       }
     }

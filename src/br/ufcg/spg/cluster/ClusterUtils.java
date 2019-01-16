@@ -4,6 +4,8 @@ import at.unisalzburg.dbresearch.apted.node.StringNodeData;
 
 import br.ufcg.spg.database.ClusterDao;
 import br.ufcg.spg.edit.Edit;
+import br.ufcg.spg.excel.QuickFix;
+import br.ufcg.spg.excel.QuickFixManager;
 import br.ufcg.spg.ml.editoperation.Script;
 import br.ufcg.spg.transformation.TransformationUtils;
 
@@ -111,6 +113,10 @@ public final class ClusterUtils {
       Cluster clusterj = clusteri.getDst();
       content.append(ClusterFormatter.getInstance().formatClusterContent(clusteri, clusterj));
       content.append(ClusterFormatter.getInstance().formatFooter());
+      QuickFix qf = new QuickFix();
+      qf.setId(count);
+      qf.setCluster(clusteri);
+      QuickFixManager.getInstance().getPotentialPatterns().add(qf);
     }
     String counterFormated =  String.format("%03d", countCluster);
     String path = "../Projects/cluster/clusters/" + folder

@@ -150,7 +150,7 @@ public final class TransformationUtils {
   public static void transformationsMoreProjects(List<Cluster> clusters) {
     clusters = rebuildClusters(clusters);
     transformations(clusters);
-    ScriptDistanceMetric<StringNodeData> metric = //new ScriptDistanceMetric<>();
+    ScriptDistanceMetric<StringNodeData> metric = 
         new ScriptDistanceMetric<>();
     DBScan dbscan = new DBScan(0.51, 1, metric);
     List<de.jail.statistic.clustering.Cluster> clusteres = dbscan.cluster(scripts);
@@ -172,7 +172,7 @@ public final class TransformationUtils {
     if (!noise.isEmpty()) {
       ClusterUtils.saveClusterToFile(++countCluster, "noise/", noise);
     }
-    countCluster = saveSingleClusters(countCluster, clusteredScriptsList);
+    saveSingleClusters(countCluster, clusteredScriptsList);
   }
 
   private static List<Cluster> rebuildClusters(List<Cluster> clusters) {
