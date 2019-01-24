@@ -100,23 +100,24 @@ public final class ClusterUtils {
    * Save cluster to file.
    */
   public static void saveClusterToFile(
-      int countCluster, String folder, List<Script<StringNodeData>> list) {
+      int countCluster, String folder, 
+      List<Script<StringNodeData>> list, List<QuickFix> quicks) {
     StringBuilder content = new StringBuilder("NUMBER OF ITEMS IN THIS CLUSTER: " 
         + list.size()).append("\n\n");
-    int count = 0;
+    //int count = 0;
     for (Script<StringNodeData> sc : list) {
       content.append(ClusterFormatter.getInstance().formatHeader());
       content.append(ClusterFormatter.formatList(sc.getList())).append('\n');
-      String cnumber = String.format("%03d", ++count);
+      String cnumber = String.format("%03d", TransformationUtils.incrementClusterIndex());
       content.append("CLUSTER ").append(cnumber).append('\n');
       Cluster clusteri = sc.getCluster();
       Cluster clusterj = clusteri.getDst();
       content.append(ClusterFormatter.getInstance().formatClusterContent(clusteri, clusterj));
       content.append(ClusterFormatter.getInstance().formatFooter());
       QuickFix qf = new QuickFix();
-      qf.setId(count);
+      qf.setId(TransformationUtils.getClusterIndex());
       qf.setCluster(clusteri);
-      QuickFixManager.getInstance().getPotentialPatterns().add(qf);
+      quicks.add(qf);
     }
     String counterFormated =  String.format("%03d", countCluster);
     String path = "../Projects/cluster/clusters/" + folder

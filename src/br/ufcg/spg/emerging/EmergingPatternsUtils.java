@@ -3,7 +3,7 @@ package br.ufcg.spg.emerging;
 import br.ufcg.spg.bean.Tuple;
 import br.ufcg.spg.cluster.Cluster;
 import br.ufcg.spg.edit.Edit;
-import br.ufcg.spg.excel.ApachePoiExcelWriter;
+import br.ufcg.spg.excel.PoiExcelWriter;
 import br.ufcg.spg.excel.QuickFixManager;
 import br.ufcg.spg.transformation.TransformationUtils;
 
@@ -50,7 +50,7 @@ public final class EmergingPatternsUtils {
       QuickFixManager.getInstance().getQuickFixes().clear();
       TransformationUtils.transformations(oldPath, old);
       try {
-        ApachePoiExcelWriter.save(QuickFixManager.getInstance().getQuickFixes());
+        PoiExcelWriter.save(QuickFixManager.getInstance().getQuickFixes());
       } catch (IOException e) {
         e.printStackTrace();
       }

@@ -10,6 +10,7 @@ import br.ufcg.spg.config.TechniqueConfig;
 import br.ufcg.spg.database.ClusterDao;
 import br.ufcg.spg.database.TransformationDao;
 import br.ufcg.spg.edit.Edit;
+import br.ufcg.spg.excel.PoiExcelWriter;
 import br.ufcg.spg.excel.QuickFix;
 import br.ufcg.spg.excel.QuickFixManager;
 import br.ufcg.spg.filter.FilterManager;
@@ -45,11 +46,6 @@ public final class TransformationUtils {
   private static List<Script<StringNodeData>> noise = new ArrayList<>();
   
   /**
-   * Rename scripts.
-   */
-  //private static List<Script<StringNodeData>> renameScripts = new ArrayList<>();
-  
-  /**
    * Logger.
    */
   public static final Logger logger = LogManager.getLogger(TransformationUtils.class.getName());
@@ -57,7 +53,7 @@ public final class TransformationUtils {
   /**
    * Field only for test purpose.
    */
-  public static int clusterIndex = 1;
+  private static int clusterIndex = 1;
   
   private TransformationUtils() {
   }
@@ -150,6 +146,7 @@ public final class TransformationUtils {
   public static void transformationsMoreProjects(List<Cluster> clusters) {
     clusters = rebuildClusters(clusters);
     transformations(clusters);
+    clusterIndex = 1;
     ScriptDistanceMetric<StringNodeData> metric = 
         new ScriptDistanceMetric<>();
     DBScan dbscan = new DBScan(0.51, 1, metric);
@@ -167,12 +164,22 @@ public final class TransformationUtils {
         ls.add(sc);
       }
       clusteredScriptsList.addAll(ls);
-      ClusterUtils.saveClusterToFile(++countCluster, "", ls);
+      List<QuickFix> potentials = QuickFixManager
+          .getInstance().getPotentialPatterns();
+      ClusterUtils.saveClusterToFile(++countCluster, "", ls, potentials);
     }
     if (!noise.isEmpty()) {
-      ClusterUtils.saveClusterToFile(++countCluster, "noise/", noise);
+      List<QuickFix> bads = QuickFixManager.getInstance().getBadPatterns();
+      ClusterUtils.saveClusterToFile(++countCluster, "noise/", noise, bads);
     }
     saveSingleClusters(countCluster, clusteredScriptsList);
+    try {
+      QuickFixManager qfm = QuickFixManager.getInstance();
+      PoiExcelWriter.save("../Projects/cluster/data_bad.xls", "Bad", qfm.getBadPatterns());
+      PoiExcelWriter.save("../Projects/cluster/data_good.xls", "Good", qfm.getPotentialPatterns());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
   private static List<Cluster> rebuildClusters(List<Cluster> clusters) {
@@ -214,6 +221,10 @@ public final class TransformationUtils {
         String counterFormated =  String.format("%03d", ++ countCluster);
         String path = "../Projects/cluster/clusters/" + counterFormated + ".txt";
         final File clusterFile = new File(path);
+        QuickFix qf = new QuickFix();
+        qf.setId(incrementClusterIndex());
+        qf.setCluster(clusteri);
+        QuickFixManager.getInstance().getPotentialPatterns().add(qf);
         try {
           FileUtils.writeStringToFile(clusterFile, content.toString());
         } catch (IOException e) {
@@ -297,5 +308,13 @@ public final class TransformationUtils {
         scripts.add(script);
       }
     }
+  }
+  
+  public static int getClusterIndex() {
+    return clusterIndex;
+  }
+  
+  public static int incrementClusterIndex() {
+    return ++clusterIndex;
   }
 }
