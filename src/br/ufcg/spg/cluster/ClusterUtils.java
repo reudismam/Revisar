@@ -8,6 +8,7 @@ import br.ufcg.spg.excel.QuickFix;
 import br.ufcg.spg.excel.QuickFixManager;
 import br.ufcg.spg.ml.editoperation.Script;
 import br.ufcg.spg.transformation.TransformationUtils;
+import de.jail.geometry.schemas.Point;
 
 import java.io.File;
 import java.io.IOException;
@@ -129,4 +130,48 @@ public final class ClusterUtils {
       TransformationUtils.logger.error(e.getStackTrace());
     }
   }
+  
+	/**
+	 * Save single clusters.
+	 */
+	public static void saveSingleClusters(String folder, List<Cluster> clusters) {
+		int countCluster = 0;
+		for (final Cluster clusteri : clusters) {
+			Cluster clusterj = clusteri.getDst();
+			StringBuilder content = new StringBuilder("");
+			content.append(ClusterFormatter.getInstance().formatHeader());
+			content.append(ClusterFormatter.getInstance().formatClusterContent(clusteri, clusterj));
+			content.append(ClusterFormatter.getInstance().formatFooter());
+			String counterFormated = String.format("%03d", ++countCluster);
+			String path = "../Projects/cluster/clusters/" + folder + counterFormated + ".txt";
+			final File clusterFile = new File(path);
+			try {
+				FileUtils.writeStringToFile(clusterFile, content.toString());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	/**
+	 * Save single clusters.
+	 */
+	public static void saveSingleQuickFixes(String folder, List<QuickFix> clusters) {
+		for (final QuickFix quick : clusters) {
+			Cluster clusteri = quick.getCluster();
+			Cluster clusterj = clusteri.getDst();
+			StringBuilder content = new StringBuilder("");
+			content.append(ClusterFormatter.getInstance().formatHeader());
+			content.append(ClusterFormatter.getInstance().formatClusterContent(clusteri, clusterj));
+			content.append(ClusterFormatter.getInstance().formatFooter());
+			String counterFormated = String.format("%03d", quick.getId());
+			String path = "../Projects/cluster/clusters/" + folder + counterFormated + ".txt";
+			final File clusterFile = new File(path);
+			try {
+				FileUtils.writeStringToFile(clusterFile, content.toString());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 }

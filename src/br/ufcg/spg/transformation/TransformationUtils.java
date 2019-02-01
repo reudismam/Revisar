@@ -146,6 +146,7 @@ public final class TransformationUtils {
   public static void transformationsMoreProjects(List<Cluster> clusters) {
     clusters = rebuildClusters(clusters);
     transformations(clusters);
+    //ClusterUtils.saveSingleClusters("all/", clusters);
     clusterIndex = 1;
     ScriptDistanceMetric<StringNodeData> metric = 
         new ScriptDistanceMetric<>();
@@ -177,6 +178,7 @@ public final class TransformationUtils {
       QuickFixManager qfm = QuickFixManager.getInstance();
       PoiExcelWriter.save("../Projects/cluster/data_bad.xls", "Bad", qfm.getBadPatterns());
       PoiExcelWriter.save("../Projects/cluster/data_good.xls", "Good", qfm.getPotentialPatterns());
+      ClusterUtils.saveSingleQuickFixes("potential/", qfm.getPotentialPatterns());
     } catch (IOException e) {
       e.printStackTrace();
     }
