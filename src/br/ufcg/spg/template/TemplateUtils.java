@@ -28,7 +28,7 @@ public class TemplateUtils {
       }
       return null;
     }
-    final RevisarTree<String> newAu = new RevisarTree<>(au.getValue());
+    final RevisarTree<String> newAu = new RevisarTree<>(au.getValue(), "");
     for (final RevisarTree<String> aui : au.getChildren()) {
       final RevisarTree<String> rau = remove(aui, toRemove);
       if (rau != null) {

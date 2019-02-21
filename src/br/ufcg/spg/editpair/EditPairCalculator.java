@@ -52,6 +52,7 @@ import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.PersonIdent;
+import org.eclipse.jgit.revwalk.RevCommit;
 
 public class EditPairCalculator {
   
@@ -65,7 +66,7 @@ public class EditPairCalculator {
    * @param dstCommit target commit
    */
   public static List<Edit> computeEditPairs(final String project, List<String> files, 
-      final String dstCommit) 
+      final RevCommit dstCommit) 
       throws IOException, GitAPIException {
     Run.initGenerators();
     // files to be analyzed
@@ -89,7 +90,7 @@ public class EditPairCalculator {
     final String srcFileName = srcFilePaths.get(0);
     final String dstFileName = dstFilePaths.get(0);
     final ProjectInfo pi = ProjectAnalyzer.project(project, srcFileName, dstFileName);
-    CommitUtils.checkoutIfDiffer(dstCommit, pi);
+    CommitUtils.checkoutIfDiffer(dstCommit.getId().getName(), pi);
     return EditPairCalculator.extractEditPairs(srcFilePaths, 
         dstFilePaths, pi, dstCommit, project);
   }
@@ -110,7 +111,7 @@ public class EditPairCalculator {
    */
   public static List<Edit> extractEditPairs(final List<String> srcFilePaths, 
       final List<String> dstFilePaths, final ProjectInfo pi,
-      final String cmt, final String pj) 
+      final RevCommit cmt, final String pj) 
           throws IOException {
     final List<Edit> srcEdits = new ArrayList<>();
     for (int i = 0; i < srcFilePaths.size(); i++) {
@@ -182,8 +183,7 @@ public class EditPairCalculator {
         final MatchCalculator<ASTNode> srcMa = new NodeMatchCalculator(srcMatcher);
         final ASTNode srcAstNode = srcMa.getNode(unitSrc);
         final ITree ctxSrc = unchagedContext(srcPath, diff.getSrc(), diff.getDst(), 
-            srcNode, dstNode,
-            cmt, mappings);
+            srcNode, dstNode, mappings);
         final boolean isSingleLineSrc = SourceUtils.isSingleLine(unitSrc, ctxSrc.getPos(), 
             ctxSrc.getEndPos());
         // get ASTNode for node with unchanged context in compilation unit
@@ -213,34 +213,22 @@ public class EditPairCalculator {
         if (!NodeValidator.isValidNode(srcEq) || !NodeValidator.isValidNode(dstEq)) {
           continue;
         }
-        /*System.out.println("Before creating upper edit!");
-        final ASTNode srcUpper = ASTNodeUtils.getTopNode(srcAstNode);
-        final ASTNode dstUpper = ASTNodeUtils.getTopNode(dstAstNode);
-        if (srcUpper == null || dstUpper == null) {
-          continue;
+        String cmtStr = cmt.getId().getName();
+        final Edit dstCtx = createEdit(cmtStr, fixedDst, pj, dstPath, unitDst);
+        final Edit srcCtx = createEdit(cmtStr, fixedSrc, pj + "_old", srcPath, unitSrc);
+        final Edit dstEdit = createEdit(cmtStr, dstAstNode, pj, dstPath, unitDst);
+        final Edit srcEdit = createEdit(cmtStr, srcAstNode, pj + "_old", srcPath, unitSrc);
+        if (srcEdit.getText().equals(dstEdit.getText())) {
+        	continue;
         }
-        final Edit srcUpperEdit = createEdit(cmt, srcUpper, pj + "_old", srcPath, unitSrc);
-        final String srcUpperEq = EquationUtils.convertToAuEq(srcUpper);
-        final String dstUpperEq = EquationUtils.convertToAuEq(dstUpper);
-        final Edit dstUpperEdit = createEdit(cmt, dstUpper, pj, dstPath, unitDst);
-        System.out.println("After creating upper edit!");*/
-        final Edit dstCtx = createEdit(cmt, fixedDst, pj, dstPath, unitDst);
-        final Edit srcCtx = createEdit(cmt, fixedSrc, pj + "_old", srcPath, unitSrc);
-        final Edit dstEdit = createEdit(cmt, dstAstNode, pj, dstPath, unitDst);
-        final Edit srcEdit = createEdit(cmt, srcAstNode, pj + "_old", srcPath, unitSrc);
         //specific configuration to dst context
         srcCtx.setDst(dstCtx);
         //specific configuration to dst
         dstEdit.setContext(dstCtx);
         dstEdit.setTemplate(dstEq);
-        /*dstEdit.setUpper(dstUpperEdit);
-        dstUpperEdit.setTemplate(dstUpperEq);
-        srcUpperEdit.setTemplate(srcUpperEq);
-        configSrcEdit(cmt, srcEdit, dstEdit, srcCtx, srcUpperEdit, 
-        srcEq, imports, srcAu, dstAu, pi);*/
         configSrcEdit(cmt, srcEdit, dstEdit, srcCtx, null, srcEq, imports, srcAu, dstAu, pi);
         srcEdits.add(srcEdit);
-        showEditPair(srcPath, dstPath, srcNode, dstNode, fixedSrc, fixedDst);
+        //showEditPair(srcPath, dstPath, srcNode, dstNode, fixedSrc, fixedDst);
       }
     }
     return srcEdits;
@@ -256,7 +244,7 @@ public class EditPairCalculator {
    * @param srcAu src anti-unification
    * @param dstAu dst anti-unification
    */
-  private static Edit configSrcEdit(final String cmt, final Edit srcEdit, 
+  private static Edit configSrcEdit(final RevCommit cmt, final Edit srcEdit, 
       final Edit dstEdit, final Edit srcCtx,
       final Edit srcUpper, String srcEq, List<Import> imports, 
       AntiUnifier srcAu, AntiUnifier dstAu, final ProjectInfo pi) {
@@ -270,7 +258,7 @@ public class EditPairCalculator {
     configDcap(srcEdit, srcAu);
     configDcap(dstEdit, dstAu);
     final GitUtils gutils = new GitUtils();
-    final PersonIdent pident = gutils.getPersonIdent(pi.getDstVersion().getProject(), cmt);
+    final PersonIdent pident = gutils.getPersonIdent(cmt, pi.getDstVersion().getProject(), cmt.getId().getName());
     srcEdit.setDeveloper(pident.getName());
     srcEdit.setEmail(pident.getEmailAddress());
     srcEdit.setDate(pident.getWhen());
@@ -396,8 +384,7 @@ public class EditPairCalculator {
    * @return maximum unchanged context
    */
   public static ITree unchagedContext(final String srcPath, final TreeContext src, 
-      final TreeContext dst, final ITree srcNode, final ITree dstNode,
-      final String commit, final MappingStore mapping) {
+      final TreeContext dst, final ITree srcNode, final ITree dstNode, final MappingStore mapping) {
     ITree tempSrc = srcNode;
     ITree tempDst = dstNode;
     final List<ITree> pathSrc = new ArrayList<>();

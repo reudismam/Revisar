@@ -23,12 +23,15 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.osgi.service.resolver.extras.Sortable;
 
 public class ExpUtils {
 
@@ -199,6 +202,25 @@ public class ExpUtils {
     try (FileWriter writer = new FileWriter(fileName)) {
       for (final String str : list) {
         writer.write(str + ",\n");
+      }
+    }
+  }
+  
+  /**
+   * Save list of e-mails.
+   * 
+   * @param list
+   *          of e-mails.
+   * @param fileName
+   *          file name.
+   */
+  public static void save(final Map<String, Integer> map, final String fileName) throws IOException {
+	Map<String, Integer> sorted = map.entrySet().stream()
+            .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+            .collect(Collectors.toMap(Entry::getKey, Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+    try (FileWriter writer = new FileWriter(fileName)) {
+      for (final Entry<String, Integer> str : sorted.entrySet()) {
+        writer.write(str.getKey() + ";" + str.getValue() + "\n");
       }
     }
   }

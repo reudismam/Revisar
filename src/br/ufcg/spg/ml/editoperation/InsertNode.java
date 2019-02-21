@@ -33,4 +33,9 @@ public class InsertNode<T> extends EditNode<T> {
     }
     return thisEquals((InsertNode<T>) obj);
   }
+  
+  @Override
+  public String identity() {
+	  return "Insert(" + super.identity() + ")";
+  }
 }

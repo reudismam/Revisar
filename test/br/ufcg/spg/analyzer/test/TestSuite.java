@@ -15,6 +15,7 @@ import br.ufcg.spg.edit.Edit;
 import br.ufcg.spg.edit.EditStorage;
 import br.ufcg.spg.emerging.EmergingPatternsUtils;
 import br.ufcg.spg.exp.ExpUtils;
+import br.ufcg.spg.git.GitUtils;
 import br.ufcg.spg.log.TimeLogger;
 import br.ufcg.spg.main.MainArguments;
 import br.ufcg.spg.technique.Technique;
@@ -44,6 +45,7 @@ import org.eclipse.jgit.api.errors.NoHeadException;
 import org.eclipse.jgit.errors.AmbiguousObjectException;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
+import org.eclipse.jgit.revwalk.RevCommit;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -61,6 +63,7 @@ public class TestSuite {
 
   @Test
   public void exp() throws IOException, JustificationException, ControlledException, CoreException {
+	configMainArguments();
     final TechniqueConfig config = TechniqueConfig.getInstance();
     config.setAllCommits(true);
     config.setEditsToAnalyze(100);
@@ -75,14 +78,6 @@ public class TestSuite {
     arguments.setProjectFolder("../Projects");
   }
   
-  private List<Edit> getAllEdits(List<Cluster> clusters) {
-    List<Edit> allEdits = new ArrayList<>();
-    for (Cluster c : clusters) {
-      allEdits.addAll(c.getNodes());
-    }
-    return allEdits;
-  }
-
   @Test
   public void exp_Cluster() 
       throws IOException, JustificationException, 
@@ -160,7 +155,7 @@ public class TestSuite {
   
   @Test
   public void exp_ml_translate_cluster_more_projects() throws IOException {
-    List<Cluster> clusters = ClusterDao.getClusterMoreProjects();
+    List<Cluster> clusters = ClusterDao.getInstance().getSrcClusters();//ClusterDao.getInstance().getSrcClusters();//ClusterDao.getClusterMoreProjects();
     int i = clusters.size();
     logger.trace(i);
     TransformationUtils.transformationsMoreProjects(clusters);
@@ -207,7 +202,7 @@ public class TestSuite {
     List<Cluster> clusters = ClusterDao.getClusterMoreProjects();
     int j = clusters.size();
     logger.trace(j);
-    List<Edit> allEdits = getAllEdits(clusters);
+    List<Edit> allEdits = ClusterUtils.getAllEdits(clusters);
     Set<Tuple<Edit, Edit>> pairs = new HashSet<>();
     for (Edit editi: allEdits) {
       for (Edit editj: allEdits) {
@@ -292,7 +287,7 @@ public class TestSuite {
     List<Cluster> clusters = ClusterDao.getClusterMoreProjects();
     int i = clusters.size();
     logger.trace(i);
-    List<Edit> allEdits = getAllEdits(clusters);
+    List<Edit> allEdits = ClusterUtils.getAllEdits(clusters);
     Map<String, List<Edit>> dcaps = ClusterUnifier.getInstance().groupEditsByDCap(allEdits,
         TechniqueConfig.getInstance());
     List<Cluster> clustersDcap = new ArrayList<>();
@@ -462,8 +457,11 @@ public class TestSuite {
    * Test base method.
    * 
    */
-  public void testBaseTable(final String project, final String commit)
+  public void testBaseTable(final String project, final String hashId)
       throws IOException, JustificationException, ControlledException, CoreException {
+	configMainArguments();
+	RevCommit commit = GitUtils.extractCommit(MainArguments.getInstance()
+			.getProjectFolder() + "/" + project, hashId);
     Technique.addEdits(project, commit);
     Technique.clusterEdits();
     Technique.translateEdits();
@@ -475,9 +473,11 @@ public class TestSuite {
    * @throws ExecutionException
    * 
    */
-  public void testBaseTable(final String project, final List<String> files, final String commit)
+  public void testBaseTable(final String project, final List<String> files, final String hashId)
       throws IOException, JustificationException, 
       ControlledException, CoreException, ExecutionException {
+	  RevCommit commit = GitUtils.extractCommit(MainArguments.getInstance()
+				.getProjectFolder() + "/" + project, hashId);
     // Computing before after edits
     Technique.addEdits(project, files, commit);
     Technique.clusterEdits();

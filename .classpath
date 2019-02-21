@@ -115,11 +115,6 @@
 	<classpathentry kind="lib" path="lib/urau.jar"/>
 	<classpathentry kind="lib" path="lib/hoau.jar"/>
 	<classpathentry kind="lib" path="lib/dbscan.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/EclipseLink 2.5.2">
-		<attributes>
-			<attribute name="owner.project.facets" value="jpt.jpa"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="lib" path="lib/poi/poi-3.17.jar"/>
 	<classpathentry kind="lib" path="lib/poi/poi-ooxml-3.17.jar"/>
 	<classpathentry kind="lib" path="lib/poi/xmlbeans-2.3.0.jar"/>
@@ -127,5 +122,10 @@
 	<classpathentry kind="lib" path="lib/astview/org.eclipse.jdt.astview_1.1.9.201406161921.jar"/>
 	<classpathentry kind="lib" path="lib/lsh/java-lsh-0.11.jar"/>
 	<classpathentry kind="lib" path="lib/lsh/java-string-similarity-0.12.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/EclipseLink 2.5.2">
+		<attributes>
+			<attribute name="owner.project.facets" value="jpt.jpa"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.revwalk.RevCommit;
 
 /**
  * Main class for the technique.
@@ -32,7 +33,7 @@ public final class Technique {
    * @param commit
    *          commit-id
    */
-  public static void addEdits(final String project, final List<String> files, final String commit) {
+  public static void addEdits(final String project, final List<String> files, final RevCommit commit) {
     try {
       final List<Edit> srcEdits = EditPairCalculator.computeEditPairs(project, files, commit);
       //DependenceUtils.computeGraph(srcEdits);
@@ -50,7 +51,7 @@ public final class Technique {
    * @param commit
    *          commit-id
    */
-  public static void addEdits(final String project, final String commit) {
+  public static void addEdits(final String project, final RevCommit commit) {
     addEdits(project, null, commit);
   }
   

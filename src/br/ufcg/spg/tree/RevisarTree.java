@@ -41,10 +41,10 @@ public class RevisarTree<T> {
    */
   private List<RevisarTree<T>> children;
 
-  public RevisarTree(final T value) {
+  /*public RevisarTree(final T value) {
     this.value = value;
     children = new ArrayList<RevisarTree<T>>();
-  }
+  }*/
   
   /**
    * Constructor.

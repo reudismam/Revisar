@@ -5,9 +5,12 @@ import br.ufcg.spg.config.TechniqueConfig;
 import br.ufcg.spg.edit.EditStorage;
 import br.ufcg.spg.exp.ExpUtils;
 import br.ufcg.spg.git.GitUtils;
+import br.ufcg.spg.main.MainArguments;
 
 import java.io.IOException;
 import java.util.List;
+
+import org.eclipse.jgit.revwalk.RevCommit;
 
 public class TechniqueUtils {
   
@@ -23,7 +26,10 @@ public class TechniqueUtils {
     // files to be analyzed
     final String projectFolderDst = "../Projects/" + project.getItem1() + "/";
     final GitUtils analyzer = new GitUtils();
-    final List<String> log = ExpUtils.getLogs(project.getItem1());
+    //final List<String> log = ExpUtils.getLogs(project.getItem1());
+    ExpUtils.getLogs(project.getItem1());
+    final List<RevCommit> log = GitUtils.gitRevCommitLog(MainArguments.getInstance()
+    		.getProjectFolder() + "/" + project.getItem1());
     final EditStorage storage = EditStorage.getInstance();
     final int startCount = storage.getNumberEdits();
     final int numberToAnalyze = TechniqueConfig.getInstance().getEditsToAnalyze();
@@ -31,7 +37,8 @@ public class TechniqueUtils {
     storage.setMaxNumberEdits(max);
     int index = 5;
     if (project.getItem2() != null) {
-      index = log.indexOf(project.getItem2());
+      //index = log.indexOf(project.getItem2());
+      index = indexOf(project.getItem2(), log);
       if (index == -1) {
         throw new RuntimeException("Invalid index of commits!!!");
       }
@@ -39,7 +46,7 @@ public class TechniqueUtils {
     }
     for (int i = index; i < log.size(); i++) {
       System.out.println(((double) i) / log.size() + " % completed");
-      final String dstCommit = log.get(i);
+      final RevCommit dstCommit = log.get(i);
       final List<String> files = analyzer.modifiedFiles(projectFolderDst, dstCommit);
       //if there is no previous commit.
       if (files == null) {
@@ -59,4 +66,14 @@ public class TechniqueUtils {
       }
     }
   }
+
+	private static int indexOf(final String commit, final List<RevCommit> log) {
+		for (int i = 0; i < log.size(); i++) {
+			RevCommit rc = log.get(i);
+			if (rc.getId().getName().equals(commit)) {
+				return i;
+			}
+		}
+		return -1;
+	}
 }

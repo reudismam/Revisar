@@ -150,7 +150,7 @@ public class ClusterDao extends GenericDao<Cluster, String> {
    */
   public static List<Cluster> getClusterMoreProjects() {
     final ClusterDao dao = getInstance();
-    List<Cluster> clusters = new ArrayList<>(dao.getClusterMoreProjects(3));
+    List<Cluster> clusters = new ArrayList<>(dao.getClusterMoreProjects(2));
     List<Cluster> newList = new ArrayList<>();
     for (Cluster cluster : clusters) {
       if (!FilterManager.isSameBeforeAfter(cluster)) {

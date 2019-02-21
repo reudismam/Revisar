@@ -68,4 +68,16 @@ public class UpdateNode<T> extends EditNode<T> {
         .equals(formatLabel(getTo().getStrLabel())) 
         && isParentLabel;
   }
+  
+  @Override
+  public String identity() {
+	  String str = "Update(" + formatLabel(getT1Node().getStrLabel());
+	  str = str + " to " + formatLabel(getTo().getStrLabel());
+	  if (getParent() != null) {
+		  str = str + ", " + formatLabel(getParent().getStrLabel());
+	  } else {
+		  str = str + ", null";
+	  }
+	  return str + ")";
+  }
 }

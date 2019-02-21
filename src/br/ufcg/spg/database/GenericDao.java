@@ -47,8 +47,22 @@ public abstract class GenericDao<T, I extends Serializable> {
    * @param entities beans to be saved.
    */
   public List<T> saveAll(@Valid final List<T> entities) {
+    for (int i = 0; i < entities.size(); i++) {
+    logger.warn((((double)i) / entities.size()) * 100 + " % saved");
+       save(entities.get(i));
+    }
+    return entities;
+  }
+  
+  /**
+   * Save entity to database.
+   * @param entities beans to be saved.
+   */
+  /*public List<T> saveAll(@Valid final List<T> entities) {
     final EntityTransaction t = em.getTransaction();
-    t.begin();
+    if (!t.isActive()) {
+       t.begin();
+    }
     for (int i = 0; i < entities.size(); i++) {
       final T entity = entities.get(i);
       logger.warn((((double)i) / entities.size()) * 100 + " % saved");
@@ -58,9 +72,10 @@ public abstract class GenericDao<T, I extends Serializable> {
         em.clear();
       }
     }
+    em.flush();
     t.commit();
     return entities;
-  }
+  }*/
   
   /**
    * Update bean.

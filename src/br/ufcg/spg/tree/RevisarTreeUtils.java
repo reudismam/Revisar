@@ -29,7 +29,7 @@ public class RevisarTreeUtils {
   public static RevisarTree<ASTNode> convertToRevisarTree(final ASTNode astNode) {
     final List<Object> children = ASTNodeUtils.getChildren(astNode);
     final List<ASTNode> normalizedChildren = ASTNodeUtils.normalize(children);
-    RevisarTree<ASTNode> rtree = new RevisarTree<>(astNode);
+    RevisarTree<ASTNode> rtree = new RevisarTree<>(astNode, ASTNodeUtils.getLabel(astNode.getNodeType()));
     if (normalizedChildren.isEmpty()) {
       return rtree;
     }

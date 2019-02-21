@@ -14,9 +14,10 @@ import java.util.TreeMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jgit.revwalk.RevCommit;
 
 public class EditStorage {
-  private Map<String, List<String>> commitProjects;
+  private Map<String, List<RevCommit>> commitProjects;
   private Cache<CommitFile, CompilationUnit> cunits;
   private Cache<CommitFile, DiffCalculator> diffs;
 
@@ -27,7 +28,7 @@ public class EditStorage {
 
   private int maxNumberEdits = 100;
   private int numberEdits = 0;
-  private String currentCommit;
+  private RevCommit currentCommit;
 
   private static EditStorage instance;
 
@@ -128,15 +129,15 @@ public class EditStorage {
     this.numberEdits = numberEdits;
   }
 
-  public String getCurrentCommit() {
+  public RevCommit getCurrentCommit() {
     return currentCommit;
   }
 
-  public Map<String, List<String>> getCommitProjects() {
+  public Map<String, List<RevCommit>> getCommitProjects() {
     return commitProjects;
   }
 
-  public void setCommitProjects(final Map<String, List<String>> commitsProjects) {
+  public void setCommitProjects(final Map<String, List<RevCommit>> commitsProjects) {
     this.commitProjects = commitsProjects;
   }
   
@@ -145,14 +146,14 @@ public class EditStorage {
    * @param project project
    * @param commit commit to be added.
    */
-  public void addCommitProject(final String project, final String commit) {
+  public void addCommitProject(final String project, final RevCommit commit) {
     if (!this.commitProjects.containsKey(project)) {
       this.commitProjects.put(project, new ArrayList<>());
     }
     this.commitProjects.get(project).add(commit);
   }
 
-  public void setCurrentCommit(final String currentCommit) {
+  public void setCurrentCommit(final RevCommit currentCommit) {
     this.currentCommit = currentCommit;
   }
 

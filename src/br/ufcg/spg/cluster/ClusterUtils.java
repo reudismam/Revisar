@@ -5,10 +5,8 @@ import at.unisalzburg.dbresearch.apted.node.StringNodeData;
 import br.ufcg.spg.database.ClusterDao;
 import br.ufcg.spg.edit.Edit;
 import br.ufcg.spg.excel.QuickFix;
-import br.ufcg.spg.excel.QuickFixManager;
 import br.ufcg.spg.ml.editoperation.Script;
 import br.ufcg.spg.transformation.TransformationUtils;
-import de.jail.geometry.schemas.Point;
 
 import java.io.File;
 import java.io.IOException;
@@ -174,4 +172,12 @@ public final class ClusterUtils {
 			}
 		}
 	}
+
+	public static List<Edit> getAllEdits(List<Cluster> clusters) {
+	    List<Edit> allEdits = new ArrayList<>();
+	    for (Cluster c : clusters) {
+	      allEdits.addAll(c.getNodes());
+	    }
+	    return allEdits;
+	  }
 }

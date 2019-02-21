@@ -21,9 +21,9 @@ public class DcapCalculator {
    */
   private static RevisarTree<String> dcap(final RevisarTree<String> au, int d, int index) {
     if (d == 0 || au.getChildren().isEmpty()) {
-      return new RevisarTree<>("#" + index);
+      return new RevisarTree<>("#" + index, "");
     }
-    final RevisarTree<String> atree = new RevisarTree<>(au.getValue());
+    final RevisarTree<String> atree = new RevisarTree<>(au.getValue(), "");
     d--;
     for (final RevisarTree<String> child : au.getChildren()) {
       final RevisarTree<String> achild = dcap(child, d, index++);

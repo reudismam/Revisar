@@ -23,7 +23,7 @@ public class RevisarTreeParser {
    */
   public static RevisarTree<String> parser(final String dataInput) {
     if (dataInput.isEmpty()) {
-      return new RevisarTree<String>("");
+      return new RevisarTree<String>("", "");
     }
     data = dataInput;
     index = 0;
@@ -45,7 +45,7 @@ public class RevisarTreeParser {
    * @return tree representation
    */
   private static RevisarTree<String> parser() {
-    final RevisarTree<String> tree = new RevisarTree<String>("");
+    final RevisarTree<String> tree = new RevisarTree<String>("", "");
     tree.setPos(index);
     while (index < data.length()) {
       final char character = data.charAt(index);

@@ -47,10 +47,15 @@ public class DeleteNode<T> extends EditNode<T> {
     return thisEquals((DeleteNode<T>) obj);
   }
 
-  private boolean thisEquals(DeleteNode<T> other) {
+  public boolean thisEquals(DeleteNode<T> other) {
     return /*this.getK() == other.getK() 
         &&*/ /*formatLabel(*/other.getT1Node().getStrLabel()//)
         .equals(/*formatLabel(*/getT1Node().getStrLabel())//) 
         /*&& other.getParent().getStrLabel().equals(this.getParent().getStrLabel())*/;
+  }
+  
+  @Override
+  public String identity() {
+	  return "Delete(" + formatLabel(getT1Node().getStrLabel()) + ")";
   }
 }

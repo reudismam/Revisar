@@ -4,11 +4,11 @@
     xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
     <persistence-unit name="AntiUnification"
         transaction-type="RESOURCE_LOCAL">
-        <class>br.ufcg.spg.edit.Edit</class>
-        <class>br.ufcg.spg.transformation.Transformation</class>
-        <class>br.ufcg.spg.dependence.Dependence</class>
-        <class>br.ufcg.spg.imports.Import</class>
         <class>br.ufcg.spg.cluster.Cluster</class>
+        <class>br.ufcg.spg.dependence.Dependence</class>
+        <class>br.ufcg.spg.edit.Edit</class>
+        <class>br.ufcg.spg.imports.Import</class>
+        <class>br.ufcg.spg.transformation.Transformation</class>
         <properties>
             <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://127.0.0.1:5432/AUDb" />
             <property name="javax.persistence.jdbc.user" value="postgres" />

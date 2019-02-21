@@ -87,4 +87,14 @@ public class EditNode<T> {
     }
     return label;
   }
+  
+  public String identity() {
+	  String str =  formatLabel(getT1Node().getStrLabel());
+	  if (getParent() != null) {
+		  str = str + ", " + formatLabel(getParent().getStrLabel());
+	  } else {
+		  str = str + ", null";
+	  }
+	  return str;
+  }
 }

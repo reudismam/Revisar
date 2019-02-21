@@ -29,4 +29,9 @@ public class MoveNode<T> extends EditNode<T> {
     }
     return thisEquals((MoveNode<T>) obj);
   }
+  
+  @Override
+  public String identity() {
+	  return "Move(" + super.identity() + ")";
+  }
 }

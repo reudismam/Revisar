@@ -22,7 +22,8 @@ public class ITreeParser {
       final RevisarTree<String> unifier, final ASTNode node) {
     final String value = "\n" + PrintUtils.prettyPrint(unifier);
     final Tuple<ASTNode, String> t = new Tuple<>(node, value);
-    final RevisarTree<Tuple<ASTNode, String>> tree = new RevisarTree<>(t);
+    final RevisarTree<Tuple<ASTNode, String>> tree = new RevisarTree<>(t, ASTNodeUtils
+    		.getLabel(t.getItem1().getNodeType()));
     final List<RevisarTree<String>> auChildren = unifier.getChildren();
     if (auChildren.isEmpty()) {
       return tree;
