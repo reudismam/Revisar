@@ -10,6 +10,7 @@ import br.ufcg.spg.component.FullConnectedGumTree;
 import br.ufcg.spg.dcap.DcapCalculator;
 import br.ufcg.spg.diff.DiffCalculator;
 import br.ufcg.spg.diff.DiffPath;
+import br.ufcg.spg.diff.DiffText;
 import br.ufcg.spg.edit.Edit;
 import br.ufcg.spg.equation.EquationUtils;
 import br.ufcg.spg.expression.ExpressionManager;
@@ -46,6 +47,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jdt.core.dom.ASTNode;
@@ -65,7 +68,7 @@ public class EditPairCalculator {
    * @param files files
    * @param dstCommit target commit
    */
-  public static List<Edit> computeEditPairs(final String project, List<String> files, 
+  public static List<Edit> computeEditPairs(final String project, Map<String, Tuple<String, String>> files, 
       final RevCommit dstCommit) 
       throws IOException, GitAPIException {
     Run.initGenerators();
@@ -78,21 +81,20 @@ public class EditPairCalculator {
     if (files.isEmpty()) {
       return new ArrayList<>();
     }
-    final String projectFolderSrc = "../Projects/" + project + "_old/";
+    /*final String projectFolderSrc = "../Projects/" + project + "_old/";
     final List<String> srcFilePaths = new ArrayList<>();
     final List<String> dstFilePaths = new ArrayList<>();
-    for (final String fileName : files) {
-      final String srcFilePath = buildFilePath(projectFolderSrc, fileName);
-      final String dstFilePath = buildFilePath(projectFolderDst, fileName);  
+    for (final Entry<String, Tuple<String, String>> fileName : files.entrySet()) {
+      final String srcFilePath = buildFilePath(projectFolderSrc, fileName.getKey());
+      final String dstFilePath = buildFilePath(projectFolderDst, fileName.getKey());  
       srcFilePaths.add(srcFilePath);
       dstFilePaths.add(dstFilePath);
     }
     final String srcFileName = srcFilePaths.get(0);
     final String dstFileName = dstFilePaths.get(0);
     final ProjectInfo pi = ProjectAnalyzer.project(project, srcFileName, dstFileName);
-    CommitUtils.checkoutIfDiffer(dstCommit.getId().getName(), pi);
-    return EditPairCalculator.extractEditPairs(srcFilePaths, 
-        dstFilePaths, pi, dstCommit, project);
+    CommitUtils.checkoutIfDiffer(dstCommit.getId().getName(), pi);*/
+    return EditPairCalculator.extractEditPairs(files, project, dstCommit, project);
   }
   
   public static String buildFilePath(final String folderPath, final String filePath) {
@@ -109,15 +111,17 @@ public class EditPairCalculator {
    * @param pi
    *          information about the project
    */
-  public static List<Edit> extractEditPairs(final List<String> srcFilePaths, 
-      final List<String> dstFilePaths, final ProjectInfo pi,
+  public static List<Edit> extractEditPairs(final Map<String, Tuple<String, String>> srcFilePaths, 
+      String project,
       final RevCommit cmt, final String pj) 
           throws IOException {
     final List<Edit> srcEdits = new ArrayList<>();
-    for (int i = 0; i < srcFilePaths.size(); i++) {
-      final String srcPath = srcFilePaths.get(i);
-      final String dstPath = dstFilePaths.get(i);
-      final DiffCalculator diff = new DiffPath(srcPath, dstPath);
+    for (Entry<String, Tuple<String, String>> entry : srcFilePaths.entrySet()) {
+      String srcSource = entry.getValue().getItem1();
+      String dstSource = entry.getValue().getItem2();
+      FileUtils.writeStringToFile(new File("temp1.java"), srcSource);
+ 	  FileUtils.writeStringToFile(new File("temp2.java"), dstSource);
+      final DiffCalculator diff = new DiffPath("temp1.java", "temp2.java");
       List<Action> actions = null;
       try {
         actions = diff.diff();
@@ -145,7 +149,7 @@ public class EditPairCalculator {
           if (pretty.equals("ImportDeclaration")) {
             final int start = first.getNode().getPos();
             final int end = first.getNode().getEndPos();
-            final String text = FileUtils.readFileToString(new File(dstPath)).substring(start, end);
+            final String text = dstSource.substring(start, end);
             final Import importStm = new Import(start, end, text);
             imports.add(importStm);
             roots.add(first.getNode());
@@ -160,15 +164,15 @@ public class EditPairCalculator {
       CompilationUnit unitDst;
       try {
         // parse trees
-        unitSrc = JParser.parse(srcPath, pi.getSrcVersion());
-        unitDst = JParser.parse(dstPath, pi.getDstVersion());
+        unitSrc = JParser.parse(entry.getKey(), srcSource);
+        unitDst = JParser.parse(entry.getKey(), dstSource);
       } catch (final OutOfMemoryError e) {
         e.printStackTrace();
         System.out.println(e);
         continue;
       }
       Collections.sort(roots, itreeComparer);
-      System.out.println("FILE: " + srcPath);
+      System.out.println("FILE: " + entry.getKey());
       for (final ITree root : roots) {
         final MappingStore mappings = diff.getMatcher().getMappings();
         final Tuple<ITree, ITree> beforeafter = beforeAfter(mappings, root,
@@ -182,7 +186,7 @@ public class EditPairCalculator {
         IMatcher<ASTNode> srcMatcher = new PositionNodeMatcher(srcNode);
         final MatchCalculator<ASTNode> srcMa = new NodeMatchCalculator(srcMatcher);
         final ASTNode srcAstNode = srcMa.getNode(unitSrc);
-        final ITree ctxSrc = unchagedContext(srcPath, diff.getSrc(), diff.getDst(), 
+        final ITree ctxSrc = unchagedContext(diff.getSrc(), diff.getDst(), 
             srcNode, dstNode, mappings);
         final boolean isSingleLineSrc = SourceUtils.isSingleLine(unitSrc, ctxSrc.getPos(), 
             ctxSrc.getEndPos());
@@ -214,10 +218,10 @@ public class EditPairCalculator {
           continue;
         }
         String cmtStr = cmt.getId().getName();
-        final Edit dstCtx = createEdit(cmtStr, fixedDst, pj, dstPath, unitDst);
-        final Edit srcCtx = createEdit(cmtStr, fixedSrc, pj + "_old", srcPath, unitSrc);
-        final Edit dstEdit = createEdit(cmtStr, dstAstNode, pj, dstPath, unitDst);
-        final Edit srcEdit = createEdit(cmtStr, srcAstNode, pj + "_old", srcPath, unitSrc);
+        final Edit dstCtx = createEdit(cmtStr, fixedDst, pj, entry.getKey(), unitDst);
+        final Edit srcCtx = createEdit(cmtStr, fixedSrc, pj + "_old", entry.getKey(), unitSrc);
+        final Edit dstEdit = createEdit(cmtStr, dstAstNode, pj, entry.getKey(), unitDst);
+        final Edit srcEdit = createEdit(cmtStr, srcAstNode, pj + "_old", entry.getKey(), unitSrc);
         if (srcEdit.getText().equals(dstEdit.getText())) {
         	continue;
         }
@@ -226,9 +230,9 @@ public class EditPairCalculator {
         //specific configuration to dst
         dstEdit.setContext(dstCtx);
         dstEdit.setTemplate(dstEq);
-        configSrcEdit(cmt, srcEdit, dstEdit, srcCtx, null, srcEq, imports, srcAu, dstAu, pi);
+        configSrcEdit(cmt, srcEdit, dstEdit, srcCtx, null, srcEq, imports, srcAu, dstAu, project);
         srcEdits.add(srcEdit);
-        //showEditPair(srcPath, dstPath, srcNode, dstNode, fixedSrc, fixedDst);
+        showEditPair(srcSource, dstSource, srcNode, dstNode, fixedSrc, fixedDst);
       }
     }
     return srcEdits;
@@ -247,7 +251,7 @@ public class EditPairCalculator {
   private static Edit configSrcEdit(final RevCommit cmt, final Edit srcEdit, 
       final Edit dstEdit, final Edit srcCtx,
       final Edit srcUpper, String srcEq, List<Import> imports, 
-      AntiUnifier srcAu, AntiUnifier dstAu, final ProjectInfo pi) {
+      AntiUnifier srcAu, AntiUnifier dstAu, final String project) {
     //specific configuration to src
     srcEdit.setDst(dstEdit);
     srcEdit.setContext(srcCtx);
@@ -258,7 +262,7 @@ public class EditPairCalculator {
     configDcap(srcEdit, srcAu);
     configDcap(dstEdit, dstAu);
     final GitUtils gutils = new GitUtils();
-    final PersonIdent pident = gutils.getPersonIdent(cmt, pi.getDstVersion().getProject(), cmt.getId().getName());
+    final PersonIdent pident = gutils.getPersonIdent(cmt, project, cmt.getId().getName());
     srcEdit.setDeveloper(pident.getName());
     srcEdit.setEmail(pident.getEmailAddress());
     srcEdit.setDate(pident.getWhen());
@@ -311,7 +315,7 @@ public class EditPairCalculator {
       final ITree srcNode, final ITree dstNode, 
       final ASTNode fixedSrc, final ASTNode fixedDst) throws IOException {
     // Log data
-    final String str1 = new String(Files.readAllBytes(Paths.get(src)));
+    final String str1 = src;
     System.out.print("(" + srcNode.getPos() + ", " + srcNode.getEndPos() + ") "
         + str1.substring(srcNode.getPos(), srcNode.getEndPos()));
     final String qualifiedNameSrc = ExpressionManager.qualifiedName(fixedSrc);
@@ -319,7 +323,7 @@ public class EditPairCalculator {
       System.out.print(": " + qualifiedNameSrc);
     }
     System.out.print(" --> ");
-    final String str2 = new String(Files.readAllBytes(Paths.get(dst)));
+    final String str2 = dst;
     System.out.print("(" + dstNode.getPos() + ", " + dstNode.getEndPos() + ") "
         + str2.substring(dstNode.getPos(), dstNode.getEndPos()));
     final String qualifiedNameDst = ExpressionManager.qualifiedName(fixedDst);
@@ -383,7 +387,7 @@ public class EditPairCalculator {
    *          Destination
    * @return maximum unchanged context
    */
-  public static ITree unchagedContext(final String srcPath, final TreeContext src, 
+  public static ITree unchagedContext(final TreeContext src, 
       final TreeContext dst, final ITree srcNode, final ITree dstNode, final MappingStore mapping) {
     ITree tempSrc = srcNode;
     ITree tempDst = dstNode;

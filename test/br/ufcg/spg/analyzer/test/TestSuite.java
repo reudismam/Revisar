@@ -447,7 +447,7 @@ public class TestSuite {
    * @throws ExecutionException
    * 
    */
-  public void testBaseTable(final String project, final List<String> files)
+  public void testBaseTable(final String project, final Map<String, Tuple<String, String>> files)
       throws IOException, JustificationException, 
       ControlledException, CoreException, ExecutionException {
     testBaseTable(project, files, "");
@@ -473,7 +473,7 @@ public class TestSuite {
    * @throws ExecutionException
    * 
    */
-  public void testBaseTable(final String project, final List<String> files, final String hashId)
+  public void testBaseTable(final String project, final Map<String, Tuple<String,  String>> files, final String hashId)
       throws IOException, JustificationException, 
       ControlledException, CoreException, ExecutionException {
 	  RevCommit commit = GitUtils.extractCommit(MainArguments.getInstance()

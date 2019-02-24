@@ -112,6 +112,30 @@ public class JParser {
     final CompilationUnit compilationUnit = (CompilationUnit) parser.createAST(null);
     return compilationUnit;
   }
+  
+  /**
+   * Parses java files.
+   * @param file file
+   * @return parsed file
+   */
+  public static CompilationUnit parse(final String file, String source) throws IOException {
+    final String str = source;
+    final ASTParser parser = ASTParser.newParser(AST.JLS8);
+    parser.setResolveBindings(true);
+    parser.setKind(ASTParser.K_COMPILATION_UNIT);
+    parser.setBindingsRecovery(true);
+    parser.setStatementsRecovery(true);
+    final Map<?, ?> options = JavaCore.getOptions();
+    parser.setCompilerOptions(options);
+    final String unitName = file;
+    parser.setUnitName(unitName);
+    final String[] sources = { "\\" };
+    final String[] classpath = ProjectAnalyzer.classpath(null);
+    parser.setEnvironment(classpath, sources, new String[] { "UTF-8" }, true);
+    parser.setSource(str.toCharArray());
+    final CompilationUnit compilationUnit = (CompilationUnit) parser.createAST(null);
+    return compilationUnit;
+  }
 
   /**
    * Parses java files.

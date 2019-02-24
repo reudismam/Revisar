@@ -9,8 +9,10 @@ import br.ufcg.spg.main.MainArguments;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jgit.revwalk.RevCommit;
+
 
 public class TechniqueUtils {
   
@@ -47,7 +49,7 @@ public class TechniqueUtils {
     for (int i = index; i < log.size(); i++) {
       System.out.println(((double) i) / log.size() + " % completed");
       final RevCommit dstCommit = log.get(i);
-      final List<String> files = analyzer.modifiedFiles(projectFolderDst, dstCommit);
+      final Map<String, Tuple<String, String>> files = analyzer.modifiedFiles(projectFolderDst, dstCommit);
       //if there is no previous commit.
       if (files == null) {
         return;
