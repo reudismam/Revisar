@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -489,7 +490,7 @@ public class GitUtils {
    *          id of the commit
    * @return modified files
    */
-  public List<String> modifiedFiles(final String repoPath, final String hashId) {
+  public Map<String, Tuple<String, String>> modifiedFiles(final String repoPath, final String hashId) {
     try {
       final RevCommit commit = extractCommit(repoPath, hashId);
       return modifiedFiles(repoPath, commit);
@@ -507,7 +508,7 @@ public class GitUtils {
   *            id of the commit
   * @return modified files
   */
-  public List<String> modifiedFiles(final String repoPath, final RevCommit commit) {
+  public Map<String, Tuple<String, String>> modifiedFiles(final String repoPath, final RevCommit commit) {
     try {
       // Initialize repositories.
       final Repository repo = startRepo(repoPath);
@@ -521,25 +522,26 @@ public class GitUtils {
       final int size = parents.length;
       // does not analyze commits that are merges
       if (size > 1) {
-        return new ArrayList<>();
+        return new HashMap<>();
       }
       // does not analyze commits that are merges
       if (commit.getFullMessage().toLowerCase().contains("merge")) {
-        return new ArrayList<>();
+        return new HashMap<>();
       }
       try (DiffFormatter df = new DiffFormatter(DisabledOutputStream.INSTANCE)) {
         df.setRepository(repo);
         df.setDiffComparator(RawTextComparator.DEFAULT);
         df.setDetectRenames(true);
         final List<DiffEntry> diffs = df.scan(previous.getTree(), commit.getTree());
-        final List<String> modifiedFiles = new ArrayList<>();
+        final Map<String, Tuple<String, String>> modifiedFiles = new HashMap<>();
         for (final DiffEntry diff : diffs) {
           if (diff.getChangeType() != ChangeType.MODIFY) {
             continue;
           }
           final String modifiedFile = diff.getNewPath();
-          if (modifiedFile.endsWith(".java") && !modifiedFiles.contains(modifiedFile)) {
-            modifiedFiles.add(modifiedFile);
+          if (modifiedFile.endsWith(".java") && !modifiedFiles.containsKey(modifiedFile)) {
+           Tuple<String, String> tuple = getBeforeAfterFile(repo, previous.getTree(), cmt.getTree(), diff);
+             modifiedFiles.put(modifiedFile, tuple);
           }
         }
         return modifiedFiles;
@@ -619,8 +621,8 @@ public class GitUtils {
   public static Tuple<String, String> getBeforeAfterFile(
       Repository repository, RevTree before, RevTree after, DiffEntry entry) {
     try {
-      String beforeStr = GitUtils.getEditedFile(repository, after, entry.getNewPath());
-      String afterStr = GitUtils.getEditedFile(repository, after, entry.getOldPath());
+      String beforeStr = GitUtils.getEditedFile(repository, before, entry.getOldPath());
+      String afterStr = GitUtils.getEditedFile(repository, after, entry.getNewPath());
       return new Tuple<>(beforeStr, afterStr);
     } catch (Exception e) {
       e.printStackTrace();
