@@ -2,6 +2,7 @@ package br.ufcg.spg.analyzer.test;
 
 import at.jku.risc.stout.urauc.algo.JustificationException;
 import at.jku.risc.stout.urauc.util.ControlledException;
+import br.ufcg.spg.bean.EditFile;
 import br.ufcg.spg.bean.Tuple;
 import br.ufcg.spg.cluster.Cluster;
 import br.ufcg.spg.cluster.ClusterUnifier;
@@ -63,13 +64,17 @@ public class TestSuite {
 
   @Test
   public void exp() throws IOException, JustificationException, ControlledException, CoreException {
-	configMainArguments();
-    final TechniqueConfig config = TechniqueConfig.getInstance();
-    config.setAllCommits(true);
-    config.setEditsToAnalyze(100);
-    config.setTemplateIncludesType(false);
-    final List<Tuple<String, String>> projects = ExpUtils.getProjects();
-    testBaseTableExpProjects(projects);
+    configMainArguments();
+    try {
+      final TechniqueConfig config = TechniqueConfig.getInstance();
+      config.setAllCommits(true);
+      config.setEditsToAnalyze(100);
+      config.setTemplateIncludesType(false);
+      final List<Tuple<String, String>> projects = ExpUtils.getProjects();
+      testBaseTableExpProjects(projects);
+    } catch (OutOfMemoryError e) {
+         exp();
+    }
   }
 
   private void configMainArguments() {
@@ -447,7 +452,7 @@ public class TestSuite {
    * @throws ExecutionException
    * 
    */
-  public void testBaseTable(final String project, final Map<String, Tuple<String, String>> files)
+  public void testBaseTable(final String project, final List<EditFile> files)
       throws IOException, JustificationException, 
       ControlledException, CoreException, ExecutionException {
     testBaseTable(project, files, "");
@@ -473,7 +478,7 @@ public class TestSuite {
    * @throws ExecutionException
    * 
    */
-  public void testBaseTable(final String project, final Map<String, Tuple<String,  String>> files, final String hashId)
+  public void testBaseTable(final String project, final List<EditFile> files, final String hashId)
       throws IOException, JustificationException, 
       ControlledException, CoreException, ExecutionException {
 	  RevCommit commit = GitUtils.extractCommit(MainArguments.getInstance()

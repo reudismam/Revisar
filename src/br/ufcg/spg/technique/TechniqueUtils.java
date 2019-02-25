@@ -1,5 +1,6 @@
 package br.ufcg.spg.technique;
 
+import br.ufcg.spg.bean.EditFile;
 import br.ufcg.spg.bean.Tuple;
 import br.ufcg.spg.config.TechniqueConfig;
 import br.ufcg.spg.edit.EditStorage;
@@ -49,7 +50,13 @@ public class TechniqueUtils {
     for (int i = index; i < log.size(); i++) {
       System.out.println(((double) i) / log.size() + " % completed");
       final RevCommit dstCommit = log.get(i);
-      final Map<String, Tuple<String, String>> files = analyzer.modifiedFiles(projectFolderDst, dstCommit);
+      List<EditFile> files;
+      try {
+        files = analyzer.modifiedFiles(projectFolderDst, dstCommit);
+      } catch (Exception e) {
+        e.printStackTrace();
+        continue;
+      }
       //if there is no previous commit.
       if (files == null) {
         return;
@@ -57,6 +64,7 @@ public class TechniqueUtils {
       storage.setCurrentCommit(dstCommit);
       storage.addCommitProject(project.getItem1(), dstCommit);
       Technique.addEdits(project.getItem1(), files, dstCommit);
+      System.out.println("PROJECT: " + project);
       System.out.print("NODE PROCESSED:");
       final int currentCount = storage.getNumberEdits();
       System.out.println(currentCount);

@@ -1,5 +1,6 @@
 package br.ufcg.spg.technique;
 
+import br.ufcg.spg.bean.EditFile;
 import br.ufcg.spg.bean.Tuple;
 import br.ufcg.spg.cluster.ClusterUtils;
 import br.ufcg.spg.dependence.DependenceUtils;
@@ -35,7 +36,7 @@ public final class Technique {
    * @param commit
    *          commit-id
    */
-  public static void addEdits(final String project, final Map<String, Tuple<String, String>> files, final RevCommit commit) {
+  public static void addEdits(final String project, final List<EditFile> files, final RevCommit commit) {
     try {
       final List<Edit> srcEdits = EditPairCalculator.computeEditPairs(project, files, commit);
       //DependenceUtils.computeGraph(srcEdits);

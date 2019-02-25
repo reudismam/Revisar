@@ -2,6 +2,7 @@ package br.ufcg.spg.editpair;
 
 import br.ufcg.spg.antiunification.AntiUnifier;
 import br.ufcg.spg.antiunification.AntiUnifierUtils;
+import br.ufcg.spg.bean.EditFile;
 import br.ufcg.spg.bean.Tuple;
 import br.ufcg.spg.comparer.ActionComparer;
 import br.ufcg.spg.comparer.TreeComparer;
@@ -68,7 +69,7 @@ public class EditPairCalculator {
    * @param files files
    * @param dstCommit target commit
    */
-  public static List<Edit> computeEditPairs(final String project, Map<String, Tuple<String, String>> files, 
+  public static List<Edit> computeEditPairs(final String project, List<EditFile> files, 
       final RevCommit dstCommit) 
       throws IOException, GitAPIException {
     Run.initGenerators();
@@ -104,24 +105,24 @@ public class EditPairCalculator {
   /**
    * Extracts before and after version of the source code.
    * 
-   * @param srcFilePaths
+   * @param files
    *          list of modified files for the previous version
    * @param dstFilePaths
    *          the path for the list of files for the after version
    * @param pi
    *          information about the project
    */
-  public static List<Edit> extractEditPairs(final Map<String, Tuple<String, String>> srcFilePaths, 
+  public static List<Edit> extractEditPairs(final List<EditFile> files, 
       String project,
       final RevCommit cmt, final String pj) 
           throws IOException {
     final List<Edit> srcEdits = new ArrayList<>();
-    for (Entry<String, Tuple<String, String>> entry : srcFilePaths.entrySet()) {
-      String srcSource = entry.getValue().getItem1();
-      String dstSource = entry.getValue().getItem2();
+    for (EditFile file : files) {
+      String srcSource = file.getBeforeAfter().getItem1();//entry.getValue().getItem1();
+      String dstSource = file.getBeforeAfter().getItem2();//entry.getValue().getItem2();
       FileUtils.writeStringToFile(new File("temp1.java"), srcSource);
  	  FileUtils.writeStringToFile(new File("temp2.java"), dstSource);
-      final DiffCalculator diff = new DiffPath("temp1.java", "temp2.java");
+      /*final DiffCalculator diff = new DiffPath("temp1.java", "temp2.java");
       List<Action> actions = null;
       try {
         actions = diff.diff();
@@ -139,8 +140,8 @@ public class EditPairCalculator {
       // Comparer
       final Comparator<Action> actionComparer = new ActionComparer();
       final Comparator<ITree> itreeComparer = new TreeComparer();
-      final List<ITree> roots = new ArrayList<>();
-      final List<Import> imports = new ArrayList<>();
+      final List<ITree> roots = new ArrayList<>();*/
+      /*final List<Import> imports = new ArrayList<>();
       for (final List<Action> list : actionList) {
         Collections.sort(list, actionComparer);
         final Action first = list.get(0);
@@ -159,19 +160,19 @@ public class EditPairCalculator {
         } else {
           roots.add(first.getNode());
         }
-      }
+      }*/
       CompilationUnit unitSrc;
       CompilationUnit unitDst;
       try {
         // parse trees
-        unitSrc = JParser.parse(entry.getKey(), srcSource);
-        unitDst = JParser.parse(entry.getKey(), dstSource);
+        unitSrc = JParser.parse("temp1.java", srcSource);
+        unitDst = JParser.parse("temp2.java", dstSource);
       } catch (final OutOfMemoryError e) {
         e.printStackTrace();
         System.out.println(e);
         continue;
       }
-      Collections.sort(roots, itreeComparer);
+      /*Collections.sort(roots, itreeComparer);
       System.out.println("FILE: " + entry.getKey());
       for (final ITree root : roots) {
         final MappingStore mappings = diff.getMatcher().getMappings();
@@ -209,32 +210,37 @@ public class EditPairCalculator {
         }
         if (srcAstNode == null || fixedSrc == null || dstAstNode == null || fixedDst == null) {
           continue;
-        }      
-        final AntiUnifier srcAu = antiUnification(srcAstNode, fixedSrc);
-        final AntiUnifier dstAu = antiUnification(dstAstNode, fixedDst);
-        final String srcEq = EquationUtils.convertToEquation(srcAu);
-        final String dstEq = EquationUtils.convertToEquation(dstAu);
-        if (!NodeValidator.isValidNode(srcEq) || !NodeValidator.isValidNode(dstEq)) {
-          continue;
-        }
-        String cmtStr = cmt.getId().getName();
-        final Edit dstCtx = createEdit(cmtStr, fixedDst, pj, entry.getKey(), unitDst);
-        final Edit srcCtx = createEdit(cmtStr, fixedSrc, pj + "_old", entry.getKey(), unitSrc);
-        final Edit dstEdit = createEdit(cmtStr, dstAstNode, pj, entry.getKey(), unitDst);
-        final Edit srcEdit = createEdit(cmtStr, srcAstNode, pj + "_old", entry.getKey(), unitSrc);
-        if (srcEdit.getText().equals(dstEdit.getText())) {
-        	continue;
-        }
-        //specific configuration to dst context
-        srcCtx.setDst(dstCtx);
-        //specific configuration to dst
-        dstEdit.setContext(dstCtx);
-        dstEdit.setTemplate(dstEq);
-        configSrcEdit(cmt, srcEdit, dstEdit, srcCtx, null, srcEq, imports, srcAu, dstAu, project);
-        srcEdits.add(srcEdit);
-        showEditPair(srcSource, dstSource, srcNode, dstNode, fixedSrc, fixedDst);
-      }
-    }
+        }  */    
+			for (Tuple<ASTNode, ASTNode> tuple : file.getEdits()) {
+				final ASTNode srcAstNode = tuple.getItem1();
+				final ASTNode dstAstNode = tuple.getItem2();
+				final ASTNode fixedSrc = srcAstNode;
+				final ASTNode fixedDst = dstAstNode;
+				final AntiUnifier srcAu = antiUnification(srcAstNode, fixedSrc);
+				final AntiUnifier dstAu = antiUnification(dstAstNode, fixedDst);
+				final String srcEq = EquationUtils.convertToEquation(srcAu);
+				final String dstEq = EquationUtils.convertToEquation(dstAu);
+				if (!NodeValidator.isValidNode(srcEq) || !NodeValidator.isValidNode(dstEq)) {
+					continue;
+				}
+				String cmtStr = cmt.getId().getName();
+				final Edit dstCtx = createEdit(cmtStr, fixedDst, pj, file.getDstPath(), unitDst);
+				final Edit srcCtx = createEdit(cmtStr, fixedSrc, pj + "_old", file.getSrcPath(), unitSrc);
+				final Edit dstEdit = createEdit(cmtStr, dstAstNode, pj, file.getDstPath(), unitDst);
+				final Edit srcEdit = createEdit(cmtStr, srcAstNode, pj + "_old", file.getSrcPath(), unitSrc);
+				if (srcEdit.getText().equals(dstEdit.getText())) {
+					continue;
+				}
+				// specific configuration to dst context
+				srcCtx.setDst(dstCtx);
+				// specific configuration to dst
+				dstEdit.setContext(dstCtx);
+				dstEdit.setTemplate(dstEq);
+				configSrcEdit(cmt, srcEdit, dstEdit, srcCtx, null, srcEq, new ArrayList<>(), srcAu, dstAu, project);
+				srcEdits.add(srcEdit);
+				//showEditPair(srcSource, dstSource, srcAstNode, dstAstNode, fixedSrc, fixedDst);
+			}
+		}
     return srcEdits;
   }
   
@@ -312,20 +318,24 @@ public class EditPairCalculator {
   }
 
   private static void showEditPair(final String src, final String dst, 
-      final ITree srcNode, final ITree dstNode, 
+      final ASTNode srcNode, final ASTNode dstNode, 
       final ASTNode fixedSrc, final ASTNode fixedDst) throws IOException {
     // Log data
-    final String str1 = src;
-    System.out.print("(" + srcNode.getPos() + ", " + srcNode.getEndPos() + ") "
-        + str1.substring(srcNode.getPos(), srcNode.getEndPos()));
+	final int startSrc = srcNode.getStartPosition();
+	final int endSrc = startSrc + srcNode.getLength();
+    //final String str1 = src;
+    System.out.print("(" + startSrc + ", " + endSrc + ") "
+        + srcNode);
     final String qualifiedNameSrc = ExpressionManager.qualifiedName(fixedSrc);
     if (qualifiedNameSrc != null) {
       System.out.print(": " + qualifiedNameSrc);
     }
     System.out.print(" --> ");
-    final String str2 = dst;
-    System.out.print("(" + dstNode.getPos() + ", " + dstNode.getEndPos() + ") "
-        + str2.substring(dstNode.getPos(), dstNode.getEndPos()));
+    //final String str2 = dst;
+    final int startDst = dstNode.getStartPosition();
+    final int endDst = startDst + dstNode.getLength();
+    System.out.print("(" + startDst + ", " + endDst + ") "
+        + dstNode);
     final String qualifiedNameDst = ExpressionManager.qualifiedName(fixedDst);
     if (qualifiedNameDst != null) {
       System.out.print(": " + qualifiedNameSrc);

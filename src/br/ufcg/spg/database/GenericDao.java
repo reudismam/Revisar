@@ -48,7 +48,9 @@ public abstract class GenericDao<T, I extends Serializable> {
    */
   public List<T> saveAll(@Valid final List<T> entities) {
     for (int i = 0; i < entities.size(); i++) {
-    logger.warn((((double)i) / entities.size()) * 100 + " % saved");
+      if (i % 50 == 0) {
+         logger.warn((((double)i) / entities.size()) * 100 + " % saved");
+      }
        save(entities.get(i));
     }
     return entities;

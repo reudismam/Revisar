@@ -16,7 +16,7 @@ public class SourceUtils {
     return lstart == lend;
   }
   
-  private static int getLineNumber(final CompilationUnit unit, final int pos) {
+  public static int getLineNumber(final CompilationUnit unit, final int pos) {
     final int lnumber = unit.getLineNumber(pos);
     return lnumber;
   }
