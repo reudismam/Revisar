@@ -1,5 +1,14 @@
 package br.ufcg.spg.git;
 
+import br.ufcg.spg.bean.EditFile;
+import br.ufcg.spg.bean.Tuple;
+import br.ufcg.spg.edit.Edit;
+import br.ufcg.spg.matcher.IMatcher;
+import br.ufcg.spg.matcher.LineNodeMatcher;
+import br.ufcg.spg.matcher.calculator.MatchCalculator;
+import br.ufcg.spg.matcher.calculator.NodeMatchCalculator;
+import br.ufcg.spg.parser.JParser;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -54,17 +63,6 @@ import org.eclipse.jgit.treewalk.TreeWalk;
 import org.eclipse.jgit.treewalk.filter.PathFilter;
 import org.eclipse.jgit.util.io.DisabledOutputStream;
 
-import com.github.gumtreediff.actions.model.Action;
-
-import br.ufcg.spg.bean.EditFile;
-import br.ufcg.spg.bean.Tuple;
-import br.ufcg.spg.edit.Edit;
-import br.ufcg.spg.matcher.IMatcher;
-import br.ufcg.spg.matcher.LineNodeMatcher;
-import br.ufcg.spg.matcher.calculator.MatchCalculator;
-import br.ufcg.spg.matcher.calculator.NodeMatchCalculator;
-import br.ufcg.spg.parser.JParser;
-
 /**
  * Git utility class.
  */
@@ -78,7 +76,8 @@ public class GitUtils {
    * @param repositoryPath repository
    * @param sha            commit id
    */
-  public static void checkout(final String repositoryPath, final String sha) throws IOException, GitAPIException {
+  public static void checkout(final String repositoryPath, final String sha) 
+      throws IOException, GitAPIException {
     try (final Git git = Git.open(new File(repositoryPath))) { // checkout
       // the
       // folder
@@ -149,7 +148,8 @@ public class GitUtils {
    * @param hashId   hash
    * @return commit
    */
-  public static RevCommit extractCommit(final String repoPath, final String hashId) throws IOException {
+  public static RevCommit extractCommit(final String repoPath, final String hashId) 
+      throws IOException {
     final Repository repository = startRepo(repoPath);
     return extractCommit(repository, hashId);
   }
@@ -161,7 +161,8 @@ public class GitUtils {
    * @param hashId     commit id
    * @return commit for the commit id
    */
-  public static RevCommit extractCommit(final Repository repository, final String hashId) throws IOException {
+  public static RevCommit extractCommit(final Repository repository, final String hashId) 
+      throws IOException {
     RevCommit newCommit;
     try (RevWalk walk = new RevWalk(repository)) {
       newCommit = walk.parseCommit(repository.resolve(hashId));
@@ -178,7 +179,8 @@ public class GitUtils {
    * @param hashId   id of the commit
    * @return file from commit
    */
-  public String fileCommit2(final String repoPath, final String file, final String hashId) throws IOException {
+  public String fileCommit2(final String repoPath,
+      final String file, final String hashId) throws IOException {
     final Repository repository = startRepo(repoPath);
     final RevCommit commit = extractCommit(repoPath, hashId);
     // and using commit's tree find the path
@@ -216,7 +218,8 @@ public class GitUtils {
    * 
    * @param commit commit id
    */
-  private String getDiffOfCommit(final Repository repository, final RevCommit commit) throws IOException {
+  private String getDiffOfCommit(final Repository repository,
+      final RevCommit commit) throws IOException {
     // Get commit that is previous to the current one.
     final RevCommit oldCommit = getPrevHash(repository, commit);
     if (oldCommit == null) {
@@ -466,31 +469,18 @@ public class GitUtils {
     }
   }
 
-  /**
-   * Gets the modified files.
-   * 
-   * @param repoPath path to the folder that contains the .git folder
-   * @param hashId   id of the commit
-   * @return modified files
-   */
-  /*
-   * public Map<String, Tuple<String, String>> modifiedFiles2(final String
-   * repoPath, final String hashId) { try { final RevCommit commit =
-   * extractCommit(repoPath, hashId); return modifiedFiles(repoPath, commit); }
-   * catch (IOException e) { throw new RuntimeException(e); } }
-   */
-
   private List<EditFile> editFiles;
 
   /**
    * Gets the difference between source code and destination code.
    */
   public List<EditFile> modifiedFiles(final String repoPath, final RevCommit commit) {
+    editFiles = null;
     tryModifiedFiles(repoPath, commit);
     if (editFiles != null) {
       return editFiles;
     }
-    throw new RuntimeException("Large commit.");
+    throw new RuntimeException("Large commit");
   }
 
   /**
@@ -521,7 +511,7 @@ public class GitUtils {
     }
     // wait all unfinished tasks for 2 sec
     try {
-      if (!executor.awaitTermination(2, TimeUnit.MINUTES)) {
+      if (!executor.awaitTermination(2, TimeUnit.SECONDS)) {
         // force them to quit by interrupting
         executor.shutdownNow();
       }
@@ -542,8 +532,6 @@ public class GitUtils {
       // Initialize repositories.
       final Repository repo = startRepo(repoPath);
       // Get the commit you are looking for.
-      // final RevCommit cmt = extractCommit(repo, commit.getId().getName());
-      // final RevCommit pcmt = getPrevHash(repo, commit);
       final RevCommit previous = getPrevHash(commit);
       if (previous == null) {
         return null;
@@ -570,9 +558,11 @@ public class GitUtils {
           }
           final String modifiedFile = diff.getNewPath();
           if (modifiedFile.endsWith(".java")) {
-            Tuple<String, String> tuple = getBeforeAfterFile(repo, previous.getTree(), commit.getTree(), diff);
+            Tuple<String, String> tuple = getBeforeAfterFile(repo, previous.getTree(), 
+                commit.getTree(), diff);
             List<Tuple<ASTNode, ASTNode>> beforeAfter = getEdits(df, diff, tuple);
-            EditFile editFile = new EditFile(tuple, beforeAfter, diff.getOldPath(), diff.getNewPath());
+            EditFile editFile = new EditFile(tuple, beforeAfter, 
+                diff.getOldPath(), diff.getNewPath());
             modifiedFiles.add(editFile);
           }
         }
@@ -584,21 +574,22 @@ public class GitUtils {
     return null;
   }
 
-  private static List<Tuple<ASTNode, ASTNode>> getEdits(DiffFormatter diffFormatter, DiffEntry entry,
-      Tuple<String, String> tuple) throws IOException, CorruptObjectException, MissingObjectException {
+  private static List<Tuple<ASTNode, ASTNode>> getEdits(
+      DiffFormatter diffFormatter, DiffEntry entry,
+      Tuple<String, String> tuple) throws IOException {
     List<Tuple<ASTNode, ASTNode>> edits = new ArrayList<>();
     for (org.eclipse.jgit.diff.Edit edit : diffFormatter.toFileHeader(entry).toEditList()) {
-      if (isMultipleLines(edit.getBeginA(), edit.getEndA()) || isMultipleLines(edit.getBeginB(), edit.getEndB())) {
+      if (isMultipleLines(edit.getBeginA(), edit.getEndA()) 
+          || isMultipleLines(edit.getBeginB(), edit.getEndB())) {
         continue;
       }
-      // System.out.println(edit);
       try {
         ASTNode before = getNode(tuple.getItem1(), edit.getEndA());
         ASTNode after = getNode(tuple.getItem2(), edit.getEndB());
         Tuple<ASTNode, ASTNode> ba = new Tuple<>(before, after);
         edits.add(ba);
       } catch (Exception e) {
-        e.printStackTrace();
+        logger.trace("Not a valid AST node.");
       }
     }
     return edits;
@@ -625,7 +616,6 @@ public class GitUtils {
       }
       return best;
     } catch (Exception e) {
-      e.printStackTrace();
       throw new RuntimeException(e);
     }
   }
