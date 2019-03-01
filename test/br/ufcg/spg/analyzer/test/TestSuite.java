@@ -51,6 +51,12 @@ public class TestSuite {
   public TestSuite() {
   }
   
+  private void configMainArguments() {
+    final MainArguments arguments = MainArguments.getInstance();
+    arguments.setProjects("projects.txt");
+    arguments.setProjectFolder("../Projects");
+  }
+  
   @Before
   public void setup() {
     configMainArguments();
@@ -85,11 +91,14 @@ public class TestSuite {
     Technique.translateEdits();
     logger.trace("END.");
   }
-
-  private void configMainArguments() {
-    final MainArguments arguments = MainArguments.getInstance();
-    arguments.setProjects("projects.txt");
-    arguments.setProjectFolder("../Projects");
+  
+  @Test
+  public void translateMachineLearningClustersMoreProjects() {
+    List<Cluster> clusters = ClusterDao.getClusterMoreProjects();
+    int i = clusters.size();
+    logger.trace(i);
+    TransformationUtils.transformationsMoreProjects(clusters);
+    logger.trace("END.");
   }
 
   @Test
@@ -149,15 +158,6 @@ public class TestSuite {
   }
   
   @Test
-  public void translateMachineLearningClustersMoreProjects() {
-    List<Cluster> clusters = ClusterDao.getClusterMoreProjects();
-    int i = clusters.size();
-    logger.trace(i);
-    TransformationUtils.transformationsMoreProjects(clusters);
-    logger.trace("END.");
-  }
-  
-  @Test
   public void emergingPatterns() {
     List<Cluster> clusters = ClusterDao.getClusterMoreProjects();
     int i = clusters.size();
@@ -208,7 +208,7 @@ public class TestSuite {
           dstCluster.getNodes().add(editi.getDst());
           srcCluster.setDst(dstCluster);
           boolean isValid = ClusterUnifier.getInstance()
-              .isValid(srcCluster, dstCluster, editj, editj.getDst());
+              .isValid(srcCluster, dstCluster, editj);
           if (isValid) {
             String path = "../Projects/cluster/pairs_of_edits.txt";
             final File clusterFile = new File(path);

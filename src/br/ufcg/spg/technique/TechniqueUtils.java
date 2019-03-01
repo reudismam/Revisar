@@ -11,7 +11,6 @@ import br.ufcg.spg.main.MainArguments;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -40,10 +39,9 @@ public class TechniqueUtils {
     // files to be analyzed
     final String projectFolderDst = "../Projects/" + project.getItem1() + "/";
     final GitUtils analyzer = new GitUtils();
-    //final List<String> log = ExpUtils.getLogs(project.getItem1());
     ExpUtils.getLogs(project.getItem1());
     final List<RevCommit> log = GitUtils.gitRevCommitLog(MainArguments.getInstance()
-    		.getProjectFolder() + "/" + project.getItem1());
+        .getProjectFolder() + "/" + project.getItem1());
     final EditStorage storage = EditStorage.getInstance();
     final int startCount = storage.getNumberEdits();
     final int numberToAnalyze = TechniqueConfig.getInstance().getEditsToAnalyze();
@@ -51,7 +49,6 @@ public class TechniqueUtils {
     storage.setMaxNumberEdits(max);
     int index = 5;
     if (project.getItem2() != null) {
-      //index = log.indexOf(project.getItem2());
       index = indexOf(project.getItem2(), log);
       if (index == -1) {
         throw new RuntimeException("Invalid index of commits!!!");
@@ -59,7 +56,7 @@ public class TechniqueUtils {
       index++;
     }
     for (int i = index; i < log.size(); i++) {
-      System.out.println(((double) i) / log.size() + " % completed");
+      logger.trace(((double) i) / log.size() + " % completed");
       final RevCommit dstCommit = log.get(i);
       List<EditFile> files;
       try {
@@ -75,13 +72,12 @@ public class TechniqueUtils {
       storage.setCurrentCommit(dstCommit);
       storage.addCommitProject(project.getItem1(), dstCommit);
       Technique.addEdits(project.getItem1(), files, dstCommit);
-      System.out.println("PROJECT: " + project.getItem1());
-      System.out.print("NODE PROCESSED:");
+      logger.trace("PROJECT: " + project.getItem1());
       final int currentCount = storage.getNumberEdits();
-      System.out.println(currentCount);
+      logger.trace("NODE PROCESSED: " + currentCount);
       final String pname = project.getItem1();
-      System.out.println("DEBUG COMMITS: " + storage.getCommitProjects().get(pname).size());
-      System.out.println("DEBUG CURRENT COMMIT: " + dstCommit);
+      logger.trace("DEBUG COMMITS: " + storage.getCommitProjects().get(pname).size());
+      logger.trace("DEBUG CURRENT COMMIT: " + dstCommit);
       if (currentCount >= max && !TechniqueConfig.getInstance().isAllCommits()) {
         return;
       }
@@ -93,7 +89,8 @@ public class TechniqueUtils {
   /**
    * Gets the difference between source code and destination code.
    */
-  public void modifiedFiles(RevCommit dstCommit, String projectFolderDst, final Tuple<String, String> project) {
+  public void modifiedFiles(RevCommit dstCommit, String projectFolderDst, 
+      final Tuple<String, String> project) {
     status = -1;
     tryProcessCommit(dstCommit, projectFolderDst, project);
     if (status != -1) {
@@ -105,7 +102,8 @@ public class TechniqueUtils {
   /**
    * Try to unify eq1 and eq2.
    */
-  public void tryProcessCommit(RevCommit dstCommit, String projectFolderDst, final Tuple<String, String> project) {
+  public void tryProcessCommit(RevCommit dstCommit, String projectFolderDst, 
+      final Tuple<String, String> project) {
     final ExecutorService executor = Executors.newFixedThreadPool(4);
     final Future<?> future = executor.submit(new Runnable() {
       /**
@@ -120,12 +118,12 @@ public class TechniqueUtils {
     try {
       future.get(60, TimeUnit.SECONDS); // <-- wait 30 seconds to finish
     } catch (final InterruptedException e) { // <-- possible error cases
-      System.out.println("job was interrupted");
+      logger.trace("job was interrupted");
     } catch (final ExecutionException e) {
-      System.out.println("caught exception: " + e.getCause());
+      logger.trace("caught exception: " + e.getCause());
     } catch (final TimeoutException e) {
       future.cancel(true); // <-- interrupt the job
-      System.out.println("timeout");
+      logger.trace("timeout");
     }
     // wait all unfinished tasks for 2 sec
     try {
@@ -139,7 +137,11 @@ public class TechniqueUtils {
     throw new RuntimeException("Long time to process commit.\n");
   }
   
-  public int processCommit(RevCommit dstCommit, String projectFolderDst, final Tuple<String, String> project) {
+  /**
+   * Process an commit.
+   */
+  public int processCommit(RevCommit dstCommit, String projectFolderDst, 
+      final Tuple<String, String> project) {
     final GitUtils analyzer = new GitUtils();
     final EditStorage storage = EditStorage.getInstance();
     List<EditFile> files;
@@ -156,23 +158,22 @@ public class TechniqueUtils {
     storage.setCurrentCommit(dstCommit);
     storage.addCommitProject(project.getItem1(), dstCommit);
     Technique.addEdits(project.getItem1(), files, dstCommit);
-    System.out.println("PROJECT: " + project.getItem1());
-    System.out.print("NODE PROCESSED:");
+    logger.trace("PROJECT: " + project.getItem1());
     final int currentCount = storage.getNumberEdits();
-    System.out.println(currentCount);
+    logger.trace("NODE PROCESSED: " + currentCount);
     final String pname = project.getItem1();
-    System.out.println("DEBUG COMMITS: " + storage.getCommitProjects().get(pname).size());
-    System.out.println("DEBUG CURRENT COMMIT: " + dstCommit);
+    logger.trace("DEBUG COMMITS: " + storage.getCommitProjects().get(pname).size());
+    logger.trace("DEBUG CURRENT COMMIT: " + dstCommit);
     return 1;
   }
 
-	private static int indexOf(final String commit, final List<RevCommit> log) {
-		for (int i = 0; i < log.size(); i++) {
-			RevCommit rc = log.get(i);
-			if (rc.getId().getName().equals(commit)) {
-				return i;
-			}
-		}
-		return -1;
-	}
+  private static int indexOf(final String commit, final List<RevCommit> log) {
+    for (int i = 0; i < log.size(); i++) {
+      RevCommit rc = log.get(i);
+      if (rc.getId().getName().equals(commit)) {
+        return i;
+      }
+    }
+    return -1;
+  }
 }

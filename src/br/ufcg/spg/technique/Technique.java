@@ -1,7 +1,6 @@
 package br.ufcg.spg.technique;
 
 import br.ufcg.spg.bean.EditFile;
-import br.ufcg.spg.bean.Tuple;
 import br.ufcg.spg.cluster.ClusterUtils;
 import br.ufcg.spg.dependence.DependenceUtils;
 import br.ufcg.spg.edit.Edit;
@@ -12,7 +11,6 @@ import br.ufcg.spg.transformation.TransformationUtils;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -36,10 +34,10 @@ public final class Technique {
    * @param commit
    *          commit-id
    */
-  public static void addEdits(final String project, final List<EditFile> files, final RevCommit commit) {
+  public static void addEdits(final String project, final List<EditFile> files, 
+      final RevCommit commit) {
     try {
       final List<Edit> srcEdits = EditPairCalculator.computeEditPairs(project, files, commit);
-      //DependenceUtils.computeGraph(srcEdits);
       final EditStorage storage = EditStorage.getInstance();
       storage.addAllSrcEdit(srcEdits);
     } catch (final Exception e) {

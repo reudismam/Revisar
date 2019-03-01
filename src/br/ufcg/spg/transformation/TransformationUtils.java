@@ -66,7 +66,7 @@ public final class TransformationUtils {
   }
 
   public static int incrementClusterIndex() {
-	return ++clusterIndex;
+    return ++clusterIndex;
   }
 
   private TransformationUtils() {
@@ -126,10 +126,6 @@ public final class TransformationUtils {
       for (int i = 0; i < srcClusters.size(); i++) {
         logger.trace(((double) i) / srcClusters.size() + " % completed.");
         final Cluster clusteri = srcClusters.get(i);
-        /*if (!clusteri.getNodes().get(0).getText().contains(
-            "new ArrayList<Task>(children.size())")) {
-          continue;
-        }*/
         // Analyze clusters with two or more elements.
         if (clusteri.getNodes().size() < 2) {
           continue;
@@ -166,8 +162,6 @@ public static void transformationsMoreProjects(List<Cluster> clusters) {
         new ScriptDistanceMetric<>();
     DBScan dbscan = new DBScan(0.51, 1, metric);
     List<de.jail.statistic.clustering.Cluster> clusteres = dbscan.cluster(scripts);
-    analyzeCommitMessages();
-    analyzeCommitMessages2();
     boolean [][] dataset = ConvertScriptToVector.vector(scripts);
     /*List<List<Integer>> scriptClusters = ScriptLSHMinHash.Lsh(dataset);
     int i = 0;
@@ -204,129 +198,120 @@ public static void transformationsMoreProjects(List<Cluster> clusters) {
     } catch (IOException e) {
       e.printStackTrace();
     }
- }
-
- private static void analyzeCommitMessages() {
-   List<Cluster> nonFiltered = getClustersScript(noise);
-   List<Edit> edits = ClusterUtils.getAllEdits(nonFiltered);
-   List<String> filtered;
-   try {
-     filtered = (new GitUtils()).getCommitMessagesLog(edits);
-     String folderPath = "../Projects/cluster/";
-	 ExpUtils.save(filtered, folderPath + "commit_messages.txt");
-	 Map<String, Integer> words = new HashMap<>();
-	 for (String str : filtered) {
-		 String list [] = str.split("[ ]+");
-		 for (String word : list) { 
-			 if (!word.matches("\\b[a-zA-Z]+\\b")) {
-				 continue;
-			 }
-			 word = word.toLowerCase();
-			 if (!words.containsKey(word)) {
-				 words.put(word, 0);
-			 }
-			 words.put(word, words.get(word) + 1);
-		 }
-		 
-	 }
-	 removeStopWords(words);
-	 //PoiExcelWriter.save(folderPath + "../Projects/cluster/freq_noise.xls", "Noise", words);
-	 ExpUtils.save(words, folderPath + "words_freq_noise.csv");
-	 /*Map<String, List<String>> wordFreq = new HashMap<>();
-	 for (String str : filtered) {
-		 String list [] = str.split("[ ]+");
-		 for (String word : list) {
-			 if (!words.containsKey(word)) {
-				 words.put(word, 0);
-			 }
-			 words.put(word, words.get(word) + 1);
-		 }
-		 
-	 }*/
-   } catch (Exception e) {
-	 e.printStackTrace();
-   }
   }
- 
- private static void analyzeCommitMessages2() {
-	   List<Cluster> nonFiltered = getClusters(scripts);
-	   List<Edit> edits = ClusterUtils.getAllEdits(nonFiltered);
-	   List<String> filtered;
-	   try {
-	     filtered = (new GitUtils()).getCommitMessagesLog(edits);
-	     String folderPath = "../Projects/cluster/";
-		 ExpUtils.save(filtered, folderPath + "commit_messages.txt");
-		 Map<String, Integer> words = new HashMap<>();
-		 for (String str : filtered) {
-			 String list [] = str.split("[ ]+");
-			 for (String word : list) { 
-				 if (!word.matches("\\b[a-zA-Z]+\\b")) {
-					 continue;
-				 }
-				 word = word.toLowerCase();
-				 if (!words.containsKey(word)) {
-					 words.put(word, 0);
-				 }
-				 words.put(word, words.get(word) + 1);
-			 }
-			 
-		 }
-		 removeStopWords(words);
-		 //PoiExcelWriter.save("../Projects/cluster/freq_potential.xls", "Potential", words);
-		 ExpUtils.save(words, folderPath + "words_freq_potential.csv");
-		 /*Map<String, List<String>> wordFreq = new HashMap<>();
-		 for (String str : filtered) {
-			 String list [] = str.split("[ ]+");
-			 for (String word : list) {
-				 if (!words.containsKey(word)) {
-					 words.put(word, 0);
-				 }
-				 words.put(word, words.get(word) + 1);
-			 }
-			 
-		 }*/
-	   } catch (Exception e) {
-		 e.printStackTrace();
-	   }
-	  }
- 
- 
- public static void removeStopWords(Map<String, Integer> map) {
-	 String stop[] = "a,able,about,across,after,all,almost,also,am,among,an,and,any,are,as,at,be,because,been,but,by,can,cannot,could,dear,did,do,does,either,else,ever,every,for,from,get,got,had,has,have,he,her,hers,him,his,how,however,i,if,in,into,is,it,its,just,least,let,like,likely,may,me,might,most,must,my,neither,no,nor,not,of,off,often,on,only,or,other,our,own,rather,said,say,says,she,should,since,so,some,than,that,the,their,them,then,there,these,they,this,tis,to,too,twas,us,wants,was,we,were,what,when,where,which,while,who,whom,why,will,with,would,yet,you,your".split(",");
-     for (String s : stop) {
-    	 if (map.containsKey(s)) {
-    		 map.remove(s);
-    	 }
-     }
- }
-  
-  private static List<Cluster> getClustersScript(List<Script<StringNodeData>> scripts) {
-	List<Cluster> clusters = new ArrayList<>();
-    for (Script<StringNodeData> script : scripts) {
-    	Cluster cluster = script.getCluster();
-    	clusters.add(cluster);
+
+  private static void analyzeCommitMessages() {
+    List<Cluster> nonFiltered = getClustersScript(noise);
+    List<Edit> edits = ClusterUtils.getAllEdits(nonFiltered);
+    List<String> filtered;
+    try {
+      filtered = (new GitUtils()).getCommitMessagesLog(edits);
+      String folderPath = "../Projects/cluster/";
+      ExpUtils.save(filtered, folderPath + "commit_messages.txt");
+      Map<String, Integer> words = new HashMap<>();
+      for (String str : filtered) {
+        String [] list = str.split("[ ]+");
+        for (String word : list) {
+          if (!word.matches("\\b[a-zA-Z]+\\b")) {
+            continue;
+          }
+          word = word.toLowerCase();
+          if (!words.containsKey(word)) {
+            words.put(word, 0);
+          }
+          words.put(word, words.get(word) + 1);
+        }
+
+      }
+      removeStopWords(words);
+      ExpUtils.save(words, folderPath + "words_freq_noise.csv");
+    } catch (Exception e) {
+      e.printStackTrace();
     }
-	return clusters;
   }
-  
-  private static List<Cluster> getClusters(List<Point> scripts) {
-		List<Cluster> clusters = new ArrayList<>();
-	    for (Point point : scripts) {
-	    	@SuppressWarnings("unchecked")
-			Script<StringNodeData> script = (Script<StringNodeData>) point;
-	    	Cluster cluster = script.getCluster();
-	    	clusters.add(cluster);
-	    }
-		return clusters;
-	  }
 
+  private static void analyzeCommitMessages2() {
+    List<Cluster> nonFiltered = getClusters(scripts);
+    List<Edit> edits = ClusterUtils.getAllEdits(nonFiltered);
+    List<String> filtered;
+    try {
+      filtered = (new GitUtils()).getCommitMessagesLog(edits);
+      String folderPath = "../Projects/cluster/";
+      ExpUtils.save(filtered, folderPath + "commit_messages.txt");
+      Map<String, Integer> words = new HashMap<>();
+      for (String str : filtered) {
+        String [] list = str.split("[ ]+");
+        for (String word : list) {
+          if (!word.matches("\\b[a-zA-Z]+\\b")) {
+            continue;
+          }
+          word = word.toLowerCase();
+          if (!words.containsKey(word)) {
+            words.put(word, 0);
+          }
+          words.put(word, words.get(word) + 1);
+        }
+
+      }
+      removeStopWords(words);
+      ExpUtils.save(words, folderPath + "words_freq_potential.csv");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  /**
+   * Remove stop words.
+   */
+  public static void removeStopWords(Map<String, Integer> map) {
+    String stopwords = "a,able,about,across,after,all,almost,also,am,"
+        + "among,an,and,any,are,as,at,be,because,been,but,by,can,cannot,"
+        + "could,dear,did,do,does,either,else,ever,every,for,from,get,"
+        + "got,had,has,have,he,her,hers,him,his,how,however,i,if,in,into,"
+        + "is,it,its,just,least,let,like,likely,may,me,might,most,must,"
+        + "my,neither,no,nor,not,of,off,often,on,only,or,other,our,own,"
+        + "rather,said,say,says,she,should,since,so,some,than,that,the,"
+        + "their,them,then,there,these,they,this,tis,to,too,twas,us,"
+        + "wants,was,we,were,what,when,where,which,while,who,whom,why,"
+        + "will,with,would,yet,you,your";
+    String [] stop = stopwords.split(",");
+    for (String s : stop) {
+      if (map.containsKey(s)) {
+        map.remove(s);
+      }
+    }
+  }
+
+  private static List<Cluster> getClustersScript(List<Script<StringNodeData>> scripts) {
+    List<Cluster> clusters = new ArrayList<>();
+    for (Script<StringNodeData> script : scripts) {
+      Cluster cluster = script.getCluster();
+      clusters.add(cluster);
+    }
+    return clusters;
+  }
+
+  private static List<Cluster> getClusters(List<Point> scripts) {
+    List<Cluster> clusters = new ArrayList<>();
+    for (Point point : scripts) {
+      @SuppressWarnings("unchecked")
+      Script<StringNodeData> script = (Script<StringNodeData>) point;
+      Cluster cluster = script.getCluster();
+      clusters.add(cluster);
+    }
+    return clusters;
+  }
+
+  /**
+   * Print comment.
+   */
   public static void print(boolean[] array) {
-	    System.out.print("[");
-	    for (boolean v : array) {
-	      System.out.print(v ? "1" : "0");
-	    }
-	    System.out.print("]");
-	  }
+    System.out.print("[");
+    for (boolean v : array) {
+      System.out.print(v ? "1" : "0");
+    }
+    System.out.print("]");
+  }
 
   private static List<Cluster> rebuildClusters(List<Cluster> clusters) {
     List<Cluster> clustersList = new ArrayList<>();
@@ -413,13 +398,11 @@ public static void transformationsMoreProjects(List<Cluster> clusters) {
     }
   }
 
-/**
+  /**
    * Save single clusters.
    */
   public static int saveSingleClusters(
       int countCluster, List<Script<StringNodeData>> clusteredScriptsList) {
-    /*Point point0 = null;
-    Point point1 = null;*/
     for (final Point point : scripts) {
       @SuppressWarnings("unchecked")
       Script<StringNodeData> sc = (Script<StringNodeData>) point;
@@ -431,14 +414,6 @@ public static void transformationsMoreProjects(List<Cluster> clusters) {
         content.append(ClusterFormatter.getInstance().formatHeader());
         content.append(ClusterFormatter.getInstance().formatClusterContent(clusteri, clusterj));
         content.append(ClusterFormatter.getInstance().formatFooter());
-        /*if (countCluster == 36) {
-          point0 = sc;
-        } else if (countCluster == 42) {
-          point1 = sc;
-          ScriptDistanceMetric<StringNodeData> m =
-              new ScriptDistanceMetric<>();
-          m.calculate(point0, point1);
-        }*/
         String counterFormated =  String.format("%03d", ++ countCluster);
         String path = "../Projects/cluster/clusters/" + counterFormated + ".txt";
         final File clusterFile = new File(path);

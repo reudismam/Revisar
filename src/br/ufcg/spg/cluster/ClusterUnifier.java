@@ -1,6 +1,5 @@
 package br.ufcg.spg.cluster;
 
-import br.ufcg.spg.antiunification.AntiUnifier;
 import br.ufcg.spg.antiunification.AntiUnifierUtils;
 import br.ufcg.spg.antiunification.cost.CostUtils;
 import br.ufcg.spg.bean.Tuple;
@@ -150,7 +149,7 @@ public final class ClusterUnifier {
       }
       try {
         final List<Tuple<Cluster, Double>> costs = bestCluster(src, dst, srcEdit, dstEdit);
-        Cluster valid = searchForValid(srcEdit, dstEdit, costs);
+        Cluster valid = searchForValid(srcEdit, costs);
         if (valid != null) {
           processValid(srcEdit, dstEdit, valid);
         } else {
@@ -189,7 +188,7 @@ public final class ClusterUnifier {
       final Edit dstEdit = srcEdit.getDst();
       try {
         final List<Tuple<Cluster, Double>> costs = bestCluster(src, dst, srcEdit, dstEdit);
-        Cluster valid = searchForValid(srcEdit, dstEdit, costs);
+        Cluster valid = searchForValid(srcEdit, costs);
         if (valid != null) {
           processValid(srcEdit, dstEdit, valid);
         } else {
@@ -213,11 +212,11 @@ public final class ClusterUnifier {
    * Searches for a valid cluster to receive the edits.
    */
   public Cluster searchForValid(
-      final Edit srcEdit, final Edit dstEdit, final List<Tuple<Cluster, Double>> costs) {
+      final Edit srcEdit, final List<Tuple<Cluster, Double>> costs) {
     Cluster valid = null;
     for (final Tuple<Cluster, Double> tu : costs) {
       final Cluster srcCluster = tu.getItem1();
-      if (isValid(srcCluster, srcCluster.getDst(), srcEdit, dstEdit)) {
+      if (isValid(srcCluster, srcCluster.getDst(), srcEdit)) {
         valid = srcCluster;
         break;
       }
@@ -277,11 +276,6 @@ public final class ClusterUnifier {
           srcAuCluster, dstAuCluster, srcAu, dstAu);
       srcAu = EquationUtils.convertToEq(tu.getItem1());
       dstAu = EquationUtils.convertToEq(tu.getItem2());
-      //AntiUnifier srcAu;
-      //srcAu = AntiUnifierUtils.antiUnify(srcUnifier, srcAuCluster);
-      //srcUnifier = EquationUtils.convertToEquation(srcAu);
-      //final AntiUnifier dstAu = AntiUnifierUtils.antiUnify(dstUnifier, dstAuCluster);
-      //dstUnifier = EquationUtils.convertToEquation(dstAu);
     }
     final Cluster srcCluster = new Cluster(srcAu, clusterId);
     final Cluster dstCluster = new Cluster(dstAu, clusterId);
@@ -339,7 +333,7 @@ public final class ClusterUnifier {
    * Verifies whether a cluster is valid.
    */
   public boolean isValid(final Cluster srcCluster, final Cluster dstCluster, 
-      final Edit src, final Edit dst) {
+      final Edit src) {
     try {
       final List<Edit> srcEdits = srcCluster.getNodes();
       final List<Edit> newSrcEdits = new ArrayList<>(srcEdits);

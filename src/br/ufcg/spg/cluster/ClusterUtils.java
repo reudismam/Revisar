@@ -11,7 +11,7 @@ import br.ufcg.spg.transformation.TransformationUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -74,7 +74,7 @@ public final class ClusterUtils {
    */
   public static List<Cluster> segmentByType(Cluster srcCluster) throws 
       BadLocationException, IOException, GitAPIException {
-    final Map<String, Cluster> map = new Hashtable<>();
+    final Map<String, Cluster> map = new HashMap<>();
     for (final Edit edit : srcCluster.getNodes()) {
       final String refaster = TransformationUtils.createRefasterRule(srcCluster, edit);
       if (!map.containsKey(refaster)) {
@@ -129,55 +129,58 @@ public final class ClusterUtils {
     }
   }
   
-	/**
-	 * Save single clusters.
-	 */
-	public static void saveSingleClusters(String folder, List<Cluster> clusters) {
-		int countCluster = 0;
-		for (final Cluster clusteri : clusters) {
-			Cluster clusterj = clusteri.getDst();
-			StringBuilder content = new StringBuilder("");
-			content.append(ClusterFormatter.getInstance().formatHeader());
-			content.append(ClusterFormatter.getInstance().formatClusterContent(clusteri, clusterj));
-			content.append(ClusterFormatter.getInstance().formatFooter());
-			String counterFormated = String.format("%03d", ++countCluster);
-			String path = "../Projects/cluster/clusters/" + folder + counterFormated + ".txt";
-			final File clusterFile = new File(path);
-			try {
-				FileUtils.writeStringToFile(clusterFile, content.toString());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-	
-	/**
-	 * Save single clusters.
-	 */
-	public static void saveSingleQuickFixes(String folder, List<QuickFix> clusters) {
-		for (final QuickFix quick : clusters) {
-			Cluster clusteri = quick.getCluster();
-			Cluster clusterj = clusteri.getDst();
-			StringBuilder content = new StringBuilder("");
-			content.append(ClusterFormatter.getInstance().formatHeader());
-			content.append(ClusterFormatter.getInstance().formatClusterContent(clusteri, clusterj));
-			content.append(ClusterFormatter.getInstance().formatFooter());
-			String counterFormated = String.format("%03d", quick.getId());
-			String path = "../Projects/cluster/clusters/" + folder + counterFormated + ".txt";
-			final File clusterFile = new File(path);
-			try {
-				FileUtils.writeStringToFile(clusterFile, content.toString());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+  /**
+   * Save single clusters.
+   */
+  public static void saveSingleClusters(String folder, List<Cluster> clusters) {
+    int countCluster = 0;
+    for (final Cluster clusteri : clusters) {
+      Cluster clusterj = clusteri.getDst();
+      StringBuilder content = new StringBuilder("");
+      content.append(ClusterFormatter.getInstance().formatHeader());
+      content.append(ClusterFormatter.getInstance().formatClusterContent(clusteri, clusterj));
+      content.append(ClusterFormatter.getInstance().formatFooter());
+      String counterFormated = String.format("%03d", ++countCluster);
+      String path = "../Projects/cluster/clusters/" + folder + counterFormated + ".txt";
+      final File clusterFile = new File(path);
+      try {
+        FileUtils.writeStringToFile(clusterFile, content.toString());
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+  }
 
-	public static List<Edit> getAllEdits(List<Cluster> clusters) {
-	    List<Edit> allEdits = new ArrayList<>();
-	    for (Cluster c : clusters) {
-	      allEdits.addAll(c.getNodes());
-	    }
-	    return allEdits;
-	  }
+  /**
+   * Save single clusters.
+   */
+  public static void saveSingleQuickFixes(String folder, List<QuickFix> clusters) {
+    for (final QuickFix quick : clusters) {
+      Cluster clusteri = quick.getCluster();
+      Cluster clusterj = clusteri.getDst();
+      StringBuilder content = new StringBuilder("");
+      content.append(ClusterFormatter.getInstance().formatHeader());
+      content.append(ClusterFormatter.getInstance().formatClusterContent(clusteri, clusterj));
+      content.append(ClusterFormatter.getInstance().formatFooter());
+      String counterFormated = String.format("%03d", quick.getId());
+      String path = "../Projects/cluster/clusters/" + folder + counterFormated + ".txt";
+      final File clusterFile = new File(path);
+      try {
+        FileUtils.writeStringToFile(clusterFile, content.toString());
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
+  /**
+   * Get all edits from provided clusters.
+   */
+  public static List<Edit> getAllEdits(List<Cluster> clusters) {
+    List<Edit> allEdits = new ArrayList<>();
+    for (Cluster c : clusters) {
+      allEdits.addAll(c.getNodes());
+    }
+    return allEdits;
+  }
 }
