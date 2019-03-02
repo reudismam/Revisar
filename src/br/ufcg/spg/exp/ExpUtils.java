@@ -23,18 +23,17 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.errors.GitAPIException;
 
-public class ExpUtils {
+public final class ExpUtils {
 
+  private ExpUtils() {
+  }
+  
   /**
    * Gets projects.
    * 
@@ -58,13 +57,11 @@ public class ExpUtils {
    */
   public static List<String> getAllProjects() {
     try {
-      System.out.println(new File("projects.txt").getAbsolutePath());
       final List<String> projects = Files.readLines(new File("projects.txt"), 
           Charset.defaultCharset());
       final List<String> names = new ArrayList<>();
       for (final String project : projects) {
         final String pname = project; 
-        //project.substring(project.lastIndexOf('/') + 1, project.length() - 4);
         names.add(pname);
       }
       return names;
@@ -81,7 +78,7 @@ public class ExpUtils {
       List<String> allProjects = new ArrayList<>();
       for (int i = 1; i <= 10; i++) {
         String text = FileUtils.readFileToString(new File("repositories_page_" + i + ".txt"));
-        List<String> allMatches = new ArrayList<String>();
+        List<String> allMatches = new ArrayList<>();
         Matcher m = Pattern.compile("clone_url\\\"\\: .*\\.git")
             .matcher(text);
         while (m.find()) {
@@ -90,7 +87,7 @@ public class ExpUtils {
         }
         allProjects.addAll(allMatches);
       }
-      StringBuffer bf = new StringBuffer();
+      StringBuilder bf = new StringBuilder();
       for (String project : allProjects) {
         String projectName = project.substring(19, project.lastIndexOf(".git"));
         String projectNameFiltered = projectName.replace('/', '_');
@@ -132,14 +129,14 @@ public class ExpUtils {
   }
   
   private static <K, V extends Comparable<? super V>> List<Entry<K, V>> sort(Map<K, V> map)     {
-    List<Map.Entry<K, V>> list = new LinkedList<Map.Entry<K, V>>(map.entrySet());
+    List<Map.Entry<K, V>> list = new LinkedList<>(map.entrySet());
     Collections.sort(list, new Comparator<Map.Entry<K, V>>() {
         public int compare(Map.Entry<K, V> o1, Map.Entry<K, V> o2) {
             return -1 * o1.getValue().compareTo(o2.getValue());
         }
     });
     return list;
-}
+  }
 
   /**
    * Return the e-mails in a list of commits.

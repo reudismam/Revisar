@@ -17,7 +17,10 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 
-public class FilterManager {
+public final class FilterManager {
+  
+  private FilterManager() {
+  }
 
   /**
    * Verifies if a transformation is noise.

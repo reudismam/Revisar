@@ -40,7 +40,10 @@ public class EditScriptGenerator<T> {
       if (w == null) {
         int k = findPos(x, m);
         RevisarTree<T> xnode = new RevisarTree<T>(x.getValue(), x.getLabel());
-        EditNode<T> insert = new InsertNode<T>(xnode, z, k);
+        EditNode<T> insert = new InsertNode<>(xnode, z, k);
+        if (z == null) {
+          System.out.println();
+        }
         z.addChild(xnode, k - 1);
         m.put(xnode, x);
         editScript.add(insert);

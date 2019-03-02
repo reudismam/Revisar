@@ -119,11 +119,7 @@ public final class AntiUnifierUtils {
     // compute template
     final AntiUnifier template = AntiUnifierUtils.maxContext(first, second, fixedFirst, 
         fixedSecond, true);
-    final AntiUnifier root = AntiUnifierUtils.getRoot(template);
-    if (root == null) {
-      logger.trace("A transformation could not be learned!");
-    }
-    return root;
+    return getRoot(template);
   }
 
   /**

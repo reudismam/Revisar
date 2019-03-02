@@ -163,15 +163,15 @@ public static void transformationsMoreProjects(List<Cluster> clusters) {
     DBScan dbscan = new DBScan(0.51, 1, metric);
     List<de.jail.statistic.clustering.Cluster> clusteres = dbscan.cluster(scripts);
     boolean [][] dataset = ConvertScriptToVector.vector(scripts);
-    /*List<List<Integer>> scriptClusters = ScriptLSHMinHash.Lsh(dataset);
+    List<List<Integer>> scriptClusters = ScriptLSHMinHash.Lsh(dataset);
     int i = 0;
     for (List<Integer> clusterInts : scriptClusters) {
-    	List<Script<StringNodeData>> points = new ArrayList<>();
-    	for (int index : clusterInts) {
-    		points.add((Script<StringNodeData>) scripts.get(index));
-    	}
-    	ClusterUtils.saveClusterToFile(i, "lsh/"+ i++ + "/", points, new ArrayList<>());
-    }*/
+      List<Script<StringNodeData>> points = new ArrayList<>();
+      for (int index : clusterInts) {
+        points.add((Script<StringNodeData>) scripts.get(index));
+      }
+      ClusterUtils.saveClusterToFile(i, "lsh/" + i++ + "/", points, new ArrayList<>());
+    }
     int countCluster = 0;
     List<Script<StringNodeData>> clusteredScriptsList = new ArrayList<>();
     for (de.jail.statistic.clustering.Cluster list : clusteres) {

@@ -105,12 +105,10 @@ public class EditPairCalculator {
   /**
    * Extracts before and after version of the source code.
    * 
-   * @param files
-   *          list of modified files for the previous version
-   * @param dstFilePaths
-   *          the path for the list of files for the after version
-   * @param pi
-   *          information about the project
+   * @param files   list of modified files for the previous version
+   * @param project the path for the list of files for the after version
+   * @param cmt     commit
+   * @param pj      information about the project
    */
   public static List<Edit> extractEditPairs(final List<EditFile> files, 
       String project,
@@ -121,7 +119,7 @@ public class EditPairCalculator {
       String srcSource = file.getBeforeAfter().getItem1();//entry.getValue().getItem1();
       String dstSource = file.getBeforeAfter().getItem2();//entry.getValue().getItem2();
       FileUtils.writeStringToFile(new File("temp1.java"), srcSource);
- 	  FileUtils.writeStringToFile(new File("temp2.java"), dstSource);
+      FileUtils.writeStringToFile(new File("temp2.java"), dstSource);
       /*final DiffCalculator diff = new DiffPath("temp1.java", "temp2.java");
       List<Action> actions = null;
       try {

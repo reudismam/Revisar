@@ -44,14 +44,15 @@ public abstract class GenericDao<T, I extends Serializable> {
   
   /**
    * Save entity to database.
+   * 
    * @param entities beans to be saved.
    */
   public List<T> saveAll(@Valid final List<T> entities) {
     for (int i = 0; i < entities.size(); i++) {
       if (i % 50 == 0) {
-         logger.warn((((double)i) / entities.size()) * 100 + " % saved");
+        logger.warn((((double) i) / entities.size()) * 100 + " % saved");
       }
-       save(entities.get(i));
+      save(entities.get(i));
     }
     return entities;
   }

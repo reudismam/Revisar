@@ -58,38 +58,24 @@ public class TechniqueUtils {
     for (int i = index; i < log.size(); i++) {
       logger.trace(((double) i) / log.size() + " % completed");
       final RevCommit dstCommit = log.get(i);
-      List<EditFile> files;
       try {
-        files = analyzer.modifiedFiles(projectFolderDst, dstCommit);
+        analyzeCommit(dstCommit, projectFolderDst, project);
       } catch (Exception e) {
-        logger.trace("Large commit. IGNORE");
-        continue;
+        logger.trace("Long time to process commit. ABORT");
       }
-      //if there is no previous commit.
-      if (files == null) {
-        return;
-      }
-      storage.setCurrentCommit(dstCommit);
-      storage.addCommitProject(project.getItem1(), dstCommit);
-      Technique.addEdits(project.getItem1(), files, dstCommit);
-      logger.trace("PROJECT: " + project.getItem1());
       final int currentCount = storage.getNumberEdits();
-      logger.trace("NODE PROCESSED: " + currentCount);
-      final String pname = project.getItem1();
-      logger.trace("DEBUG COMMITS: " + storage.getCommitProjects().get(pname).size());
-      logger.trace("DEBUG CURRENT COMMIT: " + dstCommit);
       if (currentCount >= max && !TechniqueConfig.getInstance().isAllCommits()) {
         return;
       }
     }
   }
   
-  private int status;
+  private static int status;
   
   /**
    * Gets the difference between source code and destination code.
    */
-  public void modifiedFiles(RevCommit dstCommit, String projectFolderDst, 
+  public static void analyzeCommit(RevCommit dstCommit, String projectFolderDst, 
       final Tuple<String, String> project) {
     status = -1;
     tryProcessCommit(dstCommit, projectFolderDst, project);
@@ -102,7 +88,7 @@ public class TechniqueUtils {
   /**
    * Try to unify eq1 and eq2.
    */
-  public void tryProcessCommit(RevCommit dstCommit, String projectFolderDst, 
+  public static void tryProcessCommit(RevCommit dstCommit, String projectFolderDst, 
       final Tuple<String, String> project) {
     final ExecutorService executor = Executors.newFixedThreadPool(4);
     final Future<?> future = executor.submit(new Runnable() {
@@ -140,7 +126,7 @@ public class TechniqueUtils {
   /**
    * Process an commit.
    */
-  public int processCommit(RevCommit dstCommit, String projectFolderDst, 
+  public static int processCommit(RevCommit dstCommit, String projectFolderDst, 
       final Tuple<String, String> project) {
     final GitUtils analyzer = new GitUtils();
     final EditStorage storage = EditStorage.getInstance();
