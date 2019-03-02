@@ -121,6 +121,7 @@ public class EditScriptGenerator<T> {
     return editScript;
   }
 
+  @SuppressWarnings("unused")
   private void convertMoveToInsertDelete(List<EditNode<T>> editScript) {
     List<Tuple<EditNode<T>, List<EditNode<T>>>> removes = new ArrayList<>();
     for (EditNode<T> v : editScript) {
@@ -156,7 +157,8 @@ public class EditScriptGenerator<T> {
   }
 
   private RevisarTree<T> findNode(Map<RevisarTree<T>, RevisarTree<T>> m, RevisarTree<T> y) {
-    Optional<Entry<RevisarTree<T>, RevisarTree<T>>> zs = m.entrySet().stream().filter(o -> o.getValue().equals(y))
+    Optional<Entry<RevisarTree<T>, RevisarTree<T>>> zs = 
+        m.entrySet().stream().filter(o -> o.getValue().equals(y))
         .findFirst();
     if (zs.isPresent()) {
       RevisarTree<T> z = zs.get().getKey();

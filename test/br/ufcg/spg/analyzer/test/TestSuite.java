@@ -181,7 +181,8 @@ public class TestSuite {
         final String refaster = TransformationUtils.createRefasterRule(cluster, edit);
         refasterRules.add(refaster);
         String counterFormated =  String.format("%03d", i);
-        String path = "../Projects/cluster/" +  counterFormated + "/";
+        MainArguments main = MainArguments.getInstance();
+        String path = main.getProjectFolder() + TransformationUtils.CLUSTER_PATH +  counterFormated + '/';
         TransformationUtils.saveTransformation(path, transformation, edit); 
       } catch (Exception e) {
         e.printStackTrace();

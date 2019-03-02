@@ -36,9 +36,9 @@ public class TechniqueUtils {
    */
   public static void concreteEdits(final Tuple<String, String> project)
       throws IOException {
+    MainArguments main = MainArguments.getInstance();
     // files to be analyzed
-    final String projectFolderDst = "../Projects/" + project.getItem1() + "/";
-    final GitUtils analyzer = new GitUtils();
+    final String projectFolderDst = main.getProjectFolder() + '/' + project.getItem1() + '/';
     ExpUtils.getLogs(project.getItem1());
     final List<RevCommit> log = GitUtils.gitRevCommitLog(MainArguments.getInstance()
         .getProjectFolder() + "/" + project.getItem1());
@@ -134,7 +134,7 @@ public class TechniqueUtils {
     try {
       files = analyzer.modifiedFiles(projectFolderDst, dstCommit);
     } catch (Exception e) {
-      e.printStackTrace();
+      logger.trace("Long time to process commit. ABORT");
       return - 1;
     }
     //if there is no previous commit.

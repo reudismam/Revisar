@@ -18,6 +18,7 @@ import br.ufcg.spg.filter.FilterManager;
 import br.ufcg.spg.git.GitUtils;
 import br.ufcg.spg.lsh.ConvertScriptToVector;
 import br.ufcg.spg.lsh.ScriptLSHMinHash;
+import br.ufcg.spg.main.MainArguments;
 import br.ufcg.spg.ml.clustering.EditScriptUtils;
 import br.ufcg.spg.ml.editoperation.Script;
 import br.ufcg.spg.ml.metric.ScriptDistanceMetric;
@@ -43,6 +44,8 @@ import org.eclipse.jgit.api.errors.GitAPIException;
  * Utility class to perform transformations.
  */
 public final class TransformationUtils {
+  
+  public static String CLUSTER_PATH = "/cluster/"; 
   
   /**
    * Learned scripts.
@@ -111,7 +114,7 @@ public final class TransformationUtils {
    */
   public static void transformations(final List<Cluster> srcClusters) {
     try {
-      String folderPath = "../Projects/cluster/";
+      String folderPath = MainArguments.getInstance().getProjectFolder() + CLUSTER_PATH;
       transformations(folderPath, srcClusters);
     } catch (final Exception e) {
       e.printStackTrace();
@@ -191,22 +194,28 @@ public static void transformationsMoreProjects(List<Cluster> clusters) {
     }
     TransformationUtils.saveSingleClusters(countCluster, clusteredScriptsList);
     try {
+      MainArguments main = MainArguments.getInstance();
       QuickFixManager qfm = QuickFixManager.getInstance();
-      PoiExcelWriter.save("../Projects/cluster/data_bad.xls", "Bad", qfm.getBadPatterns());
-      PoiExcelWriter.save("../Projects/cluster/data_good.xls", "Good", qfm.getPotentialPatterns());
+      PoiExcelWriter.save(main.getProjectFolder() 
+          + CLUSTER_PATH +  "data_bad.xls", "Bad", qfm.getBadPatterns());
+      PoiExcelWriter.save(main.getProjectFolder() 
+          + CLUSTER_PATH + "data_good.xls", "Good", qfm.getPotentialPatterns());
       ClusterUtils.saveSingleQuickFixes("potential/", qfm.getPotentialPatterns());
     } catch (IOException e) {
       e.printStackTrace();
     }
   }
 
+  @SuppressWarnings("unused")
+  @Deprecated()
   private static void analyzeCommitMessages() {
     List<Cluster> nonFiltered = getClustersScript(noise);
     List<Edit> edits = ClusterUtils.getAllEdits(nonFiltered);
     List<String> filtered;
     try {
+      MainArguments main = MainArguments.getInstance();
       filtered = (new GitUtils()).getCommitMessagesLog(edits);
-      String folderPath = "../Projects/cluster/";
+      String folderPath = main.getProjectFolder() + CLUSTER_PATH;
       ExpUtils.save(filtered, folderPath + "commit_messages.txt");
       Map<String, Integer> words = new HashMap<>();
       for (String str : filtered) {
@@ -229,14 +238,17 @@ public static void transformationsMoreProjects(List<Cluster> clusters) {
       e.printStackTrace();
     }
   }
-
+  
+  @SuppressWarnings("unused")
+  @Deprecated
   private static void analyzeCommitMessages2() {
     List<Cluster> nonFiltered = getClusters(scripts);
     List<Edit> edits = ClusterUtils.getAllEdits(nonFiltered);
     List<String> filtered;
     try {
       filtered = (new GitUtils()).getCommitMessagesLog(edits);
-      String folderPath = "../Projects/cluster/";
+      MainArguments main = MainArguments.getInstance();
+      String folderPath = main.getProjectFolder() + CLUSTER_PATH;
       ExpUtils.save(filtered, folderPath + "commit_messages.txt");
       Map<String, Integer> words = new HashMap<>();
       for (String str : filtered) {
@@ -363,7 +375,8 @@ public static void transformationsMoreProjects(List<Cluster> clusters) {
    */
   public static void saveTransformation(final Transformation trans, final Edit edit) 
       throws IOException, BadLocationException, GitAPIException {
-    String path = "../Projects/cluster/";
+    MainArguments main = MainArguments.getInstance();
+    String path = main.getProjectFolder() + CLUSTER_PATH;
     saveTransformation(path, trans, edit);
   }
 

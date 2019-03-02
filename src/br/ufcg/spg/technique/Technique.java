@@ -5,7 +5,7 @@ import br.ufcg.spg.cluster.ClusterUtils;
 import br.ufcg.spg.dependence.DependenceUtils;
 import br.ufcg.spg.edit.Edit;
 import br.ufcg.spg.edit.EditStorage;
-import br.ufcg.spg.editpair.EditPairCalculator;
+import br.ufcg.spg.editpair.EditExtractorStrategy;
 import br.ufcg.spg.log.TimeLogger;
 import br.ufcg.spg.transformation.TransformationUtils;
 
@@ -37,7 +37,7 @@ public final class Technique {
   public static void addEdits(final String project, final List<EditFile> files, 
       final RevCommit commit) {
     try {
-      final List<Edit> srcEdits = EditPairCalculator.computeEditPairs(project, files, commit);
+      final List<Edit> srcEdits = EditExtractorStrategy.computeEditPairs(project, files, commit);
       final EditStorage storage = EditStorage.getInstance();
       storage.addAllSrcEdit(srcEdits);
     } catch (final Exception e) {
