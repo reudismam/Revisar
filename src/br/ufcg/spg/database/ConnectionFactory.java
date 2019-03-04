@@ -6,7 +6,7 @@ import javax.persistence.Persistence;
 
 public class ConnectionFactory {
   private static ConnectionFactory instance;
-  EntityManager em;
+  private EntityManager em;
   
   private ConnectionFactory() {
     final EntityManagerFactory factory = Persistence.createEntityManagerFactory("AntiUnification");

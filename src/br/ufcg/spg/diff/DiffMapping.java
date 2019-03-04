@@ -33,11 +33,9 @@ public class DiffMapping extends DiffCalculator {
     try {
       final ActionGenerator generator = new ActionGenerator(src.getRoot(), dst.getRoot(), mapping);
       generator.generate();
-      final List<Action> actions = generator.getActions(); // return the actions
-      return actions;
+      return generator.getActions(); // return the actions
     } catch (final UnsupportedOperationException e) {
       throw new RuntimeException(e);
     }
   }
-
 }

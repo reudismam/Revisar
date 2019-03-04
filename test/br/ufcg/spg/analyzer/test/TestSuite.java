@@ -1,6 +1,5 @@
 package br.ufcg.spg.analyzer.test;
 
-import at.jku.risc.stout.urauc.util.ControlledException;
 import br.ufcg.spg.bean.EditFile;
 import br.ufcg.spg.bean.Tuple;
 import br.ufcg.spg.cluster.Cluster;
@@ -38,7 +37,6 @@ import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.junit.Before;
@@ -48,7 +46,11 @@ public class TestSuite {
 
   private static final Logger logger = LogManager.getLogger(TestSuite.class.getName());
 
+  /**
+   * Constructor.
+   */
   public TestSuite() {
+    //Empty constructor.
   }
   
   private void configMainArguments() {
@@ -64,7 +66,7 @@ public class TestSuite {
 
   @Test
   public void extractEdits() 
-      throws IOException, ControlledException, CoreException {
+      throws IOException {
     configMainArguments();
     try {
       final TechniqueConfig config = TechniqueConfig.getInstance();

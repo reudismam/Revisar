@@ -12,7 +12,6 @@ import br.ufcg.spg.node.util.ASTNodeUtils;
 import br.ufcg.spg.tree.RevisarTree;
 import br.ufcg.spg.tree.RevisarTreeParser;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -36,6 +35,8 @@ public final class AntiUnifierUtils {
   private static final Logger logger = LogManager.getLogger(AntiUnifierUtils.class.getName());
   
   public static final String LARGER = "LARGER()";
+
+  private static final String EMPTY_TREE = "Trees could not be empty.";
   
   private AntiUnifierUtils(){
   }
@@ -43,15 +44,19 @@ public final class AntiUnifierUtils {
   /**
    * Computes the maximum context for a given list of trees.
    * 
-   * @param trees
-   *          List of trees
-   * @param unify
-   *          force the algorithm to unify nodes
-   * @return Ant-unification
+   * @param first
+   *          First node
+   * @param second
+   *          Second node
+   * @param firstUpper
+   *          Upper node for first node
+   * @param secondUpper
+   *          Uppser node for second node
+   * @return unify
+   *          Specify whether an anti-unificaiton should be performed
    */
   private static AntiUnifier maxContext(final ASTNode first, final ASTNode second, 
-      final ASTNode firstUpper, final ASTNode secondUpper, final boolean unify)
-      throws IOException {
+      final ASTNode firstUpper, final ASTNode secondUpper, final boolean unify) {
     final List<ASTNode> trees = Arrays.asList(first, second); 
     if (!allSameKind(trees)) {
       return createAntiUnification(first, second, null, unify);
@@ -114,8 +119,7 @@ public final class AntiUnifierUtils {
    * @return unification template
    */
   public static AntiUnifier template(final ASTNode first, final ASTNode second, 
-      final ASTNode fixedFirst, final ASTNode fixedSecond)
-      throws IOException {
+      final ASTNode fixedFirst, final ASTNode fixedSecond) {
     // compute template
     final AntiUnifier template = AntiUnifierUtils.maxContext(first, second, fixedFirst, 
         fixedSecond, true);
@@ -128,9 +132,7 @@ public final class AntiUnifierUtils {
   private static List<List<ASTNode>> getLeftSiblings(final List<ASTNode> trees) {
     final List<List<ASTNode>> left = new ArrayList<>();
     for (final ASTNode tree : trees) {
-      final ASTNode parent = tree.getParent();
-      final List<Object> children = ASTNodeUtils.getChildren(parent);
-      final List<ASTNode> normalizedChildren = ASTNodeUtils.normalize(children);
+      final List<ASTNode> normalizedChildren = getNormalizeChildren(tree);
       final int index = normalizedChildren.indexOf(tree);
       final List<ASTNode> subList = normalizedChildren.subList(0, index);
       if (!subList.isEmpty()) {
@@ -140,15 +142,19 @@ public final class AntiUnifierUtils {
     return left;
   }
 
+  private static List<ASTNode> getNormalizeChildren(ASTNode tree) {
+    final ASTNode parent = tree.getParent();
+    final List<Object> children = ASTNodeUtils.getChildren(parent);
+    return ASTNodeUtils.normalize(children);
+  }
+
   /**
    * Gets right siblings of a list of nodes.
    */
   private static List<List<ASTNode>> getRightSiblings(final List<ASTNode> trees) {
     final List<List<ASTNode>> right = new ArrayList<>();
     for (final ASTNode tree : trees) {
-      final ASTNode parent = tree.getParent();
-      final List<Object> children = ASTNodeUtils.getChildren(parent);
-      final List<ASTNode> normalizedChildren = ASTNodeUtils.normalize(children);
+      final List<ASTNode> normalizedChildren = getNormalizeChildren(tree);
       final int index = normalizedChildren.indexOf(tree);
       final List<ASTNode> subList = normalizedChildren.subList(index + 1, 
           normalizedChildren.size());
@@ -164,10 +170,8 @@ public final class AntiUnifierUtils {
    * @param trees trees to be analyzed
    * @return true if all the trees are from the same type.
    */
-  public static boolean allSameKind(final List<ASTNode> trees) {
-    if (trees.isEmpty()) {
-      throw new UnsupportedOperationException("Trees could not be null.");
-    }
+  private static boolean allSameKind(final List<ASTNode> trees) {
+    checkEmpty(trees);
     final ASTNode first = trees.get(0);
     for (final ASTNode tree : trees) {
       if (tree.getNodeType() != first.getNodeType()) {
@@ -182,10 +186,8 @@ public final class AntiUnifierUtils {
    * @param trees list of trees to be analyzed.
    * @return true if some tree is method declaration
    */
-  public static boolean isSome(final List<ASTNode> trees, final IMatcher<ASTNode> eval) {
-    if (trees.isEmpty()) {
-      throw new UnsupportedOperationException("Trees could not be null.");
-    }
+  private static boolean isSome(final List<ASTNode> trees, final IMatcher<ASTNode> eval) {
+    checkEmpty(trees);
     for (final ASTNode tree : trees) {
       if (eval.evaluate(tree)) {
         return true;
@@ -200,11 +202,9 @@ public final class AntiUnifierUtils {
    * @param upperNodes upper trees.
    * @return true if any tree contains fixed context
    */
-  public static boolean someIncludeUpper(final List<ASTNode> trees, 
+  private static boolean someIncludeUpper(final List<ASTNode> trees,
       final List<ASTNode> upperNodes) {
-    if (trees.isEmpty()) {
-      throw new UnsupportedOperationException("Trees could not be null.");
-    }
+    checkEmpty(trees);
     for (int i = 0; i < trees.size(); i++) {
       final ASTNode tree = trees.get(i);
       final ASTNode upper = upperNodes.get(i);
@@ -214,7 +214,13 @@ public final class AntiUnifierUtils {
     }
     return false;
   }
-  
+
+  private static void checkEmpty(List<ASTNode> trees) {
+    if (trees.isEmpty()) {
+      throw new UnsupportedOperationException(EMPTY_TREE);
+    }
+  }
+
   /**
    * Anti-unify trees.
    * @param trees trees

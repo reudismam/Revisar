@@ -5,6 +5,7 @@ import at.unisalzburg.dbresearch.apted.node.StringNodeData;
 import br.ufcg.spg.database.ClusterDao;
 import br.ufcg.spg.edit.Edit;
 import br.ufcg.spg.excel.QuickFix;
+import br.ufcg.spg.main.MainArguments;
 import br.ufcg.spg.ml.editoperation.Script;
 import br.ufcg.spg.transformation.TransformationUtils;
 
@@ -42,11 +43,7 @@ public final class ClusterUtils {
    * Builds cluster given a cluster id.
    */
   public static void buildClusters(String clusterId) {
-    ClusterDao dao = ClusterDao.getInstance();
-    List<Cluster> clusters = dao.getClusters(clusterId);
-    List<Edit> srcEdits = clusters.get(0).getNodes();
-    final ClusterUnifier unifierCluster = ClusterUnifier.getInstance();
-    List<Cluster> srcClusters = unifierCluster.clusterEdits(srcEdits);
+    List<Cluster> srcClusters = clusterEdits(clusterId);
     TransformationUtils.transformations(srcClusters);
   }
   
@@ -55,17 +52,25 @@ public final class ClusterUtils {
    */
   public static List<Cluster> buildClustersSegmentByType(String clusterId) throws 
       BadLocationException, IOException, GitAPIException {
-    ClusterDao dao = ClusterDao.getInstance();
-    List<Cluster> clusters = dao.getClusters(clusterId);
-    List<Edit> srcEdits = clusters.get(0).getNodes();
-    final ClusterUnifier unifierCluster = ClusterUnifier.getInstance();
+    List<Cluster> srcClusters = clusterEdits(clusterId);
     final List<Cluster> clusterList = new ArrayList<>();
-    List<Cluster> srcClusters = unifierCluster.clusterEdits(srcEdits);
     for (Cluster cluster : srcClusters) {
       List<Cluster> cls = segmentByType(cluster);
       clusterList.addAll(cls);
     }
     return clusterList;
+  }
+
+  /**
+   * EFFECTs clusters the edits from a cluster
+   * MODIFIES nothing
+   */
+  private static List<Cluster> clusterEdits(String clusterId) {
+    ClusterDao dao = ClusterDao.getInstance();
+    List<Cluster> clusters = dao.getClusters(clusterId);
+    List<Edit> srcEdits = clusters.get(0).getNodes();
+    final ClusterUnifier unifierCluster = ClusterUnifier.getInstance();
+    return unifierCluster.clusterEdits(srcEdits);
   }
 
   /**
@@ -103,7 +108,6 @@ public final class ClusterUtils {
       List<Script<StringNodeData>> list, List<QuickFix> quicks) {
     StringBuilder content = new StringBuilder("NUMBER OF ITEMS IN THIS CLUSTER: " 
         + list.size()).append("\n\n");
-    //int count = 0;
     for (Script<StringNodeData> sc : list) {
       content.append(ClusterFormatter.getInstance().formatHeader());
       content.append(ClusterFormatter.formatList(sc.getList())).append('\n');
@@ -118,15 +122,7 @@ public final class ClusterUtils {
       qf.setCluster(clusteri);
       quicks.add(qf);
     }
-    String counterFormated =  String.format("%03d", countCluster);
-    String path = "../Projects/cluster/clusters/" + folder
-        + counterFormated + ".txt";
-    final File clusterFile = new File(path);
-    try {
-      FileUtils.writeStringToFile(clusterFile, content.toString());
-    } catch (IOException e) {
-      TransformationUtils.logger.error(e.getStackTrace());
-    }
+    saveToFile(folder, countCluster, content);
   }
   
   /**
@@ -136,18 +132,8 @@ public final class ClusterUtils {
     int countCluster = 0;
     for (final Cluster clusteri : clusters) {
       Cluster clusterj = clusteri.getDst();
-      StringBuilder content = new StringBuilder("");
-      content.append(ClusterFormatter.getInstance().formatHeader());
-      content.append(ClusterFormatter.getInstance().formatClusterContent(clusteri, clusterj));
-      content.append(ClusterFormatter.getInstance().formatFooter());
-      String counterFormated = String.format("%03d", ++countCluster);
-      String path = "../Projects/cluster/clusters/" + folder + counterFormated + ".txt";
-      final File clusterFile = new File(path);
-      try {
-        FileUtils.writeStringToFile(clusterFile, content.toString());
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
+      StringBuilder content = formatCluster(clusteri, clusterj);
+      saveToFile(folder, ++countCluster, content);
     }
   }
 
@@ -158,19 +144,29 @@ public final class ClusterUtils {
     for (final QuickFix quick : clusters) {
       Cluster clusteri = quick.getCluster();
       Cluster clusterj = clusteri.getDst();
-      StringBuilder content = new StringBuilder("");
-      content.append(ClusterFormatter.getInstance().formatHeader());
-      content.append(ClusterFormatter.getInstance().formatClusterContent(clusteri, clusterj));
-      content.append(ClusterFormatter.getInstance().formatFooter());
-      String counterFormated = String.format("%03d", quick.getId());
-      String path = "../Projects/cluster/clusters/" + folder + counterFormated + ".txt";
-      final File clusterFile = new File(path);
-      try {
-        FileUtils.writeStringToFile(clusterFile, content.toString());
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
+      StringBuilder content = formatCluster(clusteri, clusterj);
+      saveToFile(folder, quick.getId(), content);
     }
+  }
+
+  private static void saveToFile(String folder, int id, StringBuilder content) {
+    String counterFormated = String.format("%03d", id);
+    MainArguments main = MainArguments.getInstance();
+    String path = main.getProjectFolder() + "/cluster/clusters/" + folder + counterFormated + ".txt";
+    final File clusterFile = new File(path);
+    try {
+      FileUtils.writeStringToFile(clusterFile, content.toString());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  private static StringBuilder formatCluster(Cluster clusteri, Cluster clusterj) {
+    StringBuilder content = new StringBuilder();
+    content.append(ClusterFormatter.getInstance().formatHeader());
+    content.append(ClusterFormatter.getInstance().formatClusterContent(clusteri, clusterj));
+    content.append(ClusterFormatter.getInstance().formatFooter());
+    return content;
   }
 
   /**

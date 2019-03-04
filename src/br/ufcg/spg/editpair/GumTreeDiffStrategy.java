@@ -66,17 +66,10 @@ public class GumTreeDiffStrategy extends EditExtractorStrategy {
       if (actions.isEmpty()) {
         // if no action is found process the next file.
         continue;
-      }
-      CompilationUnit unitSrc;
-      CompilationUnit unitDst;
-      try {
-        // parse trees
-        unitSrc = JParser.parse("temp1.java", srcSource);
-        unitDst = JParser.parse("temp2.java", dstSource);
-      } catch (final OutOfMemoryError e) {
-        logger.trace("Long commit. ABORT.");
-        continue;
-      }
+      }      
+      // parse trees
+      CompilationUnit  unitSrc = JParser.parse("temp1.java", srcSource);
+      CompilationUnit  unitDst = JParser.parse("temp2.java", dstSource);
       String srcPath = file.getSrcPath();
       String dstPath = file.getDstPath();
       logger.trace("FILE: " + srcPath);

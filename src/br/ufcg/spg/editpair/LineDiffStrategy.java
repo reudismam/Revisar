@@ -37,16 +37,8 @@ public class LineDiffStrategy extends EditExtractorStrategy {
       String dstSource = file.getBeforeAfter().getItem2();
       FileUtils.writeStringToFile(new File("temp1.java"), srcSource);
       FileUtils.writeStringToFile(new File("temp2.java"), dstSource);
-      CompilationUnit unitSrc;
-      CompilationUnit unitDst;
-      try {
-        // parse trees
-        unitSrc = JParser.parse("temp1.java", srcSource);
-        unitDst = JParser.parse("temp2.java", dstSource);
-      } catch (final OutOfMemoryError e) {
-        logger.trace("Out of Memory.");
-        continue;
-      }    
+      CompilationUnit  unitSrc = JParser.parse("temp1.java", srcSource);
+      CompilationUnit  unitDst = JParser.parse("temp2.java", dstSource);
       for (Tuple<ASTNode, ASTNode> tuple : file.getEdits()) {
         final ASTNode srcAstNode = tuple.getItem1();
         final ASTNode dstAstNode = tuple.getItem2();

@@ -55,14 +55,13 @@ public final class ExpUtils {
    * 
    * @return projects
    */
-  public static List<String> getAllProjects() {
+  private static List<String> getAllProjects() {
     try {
       final List<String> projects = Files.readLines(new File("projects.txt"), 
           Charset.defaultCharset());
       final List<String> names = new ArrayList<>();
       for (final String project : projects) {
-        final String pname = project; 
-        names.add(pname);
+        names.add(project);
       }
       return names;
     } catch (final IOException e) {
@@ -91,7 +90,7 @@ public final class ExpUtils {
       for (String project : allProjects) {
         String projectName = project.substring(19, project.lastIndexOf(".git"));
         String projectNameFiltered = projectName.replace('/', '_');
-        bf.append("git clone " + project + " " + projectNameFiltered + "\n");
+        bf.append("git clone ").append(project).append(' ').append(projectNameFiltered).append('\n');
       }
       FileUtils.writeStringToFile(new File("all_clones.txt"), bf.toString());
     } catch (Exception e) {
@@ -120,7 +119,7 @@ public final class ExpUtils {
       List<Map.Entry<String, Integer>> stde = sort(map);
       StringBuilder bf = new StringBuilder();
       for (Map.Entry<String, Integer> item : stde) {
-        bf.append(item.getKey() + "  " + item.getValue() + "\n");
+        bf.append(item.getKey()).append(' ').append(item.getValue()).append('\n');
       }
       FileUtils.writeStringToFile(new File("statistics.txt"), bf.toString());
     } catch (final IOException e) {
@@ -141,12 +140,13 @@ public final class ExpUtils {
   /**
    * Return the e-mails in a list of commits.
    */
-  public static List<String> allEmails() throws IOException, GitAPIException {
+  public static List<String> allEmails() {
     final List<String> projects = getAllProjects();
     final Set<String> emails = new HashSet<>();
     final GitUtils git = new GitUtils();
+    MainArguments main = MainArguments.getInstance();
     for (final String project : projects) {
-      final String repoPath = "../AllProjects/" + project + "/";
+      final String repoPath = main.getProjectFolder() + '/' + project + '/';
       try {
         final List<String> pemails = git.getEmail(repoPath);
         emails.addAll(pemails);
@@ -161,12 +161,12 @@ public final class ExpUtils {
   /**
    * Return the e-mails in a list of commits.
    */
-  public static List<String> filterCommits() throws IOException, GitAPIException {
+  public static List<String> filterCommits() {
     final List<String> projects = getAllProjects();
     final List<String> commits = new ArrayList<>();
     final GitUtils git = new GitUtils();
     for (final String project : projects) {
-      final String repoPath = "../AllProjects/" + project + "/";
+      final String repoPath = "../AllProjects/" + project + '/';
       try {
         final List<String> pcommits = git.filterCommits(repoPath);
         commits.addAll(pcommits);
@@ -206,7 +206,7 @@ public final class ExpUtils {
   /**
    * Save list of e-mails.
    * 
-   * @param list
+   * @param map
    *          of e-mails.
    * @param fileName
    *          file name.
@@ -217,7 +217,7 @@ public final class ExpUtils {
             .collect(Collectors.toMap(Entry::getKey, Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
     try (FileWriter writer = new FileWriter(fileName)) {
       for (final Entry<String, Integer> str : sorted.entrySet()) {
-        writer.write(str.getKey() + ";" + str.getValue() + "\n");
+        writer.write(str.getKey() + ';' + str.getValue() + '\n');
       }
     }
   }

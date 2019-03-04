@@ -61,8 +61,6 @@ public class NodeValidatorStrategy implements ITransformationValidatorStrategy {
         }
       }
       return true;
-      // ch = new UnmappedDstChecker(srcEdits, srcAu, dstAu, dstMap);
-      // return ch.check();
     } catch (final Exception e) {
       throw new RuntimeException(e);
     }

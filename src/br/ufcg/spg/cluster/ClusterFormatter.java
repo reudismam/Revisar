@@ -103,7 +103,7 @@ public final class ClusterFormatter {
    * Format output.
    * @param pattern pattern
    */
-  public String formatOutput(final String pattern, final String addToLines) {
+  private String formatOutput(final String pattern, final String addToLines) {
     StringBuilder newPattern = new StringBuilder();
     String addToMid = "    >>    ";
     String[] lines = pattern.split("\n");
@@ -147,9 +147,9 @@ public final class ClusterFormatter {
    */
   public StringBuilder formatCluster(final Cluster clusteri, 
       final Cluster clusterj, final String refaster) {
-    StringBuilder content = new StringBuilder("");
+    StringBuilder content = new StringBuilder();
     content.append(formatHeader());
-    content.append("Cluster ID: " + clusteri.getId()).append('\n');
+    content.append("Cluster ID: ").append(clusteri.getId()).append('\n');
     content.append(refaster).append('\n');
     content.append(formatClusterContent(clusteri, clusterj));
     content.append(formatFooter());
