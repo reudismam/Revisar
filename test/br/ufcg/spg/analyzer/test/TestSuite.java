@@ -52,7 +52,7 @@ public class TestSuite {
   public TestSuite() {
     //Empty constructor.
   }
-  
+
   private void configMainArguments() {
     final MainArguments arguments = MainArguments.getInstance();
     arguments.setProjects("projects.txt");
@@ -111,15 +111,7 @@ public class TestSuite {
 
   @Test
   public void translateNewClustersMoreProjects() {
-    List<Cluster> clusters = ClusterDao.getClusterMoreProjects();
-    List<Edit> allEdits = new ArrayList<>();
-    int i = clusters.size();
-    logger.trace(i);
-    for (Cluster c : clusters) {
-      allEdits.addAll(c.getNodes());
-    }
-    Map<String, List<Edit>> dcaps = ClusterUnifier.getInstance().groupEditsByDCap(allEdits,
-        TechniqueConfig.getInstance());
+    Map<String, List<Edit>> dcaps = groupEditByDcap();
     List<Cluster> clustersDcap = new ArrayList<>();
     for (Entry<String, List<Edit>> entry : dcaps.entrySet()) {
       List<Cluster> clusterForDcap = ClusterUnifier.getInstance().clusterEdits(entry.getValue());
@@ -128,9 +120,8 @@ public class TestSuite {
     TransformationUtils.transformationsMoreProjects(clustersDcap);
     logger.trace("END.");
   }
-  
-  @Test
-  public void translateClustersMoreProjectsByDcap() {
+
+  private Map<String, List<Edit>> groupEditByDcap() {
     List<Cluster> clusters = ClusterDao.getClusterMoreProjects();
     List<Edit> allEdits = new ArrayList<>();
     int i = clusters.size();
@@ -139,7 +130,14 @@ public class TestSuite {
       allEdits.addAll(c.getNodes());
     }
     Map<String, List<Edit>> dcaps = ClusterUnifier.getInstance().groupEditsByDCap(allEdits,
-        TechniqueConfig.getInstance());
+            TechniqueConfig.getInstance());
+
+    return dcaps;
+  }
+  
+  @Test
+  public void translateClustersMoreProjectsByDcap() {
+    Map<String, List<Edit>> dcaps = groupEditByDcap();
     List<Cluster> clustersDcap = new ArrayList<>();
     for (Entry<String, List<Edit>> entry : dcaps.entrySet()) {
       List<Cluster> clusterForDcap = ClusterUnifier.getInstance().clusterEdits(entry.getValue());
@@ -169,7 +167,7 @@ public class TestSuite {
   }
   
   @Test
-  public void buildRefasterRules() throws IOException {
+  public void buildRefasterRules() {
     List<Cluster> clusters = ClusterDao.getClusterMoreProjects();
     int j = clusters.size();
     logger.trace(j);
@@ -194,8 +192,7 @@ public class TestSuite {
   }
   
   @Test
-  public void buildAllPairsOfEdits() 
-      throws IOException {
+  public void buildAllPairsOfEdits() {
     List<Cluster> clusters = ClusterDao.getClusterMoreProjects();
     int j = clusters.size();
     logger.trace(j);
@@ -237,8 +234,7 @@ public class TestSuite {
   }
 
   @Test
-  public void buildRefasterRulesAllEdits() 
-      throws IOException {
+  public void buildRefasterRulesAllEdits() {
     List<Cluster> clusters = ClusterDao.getClusterMoreProjects();
     int j = clusters.size();
     logger.trace(j);

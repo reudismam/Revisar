@@ -14,6 +14,7 @@ public final class ConverterHelper {
    * Makes a copy of the given tree.
    */
   public static <T> RevisarTree<T> makeACopy(RevisarTree<T> st) {
+    if (st == null) return null;
     List<RevisarTree<T>> list = st.getChildren();
     if (list.isEmpty()) {
       return new RevisarTree<>(st.getValue(), st.getLabel());

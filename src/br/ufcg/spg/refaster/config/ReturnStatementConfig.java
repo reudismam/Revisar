@@ -18,8 +18,8 @@ public class ReturnStatementConfig {
   private List<Replacement<ASTNode>> targetList;
   private CompilationUnit refasterRule; 
   private MethodDeclaration method;
-  private Version version;
-  private ProjectInfo pi;
+  //private Version version;
+  private String pi;
   
   public String getCommit() {
     return commit;
@@ -77,19 +77,19 @@ public class ReturnStatementConfig {
     this.method = method;
   }
   
-  public Version getVersion() {
+  /*public Version getVersion() {
     return version;
   }
   
   public void setVersion(Version version) {
     this.version = version;
-  }
+  }*/
   
-  public ProjectInfo getPi() {
+  public String getPi() {
     return pi;
   }
   
-  public void setPi(ProjectInfo pi) {
+  public void setPi(String pi) {
     this.pi = pi;
   }
 }

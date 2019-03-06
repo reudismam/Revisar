@@ -137,7 +137,7 @@ public class GitUtils {
     return getDiffOfCommit(repository, newCommit);
   }
 
-  private static Repository startRepo(String repoPath) {
+  public static Repository startRepo(String repoPath) {
     return RepositoryStore.getInstance().getRepository(repoPath);
   }
 
@@ -662,8 +662,7 @@ public class GitUtils {
   }
 
   public static String getEditedFile(Repository repository, RevTree head, String filePath)
-      throws MissingObjectException, IncorrectObjectTypeException, CorruptObjectException, IOException,
-      UnsupportedEncodingException {
+      throws IOException {
     try (TreeWalk treeWalk = new TreeWalk(repository)) {
       treeWalk.addTree(head);
       treeWalk.setRecursive(true);
@@ -685,7 +684,7 @@ public class GitUtils {
     }
   }
 
-  public static Tuple<String, String> getBeforeAfterFile(Repository repository, RevTree before, RevTree after,
+  private static Tuple<String, String> getBeforeAfterFile(Repository repository, RevTree before, RevTree after,
       DiffEntry entry) {
     try {
       String beforeStr = GitUtils.getEditedFile(repository, before, entry.getOldPath());

@@ -44,26 +44,26 @@ import org.eclipse.jgit.api.errors.GitAPIException;
  * Utility class to perform transformations.
  */
 public final class TransformationUtils {
-  
-  public static String CLUSTER_PATH = "/cluster/"; 
-  
+
+  public static String CLUSTER_PATH = "/cluster/";
+
   /**
    * Learned scripts.
    */
   public static List<Point> scripts = new ArrayList<>();
-  
+
   private static List<Script<StringNodeData>> noise = new ArrayList<>();
-  
+
   /**
    * Logger.
    */
   public static final Logger logger = LogManager.getLogger(TransformationUtils.class.getName());
-  
+
   /**
    * Field only for test purpose.
    */
   private static int clusterIndex = 1;
-  
+
   public static int getClusterIndex() {
     return clusterIndex;
   }
@@ -74,7 +74,7 @@ public final class TransformationUtils {
 
   private TransformationUtils() {
   }
-  
+
   /**
    * Computes the matches for all clusters.
    */
@@ -98,7 +98,7 @@ public final class TransformationUtils {
       transformations(remainingClusters);
     }
   }
-    
+
   /**
    * Computes the template for some cluster.
    * @param clusterId label of the cluster
@@ -108,7 +108,7 @@ public final class TransformationUtils {
     final List<Cluster> clusters = dao.getClusters(clusterId);
     transformations(clusters);
   }
-  
+
   /**
    * Computes transformations for a set of clusters.
    */
@@ -120,7 +120,7 @@ public final class TransformationUtils {
       e.printStackTrace();
     }
   }
-  
+
   /**
    * Computes transformations for a set of clusters.
    */
@@ -142,9 +142,10 @@ public final class TransformationUtils {
       }
     } catch (final Exception e) {
       e.printStackTrace();
+      throw new Error(e);
     }
   }
-  
+
   /**
    * Computes the template for some cluster.
    */
@@ -152,20 +153,20 @@ public final class TransformationUtils {
     final List<Cluster> clusters = ClusterDao.getInstance().getLargestClusters();
     transformations(clusters);
   }
-  
+
   /**
    * Computes the template for some cluster.
    */
   @SuppressWarnings("unchecked")
-public static void transformationsMoreProjects(List<Cluster> clusters) {
+  public static void transformationsMoreProjects(List<Cluster> clusters) {
     clusters = rebuildClusters(clusters);
     transformations(clusters);
     clusterIndex = 1;
-    ScriptDistanceMetric<StringNodeData> metric = 
-        new ScriptDistanceMetric<>();
+    ScriptDistanceMetric<StringNodeData> metric =
+            new ScriptDistanceMetric<>();
     DBScan dbscan = new DBScan(0.51, 1, metric);
     List<de.jail.statistic.clustering.Cluster> clusteres = dbscan.cluster(scripts);
-    boolean [][] dataset = ConvertScriptToVector.vector(scripts);
+    boolean[][] dataset = ConvertScriptToVector.vector(scripts);
     List<List<Integer>> scriptClusters = ScriptLSHMinHash.Lsh(dataset);
     int i = 0;
     for (List<Integer> clusterInts : scriptClusters) {
@@ -185,7 +186,7 @@ public static void transformationsMoreProjects(List<Cluster> clusters) {
       }
       clusteredScriptsList.addAll(ls);
       List<QuickFix> potentials = QuickFixManager
-          .getInstance().getPotentialPatterns();
+              .getInstance().getPotentialPatterns();
       ClusterUtils.saveClusterToFile(++countCluster, "", ls, potentials);
     }
     if (!noise.isEmpty()) {
@@ -196,10 +197,10 @@ public static void transformationsMoreProjects(List<Cluster> clusters) {
     try {
       MainArguments main = MainArguments.getInstance();
       QuickFixManager qfm = QuickFixManager.getInstance();
-      PoiExcelWriter.save(main.getProjectFolder() 
-          + CLUSTER_PATH +  "data_bad.xls", "Bad", qfm.getBadPatterns());
-      PoiExcelWriter.save(main.getProjectFolder() 
-          + CLUSTER_PATH + "data_good.xls", "Good", qfm.getPotentialPatterns());
+      PoiExcelWriter.save(main.getProjectFolder()
+              + CLUSTER_PATH + "data_bad.xls", "Bad", qfm.getBadPatterns());
+      PoiExcelWriter.save(main.getProjectFolder()
+              + CLUSTER_PATH + "data_good.xls", "Good", qfm.getPotentialPatterns());
       ClusterUtils.saveSingleQuickFixes("potential/", qfm.getPotentialPatterns());
     } catch (IOException e) {
       e.printStackTrace();
@@ -208,7 +209,7 @@ public static void transformationsMoreProjects(List<Cluster> clusters) {
 
   @SuppressWarnings("unused")
   @Deprecated()
-  private static void analyzeCommitMessages() {
+  private static void analyzeCommitMessagesNoisePatterns() {
     List<Cluster> nonFiltered = getClustersScript(noise);
     List<Edit> edits = ClusterUtils.getAllEdits(nonFiltered);
     List<String> filtered;
@@ -217,31 +218,36 @@ public static void transformationsMoreProjects(List<Cluster> clusters) {
       filtered = (new GitUtils()).getCommitMessagesLog(edits);
       String folderPath = main.getProjectFolder() + CLUSTER_PATH;
       ExpUtils.save(filtered, folderPath + "commit_messages.txt");
-      Map<String, Integer> words = new HashMap<>();
-      for (String str : filtered) {
-        String [] list = str.split("[ ]+");
-        for (String word : list) {
-          if (!word.matches("\\b[a-zA-Z]+\\b")) {
-            continue;
-          }
-          word = word.toLowerCase();
-          if (!words.containsKey(word)) {
-            words.put(word, 0);
-          }
-          words.put(word, words.get(word) + 1);
-        }
-
-      }
-      removeStopWords(words);
+      Map<String, Integer> words = removeStopWordsCommitMessages(filtered);
       ExpUtils.save(words, folderPath + "words_freq_noise.csv");
     } catch (Exception e) {
       e.printStackTrace();
     }
   }
-  
+
+  private static Map<String, Integer> removeStopWordsCommitMessages(List<String> filtered) {
+    Map<String, Integer> words = new HashMap<>();
+    for (String str : filtered) {
+      String[] list = str.split("[ ]+");
+      for (String word : list) {
+        if (!word.matches("\\b[a-zA-Z]+\\b")) {
+          continue;
+        }
+        word = word.toLowerCase();
+        if (!words.containsKey(word)) {
+          words.put(word, 0);
+        }
+        words.put(word, words.get(word) + 1);
+      }
+
+    }
+    removeStopWords(words);
+    return words;
+  }
+
   @SuppressWarnings("unused")
   @Deprecated
-  private static void analyzeCommitMessages2() {
+  private static void analyzeCommitMessagesGoodPatterns() {
     List<Cluster> nonFiltered = getClusters(scripts);
     List<Edit> edits = ClusterUtils.getAllEdits(nonFiltered);
     List<String> filtered;
@@ -250,22 +256,7 @@ public static void transformationsMoreProjects(List<Cluster> clusters) {
       MainArguments main = MainArguments.getInstance();
       String folderPath = main.getProjectFolder() + CLUSTER_PATH;
       ExpUtils.save(filtered, folderPath + "commit_messages.txt");
-      Map<String, Integer> words = new HashMap<>();
-      for (String str : filtered) {
-        String [] list = str.split("[ ]+");
-        for (String word : list) {
-          if (!word.matches("\\b[a-zA-Z]+\\b")) {
-            continue;
-          }
-          word = word.toLowerCase();
-          if (!words.containsKey(word)) {
-            words.put(word, 0);
-          }
-          words.put(word, words.get(word) + 1);
-        }
-
-      }
-      removeStopWords(words);
+      Map<String, Integer> words = removeStopWordsCommitMessages(filtered);
       ExpUtils.save(words, folderPath + "words_freq_potential.csv");
     } catch (Exception e) {
       e.printStackTrace();
@@ -339,7 +330,7 @@ public static void transformationsMoreProjects(List<Cluster> clusters) {
    * Learns a transformation for a cluster.
    */
   public static Transformation tranformation(final Cluster srcCluster) {
-    try {     
+    try {
       final boolean isValid = ClusterValidator.isValidTrans(srcCluster);
       final Transformation trans = new Transformation();
       trans.setCluster(srcCluster);
@@ -354,14 +345,14 @@ public static void transformationsMoreProjects(List<Cluster> clusters) {
   /**
    * Create a Refaster rule.
    */
-  public static String createRefasterRule(final Cluster srcCluster, 
-      final Edit srcEdit)
-      throws BadLocationException, IOException, GitAPIException {
+  public static String createRefasterRule(final Cluster srcCluster,
+      final Edit srcEdit) {
     String refaster;
-    if (TechniqueConfig.getInstance().isCreateRule()) {    
+    if (TechniqueConfig.getInstance().isCreateRule()) {
       try {
         refaster = RefasterTranslator.translate(srcCluster, srcEdit);
       } catch (Exception e) {
+        e.printStackTrace();
         refaster = "";
       }
     } else {
@@ -369,23 +360,23 @@ public static void transformationsMoreProjects(List<Cluster> clusters) {
     }
     return refaster;
   }
-  
+
   /**
-   * Saves a transformation. 
+   * Saves a transformation.
    */
-  public static void saveTransformation(final Transformation trans, final Edit edit) 
-      throws IOException, BadLocationException, GitAPIException {
+  public static void saveTransformation(final Transformation trans, final Edit edit)
+      throws IOException {
     MainArguments main = MainArguments.getInstance();
     String path = main.getProjectFolder() + CLUSTER_PATH;
     saveTransformation(path, trans, edit);
   }
 
   /**
-   * Saves a transformation. 
+   * Saves a transformation.
    */
-  public static void saveTransformation(final String folderPath, 
-      final Transformation trans, final Edit edit) 
-      throws IOException, BadLocationException, GitAPIException {
+  public static void saveTransformation(final String folderPath,
+      final Transformation trans, final Edit edit)
+      throws IOException {
     final Cluster clusteri = trans.getCluster();
     final Cluster clusterj = clusteri.getDst();
     boolean isNoise = FilterManager.isNoise(folderPath, trans, clusteri, clusterj);
@@ -397,7 +388,7 @@ public static void transformationsMoreProjects(List<Cluster> clusters) {
       qf.setCluster(clusteri);
       QuickFixManager.getInstance().getQuickFixes().add(qf);
       String counterFormated =  String.format("%03d", clusterIndex++);
-      String path = folderPath + trans.isValid() + '/' + counterFormated + ".txt";
+      String path = folderPath + "transformations" + '/' + counterFormated + ".txt";
       final File clusterFile = new File(path);
       StringBuilder content = ClusterFormatter.getInstance()
           .formatCluster(clusteri, clusterj, refaster);
@@ -428,7 +419,8 @@ public static void transformationsMoreProjects(List<Cluster> clusters) {
         content.append(ClusterFormatter.getInstance().formatClusterContent(clusteri, clusterj));
         content.append(ClusterFormatter.getInstance().formatFooter());
         String counterFormated =  String.format("%03d", ++ countCluster);
-        String path = "../Projects/cluster/clusters/" + counterFormated + ".txt";
+        MainArguments main = MainArguments.getInstance();
+        String path = main.getProjectFolder() + "/cluster/clusters/" + counterFormated + ".txt";
         final File clusterFile = new File(path);
         QuickFix qf = new QuickFix();
         qf.setId(incrementClusterIndex());

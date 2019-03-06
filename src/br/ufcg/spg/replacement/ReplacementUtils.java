@@ -103,8 +103,7 @@ public class ReplacementUtils {
   /**
    * Add concrete edits based on node structure.
    * @param src source replacement
-   * @param diff destination replacement
-   * @param dstCu destination compilation unit
+   * @param dst destination replacement
    * @param befores list of nodes abstracted for before version
    * @param afters list of nodes abstracted for after version
    */

@@ -49,9 +49,7 @@ public class DependenceUtils {
    * Compiles the code before and after the change.
    */
   public static void dependences()
-      throws MissingObjectException, IncorrectObjectTypeException, 
-      AmbiguousObjectException, IOException, ExecutionException, 
-      NoFilepatternException, GitAPIException {
+      throws IOException, ExecutionException, GitAPIException {
     final List<Tuple<String, String>> projs = ExpUtils.getProjects();
     final Edit lastEdit = DependenceDao.getInstance().lastDependence();
     final List<Tuple<String, String>> projects = projects(projs, lastEdit);
@@ -77,7 +75,7 @@ public class DependenceUtils {
    * @return dependences
    */
   public static List<ASTNode> dependences(final Edit srcEdit, List<ASTNode> errorsSrc) 
-      throws IOException, ExecutionException, NoFilepatternException, GitAPIException {
+      throws IOException, ExecutionException {
     final Edit dstEdit = srcEdit.getDst();
     final List<Import> imports = dstEdit.getImports();
     //dst text and location where srcEdit goes to in the dst tree.
@@ -87,7 +85,7 @@ public class DependenceUtils {
     //before and after node.
     final String srcFile = srcEdit.getPath();
     final Tuple<CompilationUnit, CompilationUnit> baEdit = 
-        EditUtils.beforeAfter(srcFile, after, pi.getSrcVersion());
+        EditUtils.beforeAfter(srcFile, after);
     final CompilationUnit srcRoot = baEdit.getItem1();
     final Tuple<Integer, Integer> locationDst = edit.getItem2();
     final CompilationUnit dstRoot = baEdit.getItem2();
@@ -108,8 +106,7 @@ public class DependenceUtils {
   }
 
   private static CompilationUnit getCompilationUnit(final Edit srcEdit, final Edit dstEdit) 
-      throws MissingObjectException, IncorrectObjectTypeException, 
-      AmbiguousObjectException, IOException, NoFilepatternException, GitAPIException {
+      throws IOException, GitAPIException {
     //checkout the commit if current commit differs.
     final ProjectInfo pi = ProjectAnalyzer.project(srcEdit);
     CommitUtils.checkoutIfDiffer(dstEdit.getCommit(), pi);
@@ -154,7 +151,7 @@ public class DependenceUtils {
    * @param commit commit to be analyzed
    */
   public static Map<Edit, List<Edit>> computeGraph(final String commit)
-      throws IOException, ExecutionException, NoFilepatternException, GitAPIException {
+      throws IOException, ExecutionException, GitAPIException {
     final List<Edit> srcEdits = EditDao.getInstance().getSrcEdits(commit);
     return computeGraph(srcEdits);
   }
@@ -163,7 +160,7 @@ public class DependenceUtils {
    * Computes graph.
    */
   public static Map<Edit, List<Edit>> computeGraph(final List<Edit> srcEdits)
-      throws IOException, ExecutionException, NoFilepatternException, GitAPIException {
+      throws IOException, ExecutionException, GitAPIException {
     final Map<Edit, List<Edit>> graph = new Hashtable<>();
     final Map<String, List<ASTNode>> errorsSrc = new HashMap<>();
     final Map<String, List<Edit>> fileEdits = new HashMap<>();
@@ -246,7 +243,7 @@ public class DependenceUtils {
    * @return original node
    */
   private static Edit original(final List<Edit> allNodes, final ASTNode node) 
-      throws IOException, ExecutionException {
+      throws ExecutionException {
     for (int i = 0; i < allNodes.size(); i++) {
       final Edit edit = allNodes.get(i);
       final ProjectInfo pi = ProjectAnalyzer.project(edit);
@@ -281,7 +278,7 @@ public class DependenceUtils {
   /**
    * Removes constraints of node that intersect with specified node.
    * @param errorsSrc nodes to be analyzed.
-   * @param target node.
+   * @param targetNode node.
    */
   private static List<ASTNode> removeIntersect(final List<ASTNode> errorsSrc, 
       final ASTNode targetNode) {
@@ -298,16 +295,12 @@ public class DependenceUtils {
    * From the destination node list, gets the nodes in the source code that
    * corresponds to destination nodes.
    * 
-   * @param destination
+   * @param dstNodes
    *          nodes.
    * @param srcRoot
    *          root of the source code tree
    * @param dstRoot
    *          root of the destination source code
-   * @param ITree
-   *          node version of the destination source code
-   * @param mappings
-   *          mappings.
    */
   private static List<ASTNode> mapped(final List<ASTNode> dstNodes, 
       final ASTNode srcRoot, final ASTNode dstRoot) {
@@ -315,9 +308,9 @@ public class DependenceUtils {
     RevisarTree<ASTNode> srcrtree = RevisarTreeUtils.convertToRevisarTree(srcRoot);
     RevisarTree<ASTNode> dstrtree = RevisarTreeUtils.convertToRevisarTree(dstRoot);
     for (final ASTNode dstNode : dstNodes) {
-      IMatcher<RevisarTree<ASTNode>> match = new PositionRevisarTreeMatcher<ASTNode>(dstNode);
+      IMatcher<RevisarTree<ASTNode>> match = new PositionRevisarTreeMatcher<>(dstNode);
       final MatchCalculator<RevisarTree<ASTNode>> mcalc = 
-          new RevisarTreeMatchCalculator<ASTNode>(match);
+          new RevisarTreeMatchCalculator<>(match);
       final RevisarTree<ASTNode> rtree = mcalc.getNode(dstrtree);
       if (rtree == null) {
         System.out.println();
@@ -360,11 +353,6 @@ public class DependenceUtils {
 
   /**
    * Return the modified version of the node.
-   * 
-   * @param srcFilePath
-   *          path to source
-   * @param dstFilePath
-   *          path to destination
    * @param srcEdit
    *          before version of the node
    * @param dstEdit
@@ -407,19 +395,19 @@ public class DependenceUtils {
       System.out.println();
     }
     final String change = dstContent.substring(dstStart, dstLength);
-    final String afterEdit = srcContent.substring(srcLength, srcContent.length());
+    final String afterEdit = srcContent.substring(srcLength);
     int start = beforeEdit.length();
     String result = beforeEdit + change + afterEdit;
     for (final Import ttree : imports) {
       final int i = result.indexOf("import");
       final String b = result.substring(0, i);
       final String c = ttree.getText() + '\n';
-      final String a = result.substring(i, result.length());
+      final String a = result.substring(i);
       result = b + c + a;
       start += c.length();
     }
     final Tuple<Integer, Integer> location = new Tuple<>(start, start + change.length());
-    return new Tuple<String, Tuple<Integer, Integer>>(result, location);
+    return new Tuple<>(result, location);
   }
 
   /**
@@ -440,7 +428,7 @@ public class DependenceUtils {
     } catch (final IOException e) {
       e.printStackTrace();
     }
-    final List<br.ufcg.spg.bean.Error> errorList = new ArrayList<br.ufcg.spg.bean.Error>();
+    final List<br.ufcg.spg.bean.Error> errorList = new ArrayList<>();
     for (final br.ufcg.spg.bean.Error er : errors) {
       if (er.getFile().equals(absolutePath)) {
         errorList.add(er);
@@ -448,32 +436,4 @@ public class DependenceUtils {
     }
     return errorList;
   }
-
-  /*
-   * /** Compiles the code before and after the change.
-   * 
-   * @param srcFilePath source file
-   * 
-   * @param dstFilePath destination file
-   * 
-   * @param srcNode source code
-   * 
-   * @param dstNode destination node
-   */
-  /*
-   * private void compileBeforeAfter(String srcFilePath, String dstFilePath,
-   * ASTNode srcNode, ASTNode dstNode, List<ITree> imports) throws IOException {
-   * String before = new String(Files.readAllBytes(Paths.get(srcFilePath))); //
-   * if(!before.substring(srcNode.getStartPosition(), //
-   * srcNode.getStartPosition() + //
-   * srcNode.getLength()).contains("Vector<String>")) return; // compiles the
-   * before version of the source code List<spg.bean.Error> errorsSrc =
-   * JCompiler.compileFiles(srcFilePath); String modifiedVersion =
-   * modifyFile(srcFilePath, dstFilePath, srcNode, dstNode, imports);
-   * FileUtils.writeStringToFile(new File(srcFilePath), modifiedVersion);
-   * List<spg.bean.Error> errorsDst = JCompiler.compileFiles(srcFilePath);
-   * FileUtils.writeStringToFile(new File(srcFilePath), before);
-   * List<spg.bean.Error> srcErrorsFile = getErrors(srcFilePath, errorsSrc);
-   * List<spg.bean.Error> dstErrorsFile = getErrors(srcFilePath, errorsDst); }
-   */
 }

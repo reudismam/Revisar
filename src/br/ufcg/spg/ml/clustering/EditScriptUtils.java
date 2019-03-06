@@ -31,10 +31,12 @@ public final class EditScriptUtils {
    */
   public static Script<StringNodeData> getCluster(final Cluster srcCluster) {
     String srcAu = srcCluster.getAu();
+    srcAu = "ROOT(" + srcAu + ")";
     RevisarTree<String> srcTree = RevisarTreeParser.parser(srcAu);
     String srcEditTree = StringTreeConverter.convertRevisasrTreeToString(srcTree);
     Cluster dstCluster = srcCluster.getDst();
     String dstAu = dstCluster.getAu();
+    dstAu = "ROOT(" + dstAu + ")";
     RevisarTree<String> dstTree = RevisarTreeParser.parser(dstAu);
     String dstEditTree = StringTreeConverter.convertRevisasrTreeToString(dstTree);
     BracketStringInputParser parser = new BracketStringInputParser();

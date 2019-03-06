@@ -76,6 +76,14 @@ public class ProjectAnalyzer {
       throw new RuntimeException(e);
     }
   }
+
+  /**
+   * Gets source.
+   * @return sources folder
+   */
+  public static String[] sources() {
+    return new String [] {"\\"};
+  }
   
   /**
    * Get sources files.

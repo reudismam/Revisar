@@ -38,12 +38,12 @@ public class EditScriptGenerator<T> {
       RevisarTree<T> z = findNode(m, y);
       RevisarTree<T> w = findNode(m, x);
       if (w == null) {
+        if (z == null) {
+          z = y;
+        }
         int k = findPos(x, m);
         RevisarTree<T> xnode = new RevisarTree<T>(x.getValue(), x.getLabel());
         EditNode<T> insert = new InsertNode<>(xnode, z, k);
-        if (z == null) {
-          System.out.println();
-        }
         z.addChild(xnode, k - 1);
         m.put(xnode, x);
         editScript.add(insert);
@@ -63,7 +63,7 @@ public class EditScriptGenerator<T> {
           w = xnode;*/
           editScript.add(update);
         }
-        if (z != null && !y.isRoot() && !v.isRoot()
+        if (z != null && y != null && v != null && !y.isRoot() && !v.isRoot()
             && findNode(m, y, v) == null) {
           int k = findPos(x, m);
           RevisarTree<T> znode = ConverterHelper.makeACopy(z);
@@ -100,9 +100,10 @@ public class EditScriptGenerator<T> {
         continue;
       }
       RevisarTree<T> t1copy = ConverterHelper.makeACopy(s.getT1Node());
-      t1copy.setChildren(new ArrayList<RevisarTree<T>>());
+      t1copy.setChildren(new ArrayList<>());
       RevisarTree<T> parentcopy = ConverterHelper.makeACopy(s.getParent());
-      parentcopy.setChildren(new ArrayList<RevisarTree<T>>());
+      if (parentcopy != null)
+        parentcopy.setChildren(new ArrayList<>());
       s.setT1Node(t1copy);
       s.setParent(parentcopy);
     }

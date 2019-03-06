@@ -43,12 +43,12 @@ public class EditUtils {
    * @return before and after version of the class
    */
   public static Tuple<CompilationUnit, CompilationUnit> beforeAfter(
-      final String srcFile, final String dst, final Version version) {
+      final String srcFile, final String dst) {
     try {
       final String src = new String(Files.readAllBytes(Paths.get(srcFile)));
-      final CompilationUnit srcComp = JParser.parse(srcFile, version);
+      final CompilationUnit srcComp = JParser.parse("temp1.java", src);
       FileUtils.writeStringToFile(new File(srcFile), dst);
-      final CompilationUnit dstComp = JParser.parse(srcFile, version);
+      final CompilationUnit dstComp = JParser.parse("temp2.java", dst);
       FileUtils.writeStringToFile(new File(srcFile), src);
       final Tuple<CompilationUnit, CompilationUnit> t = new Tuple<>(srcComp, dstComp);
       return t;

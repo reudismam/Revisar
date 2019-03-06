@@ -23,11 +23,11 @@ public class RewriterUtils {
    * variable.
    */
   public static Document rewrite(final String file, final List<ASTNode> substutings, 
-      final List<ASTNode> holeVariables, final Version version) throws BadLocationException {
-    final String [] sources = version.getSource();
-    final String [] classpath = version.getClasspath();
+      final List<ASTNode> holeVariables) throws BadLocationException {
+    //final String [] sources = version.getSource();
+    //final String [] classpath = version.getClasspath();
     final JParser srcParser = new JParser();
-    final CompilationUnit root = srcParser.parseWithDocument(file, sources, classpath);
+    final CompilationUnit root = srcParser.parseWithDocument(file);
     final Document document = srcParser.getDocument();
     final ASTRewrite rewriter = ASTRewrite.create(root.getAST());
     root.recordModifications();

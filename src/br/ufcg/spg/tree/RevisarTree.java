@@ -143,6 +143,9 @@ public class RevisarTree<T> {
    *          position
    */
   public void addChild(RevisarTree<T> child, int k) {
+    if (child == null) {
+      throw new RuntimeException("child could not be null.");
+    }
     child.setParent(this);
     children.add(k, child);
   }

@@ -49,12 +49,12 @@ public class ReturnStmTranslator {
     ReturnStatementConfig bconfig = getReturnStatementConfig(
         config.getCommit(), config.getSrcPath(),
         config.getNodeSrc(), config.getSrcList(),
-        config.getBa().getItem1(), config.getPi().getSrcVersion(), 
+        config.getBa().getItem1(), config.getPi(),
         config, befores);
     ReturnStatementConfig aconfig = getReturnStatementConfig(
         config.getCommit(), config.getDstPath(),
         config.getNodeDst(), config.getDstList(),
-        config.getBa().getItem2(), config.getPi().getDstVersion(), 
+        config.getBa().getItem2(), config.getPi(),
         config, afters);
     final Type returnType = TypeUtils.extractType(bconfig.getTarget(), bconfig.getRefasterRule().getAST());
     MethodDeclaration before = addReturnStatement(bconfig, returnType);
@@ -66,15 +66,14 @@ public class ReturnStmTranslator {
    * Create a return statement configuration.
    * @param target target node
    * @param targetList nodes in target.
-   * @param m method in Refaster rule
-   * @param version source or target version
+   * @param m method in Refaster rul
    * @param config configuration
    * @param nodes list of nodes.
    */
   private static ReturnStatementConfig getReturnStatementConfig(
       final String commit, final String path,
       ASTNode target, List<Replacement<ASTNode>> targetList, 
-      MethodDeclaration m, Version version, 
+      MethodDeclaration m, String project,
       TransformationConfigObject config, final List<ASTNode> nodes) {
     ReturnStatementConfig rconfig = new ReturnStatementConfig();
     rconfig.setCommit(commit);
@@ -84,7 +83,7 @@ public class ReturnStmTranslator {
     rconfig.setTargetList(targetList);
     rconfig.setRefasterRule(config.getRefasterRule());
     rconfig.setMethod(m);
-    rconfig.setVersion(version);
+    //rconfig.setVersion(project);
     rconfig.setPi(config.getPi());
     return rconfig;
   }
@@ -116,21 +115,13 @@ public class ReturnStmTranslator {
    * gets the node edited by replacing the node by the anti-unification
    * variable.
    * 
-   * @param file
-   *          file
-   * @param target
-   *          target node
-   * @param unified
-   *          node anti-unified
-   * @param root
-   *          root tree
-   * @param document
-   *          document that will be edited.
+   * @param rconfig
+   *          return configuration object
    */
   private static Template getTemplate(final ReturnStatementConfig rconfig) 
-          throws BadLocationException, IOException, NoFilepatternException, GitAPIException {
-    final String commit = rconfig.getCommit();
-    CommitUtils.checkoutIfDiffer(commit, rconfig.getPi());
+          throws BadLocationException {
+    //final String commit = rconfig.getCommit();
+    //CommitUtils.checkoutIfDiffer(commit, rconfig.getPi());
     final String file = rconfig.getPath();
     final AST ast = AST.newAST(AST.JLS8);
     final Tuple<List<ASTNode>, List<ASTNode>> holeAndSubstutings = 
@@ -139,11 +130,11 @@ public class ReturnStmTranslator {
     List<ASTNode> substutings = holeAndSubstutings.getItem2();
     removeCouldNotBeAbstracted(ast, holeVariables, substutings);
     final Document document = RewriterUtils.rewrite(
-        file, substutings, holeVariables, rconfig.getVersion());
+        file, substutings, holeVariables);
     final String srcModified = document.get();
     final Tuple<TreeContext, TreeContext> baEdit = EditUtils.beforeAfterCxt(file, srcModified);
     final Tuple<CompilationUnit, CompilationUnit> cunit = 
-        EditUtils.beforeAfter(file, srcModified, rconfig.getVersion());
+        EditUtils.beforeAfter(file, srcModified);
     final DiffCalculator diff = new DiffTreeContext(baEdit.getItem1(), baEdit.getItem2());
     diff.diff();
     final ITree dstTree = diff.getDst().getRoot();
@@ -200,7 +191,6 @@ public class ReturnStmTranslator {
    * @param target target tree.
    * @param substitutingTrees substituting trees.
    * @param ast abstract syntax tree being edited
-   * @param names to store the name of the hole variables.
    */
   private static Tuple<List<ASTNode>, List<ASTNode>> getHolesAndSubstutingTrees(
       final ASTNode target, final List<ASTNode> substitutingTrees, final AST ast) {

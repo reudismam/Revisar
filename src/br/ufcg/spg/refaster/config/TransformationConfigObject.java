@@ -59,7 +59,7 @@ public class TransformationConfigObject {
   /**
    * Project information.
    */
-  private ProjectInfo  pi;
+  private String pi;
   
   public String getCommit() {
     return commit;
@@ -149,11 +149,11 @@ public class TransformationConfigObject {
     this.dstCu = dstCu;
   }
   
-  public ProjectInfo getPi() {
+  public String getPi() {
     return pi;
   }
   
-  public void setPi(ProjectInfo pi) {
+  public void setPi(String pi) {
     this.pi = pi;
   }
 }

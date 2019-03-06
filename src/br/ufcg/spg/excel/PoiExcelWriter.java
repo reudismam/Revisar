@@ -3,6 +3,7 @@ package br.ufcg.spg.excel;
 import br.ufcg.spg.cluster.Cluster;
 import br.ufcg.spg.cluster.ClusterFormatter;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -10,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import br.ufcg.spg.main.MainArguments;
+import org.apache.commons.io.FileUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -90,11 +93,22 @@ public class PoiExcelWriter {
         HSSFCell cellB1 = row1.createCell((short) 1);
         Cluster c = qfs.get(i).getCluster();
         String result = ClusterFormatter.getInstance().formatStringNodes(c.getNodes());
+        MainArguments main = MainArguments.getInstance();
+        FileUtils.writeStringToFile(new File(main.getProjectFolder() + "/cluster/" + sheet + "/" + qfs.get(i).getId() + ".txt"), result);
         String [] lines = result.split("\n");
         cellB1.setCellValue(lines[3]);
+        // Create COL-C from row-i and set data
+        HSSFCell cellC1 = row1.createCell((short) 2);
+        cellC1.setCellValue(c.getNodes().get(0).getProject());
         cellStyle = workbook.createCellStyle();
         cellStyle.setFillForegroundColor(HSSFColor.LIGHT_CORNFLOWER_BLUE.index);
-        cellB1.setCellStyle(cellStyle);
+        cellC1.setCellStyle(cellStyle);
+        // Create COL-D from row-i and set data
+        HSSFCell cellD1 = row1.createCell((short) 3);
+        cellD1.setCellValue(c.getNodes().get(0).getCommit());
+        cellStyle = workbook.createCellStyle();
+        cellStyle.setFillForegroundColor(HSSFColor.LIGHT_CORNFLOWER_BLUE.index);
+        cellD1.setCellStyle(cellStyle);
       }
       // Save the workbook in .xls file
       workbook.write(fos);
