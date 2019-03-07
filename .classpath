@@ -122,10 +122,29 @@
 	<classpathentry kind="lib" path="lib/astview/org.eclipse.jdt.astview_1.1.9.201406161921.jar"/>
 	<classpathentry kind="lib" path="lib/lsh/java-lsh-0.11.jar"/>
 	<classpathentry kind="lib" path="lib/lsh/java-string-similarity-0.12.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/EclipseLink 2.5.2">
-		<attributes>
-			<attribute name="owner.project.facets" value="jpt.jpa"/>
-		</attributes>
-	</classpathentry>
+	<classpathentry kind="lib" path="lib/EclipseLink 2.5.2/eclipselink/jlib/jpa/javax.persistence_2.1.0.v201304241213.jar"/>
+	<classpathentry kind="lib" path="lib/EclipseLink 2.5.2/eclipselink/jlib/jpa/javax.persistence.source_2.1.0.v201304241213.jar"/>
+	<classpathentry kind="lib" path="lib/EclipseLink 2.5.2/eclipselink/jlib/jpa/org.eclipse.persistence.jpa.modelgen_2.5.2.v20140319-9ad6abd.jar"/>
+	<classpathentry kind="lib" path="lib/EclipseLink 2.5.2/eclipselink/jlib/jpa/org.eclipse.persistence.jpa.modelgen.source_2.5.2.v20140319-9ad6abd.jar"/>
+	<classpathentry kind="lib" path="lib/EclipseLink 2.5.2/eclipselink/jlib/jpa/org.eclipse.persistence.jpars_2.5.2.v20140319-9ad6abd.jar"/>
+	<classpathentry kind="lib" path="lib/EclipseLink 2.5.2/eclipselink/jlib/jpa/org.eclipse.persistence.jpars.source_2.5.2.v20140319-9ad6abd.jar"/>
+	<classpathentry kind="lib" path="lib/EclipseLink 2.5.2/eclipselink/jlib/moxy/com.sun.tools.xjc_2.2.0.jar"/>
+	<classpathentry kind="lib" path="lib/EclipseLink 2.5.2/eclipselink/jlib/moxy/com.sun.xml.bind_2.2.0.v201004141950.jar"/>
+	<classpathentry kind="lib" path="lib/EclipseLink 2.5.2/eclipselink/jlib/moxy/javax.activation_1.1.0.v201108011116.jar"/>
+	<classpathentry kind="lib" path="lib/EclipseLink 2.5.2/eclipselink/jlib/moxy/javax.mail_1.4.0.v201005080615.jar"/>
+	<classpathentry kind="lib" path="lib/EclipseLink 2.5.2/eclipselink/jlib/moxy/javax.xml.bind_2.2.0.v201105210648.jar"/>
+	<classpathentry kind="lib" path="lib/EclipseLink 2.5.2/eclipselink/jlib/moxy/javax.xml.stream_1.0.1.v201004272200.jar"/>
+	<classpathentry kind="lib" path="lib/EclipseLink 2.5.2/eclipselink/jlib/sdo/commonj.sdo_2.1.1.v201112051852.jar"/>
+	<classpathentry kind="lib" path="lib/EclipseLink 2.5.2/eclipselink/jlib/eclipselink.jar"/>
+	<classpathentry kind="lib" path="lib/EclipseLink 2.5.2/eclipselink/utils/dbws/eclipselink-dbwsutils.jar"/>
+	<classpathentry kind="lib" path="lib/EclipseLink 2.5.2/eclipselink/utils/dbws/javax.servlet_2.4.0.v200806031604.jar"/>
+	<classpathentry kind="lib" path="lib/EclipseLink 2.5.2/eclipselink/utils/dbws/javax.wsdl_1.6.2.v201012040545.jar"/>
+	<classpathentry kind="lib" path="lib/EclipseLink 2.5.2/eclipselink/utils/dbws/org.eclipse.persistence.oracleddlparser_1.0.0.v20130531.jar"/>
+	<classpathentry kind="lib" path="lib/EclipseLink 2.5.2/eclipselink/utils/dbws/org.eclipse.persistence.oracleddlparser.source_1.0.0.v20130531.jar"/>
+	<classpathentry kind="lib" path="lib/EclipseLink 2.5.2/eclipselink/utils/rename/package-rename.jar"/>
+	<classpathentry kind="lib" path="lib/EclipseLink 2.5.2/eclipselink/utils/workbench/jlib/connector.jar"/>
+	<classpathentry kind="lib" path="lib/EclipseLink 2.5.2/eclipselink/utils/workbench/jlib/eclipselinkmw.jar"/>
+	<classpathentry kind="lib" path="lib/EclipseLink 2.5.2/eclipselink/utils/workbench/jlib/elmwcore.jar"/>
+	<classpathentry kind="lib" path="lib/EclipseLink 2.5.2/eclipselink/utils/workbench/jlib/xercesImpl.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

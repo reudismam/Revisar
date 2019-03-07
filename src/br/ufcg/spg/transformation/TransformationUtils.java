@@ -157,10 +157,13 @@ public final class TransformationUtils {
   /**
    * Computes the template for some cluster.
    */
-  @SuppressWarnings("unchecked")
   public static void transformationsMoreProjects(List<Cluster> clusters) {
     clusters = rebuildClusters(clusters);
     transformations(clusters);
+    postProcessTransformations();
+  }
+
+  private static void postProcessTransformations() {
     clusterIndex = 1;
     ScriptDistanceMetric<StringNodeData> metric =
             new ScriptDistanceMetric<>();

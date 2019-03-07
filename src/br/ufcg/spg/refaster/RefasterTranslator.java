@@ -19,8 +19,6 @@ import br.ufcg.spg.project.ProjectInfo;
 import br.ufcg.spg.refaster.config.TransformationConfigObject;
 import br.ufcg.spg.replacement.Replacement;
 import br.ufcg.spg.replacement.ReplacementUtils;
-import br.ufcg.spg.type.TypeUtils;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -29,7 +27,6 @@ import org.apache.commons.io.FileUtils;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jface.text.BadLocationException;
@@ -123,12 +120,12 @@ public class RefasterTranslator {
     return ba;
   }
 
-  private static Tuple<CompilationUnit, CompilationUnit> getCompilationUnits(Edit srcEdit, Edit dstEdit) throws  IOException {
-    //final ProjectInfo pi = checkoutIfDiffer(srcEdit);
+  private static Tuple<CompilationUnit, CompilationUnit> getCompilationUnits(
+      Edit srcEdit, Edit dstEdit) throws  IOException {
     MainArguments main = MainArguments.getInstance();
-    Repository repository = GitUtils.startRepo(main.getProjectFolder() + "/" + dstEdit.getProject());
+    Repository repository = GitUtils.startRepo(main.getProjectFolder() + "/" 
+        + dstEdit.getProject());
     RevCommit revCommit = GitUtils.extractCommit(repository, dstEdit.getCommit());
-    System.out.println(revCommit.getId().getName());
     RevCommit befCommit = new GitUtils().getPrevHash(repository, revCommit);
     String before = GitUtils.getEditedFile(repository, befCommit.getTree(), srcEdit.getPath());
     String after = GitUtils.getEditedFile(repository, revCommit.getTree(), dstEdit.getPath());
