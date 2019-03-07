@@ -224,5 +224,4 @@ public class TypeUtils {
       throw new RuntimeException(e);
     }
   }
-
 }
