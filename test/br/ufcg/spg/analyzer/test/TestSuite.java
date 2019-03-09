@@ -67,7 +67,6 @@ public class TestSuite {
   @Test
   public void extractEdits() 
       throws IOException {
-    configMainArguments();
     try {
       final TechniqueConfig config = TechniqueConfig.getInstance();
       config.setAllCommits(true);
