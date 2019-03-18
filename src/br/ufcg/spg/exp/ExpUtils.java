@@ -12,17 +12,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Random;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -31,7 +22,13 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 
 public final class ExpUtils {
 
+  private static List<String> completed = Arrays.asList(new String[] {"RxJava", "kafka"});
+
   private ExpUtils() {
+  }
+
+  public static List<String> getCompleted() {
+    return completed;
   }
   
   /**
@@ -232,10 +229,16 @@ public final class ExpUtils {
     if (lastEdit == null) {
       return projs;
     }
-    final String lastCommit = lastEdit.getCommit();
-    final String project = lastEdit.getDst().getProject();
+    String lastCommit = lastEdit.getCommit();
+    String project = lastEdit.getDst().getProject();
     final List<Tuple<String, String>> remainPj = new ArrayList<>();
     boolean include = false;
+    int index = projects.indexOf(project);
+    if (index < projects.size() - 1 && completed.contains(project)) {
+      project = projects.get(index + 1);
+      lastCommit = null;
+    }
+
     for (final Tuple<String, String> pj : projs) {
       if (pj.getItem1().equals(project)) {
         include = true;

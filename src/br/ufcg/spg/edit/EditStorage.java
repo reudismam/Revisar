@@ -46,7 +46,11 @@ public class EditStorage {
       instance = new EditStorage();
     }
     return instance;
-  } 
+  }
+
+  public static synchronized void clear() {
+    instance = null;
+  }
 
   public Cache<CommitFile, CompilationUnit> getCunits() {
     return cunits;

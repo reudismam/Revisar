@@ -129,8 +129,8 @@ public final class ClusterFormatter {
     int count = 0;
     for (final Edit node : srcNodes) {
       beforeNodes.append(node.getText()).append('\n');
-      afterNodes.append(node.getDst().getText()).append('\n');
-      if (++count == 4) {
+      afterNodes.append(node.getDst().getText()).append(' ').append(node.getProject()).append(' ').append(node.getCommit()).append('\n');
+      if (++count == 10000) {
         break;
       }
     }
@@ -145,7 +145,7 @@ public final class ClusterFormatter {
   /**
    * Format cluster.
    */
-  public StringBuilder formatCluster(final Cluster clusteri, 
+  public StringBuilder formatCluster(final Cluster clusteri,
       final Cluster clusterj, final String refaster) {
     StringBuilder content = new StringBuilder();
     content.append(formatHeader());

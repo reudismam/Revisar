@@ -16,6 +16,7 @@ import br.ufcg.spg.ml.editoperation.Script;
 import br.ufcg.spg.tree.RevisarTree;
 import br.ufcg.spg.tree.RevisarTreeParser;
 import br.ufcg.spg.tree.TreeTraversal;
+import jdk.nashorn.internal.runtime.regexp.joni.ast.StringNode;
 
 import java.util.Hashtable;
 import java.util.List;
@@ -31,14 +32,28 @@ public final class EditScriptUtils {
    */
   public static Script<StringNodeData> getCluster(final Cluster srcCluster) {
     String srcAu = srcCluster.getAu();
-    srcAu = "ROOT(" + srcAu + ")";
-    RevisarTree<String> srcTree = RevisarTreeParser.parser(srcAu);
-    String srcEditTree = StringTreeConverter.convertRevisasrTreeToString(srcTree);
+    String srcEditTree = getStringTree(srcAu);
     Cluster dstCluster = srcCluster.getDst();
     String dstAu = dstCluster.getAu();
-    dstAu = "ROOT(" + dstAu + ")";
-    RevisarTree<String> dstTree = RevisarTreeParser.parser(dstAu);
-    String dstEditTree = StringTreeConverter.convertRevisasrTreeToString(dstTree);
+    String dstEditTree = getStringTree(dstAu);
+    Script<StringNodeData> script = getEditScript(srcCluster, srcEditTree, dstEditTree);
+    ConnectedComponentManager<EditNode<StringNodeData>> con = new ConnectedComponentManager<>();
+    List<List<EditNode<StringNodeData>>> c = con.connectedComponents(script.getList(),
+            new FullConnectedEditNode<>(script.getList()));
+    return script;
+  }
+
+  private static String getStringTree(String au) {
+    au = "ROOT(" + au + ")";
+    RevisarTree<String> srcTree = RevisarTreeParser.parser(au);
+    return StringTreeConverter.convertRevisasrTreeToString(srcTree);
+  }
+
+  public static Script<StringNodeData> getEditScript(String srcEditTree, String dstEditTree) {
+    return getEditScript(null, srcEditTree, dstEditTree);
+  }
+
+  private static Script<StringNodeData> getEditScript(Cluster srcCluster, String srcEditTree, String dstEditTree) {
     BracketStringInputParser parser = new BracketStringInputParser();
     Node<StringNodeData> t1 = parser.fromString(srcEditTree);
     Node<StringNodeData> t2 = parser.fromString(dstEditTree);
@@ -50,18 +65,15 @@ public final class EditScriptUtils {
     // List<Node<StringNodeData>> right = postOrder.postOrderTraversal(t2);
     RevisarTree<StringNodeData> rt1 = ConverterHelper.convertNodeToRevisarTree(t1);
     RevisarTree<StringNodeData> rt2 = ConverterHelper.convertNodeToRevisarTree(t2);
-    List<RevisarTree<StringNodeData>> left = 
+    List<RevisarTree<StringNodeData>> left =
         new TreeTraversal<StringNodeData>().postOrderTraversal(rt1);
-    List<RevisarTree<StringNodeData>> right = 
+    List<RevisarTree<StringNodeData>> right =
         new TreeTraversal<StringNodeData>().postOrderTraversal(rt2);
-    Map<RevisarTree<StringNodeData>, RevisarTree<StringNodeData>> m 
+    Map<RevisarTree<StringNodeData>, RevisarTree<StringNodeData>> m
         = mapping(t1, t2, mapping, left, right);
-    List<EditNode<StringNodeData>> edits = 
+    List<EditNode<StringNodeData>> edits =
         new EditScriptGenerator<StringNodeData>().editScript(rt1, rt2, m);
-    Script<StringNodeData> script = new Script<StringNodeData>(edits, srcCluster);
-    ConnectedComponentManager<EditNode<StringNodeData>> con = new ConnectedComponentManager<>();
-    List<List<EditNode<StringNodeData>>> c = con.connectedComponents(script.getList(), 
-        new FullConnectedEditNode<StringNodeData>(script.getList()));
+    Script<StringNodeData> script = new Script<>(edits, srcCluster);
     return script;
   }
 

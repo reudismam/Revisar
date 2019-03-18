@@ -42,7 +42,7 @@ public final class TechniqueConfig {
   /**
    * Defines whether Refaster transformation should be generated.
    */
-  private boolean createRule = true;
+  private boolean createRule = false;
   
   private boolean fullTemplateRules = false;
   

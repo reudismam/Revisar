@@ -102,7 +102,7 @@ public class TechniqueUtils {
     });
     executor.shutdown(); // <-- reject all further submissions
     try {
-      future.get(60, TimeUnit.SECONDS); // <-- wait 30 seconds to finish
+      future.get(5, TimeUnit.SECONDS); // <-- wait 30 seconds to finish
     } catch (final InterruptedException e) { // <-- possible error cases
       logger.trace("job was interrupted");
     } catch (final ExecutionException e) {

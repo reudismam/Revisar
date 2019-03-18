@@ -392,6 +392,8 @@ public final class TransformationUtils {
       QuickFixManager.getInstance().getQuickFixes().add(qf);
       String counterFormated =  String.format("%03d", clusterIndex++);
       String path = folderPath + "transformations" + '/' + counterFormated + ".txt";
+      String pathXls = folderPath + "transformations" + '/' + counterFormated + ".xls";
+      PoiExcelWriter.save(pathXls, "Transformations", counterFormated, clusteri, clusterj);
       final File clusterFile = new File(path);
       StringBuilder content = ClusterFormatter.getInstance()
           .formatCluster(clusteri, clusterj, refaster);

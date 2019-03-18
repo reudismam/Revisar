@@ -1,5 +1,6 @@
 package br.ufcg.spg.git;
 
+import at.unisalzburg.dbresearch.apted.node.StringNodeData;
 import br.ufcg.spg.bean.EditFile;
 import br.ufcg.spg.bean.Tuple;
 import br.ufcg.spg.edit.Edit;
@@ -7,6 +8,9 @@ import br.ufcg.spg.matcher.IMatcher;
 import br.ufcg.spg.matcher.LineNodeMatcher;
 import br.ufcg.spg.matcher.calculator.MatchCalculator;
 import br.ufcg.spg.matcher.calculator.NodeMatchCalculator;
+import br.ufcg.spg.ml.clustering.EditScriptUtils;
+import br.ufcg.spg.ml.editoperation.EditNode;
+import br.ufcg.spg.ml.editoperation.Script;
 import br.ufcg.spg.parser.JParser;
 
 import java.io.ByteArrayOutputStream;
@@ -14,7 +18,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -45,9 +48,6 @@ import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.diff.DiffEntry.ChangeType;
 import org.eclipse.jgit.diff.DiffFormatter;
 import org.eclipse.jgit.diff.RawTextComparator;
-import org.eclipse.jgit.errors.CorruptObjectException;
-import org.eclipse.jgit.errors.IncorrectObjectTypeException;
-import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectLoader;
@@ -583,16 +583,48 @@ public class GitUtils {
           || isMultipleLines(edit.getBeginB(), edit.getEndB())) {
         continue;
       }
+      ASTNode before = null;
+      ASTNode after = null;
       try {
-        ASTNode before = getNode(tuple.getItem1(), edit.getEndA());
-        ASTNode after = getNode(tuple.getItem2(), edit.getEndB());
+        before = getBestNode(tuple.getItem1(), edit.getEndA());
+        after = getBestNode(tuple.getItem2(), edit.getEndB());
         Tuple<ASTNode, ASTNode> ba = new Tuple<>(before, after);
         edits.add(ba);
       } catch (Exception e) {
         logger.trace("Not a valid AST node.");
       }
+      /*try {
+        List<ASTNode> nodesA = getNodesAtLine(tuple.getItem1(), edit.getEndA());
+        List<ASTNode> nodesB = getNodesAtLine(tuple.getItem2(), edit.getEndB());
+        evaluateEdit(before, after, nodesA, nodesB);
+      } catch(Exception e) {
+        //IGNORED
+      }*/
     }
     return edits;
+  }
+
+  private static boolean evaluateEdit(ASTNode bestA, ASTNode bestB, List<ASTNode> nodesA, List<ASTNode> nodesB) {
+    String treeA = getStringTree(nodesA);
+    String treeB = getStringTree(nodesB);
+    Script<StringNodeData> script = EditScriptUtils.getEditScript(treeA, treeB);
+    for (EditNode<StringNodeData> edit : script.getList()) {
+       logger.trace(edit);
+    }
+    logger.trace(bestA + " : " + bestB);
+    return true;
+  }
+
+  private static String getStringTree(List<ASTNode> nodes) {
+    StringBuilder sb = new StringBuilder("{a");
+    for (ASTNode node : nodes) {
+      String str = node.toString();
+      //remove non-alphabetic characters
+      str = str.replaceAll("[^a-zA-Z]", "");
+      sb.append("{" + str + "}");
+    }
+    sb.append("}");
+    return sb.toString();
   }
 
   /**
@@ -601,13 +633,9 @@ public class GitUtils {
    * @param source source code.
    * @param line   line.
    */
-  public static ASTNode getNode(String source, int line) {
+  public static ASTNode getBestNode(String source, int line) {
     try {
-      FileUtils.writeStringToFile(new File("temp.java"), source);
-      CompilationUnit unit = JParser.parse("temp.java", source);
-      IMatcher<ASTNode> evaluator = new LineNodeMatcher(unit, line);
-      MatchCalculator<ASTNode> match = new NodeMatchCalculator(evaluator);
-      List<ASTNode> nodes = match.getNodes(unit);
+      List<ASTNode> nodes = getNodesAtLine(source, line);
       ASTNode best = nodes.get(0);
       for (ASTNode node : nodes) {
         if (node.getLength() > best.getLength()) {
@@ -618,6 +646,14 @@ public class GitUtils {
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
+  }
+
+  private static List<ASTNode> getNodesAtLine(String source, int line) throws IOException {
+    FileUtils.writeStringToFile(new File("temp.java"), source);
+    CompilationUnit unit = JParser.parse("temp.java", source);
+    IMatcher<ASTNode> evaluator = new LineNodeMatcher(unit, line);
+    MatchCalculator<ASTNode> match = new NodeMatchCalculator(evaluator);
+    return match.getNodes(unit);
   }
 
   private static boolean isMultipleLines(int start, int end) {

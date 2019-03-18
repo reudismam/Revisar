@@ -2,6 +2,8 @@ package br.ufcg.spg.analyzer.test;
 
 import br.ufcg.spg.bean.EditFile;
 import br.ufcg.spg.bean.Tuple;
+import br.ufcg.spg.cli.CheckStyleReport;
+import br.ufcg.spg.cli.CheckStyleUtils;
 import br.ufcg.spg.cluster.Cluster;
 import br.ufcg.spg.cluster.ClusterUnifier;
 import br.ufcg.spg.cluster.ClusterUtils;
@@ -42,6 +44,8 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import org.junit.Before;
 import org.junit.Test;
 
+import static br.ufcg.spg.cli.CheckStyleUtils.getCheckyStyleReports;
+
 public class TestSuite {
 
   private static final Logger logger = LogManager.getLogger(TestSuite.class.getName());
@@ -76,6 +80,8 @@ public class TestSuite {
       testBaseTableExpProjects(projects);
     } catch (OutOfMemoryError e) {
       logger.trace(e.getMessage());
+      System.out.println();
+      EditStorage.clear();
       extractEdits();
     }
   }
@@ -128,10 +134,8 @@ public class TestSuite {
     for (Cluster c : clusters) {
       allEdits.addAll(c.getNodes());
     }
-    Map<String, List<Edit>> dcaps = ClusterUnifier.getInstance().groupEditsByDCap(allEdits,
+    return ClusterUnifier.getInstance().groupEditsByDCap(allEdits,
             TechniqueConfig.getInstance());
-
-    return dcaps;
   }
   
   @Test
@@ -348,7 +352,7 @@ public class TestSuite {
   /**
    * Gets e-mails.
    */
-  public void getEmails() throws IOException, GitAPIException {
+  public void getEmails() throws IOException {
     final List<String> emails = ExpUtils.allEmails();
     ExpUtils.save(emails, "email.txt");
     final List<String> shiffle = ExpUtils.shuffleList(emails);
@@ -359,7 +363,7 @@ public class TestSuite {
    * Gets e-mails.
    */
   @Test
-  public void filterCommitsByMessage() throws IOException, GitAPIException {
+  public void filterCommitsByMessage() throws IOException {
     final List<String> filtered = ExpUtils.filterCommits();
     ExpUtils.save(filtered, "filtered_commits.txt");
     //final List<String> shiffle = ExpUtils.shuffleList(emails);
@@ -412,12 +416,18 @@ public class TestSuite {
   /**
    * Test base method.
    * 
-   * @throws ExecutionException
-   * 
    */
   public void testBaseTable(final String project, final List<EditFile> files)
       throws IOException {
     testBaseTable(project, files, "");
+  }
+
+  @Test
+  public void reports() {
+    List<CheckStyleReport> reports = CheckStyleUtils.getCheckyStyleReports("temp1.java");
+    for (CheckStyleReport report : reports) {
+      System.out.println(report);
+    }
   }
 
   /**
@@ -436,8 +446,6 @@ public class TestSuite {
 
   /**
    * Test base method.
-   * 
-   * @throws ExecutionException
    * 
    */
   public void testBaseTable(final String project, final List<EditFile> files, final String hashId)

@@ -1,0 +1,1456 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="EclipseModuleManager">
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/annotations-2.0.1.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/antlr-3.5.2.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/antlr-runtime-3.5.2.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/aopalliance-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/app-1.3.200-v20130910-1609.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/asm-3.1.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/cglib-2.2.1-v20090111.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/client-2.1.0-SNAPSHOT.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/client.diff-2.1.0-SNAPSHOT.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/common-3.6.200-v20130402-1505.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/commons-codec-1.10.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/commons-io-2.0.1.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/commons-lang3-3.1.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/commons-logging-1.2.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/contenttype-3.4.200-v20140207-1251.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/core-2.1.0-SNAPSHOT.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/gen.antlr3-2.1.0-SNAPSHOT.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/gen.antlr3-antlr-2.1.0-SNAPSHOT.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/gen.antlr3-json-2.1.0-SNAPSHOT.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/gen.antlr3-php-2.1.0-SNAPSHOT.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/gen.antlr3-r-2.1.0-SNAPSHOT.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/gen.antlr3-xml-2.1.0-SNAPSHOT.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/gen.c-2.1.0-SNAPSHOT.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/gen.css-2.1.0-SNAPSHOT.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/gen.jdt-2.1.0-SNAPSHOT.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/gen.js-2.1.0-SNAPSHOT.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/gen.ruby-2.1.0-SNAPSHOT.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/gen.srcml-2.1.0-SNAPSHOT.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/gson-2.4.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/guava-18.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/guice-3.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/javassist-3.18.2-GA.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/javax.inject-1.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/javax.servlet-api-3.1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/jetty-http-9.3.6.v20151106.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/jetty-io-9.3.6.v20151106.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/jetty-security-9.3.6.v20151106.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/jetty-server-9.3.6.v20151106.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/jetty-servlet-9.3.6.v20151106.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/jetty-util-9.3.6.v20151106.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/jetty-webapp-9.3.6.v20151106.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/jetty-xml-9.3.6.v20151106.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/jobs-3.6.0-v20140424-0053.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/jrubyparser-0.5.3.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/jsr305-3.0.1.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/jtidy-r938.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/junit-4.8.2.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/org.eclipse.core.resources-3.10.0.v20150423-0755.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/org.eclipse.jdt.core-3.11.0.v20150602-1242.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/osgi-3.10.0-v20140606-1445.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/ph-commons-8.3.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/ph-css-5.0.1.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/preferences-3.5.200-v20140224-1527.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/reflections-0.9.10.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/registry-3.5.400-v20140428-1507.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/rendersnake-1.9.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/rhino-1.7.7.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/runtime-3.10.0-v20140318-2214.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/simmetrics-core-3.2.3.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/slf4j-api-1.7.21.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/spark-core-2.5.2.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/spring-aop-4.1.6.RELEASE.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/spring-beans-4.1.6.RELEASE.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/spring-context-4.1.6.RELEASE.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/spring-core-4.1.6.RELEASE.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/spring-expression-4.1.6.RELEASE.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/spring-web-4.1.6.RELEASE.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/spring-webmvc-4.1.6.RELEASE.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/ST4-4.0.8.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/trove4j-3.0.3.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/websocket-api-9.3.6.v20151106.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/websocket-client-9.3.6.v20151106.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/websocket-common-9.3.6.v20151106.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/websocket-server-9.3.6.v20151106.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/gumtree/websocket-servlet-9.3.6.v20151106.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/jdt/commons-logging-1.1.3.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/jdt/org.eclipse.core.commands-3.6.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/jdt/org.eclipse.core.contenttype-3.4.200.v20130326-1255.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/jdt/org.eclipse.core.jobs-3.5.300.v20130429-1813.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/jdt/org.eclipse.core.resources-3.8.101.v20130717-0806.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/jdt/org.eclipse.equinox.common-3.6.200.v20130402-1505.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/jdt/org.eclipse.equinox.preferences-3.5.100.v20130422-1538.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/jdt/org.eclipse.equinox.registry-3.5.301.v20130717-1549.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/jdt/org.eclipse.jdt.core-3.10.0.v20140604-1726.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/jdt/org.eclipse.osgi-3.9.1.v20130814-1242.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/jdt/org.eclipse.text-3.5.101.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/jdt/runtime-3.9.0-v20130326-1255.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/console-tree-builder-2.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/error_prone_refaster-2.1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/org.eclipse.jgit-4.8.0.201706111038-r-javadoc.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/org.eclipse.jgit-4.8.0.201706111038-r.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/commons-math3-3.6.1/commons-math3-3.6.1-javadoc.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/commons-math3-3.6.1/commons-math3-3.6.1-sources.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/commons-math3-3.6.1/commons-math3-3.6.1-test-sources.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/commons-math3-3.6.1/commons-math3-3.6.1-tests.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/commons-math3-3.6.1/commons-math3-3.6.1-tools.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/commons-math3-3.6.1/commons-math3-3.6.1.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/postgres/postgresql-42.1.4.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/validation-api-1.0.0.GA.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/org.eclipse.jgit-4.9.0.201710071750-r.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/guava/guava-19.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/commons-validator-1.6.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/log4j/log4j-api-2.11.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/log4j/log4j-core-2.11.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/apted/apted.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/dbscan/dbscan-0.1.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/urauc.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/urau.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/hoau.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/dbscan.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/poi/poi-3.17.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/poi/poi-ooxml-3.17.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/poi/xmlbeans-2.3.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/poi/dom4j-1.6.1.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/astview/org.eclipse.jdt.astview_1.1.9.201406161921.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/lsh/java-lsh-0.11.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/lsh/java-string-similarity-0.12.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/jlib/jpa/javax.persistence_2.1.0.v201304241213.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/jlib/jpa/javax.persistence.source_2.1.0.v201304241213.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/jlib/jpa/org.eclipse.persistence.jpa.modelgen_2.5.2.v20140319-9ad6abd.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/jlib/jpa/org.eclipse.persistence.jpa.modelgen.source_2.5.2.v20140319-9ad6abd.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/jlib/jpa/org.eclipse.persistence.jpars_2.5.2.v20140319-9ad6abd.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/jlib/jpa/org.eclipse.persistence.jpars.source_2.5.2.v20140319-9ad6abd.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/jlib/moxy/com.sun.tools.xjc_2.2.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/jlib/moxy/com.sun.xml.bind_2.2.0.v201004141950.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/jlib/moxy/javax.activation_1.1.0.v201108011116.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/jlib/moxy/javax.mail_1.4.0.v201005080615.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/jlib/moxy/javax.xml.bind_2.2.0.v201105210648.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/jlib/moxy/javax.xml.stream_1.0.1.v201004272200.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/jlib/sdo/commonj.sdo_2.1.1.v201112051852.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/jlib/eclipselink.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/utils/dbws/eclipselink-dbwsutils.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/utils/dbws/javax.servlet_2.4.0.v200806031604.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/utils/dbws/javax.wsdl_1.6.2.v201012040545.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/utils/dbws/org.eclipse.persistence.oracleddlparser_1.0.0.v20130531.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/utils/dbws/org.eclipse.persistence.oracleddlparser.source_1.0.0.v20130531.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/utils/rename/package-rename.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/utils/workbench/jlib/connector.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/utils/workbench/jlib/eclipselinkmw.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/utils/workbench/jlib/elmwcore.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/utils/workbench/jlib/xercesImpl.jar!/" />
+    <src_description expected_position="0">
+      <src_folder value="file://$MODULE_DIR$/src" expected_position="0" />
+      <src_folder value="file://$MODULE_DIR$/test" expected_position="1" />
+      <src_folder value="file://$MODULE_DIR$/src/main/resources" expected_position="2" />
+    </src_description>
+  </component>
+  <component name="FacetManager">
+    <facet type="jpa" name="JPA">
+      <configuration>
+        <setting name="validation-enabled" value="true" />
+        <datasource-mapping>
+          <factory-entry name="AntiUnification" />
+        </datasource-mapping>
+        <naming-strategy-map />
+        <deploymentDescriptor name="persistence.xml" url="file://$MODULE_DIR$/src/META-INF/persistence.xml" />
+      </configuration>
+    </facet>
+  </component>
+  <component name="NewModuleRootManager">
+    <output url="file://$MODULE_DIR$/bin" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/resources" isTestSource="false" />
+    </content>
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="module-library">
+      <library name="junit4">
+        <CLASSES>
+          <root url="jar://$APPLICATION_HOME_DIR$/lib/junit-4.12.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="annotations-2.0.1.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/annotations-2.0.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="antlr-3.5.2.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/antlr-3.5.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="antlr-runtime-3.5.2.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/antlr-runtime-3.5.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="aopalliance-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/aopalliance-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="app-1.3.200-v20130910-1609.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/app-1.3.200-v20130910-1609.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="asm-3.1.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/asm-3.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="cglib-2.2.1-v20090111.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/cglib-2.2.1-v20090111.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="client-2.1.0-SNAPSHOT.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/client-2.1.0-SNAPSHOT.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="client.diff-2.1.0-SNAPSHOT.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/client.diff-2.1.0-SNAPSHOT.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="common-3.6.200-v20130402-1505.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/common-3.6.200-v20130402-1505.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="commons-codec-1.10.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/commons-codec-1.10.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="commons-io-2.0.1.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/commons-io-2.0.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="commons-lang3-3.1.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/commons-lang3-3.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="commons-logging-1.2.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/commons-logging-1.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="contenttype-3.4.200-v20140207-1251.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/contenttype-3.4.200-v20140207-1251.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="core-2.1.0-SNAPSHOT.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/core-2.1.0-SNAPSHOT.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="gen.antlr3-2.1.0-SNAPSHOT.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/gen.antlr3-2.1.0-SNAPSHOT.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="gen.antlr3-antlr-2.1.0-SNAPSHOT.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/gen.antlr3-antlr-2.1.0-SNAPSHOT.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="gen.antlr3-json-2.1.0-SNAPSHOT.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/gen.antlr3-json-2.1.0-SNAPSHOT.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="gen.antlr3-php-2.1.0-SNAPSHOT.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/gen.antlr3-php-2.1.0-SNAPSHOT.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="gen.antlr3-r-2.1.0-SNAPSHOT.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/gen.antlr3-r-2.1.0-SNAPSHOT.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="gen.antlr3-xml-2.1.0-SNAPSHOT.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/gen.antlr3-xml-2.1.0-SNAPSHOT.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="gen.c-2.1.0-SNAPSHOT.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/gen.c-2.1.0-SNAPSHOT.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="gen.css-2.1.0-SNAPSHOT.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/gen.css-2.1.0-SNAPSHOT.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="gen.jdt-2.1.0-SNAPSHOT.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/gen.jdt-2.1.0-SNAPSHOT.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="gen.js-2.1.0-SNAPSHOT.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/gen.js-2.1.0-SNAPSHOT.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="gen.ruby-2.1.0-SNAPSHOT.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/gen.ruby-2.1.0-SNAPSHOT.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="gen.srcml-2.1.0-SNAPSHOT.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/gen.srcml-2.1.0-SNAPSHOT.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="gson-2.4.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/gson-2.4.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="guava-18.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/guava-18.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="guice-3.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/guice-3.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="javassist-3.18.2-GA.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/javassist-3.18.2-GA.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="javax.inject-1.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/javax.inject-1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="javax.servlet-api-3.1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/javax.servlet-api-3.1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="jetty-http-9.3.6.v20151106.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/jetty-http-9.3.6.v20151106.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="jetty-io-9.3.6.v20151106.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/jetty-io-9.3.6.v20151106.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="jetty-security-9.3.6.v20151106.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/jetty-security-9.3.6.v20151106.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="jetty-server-9.3.6.v20151106.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/jetty-server-9.3.6.v20151106.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="jetty-servlet-9.3.6.v20151106.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/jetty-servlet-9.3.6.v20151106.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="jetty-util-9.3.6.v20151106.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/jetty-util-9.3.6.v20151106.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="jetty-webapp-9.3.6.v20151106.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/jetty-webapp-9.3.6.v20151106.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="jetty-xml-9.3.6.v20151106.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/jetty-xml-9.3.6.v20151106.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="jobs-3.6.0-v20140424-0053.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/jobs-3.6.0-v20140424-0053.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="jrubyparser-0.5.3.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/jrubyparser-0.5.3.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="jsr305-3.0.1.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/jsr305-3.0.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="jtidy-r938.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/jtidy-r938.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="junit-4.8.2.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/junit-4.8.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.eclipse.core.resources-3.10.0.v20150423-0755.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/org.eclipse.core.resources-3.10.0.v20150423-0755.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.eclipse.jdt.core-3.11.0.v20150602-1242.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/org.eclipse.jdt.core-3.11.0.v20150602-1242.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="file://C:/Users/SPG-04/.m2/repository/org/eclipse/scout/sdk/deps/org.eclipse.jdt.core/3.11.0.v20150602-1242/org.eclipse.jdt.core-3.11.0.v20150602-1242-sources.jar" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="osgi-3.10.0-v20140606-1445.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/osgi-3.10.0-v20140606-1445.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="ph-commons-8.3.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/ph-commons-8.3.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="ph-css-5.0.1.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/ph-css-5.0.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="preferences-3.5.200-v20140224-1527.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/preferences-3.5.200-v20140224-1527.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="reflections-0.9.10.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/reflections-0.9.10.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="registry-3.5.400-v20140428-1507.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/registry-3.5.400-v20140428-1507.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="rendersnake-1.9.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/rendersnake-1.9.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="rhino-1.7.7.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/rhino-1.7.7.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="runtime-3.10.0-v20140318-2214.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/runtime-3.10.0-v20140318-2214.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="simmetrics-core-3.2.3.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/simmetrics-core-3.2.3.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="slf4j-api-1.7.21.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/slf4j-api-1.7.21.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="spark-core-2.5.2.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/spark-core-2.5.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="spring-aop-4.1.6.RELEASE.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/spring-aop-4.1.6.RELEASE.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="spring-beans-4.1.6.RELEASE.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/spring-beans-4.1.6.RELEASE.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="spring-context-4.1.6.RELEASE.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/spring-context-4.1.6.RELEASE.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="spring-core-4.1.6.RELEASE.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/spring-core-4.1.6.RELEASE.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="spring-expression-4.1.6.RELEASE.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/spring-expression-4.1.6.RELEASE.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="spring-web-4.1.6.RELEASE.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/spring-web-4.1.6.RELEASE.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="spring-webmvc-4.1.6.RELEASE.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/spring-webmvc-4.1.6.RELEASE.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="ST4-4.0.8.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/ST4-4.0.8.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="trove4j-3.0.3.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/trove4j-3.0.3.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="websocket-api-9.3.6.v20151106.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/websocket-api-9.3.6.v20151106.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="websocket-client-9.3.6.v20151106.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/websocket-client-9.3.6.v20151106.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="websocket-common-9.3.6.v20151106.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/websocket-common-9.3.6.v20151106.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="websocket-server-9.3.6.v20151106.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/websocket-server-9.3.6.v20151106.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="websocket-servlet-9.3.6.v20151106.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/gumtree/websocket-servlet-9.3.6.v20151106.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="commons-logging-1.1.3.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/jdt/commons-logging-1.1.3.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.eclipse.core.commands-3.6.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/jdt/org.eclipse.core.commands-3.6.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.eclipse.core.contenttype-3.4.200.v20130326-1255.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/jdt/org.eclipse.core.contenttype-3.4.200.v20130326-1255.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.eclipse.core.jobs-3.5.300.v20130429-1813.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/jdt/org.eclipse.core.jobs-3.5.300.v20130429-1813.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.eclipse.core.resources-3.8.101.v20130717-0806.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/jdt/org.eclipse.core.resources-3.8.101.v20130717-0806.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.eclipse.equinox.common-3.6.200.v20130402-1505.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/jdt/org.eclipse.equinox.common-3.6.200.v20130402-1505.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.eclipse.equinox.preferences-3.5.100.v20130422-1538.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/jdt/org.eclipse.equinox.preferences-3.5.100.v20130422-1538.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.eclipse.equinox.registry-3.5.301.v20130717-1549.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/jdt/org.eclipse.equinox.registry-3.5.301.v20130717-1549.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.eclipse.jdt.core-3.10.0.v20140604-1726.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/jdt/org.eclipse.jdt.core-3.10.0.v20140604-1726.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.eclipse.osgi-3.9.1.v20130814-1242.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/jdt/org.eclipse.osgi-3.9.1.v20130814-1242.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.eclipse.text-3.5.101.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/jdt/org.eclipse.text-3.5.101.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="runtime-3.9.0-v20130326-1255.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/jdt/runtime-3.9.0-v20130326-1255.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="console-tree-builder-2.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/console-tree-builder-2.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="error_prone_refaster-2.1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/error_prone_refaster-2.1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.eclipse.jgit-4.8.0.201706111038-r-javadoc.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/org.eclipse.jgit-4.8.0.201706111038-r-javadoc.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.eclipse.jgit-4.8.0.201706111038-r.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/org.eclipse.jgit-4.8.0.201706111038-r.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="file://C:/Users/SPG-04/.m2/repository/org/eclipse/jgit/org.eclipse.jgit/4.8.0.201706111038-r/org.eclipse.jgit-4.8.0.201706111038-r-sources.jar" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="commons-math3-3.6.1-javadoc.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/commons-math3-3.6.1/commons-math3-3.6.1-javadoc.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="commons-math3-3.6.1-sources.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/commons-math3-3.6.1/commons-math3-3.6.1-sources.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="commons-math3-3.6.1-test-sources.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/commons-math3-3.6.1/commons-math3-3.6.1-test-sources.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="commons-math3-3.6.1-tests.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/commons-math3-3.6.1/commons-math3-3.6.1-tests.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="commons-math3-3.6.1-tools.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/commons-math3-3.6.1/commons-math3-3.6.1-tools.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="commons-math3-3.6.1.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/commons-math3-3.6.1/commons-math3-3.6.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="postgresql-42.1.4.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/postgres/postgresql-42.1.4.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="validation-api-1.0.0.GA.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/validation-api-1.0.0.GA.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.eclipse.jgit-4.9.0.201710071750-r.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/org.eclipse.jgit-4.9.0.201710071750-r.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="guava-19.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/guava/guava-19.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="commons-validator-1.6.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/commons-validator-1.6.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="log4j-api-2.11.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/log4j/log4j-api-2.11.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="log4j-core-2.11.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/log4j/log4j-core-2.11.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="apted.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/apted/apted.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="dbscan-0.1.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/dbscan/dbscan-0.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="urauc.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/urauc.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="urau.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/urau.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="hoau.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/hoau.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="dbscan.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/dbscan.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="poi-3.17.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/poi/poi-3.17.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="poi-ooxml-3.17.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/poi/poi-ooxml-3.17.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="xmlbeans-2.3.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/poi/xmlbeans-2.3.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="dom4j-1.6.1.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/poi/dom4j-1.6.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.eclipse.jdt.astview_1.1.9.201406161921.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/astview/org.eclipse.jdt.astview_1.1.9.201406161921.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="java-lsh-0.11.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/lsh/java-lsh-0.11.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="java-string-similarity-0.12.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/lsh/java-string-similarity-0.12.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="javax.persistence_2.1.0.v201304241213.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/jlib/jpa/javax.persistence_2.1.0.v201304241213.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="javax.persistence.source_2.1.0.v201304241213.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/jlib/jpa/javax.persistence.source_2.1.0.v201304241213.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.eclipse.persistence.jpa.modelgen_2.5.2.v20140319-9ad6abd.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/jlib/jpa/org.eclipse.persistence.jpa.modelgen_2.5.2.v20140319-9ad6abd.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.eclipse.persistence.jpa.modelgen.source_2.5.2.v20140319-9ad6abd.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/jlib/jpa/org.eclipse.persistence.jpa.modelgen.source_2.5.2.v20140319-9ad6abd.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.eclipse.persistence.jpars_2.5.2.v20140319-9ad6abd.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/jlib/jpa/org.eclipse.persistence.jpars_2.5.2.v20140319-9ad6abd.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.eclipse.persistence.jpars.source_2.5.2.v20140319-9ad6abd.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/jlib/jpa/org.eclipse.persistence.jpars.source_2.5.2.v20140319-9ad6abd.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="com.sun.tools.xjc_2.2.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/jlib/moxy/com.sun.tools.xjc_2.2.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="com.sun.xml.bind_2.2.0.v201004141950.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/jlib/moxy/com.sun.xml.bind_2.2.0.v201004141950.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="javax.activation_1.1.0.v201108011116.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/jlib/moxy/javax.activation_1.1.0.v201108011116.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="javax.mail_1.4.0.v201005080615.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/jlib/moxy/javax.mail_1.4.0.v201005080615.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="javax.xml.bind_2.2.0.v201105210648.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/jlib/moxy/javax.xml.bind_2.2.0.v201105210648.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="javax.xml.stream_1.0.1.v201004272200.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/jlib/moxy/javax.xml.stream_1.0.1.v201004272200.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="commonj.sdo_2.1.1.v201112051852.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/jlib/sdo/commonj.sdo_2.1.1.v201112051852.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="eclipselink.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/jlib/eclipselink.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="eclipselink-dbwsutils.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/utils/dbws/eclipselink-dbwsutils.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="javax.servlet_2.4.0.v200806031604.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/utils/dbws/javax.servlet_2.4.0.v200806031604.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="javax.wsdl_1.6.2.v201012040545.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/utils/dbws/javax.wsdl_1.6.2.v201012040545.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.eclipse.persistence.oracleddlparser_1.0.0.v20130531.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/utils/dbws/org.eclipse.persistence.oracleddlparser_1.0.0.v20130531.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.eclipse.persistence.oracleddlparser.source_1.0.0.v20130531.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/utils/dbws/org.eclipse.persistence.oracleddlparser.source_1.0.0.v20130531.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="package-rename.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/utils/rename/package-rename.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="connector.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/utils/workbench/jlib/connector.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="eclipselinkmw.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/utils/workbench/jlib/eclipselinkmw.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="elmwcore.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/utils/workbench/jlib/elmwcore.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="xercesImpl.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/EclipseLink 2.5.2/eclipselink/utils/workbench/jlib/xercesImpl.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+  </component>
+</module>

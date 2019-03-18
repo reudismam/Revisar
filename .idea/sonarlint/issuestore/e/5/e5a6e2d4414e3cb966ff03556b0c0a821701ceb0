@@ -1,0 +1,4 @@
+
+]squid:S1118":Add a private constructor to hide the implicit public one.(ªé¦øûÿÿÿÿ8Èìé˜-
+squid:S1488 "^Immediately return this expression instead of assigning it to the temporary variable "report".(°„ùÿÿÿÿÿ8Èìé˜-
+nsquid:CommentedOutCodeLine$"<This block of commented-out lines of code should be removed.(†’†³ıÿÿÿÿ8Èìé˜-
