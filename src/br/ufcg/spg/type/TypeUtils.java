@@ -5,20 +5,7 @@ import br.ufcg.spg.binding.BindingSolver;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.jdt.core.dom.AST;
-import org.eclipse.jdt.core.dom.ASTNode;
-import org.eclipse.jdt.core.dom.ArrayType;
-import org.eclipse.jdt.core.dom.FieldDeclaration;
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.MethodInvocation;
-import org.eclipse.jdt.core.dom.ParameterizedType;
-import org.eclipse.jdt.core.dom.PrimitiveType;
-import org.eclipse.jdt.core.dom.SimpleType;
-import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
-import org.eclipse.jdt.core.dom.Type;
-import org.eclipse.jdt.core.dom.TypeParameter;
-import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
-import org.eclipse.jdt.core.dom.WildcardType;
+import org.eclipse.jdt.core.dom.*;
 
 public class TypeUtils {
   
@@ -223,5 +210,10 @@ public class TypeUtils {
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
+  }
+
+  public static TypeDeclaration getTypeDeclaration(CompilationUnit cUnit) {
+    final TypeDeclaration typeDecl = (TypeDeclaration) cUnit.types().get(0);
+    return typeDecl;
   }
 }

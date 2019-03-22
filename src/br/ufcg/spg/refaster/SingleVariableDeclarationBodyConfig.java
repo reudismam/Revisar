@@ -68,7 +68,7 @@ public class SingleVariableDeclarationBodyConfig implements IConfigBody {
   public MethodDeclaration configReturnType(ASTNode node, 
       CompilationUnit rule, MethodDeclaration method) {
     ASTNode voidNode = ast.newPrimitiveType(PrimitiveType.VOID);
-    method = ReturnTypeTranslator.config(voidNode, rule, method);
+    method = ReturnTypeUtils.config(voidNode, rule, method);
     return method;
   }
 }

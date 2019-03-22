@@ -42,7 +42,7 @@ public class ReturnStmTranslator {
    */
   public static Tuple<MethodDeclaration, MethodDeclaration> config(
       final TransformationConfigObject config) throws BadLocationException, 
-      IOException, NoFilepatternException, GitAPIException {
+      IOException, GitAPIException {
     final Tuple<List<ASTNode>, List<ASTNode>> bas = ReplacementUtils.mapping(config);
     final List<ASTNode> befores = bas.getItem1();
     final List<ASTNode> afters = bas.getItem2();

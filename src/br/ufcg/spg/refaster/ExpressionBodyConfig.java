@@ -38,7 +38,7 @@ public class ExpressionBodyConfig implements IConfigBody {
   @Override
   public MethodDeclaration configReturnType(ASTNode node, 
       CompilationUnit rule, MethodDeclaration method) {
-    method = ReturnTypeTranslator.config(node, rule, method);
+    method = ReturnTypeUtils.config(node, rule, method);
     return method;
   }
 }

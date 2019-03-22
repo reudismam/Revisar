@@ -3,12 +3,15 @@ package br.ufcg.spg.parser;
 import br.ufcg.spg.project.ProjectAnalyzer;
 import br.ufcg.spg.project.Version;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.compiler.IProblem;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
@@ -125,7 +128,7 @@ public class JParser {
     parser.setKind(ASTParser.K_COMPILATION_UNIT);
     parser.setBindingsRecovery(true);
     parser.setStatementsRecovery(true);
-    final Map<?, ?> options = JavaCore.getOptions();
+    final Map<String, String> options = JavaCore.getOptions();
     parser.setCompilerOptions(options);
     final String unitName = file;
     parser.setUnitName(unitName);
@@ -134,7 +137,23 @@ public class JParser {
     parser.setEnvironment(classpath, sources, new String[] { "UTF-8" }, true);
     parser.setSource(str.toCharArray());
     final CompilationUnit compilationUnit = (CompilationUnit) parser.createAST(null);
+    IProblem[] problems = compilationUnit.getProblems();
+    if (problems != null && problems.length > 0) {
+      System.out.println("Got " + problems.length  + " problems compiling the source file: ");
+      for (IProblem problem : problems) {
+        System.out.println(problem);
+      }
+    }
     return compilationUnit;
+  }
+
+  /**
+   * Parses java file.
+   * @param file file
+   */
+  public static CompilationUnit parseFromFile(final String file) throws IOException {
+    final String source = FileUtils.readFileToString(new File(file));
+    return parse(file, source);
   }
 
   /**

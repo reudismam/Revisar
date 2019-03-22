@@ -2,6 +2,8 @@ package br.ufcg.spg.transformation;
 
 import at.unisalzburg.dbresearch.apted.node.StringNodeData;
 import br.ufcg.spg.bean.Tuple;
+import br.ufcg.spg.cli.PatternStatus;
+import br.ufcg.spg.cli.PatternUtils;
 import br.ufcg.spg.cluster.Cluster;
 import br.ufcg.spg.cluster.ClusterFormatter;
 import br.ufcg.spg.cluster.ClusterUnifier;
@@ -37,8 +39,6 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jgit.api.errors.GitAPIException;
 
 /**
  * Utility class to perform transformations.
@@ -158,7 +158,7 @@ public final class TransformationUtils {
    * Computes the template for some cluster.
    */
   public static void transformationsMoreProjects(List<Cluster> clusters) {
-    clusters = rebuildClusters(clusters);
+    //clusters = rebuildClusters(clusters);
     transformations(clusters);
     postProcessTransformations();
   }
@@ -202,6 +202,13 @@ public final class TransformationUtils {
       QuickFixManager qfm = QuickFixManager.getInstance();
       PoiExcelWriter.save(main.getProjectFolder()
               + CLUSTER_PATH + "data_bad.xls", "Bad", qfm.getBadPatterns());
+      int cont = 0;
+      float size = qfm.getPotentialPatterns().size();
+      for (QuickFix qf : qfm.getPotentialPatterns()) {
+        logger.trace("STATUS: " + (cont++/size) * 100.0  + " complete");
+        PatternStatus pt = PatternUtils.getPatternStatus(qf.getCluster());
+        qf.setStatus(pt);
+      }
       PoiExcelWriter.save(main.getProjectFolder()
               + CLUSTER_PATH + "data_good.xls", "Good", qfm.getPotentialPatterns());
       ClusterUtils.saveSingleQuickFixes("potential/", qfm.getPotentialPatterns());

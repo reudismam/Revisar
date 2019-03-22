@@ -9,13 +9,13 @@ public class CLI {
 
   public static List<String> runCommandLine(String cmd) {
     List<String> lines = new ArrayList<>();
-    System.out.println("Execute shell commands example");
-    System.out.println();
+    //System.out.println("Execute shell commands example");
+    //System.out.println();
     try {
-      System.out.println("Executing command: " + cmd);
+      //System.out.println("Executing command: " + cmd);
       Process p = Runtime.getRuntime().exec(cmd);
-      System.out.println();
-      System.out.println("Result:");
+      //System.out.println();
+      //System.out.println("Result:");
       BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
       String line = null;
       while ((line = reader.readLine()) != null) {

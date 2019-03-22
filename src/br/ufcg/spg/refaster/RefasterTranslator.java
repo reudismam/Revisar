@@ -2,12 +2,11 @@ package br.ufcg.spg.refaster;
 
 import br.ufcg.spg.bean.Tuple;
 import br.ufcg.spg.cluster.Cluster;
+import br.ufcg.spg.compile.CompilerUtils;
 import br.ufcg.spg.diff.DiffCalculator;
 import br.ufcg.spg.diff.DiffPath;
 import br.ufcg.spg.edit.Edit;
 import br.ufcg.spg.git.CommitUtils;
-import br.ufcg.spg.git.GitUtils;
-import br.ufcg.spg.main.MainArguments;
 import br.ufcg.spg.matcher.IMatcher;
 import br.ufcg.spg.matcher.KindNodeMatcher;
 import br.ufcg.spg.matcher.PositionNodeMatcher;
@@ -19,11 +18,11 @@ import br.ufcg.spg.project.ProjectInfo;
 import br.ufcg.spg.refaster.config.TransformationConfigObject;
 import br.ufcg.spg.replacement.Replacement;
 import br.ufcg.spg.replacement.ReplacementUtils;
-import java.io.File;
+
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
+import br.ufcg.spg.type.TypeUtils;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
@@ -32,8 +31,6 @@ import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.text.edits.TextEdit;
 
 public class RefasterTranslator {
@@ -47,7 +44,7 @@ public class RefasterTranslator {
   public static String translate(final Cluster clusteri, final Edit srcEdit)
       throws BadLocationException, IOException, GitAPIException {
     final JParser refasterRuleParser = new JParser();
-    final String refasterFile = RefasterConstants.RefasterPath;
+    final String refasterFile = TemplateConstants.RefasterPath;
     final CompilationUnit rule = refasterRuleParser.parseWithDocument(refasterFile);
     final Document document = refasterRuleParser.getDocument();
     // Learn before and after method
@@ -69,7 +66,7 @@ public class RefasterTranslator {
    */
   private static String replaceBeforeAfter(final CompilationUnit rule, final Document document,
       final Tuple<MethodDeclaration, MethodDeclaration> ba) throws BadLocationException {
-    final TypeDeclaration typeDecl = (TypeDeclaration) rule.types().get(0);
+    final TypeDeclaration typeDecl = TypeUtils.getTypeDeclaration(rule);
     final ASTRewrite rewrite = ASTRewrite.create(rule.getAST());
     final MethodDeclaration[] methods = typeDecl.getMethods();
     rewrite.replace(methods[0], ba.getItem1(), null);
@@ -94,7 +91,7 @@ public class RefasterTranslator {
       final Cluster srcCluster, final CompilationUnit rule, Edit srcEdit)
       throws BadLocationException, IOException, GitAPIException {
     final Edit dstEdit = srcEdit.getDst();
-    Tuple<CompilationUnit, CompilationUnit> units = getCompilationUnits(srcEdit, dstEdit);
+    Tuple<CompilationUnit, CompilationUnit> units = CompilerUtils.getCompilationUnits(srcEdit, dstEdit);
     CompilationUnit srcUnit = units.getItem1();
     CompilationUnit dstUnit = units.getItem2();
     final ASTNode srcNode = getNode(srcEdit, srcUnit);
@@ -106,7 +103,7 @@ public class RefasterTranslator {
     final List<Replacement<ASTNode>> dst = ReplacementUtils.replacements(dstEdit, dstAu, dstUnit);
     // Return statement
     Tuple<MethodDeclaration, MethodDeclaration> ba = getBeforeAfterMethod(rule);
-    ba = ReturnTypeTranslator.config(srcNode, dstNode, rule, ba);
+    ba = ReturnTypeUtils.config(srcNode, dstNode, rule, ba);
     // Replace method body
     final DiffCalculator diff = new DiffPath("temp1.java", "temp2.java");
     diff.diff();
@@ -118,22 +115,6 @@ public class RefasterTranslator {
         dstUnit, srcNode, dstNode, ba, src, dst, diff);
     ba = ReturnStmTranslator.config(config);
     return ba;
-  }
-
-  private static Tuple<CompilationUnit, CompilationUnit> getCompilationUnits(
-      Edit srcEdit, Edit dstEdit) throws  IOException {
-    MainArguments main = MainArguments.getInstance();
-    Repository repository = GitUtils.startRepo(main.getProjectFolder() + "/" 
-        + dstEdit.getProject());
-    RevCommit revCommit = GitUtils.extractCommit(repository, dstEdit.getCommit());
-    RevCommit befCommit = new GitUtils().getPrevHash(repository, revCommit);
-    String before = GitUtils.getEditedFile(repository, befCommit.getTree(), srcEdit.getPath());
-    String after = GitUtils.getEditedFile(repository, revCommit.getTree(), dstEdit.getPath());
-    FileUtils.writeStringToFile(new File("temp1.java"), before);
-    FileUtils.writeStringToFile(new File("temp2.java"), after);
-    CompilationUnit srcUnit = JParser.parse("temp1.java", before);
-    CompilationUnit dstUnit = JParser.parse("temp2.java", after);
-    return new Tuple<>(srcUnit, dstUnit);
   }
 
   private static ASTNode getNode(Edit edit, final CompilationUnit unit) {

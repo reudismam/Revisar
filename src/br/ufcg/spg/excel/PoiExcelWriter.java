@@ -85,6 +85,7 @@ public class PoiExcelWriter {
       HSSFWorkbook workbook = new HSSFWorkbook();
       HSSFSheet worksheet = workbook.createSheet(sheet);
       for (int i = 0; i < qfs.size(); i++) {
+        QuickFix qf = qfs.get(i);
         // Create ROW-1
         HSSFRow row1 = worksheet.createRow((short) i);
         // Create COL-A from ROW-1 and set data
@@ -114,6 +115,12 @@ public class PoiExcelWriter {
         cellStyle = workbook.createCellStyle();
         cellStyle.setFillForegroundColor(HSSFColor.LIGHT_CORNFLOWER_BLUE.index);
         cellD1.setCellStyle(cellStyle);
+        // Create COL-D from row-i and set data
+        HSSFCell cellE1 = row1.createCell((short) 4);
+        cellE1.setCellValue(qf.getStatus().toString());
+        //cellStyle = workbook.createCellStyle();
+        cellStyle.setFillForegroundColor(HSSFColor.LIGHT_CORNFLOWER_BLUE.index);
+        cellE1.setCellStyle(cellStyle);
       }
       // Save the workbook in .xls file
       workbook.write(fos);

@@ -2,6 +2,8 @@ package br.ufcg.spg.cluster;
 
 import at.unisalzburg.dbresearch.apted.node.StringNodeData;
 
+import br.ufcg.spg.cli.PatternStatus;
+import br.ufcg.spg.cli.PatternUtils;
 import br.ufcg.spg.database.ClusterDao;
 import br.ufcg.spg.edit.Edit;
 import br.ufcg.spg.excel.QuickFix;
