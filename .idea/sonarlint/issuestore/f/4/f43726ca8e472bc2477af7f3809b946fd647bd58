@@ -1,0 +1,5 @@
+
+Fsquid:S1068"*Remove this unused "logger" private field.(É» ·ıÿÿÿÿ
+n
+squid:S135*"YReduce the total number of break and continue statements in this loop to use at most one.(àÑ
+dsquid:UselessImportCheck"@Remove this unused import 'br.ufcg.spg.analyzer.test.TestSuite'.(ıç±

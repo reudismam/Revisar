@@ -1,0 +1,8 @@
+
+3squid:S1643,"Use a StringBuilder instead.(”äÎ°
+3squid:S1643N"Use a StringBuilder instead.(”äÎ°
+8squid:S1643b"Use a StringBuilder instead.(¹÷•âüÿÿÿÿ
+4squid:S1643’"Use a StringBuilder instead.(”äÎ°
+fsquid:S1192¿"NDefine a constant instead of duplicating this literal "[^0-9a-zA-Z]+" 4 times.(ÒÎÎÒ
+]squid:S00112^"FDefine and throw a dedicated exception instead of using a generic one.(™È´(
+@squid:S1148ò"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ

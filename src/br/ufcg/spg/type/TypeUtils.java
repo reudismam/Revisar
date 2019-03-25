@@ -212,8 +212,4 @@ public class TypeUtils {
     }
   }
 
-  public static TypeDeclaration getTypeDeclaration(CompilationUnit cUnit) {
-    final TypeDeclaration typeDecl = (TypeDeclaration) cUnit.types().get(0);
-    return typeDecl;
-  }
 }

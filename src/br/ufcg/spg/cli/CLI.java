@@ -1,6 +1,7 @@
 package br.ufcg.spg.cli;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,17 +10,12 @@ public class CLI {
 
   public static List<String> runCommandLine(String cmd) {
     List<String> lines = new ArrayList<>();
-    //System.out.println("Execute shell commands example");
-    //System.out.println();
     try {
-      //System.out.println("Executing command: " + cmd);
-      Process p = Runtime.getRuntime().exec(cmd);
-      //System.out.println();
-      //System.out.println("Result:");
+      Process p = Runtime.getRuntime().exec(cmd, null, new File("temp/"));
       BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-      String line = null;
+      String line;
       while ((line = reader.readLine()) != null) {
-        //System.out.println(line);
+        System.out.println(line);
         lines.add(line);
       }
       int result = p.waitFor();
@@ -29,7 +25,6 @@ public class CLI {
         while ((line = reader.readLine()) != null) {
           err.append(line).append('\n');
         }
-        throw new RuntimeException(err.toString());
       }
     } catch (Exception e) {
       e.printStackTrace();

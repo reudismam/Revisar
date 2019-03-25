@@ -1,0 +1,3 @@
+
+ù%squid:RedundantThrowsDeclarationCheckZ"lRemove the declaration of thrown exception 'java.io.IOException', as it cannot be thrown from method's body.(π£˛Å
+Usquid:S00107z"=Method has 10 parameters, which is greater than 7 authorized.(ò˛…Ö

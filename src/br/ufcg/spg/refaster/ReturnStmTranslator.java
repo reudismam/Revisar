@@ -5,9 +5,7 @@ import br.ufcg.spg.bean.Tuple;
 import br.ufcg.spg.diff.DiffCalculator;
 import br.ufcg.spg.diff.DiffTreeContext;
 import br.ufcg.spg.edit.EditUtils;
-import br.ufcg.spg.git.CommitUtils;
 import br.ufcg.spg.node.NodeFinder;
-import br.ufcg.spg.project.Version;
 import br.ufcg.spg.refaster.config.ReturnStatementConfig;
 import br.ufcg.spg.refaster.config.TransformationConfigObject;
 import br.ufcg.spg.replacement.Replacement;
@@ -105,7 +103,7 @@ public class ReturnStmTranslator {
         template.getTemplate(), rstm, ast);
     MethodDeclaration method = body.config();
     List<Type> types = TypeUtils.extractTypes(template.getVariables(), ast);
-    method = ParameterTranslator.addParameter(types, template.getHoles(), 
+    method = ParameterUtils.addParameter(types, template.getHoles(),
         rconf.getRefasterRule(), method);
     method = body.configReturnType(returnType, rconf.getRefasterRule(), method);
     return method;

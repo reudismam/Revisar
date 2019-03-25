@@ -2,7 +2,7 @@ package br.ufcg.spg.analyzer.test;
 
 import br.ufcg.spg.bean.EditFile;
 import br.ufcg.spg.bean.Tuple;
-import br.ufcg.spg.binding.BindingSolver;
+import br.ufcg.spg.cli.CLI;
 import br.ufcg.spg.cli.CheckStyleReport;
 import br.ufcg.spg.cli.CheckStyleUtils;
 import br.ufcg.spg.cluster.Cluster;
@@ -20,22 +20,14 @@ import br.ufcg.spg.exp.ExpUtils;
 import br.ufcg.spg.git.GitUtils;
 import br.ufcg.spg.log.TimeLogger;
 import br.ufcg.spg.main.MainArguments;
-import br.ufcg.spg.matcher.IMatcher;
-import br.ufcg.spg.matcher.KindNodeMatcher;
-import br.ufcg.spg.matcher.calculator.MatchCalculator;
-import br.ufcg.spg.matcher.calculator.NodeMatchCalculator;
-import br.ufcg.spg.parser.JParser;
-import br.ufcg.spg.refaster.TemplateConstants;
+import br.ufcg.spg.stub.StubUtils;
 import br.ufcg.spg.technique.Technique;
 import br.ufcg.spg.technique.TechniqueUtils;
-import br.ufcg.spg.transformation.JDTElementUtils;
-import br.ufcg.spg.transformation.MethodDeclarationUtils;
 import br.ufcg.spg.transformation.Transformation;
 import br.ufcg.spg.transformation.TransformationUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
@@ -47,11 +39,8 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
-import br.ufcg.spg.type.TypeUtils;
-import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.eclipse.jdt.core.dom.*;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.junit.Before;
@@ -113,57 +102,16 @@ public class TestSuite {
   @Test
   public void testFindBugs() {
     try {
-      CompilationUnit unit = JParser.parseFromFile("temp.java");
-      IMatcher<ASTNode> matcher = new KindNodeMatcher(ASTNode.VARIABLE_DECLARATION_STATEMENT);
-      MatchCalculator<ASTNode> match = new NodeMatchCalculator(matcher);
-      List<ASTNode> invocations = match.getNodes(unit);
-      System.out.println(unit.toString());
-      for(ASTNode ast : invocations){
-
-        VariableDeclarationStatement inv = (VariableDeclarationStatement) ast;
-        VariableDeclarationFragment fragment =  (VariableDeclarationFragment) inv.fragments().get(0);
-        System.out.println(inv.getType().resolveBinding());
-        //MethodInvocation invocation = (MethodInvocation) fragment.getInitializer();
-        System.out.println(inv + " : " + TypeUtils.extractType(inv, inv.getAST()));
-      }
-      for (ASTNode node : invocations) {
-        VariableDeclarationStatement inv = (VariableDeclarationStatement) node;
-        List<VariableDeclarationFragment> fragments = inv.fragments();
-        Type type = TypeUtils.extractType(inv, inv.getAST());
-        System.out.println(inv + " : " + type);
-        for (VariableDeclarationFragment flag : fragments) {
-          Expression initializer = flag.getInitializer();
-          if (initializer instanceof  MethodInvocation) {
-            CompilationUnit tclass = JParser.parseFromFile(TemplateConstants.ClassPath);
-            TypeDeclaration classDecl = TypeUtils.getTypeDeclaration(tclass);
-            System.out.println(((MethodInvocation) initializer).getExpression());
-            Type classType = TypeUtils.extractType(((MethodInvocation) initializer).getExpression(), classDecl.getAST());
-            String typeStr = classType.toString().substring(classType.toString().lastIndexOf(".") + 1);
-            System.out.println(classType.toString() );
-            SimpleName simpleName = classDecl.getAST().newSimpleName(typeStr);
-            JDTElementUtils.setName(classDecl, simpleName);
-            System.out.println(typeStr);
-            System.out.println("Before\n");
-            System.out.println(classDecl);
-            MethodDeclaration declaration = tclass.getAST().newMethodDeclaration();
-            MethodDeclaration mDecl = MethodDeclarationUtils.setReturnType(type, tclass, declaration);
-            MethodDeclarationUtils.addBody(tclass, mDecl);
-            MethodDeclarationUtils.setName(mDecl, ((MethodInvocation) initializer).getName());
-            MethodDeclarationUtils.addModifier(mDecl, Modifier.ModifierKeyword.PUBLIC_KEYWORD);
-            System.out.println("After\n");
-            classDecl.bodyDeclarations().add(mDecl);
-            System.out.println(classDecl);
-            String pkg = tclass.getPackage().getName().toString().replaceAll("\\.", "/");
-            FileUtils.write(new File("temp/" + pkg + "/" + classDecl.getName() + ".java"), classDecl.toString());
-          }
-        }
-        FileUtils.writeStringToFile(new File("temp/temp.java"), unit.getRoot().toString());
-      }
-    } catch (IOException e) {
+      StubUtils.generateStubsForClass("temp.java");
+    } catch (Exception e) {
       e.printStackTrace();
     }
+    List<String> lines =  CLI.runCommandLine("javac -classpath . defaultpkg/temp.java");
+    CLI.runCommandLine("jar cf myJar.jar defaultpkg/temp.class");
+    for (String line : lines) {
+      System.out.println(line);
+    }
   }
-
 
 
   @Test

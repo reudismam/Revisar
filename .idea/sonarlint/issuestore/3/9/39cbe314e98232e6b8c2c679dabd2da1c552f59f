@@ -1,0 +1,14 @@
+
+Vsquid:S1118%":Add a private constructor to hide the implicit public one.(™ÜœŞıÿÿÿÿ
+Gsquid:S1172—"*Remove this unused method parameter "ast".(îêüÿÿÿÿ
+qsquid:S2293Å"YReplace the type specification in this constructor call with the diamond operator ("<>").(µà¥‡
+%squid:RedundantThrowsDeclarationCheck`"lRemove the declaration of thrown exception 'java.io.IOException', as it cannot be thrown from method's body.(Ù˜è…
+bsquid:CommentedOutCodeLineV"<This block of commented-out lines of code should be removed.(Øßô®
+×%squid:RedundantThrowsDeclarationCheck`"¥Remove the declaration of thrown exception 'org.eclipse.jgit.api.errors.NoFilepatternException' which is a subclass of 'org.eclipse.jgit.api.errors.GitAPIException'.(Ù˜è…
+@squid:S1148¢"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ
+Tsquid:S00107I"<Method has 8 parameters, which is greater than 7 authorized.(’ªÙ™
+Jsquid:S1172L".Remove this unused method parameter "project".(Ç·¦¶şÿÿÿÿ
+¶%squid:RedundantThrowsDeclarationCheck`"„Remove the declaration of thrown exception 'org.eclipse.jgit.api.errors.GitAPIException', as it cannot be thrown from method's body.(Ù˜è…
+gsquid:CommentedOutCodeLine{"<This block of commented-out lines of code should be removed.(¶çÊ†ıÿÿÿÿ
+U
+squid:S106"9Replace this use of System.out or System.err by a logger.(è¤·›úÿÿÿÿ

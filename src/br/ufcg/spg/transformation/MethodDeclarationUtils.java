@@ -38,4 +38,16 @@ public class MethodDeclarationUtils {
     AST ast = mDecl.getAST();
     mDecl.modifiers().add(ast.newModifier(modifier));
   }
+
+  public static ThrowStatement addThrowStatement(MethodDeclaration mDecl) {
+    ThrowStatement statement = mDecl.getAST().newThrowStatement();
+    SimpleName name = statement.getAST().newSimpleName("UnsupportedOperationException");
+    ClassInstanceCreation instance  = mDecl.getAST().newClassInstanceCreation();
+    Name n = instance.getAST().newName("java.lang");
+    Type nType = instance.getAST().newNameQualifiedType(n, name);
+    instance.setType(nType);
+    statement.setExpression(instance);
+    mDecl.getBody().statements().add(statement);
+    return statement;
+  }
 }

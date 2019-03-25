@@ -15,6 +15,7 @@ import br.ufcg.spg.matcher.calculator.NodeMatchCalculator;
 import br.ufcg.spg.parser.JParser;
 import br.ufcg.spg.project.ProjectAnalyzer;
 import br.ufcg.spg.project.ProjectInfo;
+import br.ufcg.spg.refaster.config.ClassUtils;
 import br.ufcg.spg.refaster.config.TransformationConfigObject;
 import br.ufcg.spg.replacement.Replacement;
 import br.ufcg.spg.replacement.ReplacementUtils;
@@ -22,7 +23,6 @@ import br.ufcg.spg.replacement.ReplacementUtils;
 import java.io.IOException;
 import java.util.List;
 
-import br.ufcg.spg.type.TypeUtils;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
@@ -66,7 +66,7 @@ public class RefasterTranslator {
    */
   private static String replaceBeforeAfter(final CompilationUnit rule, final Document document,
       final Tuple<MethodDeclaration, MethodDeclaration> ba) throws BadLocationException {
-    final TypeDeclaration typeDecl = TypeUtils.getTypeDeclaration(rule);
+    final TypeDeclaration typeDecl = ClassUtils.getTypeDeclaration(rule);
     final ASTRewrite rewrite = ASTRewrite.create(rule.getAST());
     final MethodDeclaration[] methods = typeDecl.getMethods();
     rewrite.replace(methods[0], ba.getItem1(), null);

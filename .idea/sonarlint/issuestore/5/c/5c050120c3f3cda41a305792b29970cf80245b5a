@@ -1,17 +1,30 @@
 
-Jsquid:S1075€"&Remove this hard-coded path-delimiter.(İ‚º‚ıÿÿÿÿ8„ôòé˜-
-@squid:S1643İ"Use a StringBuilder instead.(ÃÙùÿÿÿÿÿ8„ôòé˜-
-osquid:CommentedOutCodeLineñ"<This block of commented-out lines of code should be removed.(‹ê‹Ôùÿÿÿÿ8„ôòé˜-
-Gsquid:S1148¿"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8„ôòé˜-
-ksquid:S00112æ"FDefine and throw a dedicated exception instead of using a generic one.(Ò‚Òéüÿÿÿÿ8„ôòé˜-
-Gsquid:S1148…"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8„ôòé˜-
+Gsquid:S1148†"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8Ÿ¥Ú¶š-
 [
-squid:S106S"9Replace this use of System.out or System.err by a logger.(ªÓ¼áşÿÿÿÿ8„ôòé˜-
-e
-squid:S899â"BDo something with the "boolean" value returned by "createNewFile".(üØ§¼ÿÿÿÿÿ8„ôòé˜-
-;squid:S1643ß"Use a StringBuilder instead.(–Â«˜8„ôòé˜-
+squid:S106]"9Replace this use of System.out or System.err by a logger.(ªÓ¼áşÿÿÿÿ8„ôòé˜-
+[
+squid:S106"9Replace this use of System.out or System.err by a logger.(Ì“ğúüÿÿÿÿ8òÀ½·š-
+@squid:S1643¢"Use a StringBuilder instead.(–¶àşÿÿÿÿÿ8Ÿ¥Ú¶š-
+@squid:S1643¤"Use a StringBuilder instead.(ÃÙùÿÿÿÿÿ8Ÿ¥Ú¶š-
+jsquid:CommentedOutCodeLine…"<This block of commented-out lines of code should be removed.(å› Ô8Ÿ¥Ú¶š-
 \
-squid:S106­"9Replace this use of System.out or System.err by a logger.(±Ãõüÿÿÿÿ8ş³—ê˜-
-@squid:S1643Û"Use a StringBuilder instead.(–¶àşÿÿÿÿÿ8„ôòé˜-
-Gsquid:S1148Û"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8„ôòé˜-
-qsquid:S3776Æ"RRefactor this method to reduce its Cognitive Complexity from 21 to the 15 allowed.(£Øâ·8„ôòé˜-
+squid:S106ô"9Replace this use of System.out or System.err by a logger.(±Ãõüÿÿÿÿ8Ÿ¥Ú¶š-
+osquid:CommentedOutCodeLine¸"<This block of commented-out lines of code should be removed.(‹ê‹Ôùÿÿÿÿ8Ÿ¥Ú¶š-
+ksquid:S00112­"FDefine and throw a dedicated exception instead of using a generic one.(Ò‚Òéüÿÿÿÿ8Ÿ¥Ú¶š-
+nsquid:UselessImportCheck">Remove this unused import 'br.ufcg.spg.binding.BindingSolver'.(ãŠü·üÿÿÿÿ8 í´·š-
+Jsquid:S1075Ç"&Remove this hard-coded path-delimiter.(İ‚º‚ıÿÿÿÿ8Ÿ¥Ú¶š-
+Gsquid:S1148§"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8Ÿ¥Ú¶š-
+Gsquid:S1148Ì"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8Ÿ¥Ú¶š-
+qsquid:S3776"RRefactor this method to reduce its Cognitive Complexity from 21 to the 15 allowed.(£Øâ·8Ÿ¥Ú¶š-
+e
+squid:S899©"BDo something with the "boolean" value returned by "createNewFile".(üØ§¼ÿÿÿÿÿ8Ÿ¥Ú¶š-
+;squid:S1643¦"Use a StringBuilder instead.(–Â«˜8Ÿ¥Ú¶š-
+[
+squid:S106}"9Replace this use of System.out or System.err by a logger.(¬æ™Èúÿÿÿÿ8¾àö¶š-
+Gsquid:S1148¢"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ8Ÿ¥Ú¶š-
+V
+squid:S106|"9Replace this use of System.out or System.err by a logger.(ÿ”…İ8ë£·š-
+[
+squid:S106w"9Replace this use of System.out or System.err by a logger.(Ã’³ÿÿÿÿÿ8ĞÕµš-
+W
+squid:S106‚"9Replace this use of System.out or System.err by a logger.(–ÓÁ¼8üì½·š-

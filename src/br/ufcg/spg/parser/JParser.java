@@ -38,24 +38,9 @@ public class JParser {
    */
   public CompilationUnit parseWithDocument(final String file) {
     try {
-      final String str = new String(Files.readAllBytes(Paths.get(file)));
-      document = new Document(str);
-      final ASTParser parser = ASTParser.newParser(AST.JLS8);
-      parser.setSource(document.get().toCharArray());
-      parser.setResolveBindings(true);
-      parser.setKind(ASTParser.K_COMPILATION_UNIT);
-      parser.setBindingsRecovery(true);
-      parser.setStatementsRecovery(true);
-      final Map<?,?> options = JavaCore.getOptions();
-      parser.setCompilerOptions(options);
-      final String unitName = file;
-      parser.setUnitName(unitName);
       final String[] sources = { "\\" };
       final String [] classpath = ProjectAnalyzer.classpath(file);
-      parser.setEnvironment(classpath, sources, new String[] { "UTF-8" }, true);
-      parser.setSource(str.toCharArray());
-      final CompilationUnit compilationUnit = (CompilationUnit) parser.createAST(null);
-      return compilationUnit;
+      return parseWithDocumentCore(file, sources, classpath);
     } catch (final Exception e) {
       throw new RuntimeException(e);
     }
@@ -71,35 +56,23 @@ public class JParser {
   public CompilationUnit parseWithDocument(final String file, final String[] sources, 
       final String[] classpath) {
     try {
-      final String str = new String(Files.readAllBytes(Paths.get(file)));
-      document = new Document(str);
-      final ASTParser parser = ASTParser.newParser(AST.JLS8);
-      parser.setSource(document.get().toCharArray());
-      parser.setResolveBindings(true);
-      parser.setKind(ASTParser.K_COMPILATION_UNIT);
-      parser.setBindingsRecovery(true);
-      parser.setStatementsRecovery(true);
-      final Map<?, ?> options = JavaCore.getOptions();
-      parser.setCompilerOptions(options);
-      final String unitName = file;
-      parser.setUnitName(unitName);
-      parser.setEnvironment(classpath, sources, new String[] { "UTF-8" }, true);
-      parser.setSource(str.toCharArray());
-      final CompilationUnit compilationUnit = (CompilationUnit) parser.createAST(null);
-      return compilationUnit;
+      return parseWithDocumentCore(file, sources, classpath);
     } catch (final Exception e) {
       throw new RuntimeException(e);
     }
   }
 
-  /**
-   * Parses java files.
-   * @param file file
-   * @return parsed file
-   */
-  public static CompilationUnit parse(final String file) throws IOException {
+
+
+  private CompilationUnit parseWithDocumentCore(String file, String[] sources, String[] classpath) throws IOException {
     final String str = new String(Files.readAllBytes(Paths.get(file)));
+    document = new Document(str);
     final ASTParser parser = ASTParser.newParser(AST.JLS8);
+    parser.setSource(document.get().toCharArray());
+    return getCompilationUnit(file, sources, classpath, str, parser);
+  }
+
+  private static CompilationUnit getCompilationUnit(String file, String[] sources, String[] classpath, String str, ASTParser parser) {
     parser.setResolveBindings(true);
     parser.setKind(ASTParser.K_COMPILATION_UNIT);
     parser.setBindingsRecovery(true);
@@ -108,35 +81,9 @@ public class JParser {
     parser.setCompilerOptions(options);
     final String unitName = file;
     parser.setUnitName(unitName);
-    final String[] sources = { "\\" };
-    final String[] classpath = ProjectAnalyzer.classpath(null);
-    parser.setEnvironment(classpath, sources, new String[] { "UTF-8" }, true);
+    parser.setEnvironment(classpath, sources, new String[]{"UTF-8"}, true);
     parser.setSource(str.toCharArray());
-    final CompilationUnit compilationUnit = (CompilationUnit) parser.createAST(null);
-    return compilationUnit;
-  }
-  
-  /**
-   * Parses java files.
-   * @param file file
-   * @return parsed file
-   */
-  public static CompilationUnit parse(final String file, String source) throws IOException {
-    final String str = source;
-    final ASTParser parser = ASTParser.newParser(AST.JLS8);
-    parser.setResolveBindings(true);
-    parser.setKind(ASTParser.K_COMPILATION_UNIT);
-    parser.setBindingsRecovery(true);
-    parser.setStatementsRecovery(true);
-    final Map<String, String> options = JavaCore.getOptions();
-    parser.setCompilerOptions(options);
-    final String unitName = file;
-    parser.setUnitName(unitName);
-    final String[] sources = { "\\" };
-    final String[] classpath = ProjectAnalyzer.classpath(null);
-    parser.setEnvironment(classpath, sources, new String[] { "UTF-8" }, true);
-    parser.setSource(str.toCharArray());
-    final CompilationUnit compilationUnit = (CompilationUnit) parser.createAST(null);
+    CompilationUnit compilationUnit =  (CompilationUnit) parser.createAST(null);
     IProblem[] problems = compilationUnit.getProblems();
     if (problems != null && problems.length > 0) {
       System.out.println("Got " + problems.length  + " problems compiling the source file: ");
@@ -145,6 +92,35 @@ public class JParser {
       }
     }
     return compilationUnit;
+  }
+
+  /**
+   * Parses java files.
+   * @param file file
+   * @return parsed file
+   */
+  public static CompilationUnit parse(final String file) throws IOException {
+    final String[] sources = { "\\" };
+    final String [] classpath = ProjectAnalyzer.classpath(file);
+    final String str = new String(Files.readAllBytes(Paths.get(file)));
+    return parseCore(file, str, sources, classpath);
+  }
+  
+  /**
+   * Parses java files.
+   * @param file file
+   * @return parsed file
+   */
+  public static CompilationUnit parse(final String file, String source) {
+    final String[] sources = { "\\" };
+    final String [] classpath = ProjectAnalyzer.classpath(file);
+    final CompilationUnit compilationUnit = parseCore(file, source, sources, classpath);
+    return compilationUnit;
+  }
+
+  private static CompilationUnit parseCore(String file, String str, String [] sources, String [] classpath) {
+    final ASTParser parser = ASTParser.newParser(AST.JLS8);
+    return getCompilationUnit(file, sources, classpath, str, parser);
   }
 
   /**
@@ -165,21 +141,9 @@ public class JParser {
    */
   public static CompilationUnit parse(final String file, final Version version) 
       throws IOException {
-    final String str = new String(Files.readAllBytes(Paths.get(file)));
-    final ASTParser parser = ASTParser.newParser(AST.JLS8);
-    parser.setResolveBindings(true);
-    parser.setKind(ASTParser.K_COMPILATION_UNIT);
-    parser.setBindingsRecovery(true);
-    parser.setStatementsRecovery(true);
-    final Map<?, ?> options = JavaCore.getOptions();
-    parser.setCompilerOptions(options);
-    final String unitName = file;
-    parser.setUnitName(unitName);
     final String [] sources = version.getSource();
     final String [] classpath = version.getClasspath();
-    parser.setEnvironment(classpath, sources, new String[] { "UTF-8" }, true);
-    parser.setSource(str.toCharArray());
-    final CompilationUnit compilationUnit = (CompilationUnit) parser.createAST(null);
-    return compilationUnit;
+    final String str = new String(Files.readAllBytes(Paths.get(file)));
+    return parseCore(file, str, sources, classpath);
   }
 }

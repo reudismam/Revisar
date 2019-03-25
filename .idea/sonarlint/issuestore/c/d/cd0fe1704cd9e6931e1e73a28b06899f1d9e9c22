@@ -1,0 +1,13 @@
+
+csquid:S00112["FDefine and throw a dedicated exception instead of using a generic one.(Ò‚Òéüÿÿÿÿ
+]squid:S11927"FDefine a constant instead of duplicating this literal "UTF-8" 5 times.(Ù°ÖÆ
+}squid:S14889"gImmediately return this expression instead of assigning it to the temporary variable "compilationUnit".(ê†²t
+\
+squid:S106"9Replace this use of System.out or System.err by a logger.(Á‡û¾úÿÿÿÿ8‘½É·š-
+}squid:S1488s"gImmediately return this expression instead of assigning it to the temporary variable "compilationUnit".(ê†²t
+\
+squid:S106"9Replace this use of System.out or System.err by a logger.(õ¸ª×úÿÿÿÿ8³äÈ·š-
+~squid:S1488¶"gImmediately return this expression instead of assigning it to the temporary variable "compilationUnit".(ê†²t
+}squid:S1488X"gImmediately return this expression instead of assigning it to the temporary variable "compilationUnit".(ê†²t
+csquid:S00112<"FDefine and throw a dedicated exception instead of using a generic one.(Ò‚Òéüÿÿÿÿ
+©%squid:RedundantThrowsDeclarationCheck|"lRemove the declaration of thrown exception 'java.io.IOException', as it cannot be thrown from method's body.(şø“ıÿÿÿÿ8Ö–Ì·š-
