@@ -1,5 +1,6 @@
 package br.ufcg.spg.transformation;
 
+import br.ufcg.spg.stub.StubUtils;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jdt.core.dom.*;
 
@@ -20,12 +21,18 @@ public class JDTElementUtils {
 
   public static String extractSimpleName(Type type) {
     String typeStr = type.toString();
+    return extractSimpleName(typeStr);
+  }
+
+  public static String extractSimpleName(String typeStr) {
+    if (typeStr.contains("<")) {
+      typeStr = typeStr.substring(0, typeStr.indexOf("<"));
+    }
     if (typeStr.contains(".")) {
       typeStr = typeStr.substring(typeStr.lastIndexOf(".") + 1);
     }
-    if (typeStr.contains("<")) {
-      System.out.println(typeStr);
-      typeStr = typeStr.substring(0, typeStr.lastIndexOf("<"));
+    if (typeStr.contains(";")) {
+      typeStr = typeStr.replaceAll(";", "").trim();
     }
     return typeStr;
   }

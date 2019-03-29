@@ -212,4 +212,23 @@ public class TypeUtils {
     }
   }
 
+  public static List<Type> createGenericParamTypes(AST ast, Type leftHandSideClass) {
+    List<Type> genericParamTypes = new ArrayList<>();
+    if (leftHandSideClass.isParameterizedType()) {
+      ParameterizedType paramType = (ParameterizedType) leftHandSideClass;
+      List<Type> typeArguments = paramType.typeArguments();
+      char letter = 'T';
+      for (Type type : typeArguments) {
+        Name name = ast.newName(String.valueOf(letter ++));
+        SimpleType simpleType = ast.newSimpleType(name);
+        genericParamTypes.add(simpleType);
+      }
+      paramType.typeArguments().clear();
+      for (Type type : genericParamTypes) {
+        type = (Type) ASTNode.copySubtree(paramType.getAST(), type);
+        typeArguments.add(type);
+      }
+    }
+    return genericParamTypes;
+  }
 }

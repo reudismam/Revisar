@@ -1,7 +1,12 @@
 package br.ufcg.spg.transformation;
 
+import br.ufcg.spg.stub.MethodInvocationStub;
+import br.ufcg.spg.type.TypeUtils;
 import org.eclipse.jdt.core.dom.*;
 import sun.java2d.pipe.SpanShapeRenderer;
+
+import java.io.IOException;
+import java.util.List;
 
 public class MethodDeclarationUtils {
   /**
@@ -49,5 +54,12 @@ public class MethodDeclarationUtils {
     statement.setExpression(instance);
     mDecl.getBody().statements().add(statement);
     return statement;
+  }
+
+  public static void addMethodBasedOnMethodInvocation(CompilationUnit unit, Type type, MethodInvocation invocation, CompilationUnit templateClass) throws IOException {
+    Type classType = TypeUtils.extractType(invocation.getExpression(), invocation.getAST());
+    boolean isStatic = classType.toString().equals("void");
+    List<ASTNode> arguments = (List<ASTNode>) invocation.arguments();
+    MethodInvocationStub.stub(unit, templateClass, invocation.getName(), type, arguments, isStatic);
   }
 }

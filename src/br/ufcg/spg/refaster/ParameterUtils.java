@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.ufcg.spg.stub.StubUtils;
+import br.ufcg.spg.transformation.ImportUtils;
 import br.ufcg.spg.type.TypeUtils;
 import org.eclipse.jdt.core.dom.*;
 
@@ -46,15 +47,15 @@ public final class ParameterUtils {
     return method;
   }
 
-  public static MethodDeclaration addParameters(CompilationUnit unit, Expression initializer,
-                                                List<ASTNode> arguments, CompilationUnit templateClass, TypeDeclaration classDecl, MethodDeclaration mDecl) {
+  public static MethodDeclaration addParameters(CompilationUnit unit,
+                                                List<ASTNode> arguments, CompilationUnit templateClass, MethodDeclaration mDecl) {
     List<Type> argTypes = new ArrayList<>();
     for(ASTNode argNode : arguments) {
       Expression arg = (Expression) argNode;
-      Type argType = TypeUtils.extractType(arg, initializer.getAST());
+      Type argType = TypeUtils.extractType(arg, mDecl.getAST());
       //Needed to resolve a bug in eclipse JDT.
       if (argType.toString().contains(".")) {
-        argType = StubUtils.getTypeBasedOnImports(classDecl, unit, argType.toString().substring(argType.toString().lastIndexOf(".") + 1));
+        argType = ImportUtils.getTypeBasedOnImports(unit, argType.toString().substring(argType.toString().lastIndexOf(".") + 1));
       }
       System.out.println(argNode + " : " + argType);
       argTypes.add(argType);
