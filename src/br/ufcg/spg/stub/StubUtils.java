@@ -4,10 +4,7 @@ import br.ufcg.spg.matcher.KindNodeMatcher;
 import br.ufcg.spg.matcher.calculator.NodeMatchCalculator;
 import br.ufcg.spg.parser.JParser;
 import br.ufcg.spg.refaster.ClassUtils;
-import br.ufcg.spg.transformation.FieldDeclarationUtils;
-import br.ufcg.spg.transformation.JDTElementUtils;
-import br.ufcg.spg.transformation.MethodDeclarationUtils;
-import br.ufcg.spg.transformation.SyntheticClassUtils;
+import br.ufcg.spg.transformation.*;
 import br.ufcg.spg.type.TypeUtils;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jdt.core.dom.*;
@@ -37,12 +34,20 @@ public class StubUtils {
           if (initializer instanceof MethodInvocation) {
             MethodInvocation invocation = (MethodInvocation) initializer;
             Type type = TypeUtils.extractType(inv, inv.getAST());
-            CompilationUnit templateClass = ClassUtils.getTemplateClassBasedOnInvocation(unit, invocation.getExpression(), invocation.getAST());
-            if (templateClass.getPackage().toString().contains("java.util")) {
-              System.out.println("Class from java.util, we do not need to create a new class.");
-              continue;
+            System.out.println("Name of the method: " + invocation.getExpression());
+            if (!(invocation.getExpression() instanceof MethodInvocation)) {
+              CompilationUnit templateClass = ClassUtils.getTemplateClassBasedOnInvocation(unit, invocation.getExpression());
+              if (templateClass.getPackage().toString().contains("java.util")) {
+                System.out.println("Class from java.util, we do not need to create a new class.");
+                continue;
+              }
+              MethodDeclarationUtils.addMethodBasedOnMethodInvocation(unit, type, invocation, templateClass);
             }
-            MethodDeclarationUtils.addMethodBasedOnMethodInvocation(unit, type, invocation, templateClass);
+            else {
+              System.out.println("Processing method chain: ");
+              CompilationUnit templateClass = SyntheticClassUtils.createSyntheticClass(unit);
+              MethodInvocationStub.processMethodInvocationChain(unit, invocation, templateClass);
+            }
           }
           else if (initializer instanceof ClassInstanceCreation) {
             Type type = TypeUtils.extractType(inv, inv.getAST());
@@ -53,7 +58,7 @@ public class StubUtils {
                 Type argType = (Type) arg;
                 CompilationUnit paramTemplateClass = ClassUtils.getTemplateClass(unit, argType);
                 if (!paramTemplateClass.getPackage().toString().contains("java.util")) {
-                  List<Type> genericParamTypes = TypeUtils.createGenericParamTypes(arg.getAST(), argType);
+                  List<Type> genericParamTypes = TypeUtils.createGenericParamTypes(argType);
                   TypeDeclaration argClass = ClassUtils.getTypeDeclaration(paramTemplateClass);
                   ClassUtils.addTypeParameterToClass(genericParamTypes, argClass);
                   ClassUtils.filterMethods(paramTemplateClass);
@@ -61,7 +66,7 @@ public class StubUtils {
                 }
               }
             }
-            CompilationUnit templateClass = ClassUtils.getTemplateClassBasedOnInvocation(unit, initializer, initializer.getAST());
+            CompilationUnit templateClass = ClassUtils.getTemplateClassBasedOnInvocation(unit, initializer);
             if (templateClass.getPackage().toString().contains("java.util")) {
               continue;
             }
@@ -73,7 +78,7 @@ public class StubUtils {
             JDTElementUtils.saveClass(templateClass, classDecl);
           }
           else if (initializer instanceof  FieldAccess) {
-            processFieldDeclaration(unit, inv, initializer);
+            FieldDeclarationUtils.processFieldDeclaration(unit, inv, initializer);
           }
         }
       }
@@ -82,7 +87,10 @@ public class StubUtils {
           String pkg = importStm.toString().substring(7, importStm.toString().length() - 2);
           pkg = "temp/" + pkg.replaceAll("\\.", "/") + ".java";
           if (!(new File(pkg).exists())) {
-            CompilationUnit impClass = ClassUtils.getTemplateClassBasedOnInvocation(unit, (Expression) importStm, importStm.getAST());
+            String typeStr = importStm.toString().substring(7, importStm.toString().length() - 2);
+            typeStr = JDTElementUtils.extractSimpleName(typeStr);
+            Type type = ImportUtils.getTypeFromImport(typeStr, importStm.getAST(), importStm);
+            CompilationUnit impClass = ClassUtils.getTemplateClassBasedOnInvocation(unit, type);
             JDTElementUtils.saveClass(impClass, ClassUtils.getTypeDeclaration(impClass));
           }
         }
@@ -90,49 +98,6 @@ public class StubUtils {
     } catch (IOException e) {
       e.printStackTrace();
     }
-  }
-
-  private static void processFieldDeclaration(CompilationUnit unit, VariableDeclarationStatement inv, Expression initializer) throws IOException {
-    System.out.println("General Type: " + TypeUtils.extractType(initializer, initializer.getAST()));
-    FieldAccess facces = (FieldAccess) initializer;
-    Expression expression = facces.getExpression();
-    System.out.println(facces.getName());
-    if (expression instanceof MethodInvocation) {
-      MethodInvocation methodInvocation = (MethodInvocation) expression;
-      if (TypeUtils.extractType(expression, unit.getAST()).toString().equals("void")) {
-        CompilationUnit templateSynt = SyntheticClassUtils.createSyntheticClass(unit);
-        VariableDeclarationFragment vfrag = unit.getAST().newVariableDeclarationFragment();
-        SimpleName fieldName = (SimpleName) ASTNode.copySubtree(vfrag.getAST(), facces.getName());
-        vfrag.setName(fieldName);
-        FieldDeclaration fieldDeclaration = unit.getAST().newFieldDeclaration(vfrag);
-        FieldDeclarationUtils.addModifier(fieldDeclaration, Modifier.ModifierKeyword.PUBLIC_KEYWORD);
-        Type type = TypeUtils.extractType(inv, inv.getAST());
-        type = (Type) ASTNode.copySubtree(type.getAST(), type);
-        fieldDeclaration.setType(type);
-        TypeDeclaration typeDeclaration = ClassUtils.getTypeDeclaration(templateSynt);
-        fieldDeclaration = (FieldDeclaration) ASTNode.copySubtree(typeDeclaration.getAST(), fieldDeclaration);
-        typeDeclaration.bodyDeclarations().add(fieldDeclaration);
-        CompilationUnit templateChain = SyntheticClassUtils.createSyntheticClass(unit);
-        Type returnType = SyntheticClassUtils.getSyntheticType(unit, typeDeclaration.getName());
-        MethodInvocationStub.stub(unit, templateChain, methodInvocation.getName(), returnType, methodInvocation.arguments(), false);
-        if (methodInvocation.getExpression() instanceof MethodInvocation) {
-          MethodInvocation chain = (MethodInvocation) methodInvocation.getExpression();
-          while (chain.getExpression() instanceof  MethodInvocation) {
-            MethodInvocationStub.stub(unit, templateChain, chain.getName(), returnType, chain.arguments(), false);
-            chain = (MethodInvocation) chain.getExpression();
-          }
-          System.out.println(templateChain);
-          CompilationUnit templateClass = ClassUtils.getTemplateClassBasedOnInvocation(unit, chain.getExpression(), unit.getAST());
-          MethodDeclarationUtils.addMethodBasedOnMethodInvocation(unit, returnType, chain, templateClass);
-          System.out.println("The final template class is: \n" + templateClass);
-          JDTElementUtils.saveClass(templateClass, ClassUtils.getTypeDeclaration(templateChain));
-        }
-        System.out.println(methodInvocation.getExpression());
-        System.out.println(templateChain);
-        JDTElementUtils.saveClass(templateChain, ClassUtils.getTypeDeclaration(templateChain));
-      }
-    }
-    throw new UnsupportedOperationException();
   }
 
   public static List<ASTNode> getNodes(CompilationUnit unit, int importDeclaration) {

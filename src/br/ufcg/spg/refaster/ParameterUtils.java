@@ -24,7 +24,7 @@ public final class ParameterUtils {
    * @return method with parameters added.
    */
   @SuppressWarnings("unchecked")
-  public static MethodDeclaration addParameter(final List<Type> types, List<ASTNode> varNames,
+  public static MethodDeclaration addParameter(final List<Type> types, List<String> varNames,
       final CompilationUnit cuUnit, MethodDeclaration method) {
     final AST ast = cuUnit.getAST();
     final List<ASTNode> parameters = new ArrayList<>();
@@ -32,7 +32,7 @@ public final class ParameterUtils {
       // Create a new variable declaration to be added as parameter.
       final SingleVariableDeclaration singleVariableDeclaration = 
           ast.newSingleVariableDeclaration();
-      final SimpleName name = ast.newSimpleName(varNames.get(i).toString());
+      final SimpleName name = ast.newSimpleName(varNames.get(i));
       singleVariableDeclaration.setName(name);
       Type type = types.get(i);
       type = (Type) ASTNode.copySubtree(ast, type);
@@ -50,7 +50,10 @@ public final class ParameterUtils {
   public static MethodDeclaration addParameters(CompilationUnit unit,
                                                 List<ASTNode> arguments, CompilationUnit templateClass, MethodDeclaration mDecl) {
     List<Type> argTypes = new ArrayList<>();
+    List<String> varNames = new ArrayList<>();
+    int i = 0;
     for(ASTNode argNode : arguments) {
+      varNames.add("v_" + i++);
       Expression arg = (Expression) argNode;
       Type argType = TypeUtils.extractType(arg, mDecl.getAST());
       //Needed to resolve a bug in eclipse JDT.
@@ -60,7 +63,7 @@ public final class ParameterUtils {
       System.out.println(argNode + " : " + argType);
       argTypes.add(argType);
     }
-    mDecl = addParameter(argTypes, arguments, templateClass, mDecl);
+    mDecl = addParameter(argTypes, varNames, templateClass, mDecl);
     return mDecl;
   }
 }

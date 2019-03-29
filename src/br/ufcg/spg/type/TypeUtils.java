@@ -5,6 +5,8 @@ import br.ufcg.spg.binding.BindingSolver;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.ufcg.spg.transformation.ImportUtils;
+import br.ufcg.spg.transformation.JDTElementUtils;
 import org.eclipse.jdt.core.dom.*;
 
 public class TypeUtils {
@@ -212,7 +214,8 @@ public class TypeUtils {
     }
   }
 
-  public static List<Type> createGenericParamTypes(AST ast, Type leftHandSideClass) {
+  public static List<Type> createGenericParamTypes(Type leftHandSideClass) {
+    AST ast = leftHandSideClass.getAST();
     List<Type> genericParamTypes = new ArrayList<>();
     if (leftHandSideClass.isParameterizedType()) {
       ParameterizedType paramType = (ParameterizedType) leftHandSideClass;
@@ -230,5 +233,15 @@ public class TypeUtils {
       }
     }
     return genericParamTypes;
+  }
+
+  public static Type getClassType(CompilationUnit unit, ASTNode node) {
+    Type classType = TypeUtils.extractType(node, node.getAST());
+    boolean isStatic = classType.toString().equals("void");
+    if (isStatic) {
+      String typeName = JDTElementUtils.extractSimpleName(node.toString());
+      classType = ImportUtils.getTypeBasedOnImports(unit, typeName);
+    }
+    return classType;
   }
 }

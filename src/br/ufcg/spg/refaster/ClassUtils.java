@@ -78,11 +78,8 @@ public class ClassUtils {
   public static CompilationUnit getTemplateClass(CompilationUnit unit, Type classType) throws IOException {
     CompilationUnit templateClass;
     AST ast = unit.getAST();
-    boolean isStatic = classType.toString().equals("void");
-    if (isStatic) {
-      String typeName = JDTElementUtils.extractSimpleName(classType.toString());
-      classType = ImportUtils.getTypeBasedOnImports(unit, typeName);
-    }
+    System.out.println("Type: " + classType);
+    classType = TypeUtils.getClassType(unit, classType);
     Type packageType;
     String baseName = JDTElementUtils.extractSimpleName(classType);
     if (baseName == null) {
@@ -112,8 +109,8 @@ public class ClassUtils {
     return templateClass;
   }
 
-  public static CompilationUnit getTemplateClassBasedOnInvocation(CompilationUnit unit, Expression expression, AST ast2) throws IOException {
-    Type invExpressionType = TypeUtils.extractType(expression, ast2);
+  public static CompilationUnit getTemplateClassBasedOnInvocation(CompilationUnit unit, ASTNode expression) throws IOException {
+    Type invExpressionType = TypeUtils.getClassType(unit, expression);
     return getTemplateClass(unit, invExpressionType);
   }
 }

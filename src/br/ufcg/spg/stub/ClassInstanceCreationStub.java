@@ -33,7 +33,7 @@ public class ClassInstanceCreationStub {
     Type type = TypeUtils.extractType(statement, statement.getAST());
     CompilationUnit baseClass = ClassUtils.getTemplateClass(unit, type);
     Type leftHandSideClass = TypeUtils.extractType(statement, ast);
-    List<Type> genericParamTypes = TypeUtils.createGenericParamTypes(ast, leftHandSideClass);
+    List<Type> genericParamTypes = TypeUtils.createGenericParamTypes(leftHandSideClass);
     String baseName = JDTElementUtils.extractSimpleName(leftHandSideClass);
     ASTNode imp = ImportUtils.findImport(unit, baseName);
     Type packageType = ImportUtils.getTypeFromImport(baseName, ast, imp);

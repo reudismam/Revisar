@@ -91,7 +91,7 @@ public class ReturnStmTranslator {
    * @param rconf return statement configuration.
    */
   private static MethodDeclaration addReturnStatement(ReturnStatementConfig rconf, Type returnType) 
-          throws BadLocationException, IOException, NoFilepatternException, GitAPIException {
+          throws BadLocationException {
     final AST ast = rconf.getRefasterRule().getAST();
     final Template template = getTemplate(rconf);
     if (template == null) {
@@ -103,7 +103,11 @@ public class ReturnStmTranslator {
         template.getTemplate(), rstm, ast);
     MethodDeclaration method = body.config();
     List<Type> types = TypeUtils.extractTypes(template.getVariables(), ast);
-    method = ParameterUtils.addParameter(types, template.getHoles(),
+    List<String> varNames = new ArrayList<>();
+    for (ASTNode node : template.getHoles()) {
+      varNames.add(node.toString());
+    }
+    method = ParameterUtils.addParameter(types, varNames,
         rconf.getRefasterRule(), method);
     method = body.configReturnType(returnType, rconf.getRefasterRule(), method);
     return method;
