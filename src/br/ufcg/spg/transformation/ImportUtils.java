@@ -20,6 +20,8 @@ public class ImportUtils {
     }
     else {
       name = ast.newName("java.lang");
+      System.out.println("imported type: " + importedType);
+      //throw new UnsupportedOperationException();
     }
     return ast.newNameQualifiedType(name, sname);
   }

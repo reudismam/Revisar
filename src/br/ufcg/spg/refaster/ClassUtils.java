@@ -31,17 +31,29 @@ public class ClassUtils {
     return typeDecl;
   }
 
-  public static void addTypeParameterToClass(List<Type> paramTypes, TypeDeclaration classDecl) {
-    if (classDecl.typeParameters().size() != paramTypes.size()) {
-      for (Type type : paramTypes) {
-        SimpleType simpleType = (SimpleType) ASTNode.copySubtree(classDecl.getAST(), type);
-        TypeParameter parameter = classDecl.getAST().newTypeParameter();
-        SimpleName simpleName = (SimpleName) simpleType.getName();
-        simpleName = (SimpleName) ASTNode.copySubtree(parameter.getAST(), simpleName);
-        parameter.setName(simpleName);
-        classDecl.typeParameters().add(parameter);
+  public static void addTypeParameterToClass(List<Type> paramTypes, CompilationUnit unit, CompilationUnit templatClass) {
+    //try {
+      TypeDeclaration classDecl = ClassUtils.getTypeDeclaration(templatClass);
+      if (classDecl.typeParameters().size() != paramTypes.size()) {
+        for (Type type : paramTypes) {
+          SimpleType simpleType = (SimpleType) ASTNode.copySubtree(classDecl.getAST(), type);
+          TypeParameter parameter = classDecl.getAST().newTypeParameter();
+          SimpleName simpleName = (SimpleName) simpleType.getName();
+          simpleName = (SimpleName) ASTNode.copySubtree(parameter.getAST(), simpleName);
+          parameter.setName(simpleName);
+          classDecl.typeParameters().add(parameter);
+          /*CompilationUnit templateType = ClassUtils.getTemplateClass(unit, type);
+          JDTElementUtils.saveClass(templateType, ClassUtils.getTypeDeclaration(templateType));
+          if (type.isNameQualifiedType()) {
+            List<Type> genericParamTypes = TypeUtils.createGenericParamTypes(type);
+            addTypeParameterToClass(genericParamTypes, unit, templateType);
+          }*/
       }
     }
+      //JDTElementUtils.saveClass(templatClass, classDecl);
+    /*} catch (IOException e) {
+      e.printStackTrace();
+    }*/
   }
 
   public static void addConstructor(CompilationUnit unit, CompilationUnit templateClass,
@@ -78,7 +90,6 @@ public class ClassUtils {
   public static CompilationUnit getTemplateClass(CompilationUnit unit, Type classType) throws IOException {
     CompilationUnit templateClass;
     AST ast = unit.getAST();
-    System.out.println("Type: " + classType);
     classType = TypeUtils.getClassType(unit, classType);
     Type packageType;
     String baseName = JDTElementUtils.extractSimpleName(classType);

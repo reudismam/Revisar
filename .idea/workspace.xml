@@ -2,22 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="27c44893-f235-4200-b6a1-3330860caeda" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/temp/br/op/Operator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/temp/br/ufcg/spg/template/MyClass.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/temp/org/apache/hadoop/hive/ql/exec/Class1.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/temp/org/apache/hadoop/hive/ql/exec/TableScanOperator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/temp/org/apache/hadoop/hive/ql/metadata/Partition.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/temp/syntethic/Class1.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/refaster/ClassUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/br/ufcg/spg/refaster/ClassUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/refaster/ParameterUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/br/ufcg/spg/refaster/ParameterUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/refaster/ReturnStmTranslator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/br/ufcg/spg/refaster/ReturnStmTranslator.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/stub/ClassInstanceCreationStub.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/br/ufcg/spg/stub/ClassInstanceCreationStub.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/stub/MethodInvocationStub.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/br/ufcg/spg/stub/MethodInvocationStub.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/stub/StubUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/br/ufcg/spg/stub/StubUtils.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/transformation/FieldDeclarationUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/br/ufcg/spg/transformation/FieldDeclarationUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/type/TypeUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/br/ufcg/spg/type/TypeUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/temp/java/uti/ArrayList.java" beforeDir="false" afterPath="$PROJECT_DIR$/temp/java/uti/ArrayList.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/transformation/ImportUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/br/ufcg/spg/transformation/ImportUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/transformation/JDTElementUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/br/ufcg/spg/transformation/JDTElementUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/transformation/SyntheticClassUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/br/ufcg/spg/transformation/SyntheticClassUtils.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/temp/java/uti/List.java" beforeDir="false" afterPath="$PROJECT_DIR$/temp/java/uti/List.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/temp/myJar.jar" beforeDir="false" afterPath="$PROJECT_DIR$/temp/myJar.jar" afterDir="false" />
     </list>
@@ -33,8 +26,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test/br/ufcg/spg/analyzer/test/TestSuite.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="373">
-              <caret line="104" column="43" selection-start-line="104" selection-start-column="43" selection-end-line="104" selection-end-column="43" />
+            <state relative-caret-position="189">
+              <caret line="104" selection-start-line="104" selection-end-line="104" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#2035#2036#0" expanded="true" />
@@ -51,8 +44,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/br/ufcg/spg/transformation/ImportUtils.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="187">
-              <caret line="11" selection-start-line="11" selection-end-line="11" />
+            <state relative-caret-position="189">
+              <caret line="16" selection-start-line="16" selection-end-line="16" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -63,8 +56,32 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/br/ufcg/spg/stub/StubUtils.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="181">
-              <caret line="48" selection-start-line="48" selection-end-line="48" />
+            <state relative-caret-position="271">
+              <caret line="83" column="51" selection-start-line="83" selection-start-column="51" selection-end-line="83" selection-end-column="51" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/br/ufcg/spg/transformation/SyntheticClassUtils.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="347">
+              <caret line="22" column="109" selection-start-line="22" selection-start-column="109" selection-end-line="22" selection-end-column="109" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/br/ufcg/spg/transformation/JDTElementUtils.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="187">
+              <caret line="11" column="55" selection-start-line="11" selection-start-column="55" selection-end-line="11" selection-end-column="55" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -75,32 +92,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/br/ufcg/spg/stub/MethodInvocationStub.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="189">
-              <caret line="27" selection-start-line="27" selection-end-line="27" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/br/ufcg/spg/transformation/FieldDeclarationUtils.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="449">
-              <caret line="46" selection-start-line="46" selection-end-line="46" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/br/ufcg/spg/refaster/ParameterUtils.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="532">
-              <caret line="55" column="31" selection-start-line="55" selection-start-column="31" selection-end-line="55" selection-end-column="31" />
+            <state relative-caret-position="228">
+              <caret line="37" column="92" selection-start-line="37" selection-start-column="3" selection-end-line="37" selection-end-column="92" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -109,19 +102,34 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/br/ufcg/spg/refaster/ReturnStmTranslator.java">
+        <entry file="file://$PROJECT_DIR$/src/br/ufcg/spg/transformation/FieldDeclarationUtils.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="359">
-              <caret line="109" column="56" selection-start-line="109" selection-start-column="56" selection-end-line="109" selection-end-column="56" />
+            <state relative-caret-position="347">
+              <caret line="34" column="110" lean-forward="true" selection-start-line="34" selection-start-column="110" selection-end-line="34" selection-end-column="110" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/br/ufcg/spg/transformation/SyntheticClassUtils.java">
+        <entry file="file://$PROJECT_DIR$/src/br/ufcg/spg/stub/ClassInstanceCreationStub.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="15" column="58" selection-start-line="15" selection-start-column="58" selection-end-line="15" selection-end-column="58" />
+            <state relative-caret-position="311">
+              <caret line="25" column="68" selection-start-line="25" selection-start-column="68" selection-end-line="25" selection-end-column="68" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/br/ufcg/spg/transformation/MethodDeclarationUtils.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="398">
+              <caret line="61" column="69" selection-start-line="61" selection-start-column="69" selection-end-line="61" selection-end-column="69" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -132,20 +140,11 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/br/ufcg/spg/refaster/ClassUtils.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="373">
-              <caret line="112" selection-start-line="112" selection-end-line="112" />
+            <state relative-caret-position="181">
+              <caret line="103" selection-start-line="103" selection-end-line="103" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/br/ufcg/spg/type/TypeUtils.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="381">
-              <caret line="242" selection-start-line="242" selection-end-line="242" />
             </state>
           </provider>
         </entry>
@@ -161,12 +160,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>QuickFixM</find>
-      <find>QuickFixManager.getInstance()</find>
-      <find>refaster</find>
-      <find>type</find>
-      <find>import</find>
-      <find>Impor</find>
       <find>simple</find>
       <find>typeArgument</find>
       <find>syn</find>
@@ -178,7 +171,25 @@
       <find>param</find>
       <find>ast</find>
       <find>cLASS1</find>
+      <find>the base class is</find>
+      <find>The super class is</find>
+      <find>The template super</find>
+      <find>Operator&lt;</find>
+      <find>Operator&lt;T&gt;</find>
+      <find>the template super</find>
+      <find>The template</find>
+      <find>The type is</find>
+      <find>The template super is</find>
+      <find>getChildOperator</find>
+      <find>the final</find>
       <find>Operator</find>
+      <find>public class operator</find>
+      <find>The</find>
+      <find>Class1</find>
+      <find>public class Class1</find>
+      <find>Import</find>
+      <find>getTableSpec</find>
+      <find>public class MyClass</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -208,19 +219,19 @@
         <option value="$PROJECT_DIR$/src/br/ufcg/spg/refaster/ParameterTranslator.java" />
         <option value="$PROJECT_DIR$/src/br/ufcg/spg/stub/ClassIntanceStub.java" />
         <option value="$PROJECT_DIR$/src/br/ufcg/spg/refaster/config/ClassUtils.java" />
-        <option value="$PROJECT_DIR$/src/br/ufcg/spg/transformation/JDTElementUtils.java" />
-        <option value="$PROJECT_DIR$/src/br/ufcg/spg/transformation/MethodDeclarationUtils.java" />
-        <option value="$PROJECT_DIR$/src/br/ufcg/spg/transformation/ImportUtils.java" />
-        <option value="$PROJECT_DIR$/src/br/ufcg/spg/transformation/SyntheticClassUtils.java" />
-        <option value="$PROJECT_DIR$/src/br/ufcg/spg/stub/ClassInstanceCreationStub.java" />
         <option value="$PROJECT_DIR$/src/br/ufcg/spg/type/TypeUtils.java" />
-        <option value="$PROJECT_DIR$/src/br/ufcg/spg/refaster/ClassUtils.java" />
         <option value="$PROJECT_DIR$/test/br/ufcg/spg/analyzer/test/TestSuite.java" />
-        <option value="$PROJECT_DIR$/src/br/ufcg/spg/transformation/FieldDeclarationUtils.java" />
-        <option value="$PROJECT_DIR$/src/br/ufcg/spg/stub/MethodInvocationStub.java" />
-        <option value="$PROJECT_DIR$/src/br/ufcg/spg/stub/StubUtils.java" />
         <option value="$PROJECT_DIR$/src/br/ufcg/spg/refaster/ParameterUtils.java" />
         <option value="$PROJECT_DIR$/src/br/ufcg/spg/refaster/ReturnStmTranslator.java" />
+        <option value="$PROJECT_DIR$/src/br/ufcg/spg/transformation/JDTElementUtils.java" />
+        <option value="$PROJECT_DIR$/src/br/ufcg/spg/stub/ClassInstanceCreationStub.java" />
+        <option value="$PROJECT_DIR$/src/br/ufcg/spg/refaster/ClassUtils.java" />
+        <option value="$PROJECT_DIR$/src/br/ufcg/spg/stub/MethodInvocationStub.java" />
+        <option value="$PROJECT_DIR$/src/br/ufcg/spg/transformation/MethodDeclarationUtils.java" />
+        <option value="$PROJECT_DIR$/src/br/ufcg/spg/transformation/SyntheticClassUtils.java" />
+        <option value="$PROJECT_DIR$/src/br/ufcg/spg/transformation/ImportUtils.java" />
+        <option value="$PROJECT_DIR$/src/br/ufcg/spg/stub/StubUtils.java" />
+        <option value="$PROJECT_DIR$/src/br/ufcg/spg/transformation/FieldDeclarationUtils.java" />
       </list>
     </option>
   </component>
@@ -283,7 +294,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1553889674719" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1553977007456" />
     <property name="extract.method.default.visibility" value="private" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -420,47 +431,48 @@
       <workItem from="1553199771281" duration="15060000" />
       <workItem from="1553277406058" duration="6225000" />
       <workItem from="1553285023368" duration="37045000" />
-      <workItem from="1553506258651" duration="86003000" />
+      <workItem from="1553506258651" duration="107362000" />
     </task>
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="TestSuite_testFindBugs - 2019.03.29 at 16h 03m 52s.xml">
+    <history-entry file="TestSuite_testFindBugs - 2019.03.30 at 15h 23m 50s.xml">
       <configuration name="TestSuite.testFindBugs" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestSuite_testFindBugs - 2019.03.29 at 16h 11m 41s.xml">
+    <history-entry file="TestSuite_testFindBugs - 2019.03.30 at 15h 33m 42s.xml">
       <configuration name="TestSuite.testFindBugs" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestSuite_testFindBugs - 2019.03.29 at 16h 16m 43s.xml">
+    <history-entry file="TestSuite_testFindBugs - 2019.03.30 at 15h 38m 13s.xml">
       <configuration name="TestSuite.testFindBugs" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestSuite_testFindBugs - 2019.03.29 at 16h 17m 09s.xml">
+    <history-entry file="TestSuite_testFindBugs - 2019.03.30 at 16h 10m 27s.xml">
       <configuration name="TestSuite.testFindBugs" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestSuite_testFindBugs - 2019.03.29 at 16h 23m 54s.xml">
+    <history-entry file="TestSuite_testFindBugs - 2019.03.30 at 16h 11m 23s.xml">
       <configuration name="TestSuite.testFindBugs" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestSuite_testFindBugs - 2019.03.29 at 16h 42m 10s.xml">
+    <history-entry file="TestSuite_testFindBugs - 2019.03.30 at 16h 41m 41s.xml">
       <configuration name="TestSuite.testFindBugs" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestSuite_testFindBugs - 2019.03.29 at 16h 47m 27s.xml">
+    <history-entry file="TestSuite_testFindBugs - 2019.03.30 at 16h 47m 31s.xml">
       <configuration name="TestSuite.testFindBugs" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestSuite_testFindBugs - 2019.03.29 at 16h 47m 49s.xml">
+    <history-entry file="TestSuite_testFindBugs - 2019.03.30 at 16h 50m 53s.xml">
       <configuration name="TestSuite.testFindBugs" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestSuite_testFindBugs - 2019.03.29 at 16h 52m 09s.xml">
+    <history-entry file="TestSuite_testFindBugs - 2019.03.30 at 17h 05m 27s.xml">
       <configuration name="TestSuite.testFindBugs" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestSuite_testFindBugs - 2019.03.29 at 16h 58m 30s.xml">
+    <history-entry file="TestSuite_testFindBugs - 2019.03.30 at 17h 15m 19s.xml">
       <configuration name="TestSuite.testFindBugs" configurationId="JUnit" />
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="190279000" />
+    <option name="totallyTimeSpent" value="211638000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" weight="0.26332623" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -733,116 +745,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/br/ufcg/spg/transformation/MethodDeclarationUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="449">
-          <caret line="55" column="21" selection-start-line="55" selection-start-column="21" selection-end-line="55" selection-end-column="21" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/br/ufcg/spg/stub/ClassInstanceCreationStub.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="303">
-          <caret line="34" column="47" selection-start-line="34" selection-start-column="47" selection-end-line="34" selection-end-column="47" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/br/ufcg/spg/transformation/JDTElementUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="197">
-          <caret line="21" column="23" selection-start-line="21" selection-start-column="23" selection-end-line="21" selection-end-column="23" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/br/ufcg/spg/analyzer/test/TestSuite.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="373">
-          <caret line="104" column="43" selection-start-line="104" selection-start-column="43" selection-end-line="104" selection-end-column="43" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#2035#2036#0" expanded="true" />
-            <element signature="e#2066#2067#0" expanded="true" />
-            <element signature="e#13281#13282#0" expanded="true" />
-            <element signature="e#13324#13325#0" expanded="true" />
-            <element signature="e#13400#13401#0" expanded="true" />
-            <element signature="e#13436#13437#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/br/ufcg/spg/transformation/SyntheticClassUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="15" column="58" selection-start-line="15" selection-start-column="58" selection-end-line="15" selection-end-column="58" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/br/ufcg/spg/transformation/FieldDeclarationUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="449">
-          <caret line="46" selection-start-line="46" selection-end-line="46" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/br/ufcg/spg/transformation/ImportUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="11" selection-start-line="11" selection-end-line="11" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/br/ufcg/spg/type/TypeUtils.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="381">
           <caret line="242" selection-start-line="242" selection-end-line="242" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/br/ufcg/spg/refaster/ClassUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="373">
-          <caret line="112" selection-start-line="112" selection-end-line="112" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/br/ufcg/spg/stub/StubUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="181">
-          <caret line="48" selection-start-line="48" selection-end-line="48" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/br/ufcg/spg/stub/MethodInvocationStub.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="189">
-          <caret line="27" selection-start-line="27" selection-end-line="27" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -858,8 +764,114 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/br/ufcg/spg/refaster/ReturnStmTranslator.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="359">
-          <caret line="109" column="56" selection-start-line="109" selection-start-column="56" selection-end-line="109" selection-end-column="56" />
+        <state relative-caret-position="393">
+          <caret line="111" column="80" selection-start-line="111" selection-start-column="80" selection-end-line="111" selection-end-column="80" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/br/ufcg/spg/transformation/JDTElementUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="11" column="55" selection-start-line="11" selection-start-column="55" selection-end-line="11" selection-end-column="55" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/br/ufcg/spg/stub/ClassInstanceCreationStub.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="311">
+          <caret line="25" column="68" selection-start-line="25" selection-start-column="68" selection-end-line="25" selection-end-column="68" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/br/ufcg/spg/transformation/MethodDeclarationUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="398">
+          <caret line="61" column="69" selection-start-line="61" selection-start-column="69" selection-end-line="61" selection-end-column="69" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/br/ufcg/spg/transformation/SyntheticClassUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="347">
+          <caret line="22" column="109" selection-start-line="22" selection-start-column="109" selection-end-line="22" selection-end-column="109" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/br/ufcg/spg/analyzer/test/TestSuite.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="189">
+          <caret line="104" selection-start-line="104" selection-end-line="104" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#2035#2036#0" expanded="true" />
+            <element signature="e#2066#2067#0" expanded="true" />
+            <element signature="e#13281#13282#0" expanded="true" />
+            <element signature="e#13324#13325#0" expanded="true" />
+            <element signature="e#13400#13401#0" expanded="true" />
+            <element signature="e#13436#13437#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/br/ufcg/spg/transformation/ImportUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="189">
+          <caret line="16" selection-start-line="16" selection-end-line="16" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/br/ufcg/spg/refaster/ClassUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="181">
+          <caret line="103" selection-start-line="103" selection-end-line="103" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/br/ufcg/spg/stub/StubUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="271">
+          <caret line="83" column="51" selection-start-line="83" selection-start-column="51" selection-end-line="83" selection-end-column="51" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/br/ufcg/spg/stub/MethodInvocationStub.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="228">
+          <caret line="37" column="92" selection-start-line="37" selection-start-column="3" selection-end-line="37" selection-end-column="92" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/br/ufcg/spg/transformation/FieldDeclarationUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="347">
+          <caret line="34" column="110" lean-forward="true" selection-start-line="34" selection-start-column="110" selection-end-line="34" selection-end-column="110" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

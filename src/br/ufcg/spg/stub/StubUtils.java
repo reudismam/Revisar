@@ -34,7 +34,6 @@ public class StubUtils {
           if (initializer instanceof MethodInvocation) {
             MethodInvocation invocation = (MethodInvocation) initializer;
             Type type = TypeUtils.extractType(inv, inv.getAST());
-            System.out.println("Name of the method: " + invocation.getExpression());
             if (!(invocation.getExpression() instanceof MethodInvocation)) {
               CompilationUnit templateClass = ClassUtils.getTemplateClassBasedOnInvocation(unit, invocation.getExpression());
               if (templateClass.getPackage().toString().contains("java.util")) {
@@ -44,8 +43,12 @@ public class StubUtils {
               MethodDeclarationUtils.addMethodBasedOnMethodInvocation(unit, type, invocation, templateClass);
             }
             else {
+              CompilationUnit templateSuper = ClassUtils.getTemplateClass(unit, type);
+              createClassForType(unit, templateSuper, type);
+              JDTElementUtils.saveClass(templateSuper, ClassUtils.getTypeDeclaration(templateSuper));
               System.out.println("Processing method chain: ");
               CompilationUnit templateClass = SyntheticClassUtils.createSyntheticClass(unit);
+              MethodDeclarationUtils.addMethodBasedOnMethodInvocation(unit, type, invocation, templateClass);
               MethodInvocationStub.processMethodInvocationChain(unit, invocation, templateClass);
             }
           }
@@ -60,7 +63,7 @@ public class StubUtils {
                 if (!paramTemplateClass.getPackage().toString().contains("java.util")) {
                   List<Type> genericParamTypes = TypeUtils.createGenericParamTypes(argType);
                   TypeDeclaration argClass = ClassUtils.getTypeDeclaration(paramTemplateClass);
-                  ClassUtils.addTypeParameterToClass(genericParamTypes, argClass);
+                  ClassUtils.addTypeParameterToClass(genericParamTypes, unit, paramTemplateClass);
                   ClassUtils.filterMethods(paramTemplateClass);
                   JDTElementUtils.saveClass(paramTemplateClass, argClass);
                 }
@@ -98,6 +101,17 @@ public class StubUtils {
     } catch (IOException e) {
       e.printStackTrace();
     }
+  }
+
+  private static void createClassForType(CompilationUnit unit, CompilationUnit templateClass, Type type) {
+    type = (Type) ASTNode.copySubtree(type.getAST(), type);
+    List<Type> genericParamTypes = TypeUtils.createGenericParamTypes(type);
+    String baseName = JDTElementUtils.extractSimpleName(type);
+    ASTNode imp = ImportUtils.findImport(unit, baseName);
+    System.out.println("The import is: " + baseName);
+    Type packageType = ImportUtils.getTypeFromImport(baseName, type.getAST(), imp);
+    ClassUtils.createClassDeclaration(templateClass, baseName, packageType);
+    ClassUtils.addTypeParameterToClass(genericParamTypes, unit, templateClass);
   }
 
   public static List<ASTNode> getNodes(CompilationUnit unit, int importDeclaration) {

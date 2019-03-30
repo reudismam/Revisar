@@ -1,6 +1,5 @@
 package br.ufcg.spg.transformation;
 
-import br.ufcg.spg.stub.StubUtils;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jdt.core.dom.*;
 
@@ -15,8 +14,13 @@ public class JDTElementUtils {
   }
 
   public static void saveClass(CompilationUnit templateClass, TypeDeclaration classDecl) throws IOException {
-    String pkg = templateClass.getPackage().getName().toString().replaceAll("\\.", "/");
-    FileUtils.write(new File("temp/" + pkg + "/" + classDecl.getName() + ".java"), templateClass.toString());
+    if (!templateClass.getPackage().toString().contains("java.util")) {
+      String pkg = templateClass.getPackage().getName().toString().replaceAll("\\.", "/");
+      FileUtils.write(new File("temp/" + pkg + "/" + classDecl.getName() + ".java"), templateClass.toString());
+      System.out.println(templateClass);
+    } else {
+      System.out.println("From java.util, we do not need to create a class.");
+    }
   }
 
   public static String extractSimpleName(Type type) {

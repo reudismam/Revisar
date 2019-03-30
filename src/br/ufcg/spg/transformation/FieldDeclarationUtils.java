@@ -14,10 +14,8 @@ public class FieldDeclarationUtils {
   }
 
   public static void processFieldDeclaration(CompilationUnit unit, VariableDeclarationStatement inv, Expression initializer) throws IOException {
-    System.out.println("General Type: " + TypeUtils.extractType(initializer, initializer.getAST()));
     FieldAccess facces = (FieldAccess) initializer;
     Expression expression = facces.getExpression();
-    System.out.println(facces.getName());
     if (expression instanceof MethodInvocation) {
       MethodInvocation methodInvocation = (MethodInvocation) expression;
       if (TypeUtils.extractType(expression, unit.getAST()).toString().equals("void")) {
@@ -36,12 +34,11 @@ public class FieldDeclarationUtils {
         TypeDeclaration typeDeclaration = ClassUtils.getTypeDeclaration(templateChain);
         fieldDeclaration = (FieldDeclaration) ASTNode.copySubtree(typeDeclaration.getAST(), fieldDeclaration);
         typeDeclaration.bodyDeclarations().add(fieldDeclaration);
+        Type returnType = SyntheticClassUtils.getSyntheticType(unit, typeDeclaration.getName());
+        MethodInvocationStub.stub(unit, templateChain, methodInvocation.getName(), returnType, methodInvocation.arguments(), false);
         MethodInvocationStub.processMethodInvocationChain(unit, methodInvocation, templateChain);
-        System.out.println(methodInvocation.getExpression());
-        System.out.println(templateChain);
         JDTElementUtils.saveClass(templateChain, ClassUtils.getTypeDeclaration(templateChain));
       }
     }
   }
-
 }

@@ -23,11 +23,12 @@ public class ClassInstanceCreationStub {
     TypeDeclaration classDecl = ClassUtils.getTypeDeclaration(templateClass);
     ClassUtils.addConstructor(unit, templateClass, invocation, ast, typeStr);
     Type statementType = TypeUtils.extractType(statement, ast);
-    processSuperClass(unit, statement, ast, classType, classDecl, statementType);
+    processSuperClass(unit, statement, ast, classType, templateClass, statementType);
   }
 
   private static void processSuperClass(CompilationUnit unit, VariableDeclarationStatement statement,
-                                        AST ast, Type classType, TypeDeclaration classDecl, Type statementType) throws IOException {
+                                        AST ast, Type classType, CompilationUnit classUnit, Type statementType) throws IOException {
+    TypeDeclaration classDecl = ClassUtils.getTypeDeclaration(classUnit);
     String rightHandSideName = JDTElementUtils.extractSimpleName(classType);
     String leftHandSideName = JDTElementUtils.extractSimpleName(statementType);
     Type type = TypeUtils.extractType(statement, statement.getAST());
@@ -38,14 +39,14 @@ public class ClassInstanceCreationStub {
     ASTNode imp = ImportUtils.findImport(unit, baseName);
     Type packageType = ImportUtils.getTypeFromImport(baseName, ast, imp);
     TypeDeclaration superDecl = ClassUtils.createClassDeclaration(baseClass, baseName, packageType);
-    ClassUtils.addTypeParameterToClass(genericParamTypes, superDecl);
+    ClassUtils.addTypeParameterToClass(genericParamTypes, unit, baseClass);
     String pkg = baseClass.getPackage().getName().toString().replaceAll("\\.", "/");
     System.out.println("Super Class: \n" + baseClass);
     leftHandSideClass = (Type) ASTNode.copySubtree(ast, leftHandSideClass);
     if (!leftHandSideName.equals(rightHandSideName)) {
       classDecl.setSuperclassType(leftHandSideClass);
     }
-    ClassUtils.addTypeParameterToClass(genericParamTypes, classDecl);
+    ClassUtils.addTypeParameterToClass(genericParamTypes, unit, classUnit);
     FileUtils.write(new File("temp/" + pkg + "/" + superDecl.getName() + ".java"), baseClass.toString());
   }
 }
