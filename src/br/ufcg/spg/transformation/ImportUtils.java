@@ -6,22 +6,21 @@ import org.eclipse.jdt.core.dom.*;
 import java.util.List;
 
 public class ImportUtils {
-  public static Type getTypeBasedOnImports(CompilationUnit unit, String importedType) {
+  public static Type getTypeBasedOnImports(CompilationUnit unit, String className) {
     AST ast = unit.getAST();
-    ASTNode imp = findImport(unit, importedType);
-    return getTypeFromImport(importedType, ast, imp);
+    ASTNode imp = findImport(unit, className);
+    return getTypeFromImport(className, ast, imp);
   }
 
-  public static Type getTypeFromImport(String importedType, AST ast, ASTNode imp) {
+  public static Type getTypeFromImport(String classname, AST ast, ASTNode imp) {
     Name name;
-    SimpleName sname = ast.newSimpleName(importedType);
+    SimpleName sname = ast.newSimpleName(classname);
     if (imp != null) {
       name = ast.newName(imp.toString().substring(7, imp.toString().lastIndexOf(".")));
     }
     else {
       name = ast.newName("java.lang");
-      System.out.println("imported type: " + importedType);
-      //throw new UnsupportedOperationException();
+      System.out.println("imported type: " + classname);
     }
     return ast.newNameQualifiedType(name, sname);
   }

@@ -1,10 +1,16 @@
 package br.ufcg.spg.refaster;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.ufcg.spg.parser.JParser;
 import br.ufcg.spg.stub.StubUtils;
+import br.ufcg.spg.transformation.ClassRepository;
 import br.ufcg.spg.transformation.ImportUtils;
+import br.ufcg.spg.transformation.JDTElementUtils;
+import br.ufcg.spg.transformation.SyntheticClassUtils;
 import br.ufcg.spg.type.TypeUtils;
 import org.eclipse.jdt.core.dom.*;
 
@@ -55,10 +61,39 @@ public final class ParameterUtils {
     for(ASTNode argNode : arguments) {
       varNames.add("v_" + i++);
       Expression arg = (Expression) argNode;
-      Type argType = TypeUtils.extractType(arg, mDecl.getAST());
+      Type argType;
+      if (arg.toString().equals("null")) {
+        argType = TypeUtils.createType(unit, "java.lang", "Object");
+      } else {
+        argType = TypeUtils.extractType(arg, arg.getAST());
+      }
+      if (arg instanceof MethodInvocation) {
+        try {
+        if (argType.toString().equals("void")) {
+          argType = SyntheticClassUtils.getSyntheticType(unit.getAST());
+          CompilationUnit synthetic = SyntheticClassUtils.createSyntheticClass(unit);
+          JDTElementUtils.saveClass(synthetic);
+        }
+          StubUtils.processMethodInvocation(unit, argType, arg);
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
+      else if (arg instanceof ClassInstanceCreation) {
+        ClassInstanceCreation initializer = (ClassInstanceCreation) arg;
+        Type type = TypeUtils.extractType(arg, arg.getAST());
+        try {
+          StubUtils.processClassCreation(unit, type, initializer);
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
       //Needed to resolve a bug in eclipse JDT.
-      if (argType.toString().contains(".")) {
-        argType = ImportUtils.getTypeBasedOnImports(unit, argType.toString().substring(argType.toString().lastIndexOf(".") + 1));
+      if (argType.toString().contains(".") && !argType.toString().contains("syntethic")) {
+        System.out.println(argType);
+        String typeName = JDTElementUtils.extractSimpleName(argType);
+        System.out.println(typeName);
+        argType = ImportUtils.getTypeBasedOnImports(unit, typeName);
       }
       System.out.println(argNode + " : " + argType);
       argTypes.add(argType);

@@ -144,6 +144,7 @@ public class TypeUtils {
     if ("".equals(qualName)) {
       throw new IllegalArgumentException("No name for type binding.");
     }
+    System.out.println(qualName);
     return ast.newSimpleType(ast.newName(qualName));
   }
 
@@ -243,5 +244,12 @@ public class TypeUtils {
       classType = ImportUtils.getTypeBasedOnImports(unit, typeName);
     }
     return classType;
+  }
+
+  public static Type createType(CompilationUnit unit, String pkgStr, String className) {
+    SimpleName name = unit.getAST().newSimpleName(className);
+    Name pkgName = unit.getAST().newName(pkgStr);
+    Type qualifiedType = unit.getAST().newNameQualifiedType(pkgName, name);
+    return qualifiedType;
   }
 }

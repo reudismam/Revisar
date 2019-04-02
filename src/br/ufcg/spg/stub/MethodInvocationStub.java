@@ -5,7 +5,6 @@ import br.ufcg.spg.refaster.ClassUtils;
 import br.ufcg.spg.transformation.JDTElementUtils;
 import br.ufcg.spg.transformation.MethodDeclarationUtils;
 import br.ufcg.spg.transformation.SyntheticClassUtils;
-import br.ufcg.spg.type.TypeUtils;
 import org.eclipse.jdt.core.dom.*;
 
 import java.io.IOException;
@@ -13,12 +12,18 @@ import java.util.List;
 
 public class MethodInvocationStub {
   public static void stub(CompilationUnit unit, CompilationUnit templateClass,
-                          SimpleName methodName, Type returnType, List<ASTNode> arguments, boolean isStatic) throws IOException {
+                          SimpleName methodName, Type returnType,
+                          List<ASTNode> arguments, boolean isStatic, boolean isConstructor) throws IOException {
     TypeDeclaration classDecl = ClassUtils.getTypeDeclaration(templateClass);
-    System.out.println("Before\n");
+    if (classDecl.getName().toString().contains("Exception")) {
+      return;
+    }
     System.out.println(templateClass.toString());
-    MethodDeclaration declaration = templateClass.getAST().newMethodDeclaration();
-    MethodDeclaration mDecl = MethodDeclarationUtils.setReturnType(returnType, templateClass, declaration);
+    MethodDeclaration mDecl = templateClass.getAST().newMethodDeclaration();
+    if (!isConstructor) {
+      mDecl = MethodDeclarationUtils.setReturnType(returnType, templateClass, mDecl);
+    }
+    mDecl.setConstructor(isConstructor);
     MethodDeclarationUtils.addBody(templateClass, mDecl);
     MethodDeclarationUtils.addThrowStatement(mDecl);
     MethodDeclarationUtils.setName(mDecl, methodName);
@@ -30,22 +35,28 @@ public class MethodInvocationStub {
     System.out.println("After\n");
     classDecl.bodyDeclarations().add(mDecl);
     System.out.println(templateClass.toString());
-    JDTElementUtils.saveClass(templateClass, classDecl);
+    JDTElementUtils.saveClass(templateClass);
   }
 
   public static void processMethodInvocationChain(CompilationUnit unit, MethodInvocation methodInvocation, CompilationUnit templateChain) throws IOException {
     TypeDeclaration typeDeclaration = ClassUtils.getTypeDeclaration(templateChain);
-    Type returnType = SyntheticClassUtils.getSyntheticType(unit, typeDeclaration.getName());
+    Type returnType = SyntheticClassUtils.getSyntheticType(unit.getAST(), typeDeclaration.getName());
     if (methodInvocation.getExpression() instanceof MethodInvocation) {
       MethodInvocation chain = (MethodInvocation) methodInvocation.getExpression();
       while (chain.getExpression() instanceof  MethodInvocation) {
-        stub(unit, templateChain, chain.getName(), returnType, chain.arguments(), false);
+        stub(unit, templateChain, chain.getName(), returnType, chain.arguments(), false, false);
         chain = (MethodInvocation) chain.getExpression();
       }
+      if (chain.getExpression() == null) {
+        return;
+      }
       CompilationUnit templateClass = ClassUtils.getTemplateClassBasedOnInvocation(unit, chain.getExpression());
+      if (templateClass == null) {
+        return;
+      }
       MethodDeclarationUtils.addMethodBasedOnMethodInvocation(unit, returnType, chain, templateClass);
-      JDTElementUtils.saveClass(templateClass, ClassUtils.getTypeDeclaration(templateChain));
-      JDTElementUtils.saveClass(templateChain, ClassUtils.getTypeDeclaration(templateChain));
+      JDTElementUtils.saveClass(templateClass);
+      JDTElementUtils.saveClass(templateChain);
     }
   }
 }

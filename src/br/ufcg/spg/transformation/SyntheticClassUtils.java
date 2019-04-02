@@ -13,7 +13,7 @@ public class SyntheticClassUtils {
   public static CompilationUnit createSyntheticClass(CompilationUnit unit) throws IOException {
     String className = "Class" + classNumber;
     SimpleName simpleName = unit.getAST().newSimpleName(className);
-    Type qualifiedType = getSyntheticType(unit, simpleName);
+    Type qualifiedType = getSyntheticType(unit.getAST(), simpleName);
     System.out.println("[Synthetic Class]: Qualified type is: \n" + qualifiedType);
     CompilationUnit templateClass = ClassUtils.getTemplateClass(unit, qualifiedType);
     List<ASTNode> importDeclarationList = StubUtils.getNodes(unit, ASTNode.IMPORT_DECLARATION);
@@ -26,10 +26,14 @@ public class SyntheticClassUtils {
     return templateClass;
   }
 
-  public static Type getSyntheticType(CompilationUnit unit, SimpleName simpleName) {
-    AST ast = unit.getAST();
+  public static Type getSyntheticType(AST ast, SimpleName simpleName) {
     Name name = ast.newName("syntethic");
     simpleName =  (SimpleName) ASTNode.copySubtree(ast, simpleName);
     return ast.newNameQualifiedType(name, simpleName);
+  }
+
+  public static Type getSyntheticType(AST ast) {
+    SimpleName name = ast.newSimpleName("Class" + classNumber);
+    return getSyntheticType(ast, name);
   }
 }

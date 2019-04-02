@@ -2,6 +2,7 @@ package br.ufcg.spg.refaster;
 
 import br.ufcg.spg.parser.JParser;
 import br.ufcg.spg.stub.StubUtils;
+import br.ufcg.spg.transformation.ClassRepository;
 import br.ufcg.spg.transformation.ImportUtils;
 import br.ufcg.spg.transformation.JDTElementUtils;
 import br.ufcg.spg.transformation.MethodDeclarationUtils;
@@ -27,13 +28,14 @@ public class ClassUtils {
   }
 
   public static TypeDeclaration getTypeDeclaration(CompilationUnit cUnit) {
+    System.out.println(cUnit.types().get(0));
     final TypeDeclaration typeDecl = (TypeDeclaration) cUnit.types().get(0);
     return typeDecl;
   }
 
-  public static void addTypeParameterToClass(List<Type> paramTypes, CompilationUnit unit, CompilationUnit templatClass) {
+  public static void addTypeParameterToClass(List<Type> paramTypes, CompilationUnit unit, CompilationUnit templateClass) throws IOException {
     //try {
-      TypeDeclaration classDecl = ClassUtils.getTypeDeclaration(templatClass);
+      TypeDeclaration classDecl = ClassUtils.getTypeDeclaration(templateClass);
       if (classDecl.typeParameters().size() != paramTypes.size()) {
         for (Type type : paramTypes) {
           SimpleType simpleType = (SimpleType) ASTNode.copySubtree(classDecl.getAST(), type);
@@ -42,12 +44,14 @@ public class ClassUtils {
           simpleName = (SimpleName) ASTNode.copySubtree(parameter.getAST(), simpleName);
           parameter.setName(simpleName);
           classDecl.typeParameters().add(parameter);
-          /*CompilationUnit templateType = ClassUtils.getTemplateClass(unit, type);
-          JDTElementUtils.saveClass(templateType, ClassUtils.getTypeDeclaration(templateType));
-          if (type.isNameQualifiedType()) {
+          if (type instanceof ParameterizedType) {
+            CompilationUnit paramTemplateClass = ClassUtils.getTemplateClass(unit, type);
             List<Type> genericParamTypes = TypeUtils.createGenericParamTypes(type);
-            addTypeParameterToClass(genericParamTypes, unit, templateType);
-          }*/
+            addTypeParameterToClass(genericParamTypes, unit, paramTemplateClass);
+            JDTElementUtils.saveClass(paramTemplateClass);
+            System.out.println("The type is: " + type);
+            throw new RuntimeException();
+          }
       }
     }
       //JDTElementUtils.saveClass(templatClass, classDecl);
@@ -56,7 +60,7 @@ public class ClassUtils {
     }*/
   }
 
-  public static void addConstructor(CompilationUnit unit, CompilationUnit templateClass,
+  /*public static void addConstructor(CompilationUnit unit, CompilationUnit templateClass,
                                                  ClassInstanceCreation invocation, AST ast, String typeStr) {
     MethodDeclaration mDecl = templateClass.getAST().newMethodDeclaration();
     mDecl.setConstructor(true);
@@ -69,20 +73,20 @@ public class ClassUtils {
     mDecl = ParameterUtils.addParameters(unit, arguments, templateClass, mDecl);
     TypeDeclaration classDecl = ClassUtils.getTypeDeclaration(templateClass);
     classDecl.bodyDeclarations().add(mDecl);
-  }
+  }*/
 
-  public static void filterMethods(CompilationUnit templateClass) {
-    Map<String, MethodDeclaration> map = new HashMap<>();
-    List<ASTNode> declarations = StubUtils.getNodes(templateClass, ASTNode.METHOD_DECLARATION);
+  public static void filter(CompilationUnit templateClass) {
+    Map<String, ASTNode> map = new HashMap<>();
+    List<ASTNode> declarations = ClassUtils.getTypeDeclaration(templateClass).bodyDeclarations();//StubUtils.getNodes(templateClass, ASTNode.METHOD_DECLARATION);
     for (ASTNode node : declarations) {
-      MethodDeclaration declaration = (MethodDeclaration) node;
+      ASTNode declaration = node;
       if (!map.containsKey(declaration.toString())) {
         map.put(declaration.toString(), declaration);
       }
     }
     TypeDeclaration classDecl = ClassUtils.getTypeDeclaration(templateClass);
     classDecl.bodyDeclarations().clear();
-    for (Map.Entry<String, MethodDeclaration> entry : map.entrySet()) {
+    for (Map.Entry<String, ASTNode> entry : map.entrySet()) {
       classDecl.bodyDeclarations().add(entry.getValue());
     }
   }
@@ -90,8 +94,15 @@ public class ClassUtils {
   public static CompilationUnit getTemplateClass(CompilationUnit unit, Type classType) throws IOException {
     CompilationUnit templateClass;
     AST ast = unit.getAST();
+    if (classType.toString().equals("void")) {
+      return null;
+    }
     classType = TypeUtils.getClassType(unit, classType);
     Type packageType;
+    if (classType.isWildcardType()) {
+      WildcardType wildcardType = (WildcardType) classType;
+      classType = wildcardType.getBound();
+    }
     String baseName = JDTElementUtils.extractSimpleName(classType);
     if (baseName == null) {
       throw new RuntimeException("Could not find a type for " + baseName);
@@ -110,6 +121,16 @@ public class ClassUtils {
     else {
       templateClass = createNewClass(baseName, packageType);
     }
+    String pkgStr = templateClass.getPackage().toString();
+    if (pkgStr.contains("java.lang") || pkgStr.contains("java.util")) {
+      return null;
+    }
+    if (baseName.endsWith("Exception")) {
+      System.out.println("Creating a new exception:\n" + baseName);
+      TypeDeclaration typeDeclaration = getTypeDeclaration(templateClass);
+      Type type = TypeUtils.createType(templateClass, "java.lang", "RuntimeException");
+      typeDeclaration.setSuperclassType(type);
+    }
     return templateClass;
   }
 
@@ -122,6 +143,19 @@ public class ClassUtils {
 
   public static CompilationUnit getTemplateClassBasedOnInvocation(CompilationUnit unit, ASTNode expression) throws IOException {
     Type invExpressionType = TypeUtils.getClassType(unit, expression);
-    return getTemplateClass(unit, invExpressionType);
+    try {
+      if (invExpressionType.toString().contains("java.lang")) {
+        Class.forName(invExpressionType.toString());
+      }
+    } catch (ClassNotFoundException e) {
+      String name = JDTElementUtils.extractSimpleName(invExpressionType);
+      invExpressionType = TypeUtils.createType(unit, "defaultpkg", name);
+    }
+    System.out.println("invExpression: " + invExpressionType);
+    CompilationUnit templateClass = getTemplateClass(unit, invExpressionType);
+    if (templateClass == null) {
+      return null;
+    }
+    return templateClass;
   }
 }

@@ -34,10 +34,10 @@ public class FieldDeclarationUtils {
         TypeDeclaration typeDeclaration = ClassUtils.getTypeDeclaration(templateChain);
         fieldDeclaration = (FieldDeclaration) ASTNode.copySubtree(typeDeclaration.getAST(), fieldDeclaration);
         typeDeclaration.bodyDeclarations().add(fieldDeclaration);
-        Type returnType = SyntheticClassUtils.getSyntheticType(unit, typeDeclaration.getName());
-        MethodInvocationStub.stub(unit, templateChain, methodInvocation.getName(), returnType, methodInvocation.arguments(), false);
+        Type returnType = SyntheticClassUtils.getSyntheticType(unit.getAST(), typeDeclaration.getName());
+        MethodInvocationStub.stub(unit, templateChain, methodInvocation.getName(), returnType, methodInvocation.arguments(), false, false);
         MethodInvocationStub.processMethodInvocationChain(unit, methodInvocation, templateChain);
-        JDTElementUtils.saveClass(templateChain, ClassUtils.getTypeDeclaration(templateChain));
+        JDTElementUtils.saveClass(templateChain);
       }
     }
   }

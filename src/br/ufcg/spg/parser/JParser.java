@@ -62,8 +62,6 @@ public class JParser {
     }
   }
 
-
-
   private CompilationUnit parseWithDocumentCore(String file, String[] sources, String[] classpath) throws IOException {
     final String str = new String(Files.readAllBytes(Paths.get(file)));
     document = new Document(str);

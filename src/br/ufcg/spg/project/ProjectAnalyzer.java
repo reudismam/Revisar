@@ -95,8 +95,11 @@ public class ProjectAnalyzer {
   public static String[] classpath(final String sourcesPath) {
     String[] classpath;
     if (OpSysUtils.isWindows()) {
+      if (!new File("C:\\Program Files\\Java\\jre1.8.0_202\\lib\\rt.jar").exists()){
+        throw new RuntimeException("Invalid Path");
+      }
       classpath = new String [] { 
-        "C:\\Program Files (x86)\\Java\\jre1.8.0_121\\lib\\rt.jar" };
+        "C:\\Program Files\\Java\\jre1.8.0_202\\lib\\rt.jar" };
     } else if (OpSysUtils.isMac()) {
       classpath = new String [] {
         "/Library/Java/JavaVirtualMachines/jdk1.8.0_144.jdk/Contents/Home/jre/lib/rt.jar"};
