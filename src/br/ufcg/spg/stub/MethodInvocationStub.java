@@ -18,7 +18,13 @@ public class MethodInvocationStub {
     if (classDecl.getName().toString().contains("Exception")) {
       return;
     }
-    System.out.println(templateClass.toString());
+   createMethod(unit, templateClass, methodName, returnType, arguments, isStatic, isConstructor);
+  }
+
+  public static void createMethod(CompilationUnit unit, CompilationUnit templateClass,
+                          SimpleName methodName, Type returnType,
+                          List<ASTNode> arguments, boolean isStatic, boolean isConstructor) throws IOException {
+    TypeDeclaration classDecl = ClassUtils.getTypeDeclaration(templateClass);
     MethodDeclaration mDecl = templateClass.getAST().newMethodDeclaration();
     if (!isConstructor) {
       mDecl = MethodDeclarationUtils.setReturnType(returnType, templateClass, mDecl);
@@ -33,7 +39,7 @@ public class MethodInvocationStub {
     }
     mDecl = ParameterUtils.addParameters(unit, arguments, templateClass, mDecl);
     classDecl.bodyDeclarations().add(mDecl);
-    JDTElementUtils.saveClass(templateClass);
+    //JDTElementUtils.saveClass(unit, templateClass);
   }
 
   public static void processMethodInvocationChain(CompilationUnit unit, MethodInvocation methodInvocation, CompilationUnit templateChain) throws IOException {
@@ -53,8 +59,8 @@ public class MethodInvocationStub {
         return;
       }
       MethodDeclarationUtils.addMethodBasedOnMethodInvocation(unit, returnType, chain, templateClass);
-      JDTElementUtils.saveClass(templateClass);
-      JDTElementUtils.saveClass(templateChain);
+      JDTElementUtils.saveClass(unit, templateClass);
+      JDTElementUtils.saveClass(unit, templateChain);
     }
   }
 }

@@ -144,7 +144,6 @@ public class TypeUtils {
     if ("".equals(qualName)) {
       throw new IllegalArgumentException("No name for type binding.");
     }
-    System.out.println(qualName);
     return ast.newSimpleType(ast.newName(qualName));
   }
 

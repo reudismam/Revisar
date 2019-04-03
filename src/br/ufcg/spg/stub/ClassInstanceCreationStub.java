@@ -1,15 +1,11 @@
 package br.ufcg.spg.stub;
 
-import br.ufcg.spg.parser.JParser;
-import br.ufcg.spg.refaster.TemplateConstants;
 import br.ufcg.spg.refaster.ClassUtils;
 import br.ufcg.spg.transformation.ImportUtils;
 import br.ufcg.spg.transformation.JDTElementUtils;
 import br.ufcg.spg.type.TypeUtils;
-import org.apache.commons.io.FileUtils;
 import org.eclipse.jdt.core.dom.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -38,16 +34,11 @@ public class ClassInstanceCreationStub {
     String baseName = JDTElementUtils.extractSimpleName(leftHandSideClass);
     ASTNode imp = ImportUtils.findImport(unit, baseName);
     Type packageType = ImportUtils.getTypeFromImport(baseName, ast, imp);
-    //TypeDeclaration superDecl = ClassUtils.createClassDeclaration(baseClass, baseName, packageType);
-    TypeDeclaration superDecl = ClassUtils.getTypeDeclaration(baseClass);//ClassUtils.createClassDeclaration(baseClass, baseName, packageType);
     ClassUtils.addTypeParameterToClass(genericParamTypes, unit, baseClass);
-    String pkg = baseClass.getPackage().getName().toString().replaceAll("\\.", "/");
-    System.out.println("Super Class: \n" + baseClass);
     leftHandSideClass = (Type) ASTNode.copySubtree(ast, leftHandSideClass);
     if (!leftHandSideName.equals(rightHandSideName)) {
       classDecl.setSuperclassType(leftHandSideClass);
     }
     ClassUtils.addTypeParameterToClass(genericParamTypes, unit, classUnit);
-    //FileUtils.write(new File("temp/" + pkg + "/" + superDecl.getName() + ".java"), baseClass.toString());
   }
 }

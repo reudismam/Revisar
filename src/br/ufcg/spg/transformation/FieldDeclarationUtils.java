@@ -30,7 +30,7 @@ public class FieldDeclarationUtils {
         Type returnType = SyntheticClassUtils.getSyntheticType(unit.getAST(), typeDeclaration.getName());
         MethodInvocationStub.stub(unit, templateChain, methodInvocation.getName(), returnType, methodInvocation.arguments(), false, false);
         MethodInvocationStub.processMethodInvocationChain(unit, methodInvocation, templateChain);
-        JDTElementUtils.saveClass(templateChain);
+        JDTElementUtils.saveClass(unit, templateChain);
       }
     }
   }

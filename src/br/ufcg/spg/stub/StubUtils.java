@@ -90,7 +90,7 @@ public class StubUtils {
         ClassInstanceCreation instance = (ClassInstanceCreation) statement.getExpression();
         Type statementType = TypeUtils.extractType(statement.getExpression(), statement.getAST());
         ClassInstanceCreationStub.stub(unit, templateClass, instance, statementType);
-        JDTElementUtils.saveClass(templateClass);
+        JDTElementUtils.saveClass(unit, templateClass);
       }
     }
     return unit;
@@ -182,8 +182,8 @@ public class StubUtils {
     }
     ClassInstanceCreation instance = (ClassInstanceCreation) initializer;
     ClassInstanceCreationStub.stub(unit, templateClass, instance, type);
-    ClassUtils.filter(templateClass);
-    JDTElementUtils.saveClass(templateClass);
+    ClassUtils.filter(unit, templateClass);
+    JDTElementUtils.saveClass(unit, templateClass);
   }
 
   private static void processTypeParameter(CompilationUnit unit, Type type) throws IOException {
@@ -199,8 +199,8 @@ public class StubUtils {
         if (!paramTemplateClass.getPackage().toString().contains("java.util")) {
           List<Type> genericParamTypes = TypeUtils.createGenericParamTypes(argType);
           ClassUtils.addTypeParameterToClass(genericParamTypes, unit, paramTemplateClass);
-          ClassUtils.filter(paramTemplateClass);
-          JDTElementUtils.saveClass(paramTemplateClass);
+          ClassUtils.filter(unit, paramTemplateClass);
+          JDTElementUtils.saveClass(unit, paramTemplateClass);
         }
       }
     }
@@ -218,7 +218,7 @@ public class StubUtils {
             typeStr = JDTElementUtils.extractSimpleName(typeStr);
             Type type = ImportUtils.getTypeFromImport(typeStr, importStm.getAST(), importStm);
             CompilationUnit impClass = ClassUtils.getTemplateClassBasedOnInvocation(unit, type);
-            JDTElementUtils.saveClass(impClass);
+            JDTElementUtils.saveClass(unit, impClass);
           } else {
             processInnerClass(unit, inner, importStm);
           }
@@ -237,7 +237,7 @@ public class StubUtils {
     //typeDeclaration = (TypeDeclaration) ASTNode.copySubtree(templateInner.getAST(), typeDeclaration);
     //TypeDeclaration outerTypeDeclaration = ClassUtils.getTypeDeclaration(templateInner);
     //outerTypeDeclaration.bodyDeclarations().add(typeDeclaration);
-    JDTElementUtils.saveClass(templateInner);
+    JDTElementUtils.saveClass(unit, templateInner);
   }
 
   public static void processInnerClass(CompilationUnit unit, Tuple<String, String> inner, ASTNode importStm) throws IOException {
@@ -264,7 +264,7 @@ public class StubUtils {
           importsUnit.add(importDeclaration);
         }
       }
-      JDTElementUtils.writeClass(compilationUnit);
+      JDTElementUtils.writeClass(unit,compilationUnit);
     }
     System.out.println(classes.size());
   }
@@ -293,7 +293,7 @@ public class StubUtils {
           typeDeclaration2 = (TypeDeclaration) ASTNode.copySubtree(typeDeclaration1.getAST(), typeDeclaration2);
           typeDeclaration1.bodyDeclarations().add(typeDeclaration2);
           System.out.println(classT1);
-          JDTElementUtils.saveClass(classT1);
+          JDTElementUtils.saveClass(unit, classT1);
         }
       }
       MethodDeclarationUtils.addMethodBasedOnMethodInvocation(unit, type, invocation, templateClass);
@@ -305,12 +305,12 @@ public class StubUtils {
           return;
         }
         createClassForType(unit, templateSuper, type);
-        JDTElementUtils.saveClass(templateSuper);
+        JDTElementUtils.saveClass(unit, templateSuper);
       }
       CompilationUnit templateClass = SyntheticClassUtils.createSyntheticClass(unit);
       MethodDeclarationUtils.addMethodBasedOnMethodInvocation(unit, type, invocation, templateClass);
       MethodInvocationStub.processMethodInvocationChain(unit, invocation, templateClass);
-      JDTElementUtils.saveClass(templateClass);
+      JDTElementUtils.saveClass(unit, templateClass);
     }
   }
 

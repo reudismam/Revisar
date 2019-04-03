@@ -57,9 +57,9 @@ public final class ParameterUtils {
     List<Type> argTypes = new ArrayList<>();
     List<String> varNames = new ArrayList<>();
     int i = 0;
-    for(ASTNode argNode : arguments) {
+    for(ASTNode arg : arguments) {
       varNames.add("v_" + i++);
-      Expression arg = (Expression) argNode;
+      //Expression arg = (Expression) argNode;
       Type argType;
       if (arg.toString().equals("null")) {
         argType = TypeUtils.createType(unit.getAST(), "java.lang", "Object");
@@ -71,7 +71,7 @@ public final class ParameterUtils {
         if (argType.toString().equals("void")) {
           argType = SyntheticClassUtils.getSyntheticType(unit.getAST());
           CompilationUnit synthetic = SyntheticClassUtils.createSyntheticClass(unit);
-          JDTElementUtils.saveClass(synthetic);
+          JDTElementUtils.saveClass(unit, synthetic);
         }
           StubUtils.processMethodInvocation(unit, argType, arg);
         } catch (IOException e) {

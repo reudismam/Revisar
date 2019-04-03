@@ -14,12 +14,12 @@ public class JDTElementUtils {
     mDecl.setName(name);
   }
 
-  public static void saveClass(CompilationUnit templateClass) {
-    ClassUtils.filter(templateClass);
+  public static void saveClass(CompilationUnit unit, CompilationUnit templateClass) {
+    ClassUtils.filter(unit, templateClass);
   }
 
-  public static void writeClass(CompilationUnit templateClass) throws IOException {
-    ClassUtils.filter(templateClass);
+  public static void writeClass(CompilationUnit unit, CompilationUnit templateClass) throws IOException {
+    ClassUtils.filter(unit, templateClass);
     TypeDeclaration classDecl = ClassUtils.getTypeDeclaration(templateClass);
     if (!templateClass.getPackage().toString().contains("java.util")) {
       String pkg = templateClass.getPackage().getName().toString().replaceAll("\\.", "/");

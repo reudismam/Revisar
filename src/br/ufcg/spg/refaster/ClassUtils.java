@@ -1,15 +1,14 @@
 package br.ufcg.spg.refaster;
 
 import br.ufcg.spg.parser.JParser;
-import br.ufcg.spg.transformation.ClassRepository;
-import br.ufcg.spg.transformation.FieldDeclarationUtils;
-import br.ufcg.spg.transformation.ImportUtils;
-import br.ufcg.spg.transformation.JDTElementUtils;
+import br.ufcg.spg.stub.MethodInvocationStub;
+import br.ufcg.spg.transformation.*;
 import br.ufcg.spg.type.TypeUtils;
 import org.eclipse.jdt.core.dom.*;
 import org.eclipse.persistence.tools.workbench.utility.classfile.ClassDeclaration;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,14 +47,19 @@ public class ClassUtils {
           CompilationUnit paramTemplateClass = ClassUtils.getTemplateClass(unit, type);
           List<Type> genericParamTypes = TypeUtils.createGenericParamTypes(type);
           addTypeParameterToClass(genericParamTypes, unit, paramTemplateClass);
-          JDTElementUtils.saveClass(paramTemplateClass);
+          JDTElementUtils.saveClass(unit, paramTemplateClass);
           throw new RuntimeException();
         }
       }
     }
   }
 
-  public static void filter(CompilationUnit templateClass) {
+  public static void filter(CompilationUnit unit, CompilationUnit templateClass) {
+    String name = ClassUtils.getTypeDeclaration(templateClass).getName().toString();
+    SimpleName simpleName = unit.getAST().newSimpleName(name);
+    if (name.contains("Exception")){
+      processException(unit, templateClass, simpleName);
+    }
     Map<String, ASTNode> map = new HashMap<>();
     List<ASTNode> declarations = ClassUtils.getTypeDeclaration(templateClass).bodyDeclarations();
     for (ASTNode node : declarations) {
@@ -68,6 +72,42 @@ public class ClassUtils {
     classDecl.bodyDeclarations().clear();
     for (Map.Entry<String, ASTNode> entry : map.entrySet()) {
       classDecl.bodyDeclarations().add(entry.getValue());
+    }
+  }
+
+  private static void processException(CompilationUnit unit, CompilationUnit templateClass, SimpleName simpleName) {
+    try {
+      Class<?> clazz = Class.forName("java.lang.Exception");
+      Constructor<?>[] list = clazz.getDeclaredConstructors();
+      for (Constructor<?> constructor : list) {
+        List<ASTNode> arguments = new ArrayList<>();
+        for (Class<?> parameter : constructor.getParameterTypes()) {
+          System.out.println(parameter.toString());
+          String parameterStr = parameter.toString().trim();
+          Type type = null;
+          if (parameterStr.contains("class")) {
+            String className = parameterStr.substring(parameterStr.lastIndexOf(".")+1);
+            String pckgName = parameterStr.substring(6, parameterStr.lastIndexOf(".") - 1);
+            type = TypeUtils.createType(unit.getAST(), pckgName, className);
+          }
+          else {
+            if (parameterStr.equals("boolean")) {
+              type = unit.getAST().newPrimitiveType(PrimitiveType.BOOLEAN);
+            }
+            else if (parameterStr.equals("int")) {
+              type = unit.getAST().newPrimitiveType(PrimitiveType.INT);
+            }
+            else {
+              throw new RuntimeException();
+            }
+          }
+          arguments.add(type);
+        }
+        MethodInvocationStub.createMethod(unit, templateClass, simpleName, null, arguments, false, true);
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      if (true) throw new RuntimeException();
     }
   }
 
