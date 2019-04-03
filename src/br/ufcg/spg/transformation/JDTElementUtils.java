@@ -15,27 +15,46 @@ public class JDTElementUtils {
     mDecl.setName(name);
   }
 
-  public static void saveClass(CompilationUnit templateClass) throws IOException {
+  public static void saveClass(CompilationUnit templateClass) {
     TypeDeclaration classDecl = ClassUtils.getTypeDeclaration(templateClass);
     List<CompilationUnit> classes = ClassRepository.getInstance().getGenerated();
-    CompilationUnit toRemote = null;
+    int cont = 0;
+    CompilationUnit toRemove = null;
     for (CompilationUnit cunit : classes) {
       TypeDeclaration typeDeclaration = ClassUtils.getTypeDeclaration(cunit);
       if ((cunit.getPackage().toString().trim() + typeDeclaration.getName()).equals(
               templateClass.getPackage().toString().trim() + classDecl.getName())) {
-        toRemote = cunit;
+        toRemove = cunit;
+        cont++;
       }
     }
-    //System.out.println("Number of classes: " + ClassRepository.getInstance().getGenerated().size());
-    if (toRemote != null) {
-      classes.remove(toRemote);
+    if (toRemove != null) {
+      //classes.remove(toRemove);
+      if (ClassUtils.getTypeDeclaration(toRemove).getName().toString().equals("SamplePruner")) {
+        System.out.println(toRemove);
+        System.out.println(templateClass);
+        if (!toRemove.equals(templateClass)) {
+          System.out.println(cont);
+          throw new RuntimeException();
+        }
+      }
     }
     ClassUtils.filter(templateClass);
-    classes.add(templateClass);
+    //ClassRepository.getInstance().add(templateClass);
+    if (!templateClass.getPackage().toString().contains("java.util")) {
+      String pkg = templateClass.getPackage().getName().toString().replaceAll("\\.", "/");
+      //FileUtils.write(new File("temp/" + pkg + "/" + classDecl.getName() + ".java"), templateClass.toString());
+      System.out.println(templateClass);
+    } else {
+      System.out.println("From java.util, we do not need to create a class.");
+    }
+  }
+
+  public static void writeClass(CompilationUnit templateClass) throws IOException {
+    TypeDeclaration classDecl = ClassUtils.getTypeDeclaration(templateClass);
     if (!templateClass.getPackage().toString().contains("java.util")) {
       String pkg = templateClass.getPackage().getName().toString().replaceAll("\\.", "/");
       FileUtils.write(new File("temp/" + pkg + "/" + classDecl.getName() + ".java"), templateClass.toString());
-      //System.out.println("class save to " + pkg);
       System.out.println(templateClass);
     } else {
       System.out.println("From java.util, we do not need to create a class.");

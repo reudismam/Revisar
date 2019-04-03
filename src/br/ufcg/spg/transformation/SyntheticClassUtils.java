@@ -14,7 +14,7 @@ public class SyntheticClassUtils {
     String className = "Class" + classNumber;
     SimpleName simpleName = unit.getAST().newSimpleName(className);
     Type qualifiedType = getSyntheticType(unit.getAST(), simpleName);
-    System.out.println("[Synthetic Class]: Qualified type is: \n" + qualifiedType);
+    System.out.println("[Synthetic Class]: Qualified type is:" + qualifiedType);
     CompilationUnit templateClass = ClassUtils.getTemplateClass(unit, qualifiedType);
     List<ASTNode> importDeclarationList = StubUtils.getNodes(unit, ASTNode.IMPORT_DECLARATION);
     templateClass.imports().clear();

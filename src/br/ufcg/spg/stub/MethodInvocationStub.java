@@ -32,9 +32,7 @@ public class MethodInvocationStub {
       MethodDeclarationUtils.addModifier(mDecl, Modifier.ModifierKeyword.STATIC_KEYWORD);
     }
     mDecl = ParameterUtils.addParameters(unit, arguments, templateClass, mDecl);
-    System.out.println("After\n");
     classDecl.bodyDeclarations().add(mDecl);
-    System.out.println(templateClass.toString());
     JDTElementUtils.saveClass(templateClass);
   }
 

@@ -1,6 +1,8 @@
 package br.ufcg.spg.transformation;
 
 import br.ufcg.spg.stub.StubUtils;
+import br.ufcg.spg.type.TypeUtils;
+import java.util.List;
 import org.eclipse.jdt.core.dom.*;
 
 import java.util.List;
@@ -22,15 +24,15 @@ public class ImportUtils {
       name = ast.newName("java.lang");
       System.out.println("imported type: " + classname);
     }
-    return ast.newNameQualifiedType(name, sname);
+    return getTypeNotOnImport(ast, ast.newNameQualifiedType(name, sname));
   }
 
   public static ASTNode findImport(CompilationUnit unit, String typeName) {
     List<ASTNode> imports = StubUtils.getNodes(unit, ASTNode.IMPORT_DECLARATION);
     for (ASTNode imp : imports) {
-      String impStr = imp.toString();
-      String imported = getClassNameFromImport(impStr);
-      if (imported.equals(typeName)) {
+      String impStr = imp.toString().trim().substring(0, imp.toString().trim().length() - 1);
+      //String imported = getClassNameFromImport(impStr);
+      if (impStr.endsWith(typeName)) {
         return imp;
       }
     }
@@ -39,5 +41,22 @@ public class ImportUtils {
 
   public static String getClassNameFromImport(String impStr) {
     return impStr.substring(impStr.lastIndexOf(".") + 1, impStr.length() - 2);
+  }
+
+  public static Type getTypeNotOnImport(AST ast, Type invExpressionType) {
+    try {
+      if (invExpressionType.toString().contains("java.lang")) {
+        Class.forName(invExpressionType.toString());
+      }
+    } catch (ClassNotFoundException e) {
+      String name = JDTElementUtils.extractSimpleName(invExpressionType);
+      if (name.contains("Class1")) {
+        invExpressionType = SyntheticClassUtils.getSyntheticType(ast);
+      }
+      else {
+        invExpressionType = TypeUtils.createType(ast, "defaultpkg", name);
+      }
+    }
+    return invExpressionType;
   }
 }

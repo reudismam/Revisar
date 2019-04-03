@@ -5,12 +5,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.ufcg.spg.bean.Tuple;
 import br.ufcg.spg.parser.JParser;
 import br.ufcg.spg.stub.StubUtils;
-import br.ufcg.spg.transformation.ClassRepository;
-import br.ufcg.spg.transformation.ImportUtils;
-import br.ufcg.spg.transformation.JDTElementUtils;
-import br.ufcg.spg.transformation.SyntheticClassUtils;
+import br.ufcg.spg.transformation.*;
 import br.ufcg.spg.type.TypeUtils;
 import org.eclipse.jdt.core.dom.*;
 
@@ -54,7 +52,7 @@ public final class ParameterUtils {
   }
 
   public static MethodDeclaration addParameters(CompilationUnit unit,
-                                                List<ASTNode> arguments, CompilationUnit templateClass, MethodDeclaration mDecl) {
+                                                List<ASTNode> arguments, CompilationUnit templateClass, MethodDeclaration mDecl) throws IOException {
     List<Type> argTypes = new ArrayList<>();
     List<String> varNames = new ArrayList<>();
     int i = 0;
@@ -63,7 +61,7 @@ public final class ParameterUtils {
       Expression arg = (Expression) argNode;
       Type argType;
       if (arg.toString().equals("null")) {
-        argType = TypeUtils.createType(unit, "java.lang", "Object");
+        argType = TypeUtils.createType(unit.getAST(), "java.lang", "Object");
       } else {
         argType = TypeUtils.extractType(arg, arg.getAST());
       }
@@ -87,6 +85,47 @@ public final class ParameterUtils {
         } catch (IOException e) {
           e.printStackTrace();
         }
+      }
+      else if (arg instanceof QualifiedName) {
+        QualifiedName qualifiedName = (QualifiedName) arg;
+        System.out.println(qualifiedName.getName() + " : " + qualifiedName.getQualifier());
+        ASTNode imp = ImportUtils.findImport(unit, qualifiedName.getQualifier().toString());
+        Tuple<String, String> inner = InnerClassUtils.getInnerClassImport(qualifiedName.getQualifier().toString());;
+        String fullName;
+        if (imp != null) {
+           fullName = imp.toString().substring(7, imp.toString().indexOf(inner.getItem1())-1);
+        }
+        else {
+           fullName = "defaultpkg." + qualifiedName.getQualifier();
+           System.out.println(fullName);
+        }
+        StubUtils.processInnerClass(unit, inner, fullName);
+        Type type = SyntheticClassUtils.getSyntheticType(unit.getAST());
+        FieldDeclaration fieldDeclaration = FieldDeclarationUtils.createFieldDeclaration(unit, qualifiedName.getName(), type);
+        FieldDeclarationUtils.addModifier(fieldDeclaration, Modifier.ModifierKeyword.STATIC_KEYWORD);
+        Type typeOuter = TypeUtils.createType(unit.getAST(), fullName, inner.getItem1());
+        Type typeInner = TypeUtils.createType(unit.getAST(), fullName, inner.getItem2());
+        CompilationUnit outer = ClassUtils.getTemplateClass(unit, typeOuter);
+        CompilationUnit innerClass = ClassUtils.getTemplateClass(unit, typeInner);
+        fieldDeclaration = (FieldDeclaration) ASTNode.copySubtree(innerClass.getAST(), fieldDeclaration);
+        TypeDeclaration declaration = ClassUtils.getTypeDeclaration(innerClass);
+        declaration.bodyDeclarations().add(fieldDeclaration);
+        TypeDeclaration outerTypeDeclaration = ClassUtils.getTypeDeclaration(outer);
+        List<ASTNode> nodes = (List<ASTNode>)  outerTypeDeclaration.bodyDeclarations();
+        ASTNode toRemove = null;
+        for (ASTNode node : nodes) {
+          if (node instanceof TypeDeclaration) {
+            if(((TypeDeclaration) node).getName().toString().equals(declaration.getName().toString())) {
+              toRemove = node;
+            }
+          }
+        }
+        nodes.remove(toRemove);
+        declaration = (TypeDeclaration) ASTNode.copySubtree(outerTypeDeclaration.getAST(), declaration);
+        outerTypeDeclaration.bodyDeclarations().add(declaration);
+        System.out.println(outer);
+        System.out.println(innerClass);
+        argType = type;
       }
       //Needed to resolve a bug in eclipse JDT.
       if (argType.toString().contains(".") && !argType.toString().contains("syntethic")) {

@@ -15,8 +15,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class StubUtils {
 
@@ -42,8 +40,6 @@ public class StubUtils {
       if (infixExpression.getLeftOperand() instanceof MethodInvocation) {
         if (infixExpression.getOperator().equals(InfixExpression.Operator.EQUALS)) {
            Type type = SyntheticClassUtils.getSyntheticType(unit.getAST());
-           System.out.println("Left hand: " + infixExpression.getLeftOperand());
-           System.out.println(infixExpression);
            processMethodInvocation(unit, type, infixExpression.getLeftOperand());
         }
       }
@@ -120,11 +116,6 @@ public class StubUtils {
         System.out.println(assignment + " : " + TypeUtils.extractType(assignment.getLeftHandSide(), invocation.getAST()));
         if (assignment.getRightHandSide() instanceof MethodInvocation) {
           Type type = TypeUtils.extractType(assignment.getLeftHandSide(), invocation.getAST());
-          /*if (assignment.getRightHandSide().toString().contains("SamplePruner")){
-            System.out.println(assignment.getRightHandSide() + " : " + assignment.getRightHandSide().getClass());
-            System.out.println(type);
-            throw new RuntimeException();
-          }*/
           if (type.isPrimitiveType()) {
             processMethodInvocation(unit, type, assignment.getRightHandSide());
           }
@@ -175,21 +166,22 @@ public class StubUtils {
         System.out.println(variableDeclaration + " : " + TypeUtils.extractType(variableDeclaration, variableDeclaration.getAST()));
       }
       for (ASTNode node : variableDeclarations) {
-        VariableDeclarationStatement inv = (VariableDeclarationStatement) node;
-        System.out.println("The variable declaration is: " + inv);
-        List<VariableDeclarationFragment> fragments = inv.fragments();
+        VariableDeclarationStatement statement = (VariableDeclarationStatement) node;
+        System.out.println("The variable declaration is: " + statement);
+        List<VariableDeclarationFragment> fragments = statement.fragments();
         for (VariableDeclarationFragment flag : fragments) {
           Expression initializer = flag.getInitializer();
           if (initializer instanceof MethodInvocation) {
-            Type type = TypeUtils.extractType(inv, inv.getAST());
+            Type type = TypeUtils.extractType(statement, statement.getAST());
             processMethodInvocation(unit, type, initializer);
           }
           else if (initializer instanceof ClassInstanceCreation) {
-            Type type = TypeUtils.extractType(inv, inv.getAST());
+            Type type = TypeUtils.extractType(statement, statement.getAST());
             processClassCreation(unit, type, initializer);
           }
           else if (initializer instanceof  FieldAccess) {
-            FieldDeclarationUtils.processFieldDeclaration(unit, inv, initializer);
+            Type type = TypeUtils.extractType(statement, statement.getAST());
+            FieldDeclarationUtils.processFieldDeclaration(unit, type, initializer);
           }
         }
       }
@@ -239,7 +231,7 @@ public class StubUtils {
         pkg = "temp/" + pkg.replaceAll("\\.", "/") + ".java";
         System.out.println("Creating new class: " + pkg);
         if (!(new File(pkg).exists())) {
-          Tuple<String, String> inner = getInnerClassImport(importStm);
+          Tuple<String, String> inner = InnerClassUtils.getInnerClassImport(importStm);
           if (inner == null) {
             String typeStr = importStm.toString().substring(7, importStm.toString().length() - 2);
             typeStr = JDTElementUtils.extractSimpleName(typeStr);
@@ -247,23 +239,30 @@ public class StubUtils {
             CompilationUnit impClass = ClassUtils.getTemplateClassBasedOnInvocation(unit, type);
             JDTElementUtils.saveClass(impClass);
           } else {
-            String className = inner.getItem1();
-            String pkgStr = importStm.toString().substring(7, importStm.toString().indexOf(className)-1);
-            Type type = TypeUtils.createType(unit, pkgStr, className);
-            CompilationUnit templateInner = ClassUtils.getTemplateClass(unit, type);
-            Type typeInner = TypeUtils.createType(unit, pkgStr, inner.getItem2());
-            CompilationUnit templateInside = ClassUtils.getTemplateClass(unit, typeInner);
-            TypeDeclaration typeDeclaration = ClassUtils.getTypeDeclaration(templateInside);
-            ClassRepository.getInstance().getGenerated().remove(templateInside);
-            typeDeclaration = (TypeDeclaration) ASTNode.copySubtree(templateInner.getAST(), typeDeclaration);
-            TypeDeclaration outerTypeDeclaration = ClassUtils.getTypeDeclaration(templateInner);
-            outerTypeDeclaration.bodyDeclarations().add(typeDeclaration);
-            JDTElementUtils.saveClass(templateInner);
-            System.out.println("the new class created is:\n" + templateInner);
+            processInnerClass(unit, inner, importStm);
           }
         }
       }
     }
+  }
+
+  public static void processInnerClass(CompilationUnit unit, Tuple<String, String> inner, String pkgStr) throws IOException {
+    Type type = TypeUtils.createType(unit.getAST(), pkgStr, inner.getItem1());
+    CompilationUnit templateInner = ClassUtils.getTemplateClass(unit, type);
+    Type typeInner = TypeUtils.createType(unit.getAST(), pkgStr, inner.getItem2());
+    CompilationUnit templateInside = ClassUtils.getTemplateClass(unit, typeInner);
+    TypeDeclaration typeDeclaration = ClassUtils.getTypeDeclaration(templateInside);
+    //ClassRepository.getInstance().getGenerated().remove(templateInside);
+    typeDeclaration = (TypeDeclaration) ASTNode.copySubtree(templateInner.getAST(), typeDeclaration);
+    TypeDeclaration outerTypeDeclaration = ClassUtils.getTypeDeclaration(templateInner);
+    outerTypeDeclaration.bodyDeclarations().add(typeDeclaration);
+    JDTElementUtils.saveClass(templateInner);
+    System.out.println("the new class created is:\n" + templateInner);
+  }
+
+  public static void processInnerClass(CompilationUnit unit, Tuple<String, String> inner, ASTNode importStm) throws IOException {
+    String pkgStr = importStm.toString().substring(7, importStm.toString().indexOf(inner.getItem1())-1);
+    processInnerClass(unit, inner, pkgStr);
   }
 
   private static void addImportStatement(CompilationUnit unit) throws IOException {
@@ -286,8 +285,9 @@ public class StubUtils {
           importsUnit.add(importDeclaration);
         }
       }
-      JDTElementUtils.saveClass(compilationUnit);
+      JDTElementUtils.writeClass(compilationUnit);
     }
+    System.out.println(classes.size());
   }
 
   public static void processMethodInvocation(CompilationUnit unit, Type type, ASTNode initializer) throws IOException {
@@ -297,15 +297,26 @@ public class StubUtils {
         return;
       }
       CompilationUnit templateClass = ClassUtils.getTemplateClassBasedOnInvocation(unit, invocation.getExpression());
-      /*if (initializer.toString().contains("SamplePruner.")){
-        System.out.println(initializer + " : " + initializer.getClass());
-        System.out.println(((MethodInvocation) initializer).getExpression());
-        System.out.println(templateClass);
-        throw new RuntimeException();
-      }*/
       if (templateClass == null) {
         System.out.println("Class from java.util, we do not need to create a new class.");
         return;
+      }
+      Tuple<String, String> tuple = InnerClassUtils.getInnerClassImport(type.toString());
+      if (tuple != null) {
+        Type t1 = ImportUtils.getTypeBasedOnImports(unit, tuple.getItem1());
+        Type t2 = ImportUtils.getTypeBasedOnImports(unit, tuple.getItem2());
+        Type actualT1 = ImportUtils.getTypeNotOnImport(unit.getAST(), t1);
+        Type actualT2 = ImportUtils.getTypeNotOnImport(unit.getAST(), t2);
+        if (!actualT1.toString().contains("java.lang")) {
+          CompilationUnit classT1 = ClassUtils.getTemplateClass(unit, actualT1);
+          CompilationUnit classT2 = ClassUtils.getTemplateClass(unit, actualT2);
+          TypeDeclaration typeDeclaration1 = ClassUtils.getTypeDeclaration(classT1);
+          TypeDeclaration typeDeclaration2 = ClassUtils.getTypeDeclaration(classT2);
+          typeDeclaration2 = (TypeDeclaration) ASTNode.copySubtree(typeDeclaration1.getAST(), typeDeclaration2);
+          typeDeclaration1.bodyDeclarations().add(typeDeclaration2);
+          System.out.println(classT1);
+          JDTElementUtils.saveClass(classT1);
+        }
       }
       MethodDeclarationUtils.addMethodBasedOnMethodInvocation(unit, type, invocation, templateClass);
     }
@@ -323,18 +334,6 @@ public class StubUtils {
       MethodInvocationStub.processMethodInvocationChain(unit, invocation, templateClass);
       JDTElementUtils.saveClass(templateClass);
     }
-  }
-
-  private static Tuple<String, String> getInnerClassImport(ASTNode importStm) {
-    String pattern = "([A-Z][A-Za-z]*)\\.([A-Z][A-Za-z]*)";
-    Pattern r = Pattern.compile(pattern);
-    Matcher m = r.matcher(importStm.toString());
-    if (m.find()) {
-      if (!importStm.toString().contains("java.util")) {
-        return new Tuple<>(m.group(1), m.group(2));
-      }
-    }
-    return null;
   }
 
   private static void createClassForType(CompilationUnit unit, CompilationUnit templateClass, Type type) throws IOException {

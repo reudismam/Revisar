@@ -13,21 +13,14 @@ public class FieldDeclarationUtils {
     fDecl.modifiers().add(ast.newModifier(modifier));
   }
 
-  public static void processFieldDeclaration(CompilationUnit unit, VariableDeclarationStatement inv, Expression initializer) throws IOException {
+  public static void processFieldDeclaration(CompilationUnit unit, Type type, Expression initializer) throws IOException {
     FieldAccess facces = (FieldAccess) initializer;
     Expression expression = facces.getExpression();
     if (expression instanceof MethodInvocation) {
       MethodInvocation methodInvocation = (MethodInvocation) expression;
       if (TypeUtils.extractType(expression, unit.getAST()).toString().equals("void")) {
         CompilationUnit templateChain = SyntheticClassUtils.createSyntheticClass(unit);
-        VariableDeclarationFragment vfrag = unit.getAST().newVariableDeclarationFragment();
-        SimpleName fieldName = (SimpleName) ASTNode.copySubtree(vfrag.getAST(), facces.getName());
-        vfrag.setName(fieldName);
-        FieldDeclaration fieldDeclaration = unit.getAST().newFieldDeclaration(vfrag);
-        addModifier(fieldDeclaration, Modifier.ModifierKeyword.PUBLIC_KEYWORD);
-        Type type = TypeUtils.extractType(inv, inv.getAST());
-        type = (Type) ASTNode.copySubtree(type.getAST(), type);
-        fieldDeclaration.setType(type);
+        FieldDeclaration fieldDeclaration = createFieldDeclaration(unit, facces.getName(), type);
         ImportDeclaration importDeclaration = (ImportDeclaration) ImportUtils.findImport(unit, type.toString());
         importDeclaration = (ImportDeclaration) ASTNode.copySubtree(templateChain.getAST(), importDeclaration);
         templateChain.imports().add(importDeclaration);
@@ -40,5 +33,18 @@ public class FieldDeclarationUtils {
         JDTElementUtils.saveClass(templateChain);
       }
     }
+  }
+
+
+  public static FieldDeclaration createFieldDeclaration(CompilationUnit unit, Name name, Type type) {
+    VariableDeclarationFragment vfrag = unit.getAST().newVariableDeclarationFragment();
+    SimpleName fieldName = (SimpleName) ASTNode.copySubtree(vfrag.getAST(), name);
+    vfrag.setName(fieldName);
+    FieldDeclaration fieldDeclaration = unit.getAST().newFieldDeclaration(vfrag);
+    addModifier(fieldDeclaration, Modifier.ModifierKeyword.PUBLIC_KEYWORD);
+    //Type type = TypeUtils.extractType(inv, inv.getAST());
+    type = (Type) ASTNode.copySubtree(type.getAST(), type);
+    fieldDeclaration.setType(type);
+    return fieldDeclaration;
   }
 }

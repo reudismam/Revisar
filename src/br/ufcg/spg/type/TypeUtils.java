@@ -246,10 +246,10 @@ public class TypeUtils {
     return classType;
   }
 
-  public static Type createType(CompilationUnit unit, String pkgStr, String className) {
-    SimpleName name = unit.getAST().newSimpleName(className);
-    Name pkgName = unit.getAST().newName(pkgStr);
-    Type qualifiedType = unit.getAST().newNameQualifiedType(pkgName, name);
+  public static Type createType(AST ast, String pkgStr, String className) {
+    SimpleName name = ast.newSimpleName(className);
+    Name pkgName = ast.newName(pkgStr);
+    Type qualifiedType = ast.newNameQualifiedType(pkgName, name);
     return qualifiedType;
   }
 }

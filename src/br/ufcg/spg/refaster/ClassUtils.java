@@ -1,11 +1,9 @@
 package br.ufcg.spg.refaster;
 
 import br.ufcg.spg.parser.JParser;
-import br.ufcg.spg.stub.StubUtils;
 import br.ufcg.spg.transformation.ClassRepository;
 import br.ufcg.spg.transformation.ImportUtils;
 import br.ufcg.spg.transformation.JDTElementUtils;
-import br.ufcg.spg.transformation.MethodDeclarationUtils;
 import br.ufcg.spg.type.TypeUtils;
 import org.eclipse.jdt.core.dom.*;
 
@@ -16,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ClassUtils {
+
   public static TypeDeclaration createClassDeclaration(CompilationUnit unit, String baseName, Type packageType) {
     TypeDeclaration classDecl = ClassUtils.getTypeDeclaration(unit);
     AST ast = classDecl.getAST();
@@ -114,12 +113,23 @@ public class ClassUtils {
     else {
       packageType = ImportUtils.getTypeFromImport(baseName, ast, imp);
     }
+    CompilationUnit clazz = ClassRepository.getInstance().getClassInRepository(packageType.toString());
+    if (clazz != null) {
+      return clazz;
+    }
     String pkg = "temp/" + packageType.toString().replaceAll("\\.", "/") + ".java";
+    System.out.println("The package of the type is: " + pkg);
     if ((new File(pkg).exists())) {
       templateClass = JParser.parseFromFile(pkg);
+      throw new RuntimeException();
     }
     else {
+      if (baseName.equals("Class1")) {
+        if (cont++ == 1) throw new RuntimeException();
+        System.out.println("Creating a new class of SamplePruner: " + baseName + ":" + packageType);
+      }
       templateClass = createNewClass(baseName, packageType);
+      ClassRepository.getInstance().add(templateClass);
     }
     String pkgStr = templateClass.getPackage().toString();
     if (pkgStr.contains("java.lang") || pkgStr.contains("java.util")) {
@@ -128,11 +138,13 @@ public class ClassUtils {
     if (baseName.endsWith("Exception")) {
       System.out.println("Creating a new exception:\n" + baseName);
       TypeDeclaration typeDeclaration = getTypeDeclaration(templateClass);
-      Type type = TypeUtils.createType(templateClass, "java.lang", "RuntimeException");
+      Type type = TypeUtils.createType(templateClass.getAST(), "java.lang", "RuntimeException");
       typeDeclaration.setSuperclassType(type);
     }
     return templateClass;
   }
+
+  static int cont = 0;
 
   private static CompilationUnit createNewClass(String baseName, Type imp) throws IOException {
     CompilationUnit templateClass;
@@ -143,19 +155,12 @@ public class ClassUtils {
 
   public static CompilationUnit getTemplateClassBasedOnInvocation(CompilationUnit unit, ASTNode expression) throws IOException {
     Type invExpressionType = TypeUtils.getClassType(unit, expression);
-    try {
-      if (invExpressionType.toString().contains("java.lang")) {
-        Class.forName(invExpressionType.toString());
-      }
-    } catch (ClassNotFoundException e) {
-      String name = JDTElementUtils.extractSimpleName(invExpressionType);
-      invExpressionType = TypeUtils.createType(unit, "defaultpkg", name);
-    }
-    System.out.println("invExpression: " + invExpressionType);
+    invExpressionType = ImportUtils.getTypeNotOnImport(unit.getAST(), invExpressionType);
     CompilationUnit templateClass = getTemplateClass(unit, invExpressionType);
     if (templateClass == null) {
       return null;
     }
     return templateClass;
   }
+
 }
