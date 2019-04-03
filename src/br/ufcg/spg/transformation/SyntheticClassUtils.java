@@ -8,13 +8,13 @@ import java.io.IOException;
 import java.util.List;
 
 public class SyntheticClassUtils {
+
   public static int classNumber = 1;
 
   public static CompilationUnit createSyntheticClass(CompilationUnit unit) throws IOException {
     String className = "Class" + classNumber;
     SimpleName simpleName = unit.getAST().newSimpleName(className);
     Type qualifiedType = getSyntheticType(unit.getAST(), simpleName);
-    System.out.println("[Synthetic Class]: Qualified type is:" + qualifiedType);
     CompilationUnit templateClass = ClassUtils.getTemplateClass(unit, qualifiedType);
     List<ASTNode> importDeclarationList = StubUtils.getNodes(unit, ASTNode.IMPORT_DECLARATION);
     templateClass.imports().clear();

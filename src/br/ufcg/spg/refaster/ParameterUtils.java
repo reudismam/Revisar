@@ -11,6 +11,7 @@ import br.ufcg.spg.stub.StubUtils;
 import br.ufcg.spg.transformation.*;
 import br.ufcg.spg.type.TypeUtils;
 import org.eclipse.jdt.core.dom.*;
+import org.eclipse.persistence.tools.workbench.utility.classfile.ClassDeclaration;
 
 /**
  * Configure parameters.
@@ -107,34 +108,19 @@ public final class ParameterUtils {
         Type typeInner = TypeUtils.createType(unit.getAST(), fullName, inner.getItem2());
         CompilationUnit outer = ClassUtils.getTemplateClass(unit, typeOuter);
         CompilationUnit innerClass = ClassUtils.getTemplateClass(unit, typeInner);
-        fieldDeclaration = (FieldDeclaration) ASTNode.copySubtree(innerClass.getAST(), fieldDeclaration);
-        TypeDeclaration declaration = ClassUtils.getTypeDeclaration(innerClass);
-        declaration.bodyDeclarations().add(fieldDeclaration);
         TypeDeclaration outerTypeDeclaration = ClassUtils.getTypeDeclaration(outer);
-        List<ASTNode> nodes = (List<ASTNode>)  outerTypeDeclaration.bodyDeclarations();
-        ASTNode toRemove = null;
-        for (ASTNode node : nodes) {
-          if (node instanceof TypeDeclaration) {
-            if(((TypeDeclaration) node).getName().toString().equals(declaration.getName().toString())) {
-              toRemove = node;
-            }
-          }
-        }
-        nodes.remove(toRemove);
-        declaration = (TypeDeclaration) ASTNode.copySubtree(outerTypeDeclaration.getAST(), declaration);
-        outerTypeDeclaration.bodyDeclarations().add(declaration);
-        System.out.println(outer);
-        System.out.println(innerClass);
+        TypeDeclaration declaration = InnerClassUtils.getTypeDeclarationIfNeeded(inner.getItem2(), outerTypeDeclaration, innerClass);
+        fieldDeclaration = (FieldDeclaration) ASTNode.copySubtree(declaration.getAST(), fieldDeclaration);
+        declaration.bodyDeclarations().add(fieldDeclaration);
+        ClassUtils.addModifier(declaration, Modifier.ModifierKeyword.STATIC_KEYWORD);
+        //if (true) throw new RuntimeException();
         argType = type;
       }
       //Needed to resolve a bug in eclipse JDT.
       if (argType.toString().contains(".") && !argType.toString().contains("syntethic")) {
-        System.out.println(argType);
         String typeName = JDTElementUtils.extractSimpleName(argType);
-        System.out.println(typeName);
         argType = ImportUtils.getTypeBasedOnImports(unit, typeName);
       }
-      System.out.println(argNode + " : " + argType);
       argTypes.add(argType);
     }
     mDecl = addParameter(argTypes, varNames, templateClass, mDecl);
