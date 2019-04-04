@@ -5,7 +5,6 @@ import br.ufcg.spg.stub.MethodInvocationStub;
 import br.ufcg.spg.transformation.*;
 import br.ufcg.spg.type.TypeUtils;
 import org.eclipse.jdt.core.dom.*;
-import org.eclipse.persistence.tools.workbench.utility.classfile.ClassDeclaration;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -28,7 +27,6 @@ public class ClassUtils {
   }
 
   public static TypeDeclaration getTypeDeclaration(CompilationUnit cUnit) {
-    System.out.println(cUnit.types().get(0));
     final TypeDeclaration typeDecl = (TypeDeclaration) cUnit.types().get(0);
     return typeDecl;
   }
@@ -54,8 +52,13 @@ public class ClassUtils {
     }
   }
 
+  public static int cont = 0;
   public static void filter(CompilationUnit unit, CompilationUnit templateClass) {
     String name = ClassUtils.getTypeDeclaration(templateClass).getName().toString();
+    if (name.contains("SamplePruner") && !templateClass.toString().contains("NoFile")){
+      if (cont++ == 2)
+      throw new RuntimeException();
+    }
     SimpleName simpleName = unit.getAST().newSimpleName(name);
     if (name.contains("Exception")){
       processException(unit, templateClass, simpleName);
@@ -164,9 +167,15 @@ public class ClassUtils {
     ASTNode imp = ImportUtils.findImport(unit, baseName);
     if (classType.isNameQualifiedType()) {
       packageType = classType;
+      if (packageType.toString().contains("SamplePruner.LimitPruneRetStatus.SamplePruner")) {
+        throw new RuntimeException();
+      }
     }
     else {
       packageType = ImportUtils.getTypeFromImport(baseName, ast, imp);
+      if (packageType.toString().contains("SamplePruner.LimitPruneRetStatus.SamplePruner")) {
+        throw new RuntimeException();
+      }
     }
     CompilationUnit clazz = ClassRepository.getInstance().getClassInRepository(packageType.toString());
     if (clazz != null) {
@@ -182,6 +191,9 @@ public class ClassUtils {
       TypeDeclaration typeDeclaration = getTypeDeclaration(templateClass);
       Type type = TypeUtils.createType(templateClass.getAST(), "java.lang", "RuntimeException");
       typeDeclaration.setSuperclassType(type);
+    }
+    if (templateClass.getPackage().getName().toString().contains("SamplePruner.LimitPruneRetStatus.SamplePruner")) {
+      throw new RuntimeException();
     }
     return templateClass;
   }
@@ -205,6 +217,17 @@ public class ClassUtils {
 
   public static void addModifier(TypeDeclaration classDecl, Modifier.ModifierKeyword modifier) {
     AST ast = classDecl.getAST();
-    classDecl.modifiers().add(ast.newModifier(modifier));
+    List<ASTNode> modifiers = classDecl.modifiers();
+    boolean containModifers = false;
+    for (ASTNode node : modifiers) {
+      Modifier modifier1 = (Modifier) node;
+      if (modifier1.toString().equals(modifier.toString())) {
+        containModifers = true;
+        break;
+      }
+    }
+    if (!containModifers) {
+      classDecl.modifiers().add(ast.newModifier(modifier));
+    }
   }
 }

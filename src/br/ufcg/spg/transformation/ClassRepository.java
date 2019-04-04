@@ -48,17 +48,25 @@ public class ClassRepository {
     generated.remove(templateClass);
   }
 
+  static int cont = 0;
   public CompilationUnit getClassInRepository(String fullName) {
     CompilationUnit match = null;
     for (CompilationUnit cunit : generated) {
       TypeDeclaration typeDeclaration = ClassUtils.getTypeDeclaration(cunit);
       String search = cunit.getPackage().getName().toString().trim() + "." + typeDeclaration.getName();
-      System.out.println("search: " + search);
-      System.out.println("full name: " + fullName);
-      System.out.println("Is full name equals to search: " + search.equals(fullName));
+      if (search.contains("SamplePruner")) {
+        System.out.println("search: " + search);
+        System.out.println("full name: " + fullName);
+        System.out.println("Is full name equals to search: " + search.equals(fullName));
+      }
       if (search.equals(fullName)) {
         match = cunit;
         break;
+      }
+    }
+    if (fullName.contains("SamplePruner") && match == null) {
+      if (cont++ == 1) {
+        throw new RuntimeException();
       }
     }
     return match;

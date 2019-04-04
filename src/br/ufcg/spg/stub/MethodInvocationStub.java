@@ -39,7 +39,6 @@ public class MethodInvocationStub {
     }
     mDecl = ParameterUtils.addParameters(unit, arguments, templateClass, mDecl);
     classDecl.bodyDeclarations().add(mDecl);
-    //JDTElementUtils.saveClass(unit, templateClass);
   }
 
   public static void processMethodInvocationChain(CompilationUnit unit, MethodInvocation methodInvocation, CompilationUnit templateChain) throws IOException {

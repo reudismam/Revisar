@@ -59,7 +59,6 @@ public final class ParameterUtils {
     int i = 0;
     for(ASTNode arg : arguments) {
       varNames.add("v_" + i++);
-      //Expression arg = (Expression) argNode;
       Type argType;
       if (arg.toString().equals("null")) {
         argType = TypeUtils.createType(unit.getAST(), "java.lang", "Object");
@@ -91,14 +90,14 @@ public final class ParameterUtils {
         QualifiedName qualifiedName = (QualifiedName) arg;
         System.out.println(qualifiedName.getName() + " : " + qualifiedName.getQualifier());
         ASTNode imp = ImportUtils.findImport(unit, qualifiedName.getQualifier().toString());
-        Tuple<String, String> inner = InnerClassUtils.getInnerClassImport(qualifiedName.getQualifier().toString());;
+        Tuple<String, String> inner = InnerClassUtils.getInnerClassImport(qualifiedName.getQualifier().toString());
         String fullName;
         if (imp != null) {
            fullName = imp.toString().substring(7, imp.toString().indexOf(inner.getItem1())-1);
         }
         else {
-           fullName = "defaultpkg." + qualifiedName.getQualifier();
-           System.out.println(fullName);
+          String qualifiedNameStr = "defaultpkg." + qualifiedName.getQualifier().toString();
+          fullName = qualifiedNameStr.substring(0, qualifiedNameStr.indexOf(inner.getItem1().trim())-1);
         }
         StubUtils.processInnerClass(unit, inner, fullName);
         Type type = SyntheticClassUtils.getSyntheticType(unit.getAST());
@@ -113,7 +112,10 @@ public final class ParameterUtils {
         fieldDeclaration = (FieldDeclaration) ASTNode.copySubtree(declaration.getAST(), fieldDeclaration);
         declaration.bodyDeclarations().add(fieldDeclaration);
         ClassUtils.addModifier(declaration, Modifier.ModifierKeyword.STATIC_KEYWORD);
-        //if (true) throw new RuntimeException();
+        System.out.println(arguments);
+        System.out.println(arg.getClass());
+        System.out.println(outer);
+        if (outerTypeDeclaration.getName().toString().contains("SamplePruner") && !outerTypeDeclaration.toString().contains("NoFile")) throw new RuntimeException();
         argType = type;
       }
       //Needed to resolve a bug in eclipse JDT.

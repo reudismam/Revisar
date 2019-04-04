@@ -232,6 +232,7 @@ public class StubUtils {
     CompilationUnit templateInner = ClassUtils.getTemplateClass(unit, type);
     Type typeInner = TypeUtils.createType(unit.getAST(), pkgStr, inner.getItem2());
     CompilationUnit declaration = ClassUtils.getTemplateClass(unit, typeInner);
+    System.out.println(templateInner);
     InnerClassUtils.getTypeDeclarationIfNeeded(inner.getItem2(), ClassUtils.getTypeDeclaration(templateInner), declaration);
     //TypeDeclaration typeDeclaration = ClassUtils.getTypeDeclaration(templateInside);
     //typeDeclaration = (TypeDeclaration) ASTNode.copySubtree(templateInner.getAST(), typeDeclaration);
@@ -289,9 +290,10 @@ public class StubUtils {
           CompilationUnit classT1 = ClassUtils.getTemplateClass(unit, actualT1);
           CompilationUnit classT2 = ClassUtils.getTemplateClass(unit, actualT2);
           TypeDeclaration typeDeclaration1 = ClassUtils.getTypeDeclaration(classT1);
-          TypeDeclaration typeDeclaration2 = ClassUtils.getTypeDeclaration(classT2);
-          typeDeclaration2 = (TypeDeclaration) ASTNode.copySubtree(typeDeclaration1.getAST(), typeDeclaration2);
-          typeDeclaration1.bodyDeclarations().add(typeDeclaration2);
+          String className = ClassUtils.getTypeDeclaration(classT2).getName().toString();
+          InnerClassUtils.getTypeDeclarationIfNeeded(className, typeDeclaration1, classT2);
+          //typeDeclaration2 = (TypeDeclaration) ASTNode.copySubtree(typeDeclaration1.getAST(), typeDeclaration2);
+          //typeDeclaration1.bodyDeclarations().add(typeDeclaration2);
           System.out.println(classT1);
           JDTElementUtils.saveClass(unit, classT1);
         }
