@@ -19,13 +19,23 @@ import java.util.List;
 public class StubUtils {
 
   public static void generateStubsForClass(String classFile) throws IOException {
+    CompilationUnit unit = JParser.parseFromFile(classFile);
+    FileUtils.writeStringToFile(new File("temp/defaultpkg/temp.java"), unit.getRoot().toString());
+    List<ASTNode> invocations = getNodes(unit, ASTNode.CONDITIONAL_EXPRESSION);
+    for(ASTNode ast : invocations) {
+      ConditionalExpression conditionalExpression = (ConditionalExpression) ast;
+      Expression expression = conditionalExpression.getThenExpression();
+      if (expression instanceof MethodInvocation) {
+        MethodInvocation invocation = (MethodInvocation) expression;
+      }
+    }
     FileUtils.cleanDirectory(new File("temp/"));
     stubsForVariableDeclaration(classFile);
     stubForExpressionStatement(classFile);
     stubForThrowStatement(classFile);
     stubForIfStatement(classFile);
     stubForParameterizedType(classFile);
-    CompilationUnit unit = stubForInfixExpression(classFile);
+    stubForInfixExpression(classFile);
     processImportStatement(unit);
     addImportStatement(unit);
     System.out.println("Finished");
@@ -37,14 +47,26 @@ public class StubUtils {
     List<ASTNode> invocations = getNodes(unit, ASTNode.INFIX_EXPRESSION);
     for(ASTNode ast : invocations) {
       InfixExpression infixExpression = (InfixExpression) ast;
-      if (infixExpression.getLeftOperand() instanceof MethodInvocation) {
-        if (infixExpression.getOperator().equals(InfixExpression.Operator.EQUALS)) {
-           Type type = SyntheticClassUtils.getSyntheticType(unit.getAST());
-           processMethodInvocation(unit, type, infixExpression.getLeftOperand());
-        }
+      InfixExpression.Operator operator = infixExpression.getOperator();
+      if (operator.equals(InfixExpression.Operator.EQUALS)
+        || (operator.equals(InfixExpression.Operator.NOT_EQUALS))) {
+        Type type = SyntheticClassUtils.getSyntheticType(unit.getAST());
+        processLeftAndRight(unit, infixExpression, type);
+      } else if (operator.equals(InfixExpression.Operator.CONDITIONAL_AND)
+        || (operator.equals(InfixExpression.Operator.CONDITIONAL_OR))) {
+        Type type = unit.getAST().newPrimitiveType(PrimitiveType.BOOLEAN);
+        processLeftAndRight(unit, infixExpression, type);
       }
     }
     return unit;
+  }
+
+  private static void processLeftAndRight(CompilationUnit unit, InfixExpression infixExpression, Type returnType) throws IOException {
+    if (infixExpression.getLeftOperand() instanceof MethodInvocation) {
+       processMethodInvocation(unit, returnType, infixExpression.getLeftOperand());
+    } else if (infixExpression.getRightOperand() instanceof  MethodInvocation) {
+      processMethodInvocation(unit, returnType, infixExpression.getLeftOperand());
+    }
   }
 
   private static void stubForParameterizedType(String classFile) throws IOException {
@@ -155,17 +177,26 @@ public class StubUtils {
         List<VariableDeclarationFragment> fragments = statement.fragments();
         for (VariableDeclarationFragment flag : fragments) {
           Expression initializer = flag.getInitializer();
+          Type type = TypeUtils.extractType(statement, statement.getAST());
           if (initializer instanceof MethodInvocation) {
-            Type type = TypeUtils.extractType(statement, statement.getAST());
             processMethodInvocation(unit, type, initializer);
           }
           else if (initializer instanceof ClassInstanceCreation) {
-            Type type = TypeUtils.extractType(statement, statement.getAST());
             processClassCreation(unit, type, initializer);
           }
           else if (initializer instanceof  FieldAccess) {
-            Type type = TypeUtils.extractType(statement, statement.getAST());
             FieldDeclarationUtils.processFieldDeclaration(unit, type, initializer);
+          }
+          else if (initializer instanceof ConditionalExpression) {
+            ConditionalExpression conditionalExpression  = (ConditionalExpression) initializer;
+            if (conditionalExpression.getThenExpression() instanceof MethodInvocation) {
+              processMethodInvocation(unit, type, conditionalExpression.getThenExpression());
+            }
+            else if (conditionalExpression.getElseExpression() instanceof MethodInvocation) {
+              processMethodInvocation(unit, type, conditionalExpression.getElseExpression());
+            }
+            //System.out.println(conditionalExpression);
+            //throw  new RuntimeException();
           }
         }
       }
@@ -232,12 +263,7 @@ public class StubUtils {
     CompilationUnit templateInner = ClassUtils.getTemplateClass(unit, type);
     Type typeInner = TypeUtils.createType(unit.getAST(), pkgStr, inner.getItem2());
     CompilationUnit declaration = ClassUtils.getTemplateClass(unit, typeInner);
-    System.out.println(templateInner);
     InnerClassUtils.getTypeDeclarationIfNeeded(inner.getItem2(), ClassUtils.getTypeDeclaration(templateInner), declaration);
-    //TypeDeclaration typeDeclaration = ClassUtils.getTypeDeclaration(templateInside);
-    //typeDeclaration = (TypeDeclaration) ASTNode.copySubtree(templateInner.getAST(), typeDeclaration);
-    //TypeDeclaration outerTypeDeclaration = ClassUtils.getTypeDeclaration(templateInner);
-    //outerTypeDeclaration.bodyDeclarations().add(typeDeclaration);
     JDTElementUtils.saveClass(unit, templateInner);
   }
 
