@@ -1,0 +1,51 @@
+package br.ufcg.spg.transformation;
+
+import br.ufcg.spg.stub.StubUtils;
+import org.eclipse.jdt.core.dom.*;
+
+import java.io.IOException;
+
+public class ExpressionUtils {
+  public static void processExpression(CompilationUnit unit, Expression initializer, Type type) throws IOException {
+    processExpressionBase(unit, type, initializer);
+    if (initializer instanceof ConditionalExpression) {
+      ConditionalExpression conditionalExpression  = (ConditionalExpression) initializer;
+      processExpressionBase(unit, type, conditionalExpression.getThenExpression());
+      processExpressionBase(unit, type, conditionalExpression.getElseExpression());
+    }
+    /*else if (initializer instanceof InfixExpression) {
+      InfixExpression infixExpression = (InfixExpression) initializer;
+      InfixExpression.Operator operator = infixExpression.getOperator();
+      if (operator.equals(InfixExpression.Operator.EQUALS)
+              || (operator.equals(InfixExpression.Operator.NOT_EQUALS))) {
+        Type newtype = SyntheticClassUtils.getSyntheticType(unit.getAST());
+        processLeftAndRight(unit, infixExpression, newtype);
+      } else if (operator.equals(InfixExpression.Operator.CONDITIONAL_AND)
+              || (operator.equals(InfixExpression.Operator.CONDITIONAL_OR))) {
+        Type newtype = unit.getAST().newPrimitiveType(PrimitiveType.BOOLEAN);
+        processLeftAndRight(unit, infixExpression, newtype);
+      }
+    }*/
+  }
+
+  private static void processLeftAndRight(CompilationUnit unit, InfixExpression infixExpression, Type returnType) throws IOException {
+    if (infixExpression.getLeftOperand() instanceof MethodInvocation) {
+      processExpressionBase(unit, returnType, infixExpression.getLeftOperand());
+    } else if (infixExpression.getRightOperand() instanceof  MethodInvocation) {
+      processExpressionBase(unit, returnType, infixExpression.getRightOperand());
+    }
+  }
+
+
+  public static void processExpressionBase(CompilationUnit unit, Type type, Expression initializer) throws IOException {
+    if (initializer instanceof MethodInvocation) {
+      StubUtils.processMethodInvocation(unit, type, initializer);
+    }
+    else if (initializer instanceof ClassInstanceCreation) {
+      StubUtils.processClassCreation(unit, type, initializer);
+    }
+    else if (initializer instanceof  FieldAccess) {
+      FieldDeclarationUtils.processFieldDeclaration(unit, type, initializer);
+    }
+  }
+}

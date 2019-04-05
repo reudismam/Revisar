@@ -63,9 +63,9 @@ public class StubUtils {
 
   private static void processLeftAndRight(CompilationUnit unit, InfixExpression infixExpression, Type returnType) throws IOException {
     if (infixExpression.getLeftOperand() instanceof MethodInvocation) {
-       processMethodInvocation(unit, returnType, infixExpression.getLeftOperand());
+      ExpressionUtils.processExpressionBase(unit, returnType, infixExpression.getLeftOperand());
     } else if (infixExpression.getRightOperand() instanceof  MethodInvocation) {
-      processMethodInvocation(unit, returnType, infixExpression.getLeftOperand());
+      ExpressionUtils.processExpressionBase(unit, returnType, infixExpression.getRightOperand());
     }
   }
 
@@ -84,17 +84,12 @@ public class StubUtils {
     List<ASTNode> invocations = getNodes(unit, ASTNode.IF_STATEMENT);
     for(ASTNode ast : invocations) {
       IfStatement statement = (IfStatement) ast;
+      Type type = unit.getAST().newPrimitiveType(PrimitiveType.BOOLEAN);
       if (statement.getExpression() instanceof PrefixExpression) {
         PrefixExpression infixExpression = (PrefixExpression) statement.getExpression();
-        if (infixExpression.getOperand() instanceof MethodInvocation) {
-          MethodInvocation invocation = (MethodInvocation) infixExpression.getOperand();
-          processMethodInvocation(unit, unit.getAST().newPrimitiveType(PrimitiveType.BOOLEAN), invocation);
-        }
+        ExpressionUtils.processExpressionBase(unit, type, infixExpression.getOperand());
       }
-      else if (statement.getExpression() instanceof MethodInvocation) {
-        MethodInvocation invocation = (MethodInvocation) statement.getExpression();
-        processMethodInvocation(unit, unit.getAST().newPrimitiveType(PrimitiveType.BOOLEAN), invocation);
-      }
+      ExpressionUtils.processExpression(unit, statement.getExpression(), type);
     }
   }
 
@@ -104,16 +99,8 @@ public class StubUtils {
     List<ASTNode> invocations = getNodes(unit, ASTNode.THROW_STATEMENT);
     for(ASTNode ast : invocations) {
       ThrowStatement statement = (ThrowStatement) ast;
-      if (statement.getExpression() instanceof ClassInstanceCreation) {
-        String className = JDTElementUtils.extractSimpleName(TypeUtils.extractType(
-                statement.getExpression(), statement.getAST()));
-        Type classType = ImportUtils.getTypeBasedOnImports(unit, className);
-        CompilationUnit templateClass = ClassUtils.getTemplateClass(unit, classType);
-        ClassInstanceCreation instance = (ClassInstanceCreation) statement.getExpression();
-        Type statementType = TypeUtils.extractType(statement.getExpression(), statement.getAST());
-        ClassInstanceCreationStub.stub(unit, templateClass, instance, statementType);
-        JDTElementUtils.saveClass(unit, templateClass);
-      }
+      Type statementType = TypeUtils.extractType(statement.getExpression(), statement.getAST());
+      ExpressionUtils.processExpression(unit, statement.getExpression(), statementType);
     }
     return unit;
   }
@@ -156,13 +143,8 @@ public class StubUtils {
           processClassCreation(unit, type, assignment.getRightHandSide());
         }
       }
-      else if (invocation.getExpression() instanceof MethodInvocation) {
-        MethodInvocation invo = (MethodInvocation) invocation.getExpression();
-        processMethodInvocation(unit, TypeUtils.extractType(invocation, invocation.getAST()), invo);
-      }
-      else if (invocation.getExpression() instanceof ClassInstanceCreation) {
-        throw new RuntimeException();
-      }
+      Type type = TypeUtils.extractType(invocation, invocation.getAST());
+      ExpressionUtils.processExpressionBase(unit, type, invocation.getExpression());
     }
     return unit;
   }
@@ -178,26 +160,7 @@ public class StubUtils {
         for (VariableDeclarationFragment flag : fragments) {
           Expression initializer = flag.getInitializer();
           Type type = TypeUtils.extractType(statement, statement.getAST());
-          if (initializer instanceof MethodInvocation) {
-            processMethodInvocation(unit, type, initializer);
-          }
-          else if (initializer instanceof ClassInstanceCreation) {
-            processClassCreation(unit, type, initializer);
-          }
-          else if (initializer instanceof  FieldAccess) {
-            FieldDeclarationUtils.processFieldDeclaration(unit, type, initializer);
-          }
-          else if (initializer instanceof ConditionalExpression) {
-            ConditionalExpression conditionalExpression  = (ConditionalExpression) initializer;
-            if (conditionalExpression.getThenExpression() instanceof MethodInvocation) {
-              processMethodInvocation(unit, type, conditionalExpression.getThenExpression());
-            }
-            else if (conditionalExpression.getElseExpression() instanceof MethodInvocation) {
-              processMethodInvocation(unit, type, conditionalExpression.getElseExpression());
-            }
-            //System.out.println(conditionalExpression);
-            //throw  new RuntimeException();
-          }
+          ExpressionUtils.processExpression(unit, initializer, type);
         }
       }
     } catch (IOException e) {
@@ -318,9 +281,6 @@ public class StubUtils {
           TypeDeclaration typeDeclaration1 = ClassUtils.getTypeDeclaration(classT1);
           String className = ClassUtils.getTypeDeclaration(classT2).getName().toString();
           InnerClassUtils.getTypeDeclarationIfNeeded(className, typeDeclaration1, classT2);
-          //typeDeclaration2 = (TypeDeclaration) ASTNode.copySubtree(typeDeclaration1.getAST(), typeDeclaration2);
-          //typeDeclaration1.bodyDeclarations().add(typeDeclaration2);
-          System.out.println(classT1);
           JDTElementUtils.saveClass(unit, classT1);
         }
       }
