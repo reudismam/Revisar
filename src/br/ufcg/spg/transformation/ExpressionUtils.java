@@ -1,7 +1,6 @@
 package br.ufcg.spg.transformation;
 
 import br.ufcg.spg.stub.StubUtils;
-import br.ufcg.spg.type.TypeUtils;
 import org.eclipse.jdt.core.dom.*;
 
 import java.io.IOException;
@@ -25,12 +24,14 @@ public class ExpressionUtils {
               || (operator.equals(InfixExpression.Operator.CONDITIONAL_OR))) {
         Type newtype = unit.getAST().newPrimitiveType(PrimitiveType.BOOLEAN);
         processLeftAndRight(unit, infixExpression, newtype);
-      } else if (operator.equals(InfixExpression.Operator.TIMES)) {
-        System.out.println(infixExpression);
-        System.out.println(TypeUtils.extractType(infixExpression, infixExpression.getAST()));
-        System.out.println(type);
-        //throw new RuntimeException();
-        //processLeftAndRight(unit, infixExpression, type);
+      } else if (operator.equals(InfixExpression.Operator.TIMES)
+              || operator.equals(InfixExpression.Operator.DIVIDE)
+              || operator.equals(InfixExpression.Operator.PLUS)
+              || operator.equals(InfixExpression.Operator.REMAINDER)
+              || operator.equals(InfixExpression.Operator.MINUS)) {
+        if (type != null) {
+          processLeftAndRight(unit, infixExpression, type);
+        }
       }
     }
   }

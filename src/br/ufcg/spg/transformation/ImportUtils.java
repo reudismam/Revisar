@@ -5,8 +5,6 @@ import br.ufcg.spg.type.TypeUtils;
 import java.util.List;
 import org.eclipse.jdt.core.dom.*;
 
-import java.util.List;
-
 public class ImportUtils {
   public static Type getTypeBasedOnImports(CompilationUnit unit, String className) {
     AST ast = unit.getAST();
@@ -31,16 +29,11 @@ public class ImportUtils {
     List<ASTNode> imports = StubUtils.getNodes(unit, ASTNode.IMPORT_DECLARATION);
     for (ASTNode imp : imports) {
       String impStr = imp.toString().trim().substring(0, imp.toString().trim().length() - 1);
-      //String imported = getClassNameFromImport(impStr);
       if (impStr.endsWith(typeName)) {
         return imp;
       }
     }
     return null;
-  }
-
-  public static String getClassNameFromImport(String impStr) {
-    return impStr.substring(impStr.lastIndexOf(".") + 1, impStr.length() - 2);
   }
 
   public static Type getTypeNotOnImport(AST ast, Type invExpressionType) {

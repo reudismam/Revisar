@@ -15,7 +15,7 @@ public class JDTElementUtils {
   }
 
   public static void saveClass(CompilationUnit unit, CompilationUnit templateClass) {
-    ClassUtils.filter(unit, templateClass);
+    //ClassUtils.filter(unit, templateClass);
   }
 
   public static void writeClass(CompilationUnit unit, CompilationUnit templateClass) throws IOException {
@@ -24,7 +24,6 @@ public class JDTElementUtils {
     if (!templateClass.getPackage().toString().contains("java.util")) {
       String pkg = templateClass.getPackage().getName().toString().replaceAll("\\.", "/");
       FileUtils.write(new File("temp/" + pkg + "/" + classDecl.getName() + ".java"), templateClass.toString());
-      System.out.println(templateClass);
     } else {
       System.out.println("From java.util, we do not need to create a class.");
     }

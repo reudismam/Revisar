@@ -239,8 +239,12 @@ public class TypeUtils {
     Type classType = TypeUtils.extractType(node, node.getAST());
     boolean isStatic = classType.toString().equals("void");
     if (isStatic) {
-      String typeName = JDTElementUtils.extractSimpleName(node.toString());
-      classType = ImportUtils.getTypeBasedOnImports(unit, typeName);
+      if (node instanceof QualifiedName) {
+        classType = TypeUtils.getTypeFromQualifiedName(unit, node);
+      } else {
+        String typeName = JDTElementUtils.extractSimpleName(node.toString());
+        classType = ImportUtils.getTypeBasedOnImports(unit, typeName);
+      }
     }
     return classType;
   }
@@ -250,5 +254,10 @@ public class TypeUtils {
     Name pkgName = ast.newName(pkgStr);
     Type qualifiedType = ast.newNameQualifiedType(pkgName, name);
     return qualifiedType;
+  }
+
+  public static Type getTypeFromQualifiedName(CompilationUnit unit, ASTNode arg) {
+    QualifiedName qualifiedName = (QualifiedName) arg;
+    return createType(unit.getAST(), qualifiedName.getQualifier().toString(), qualifiedName.getName().toString());
   }
 }

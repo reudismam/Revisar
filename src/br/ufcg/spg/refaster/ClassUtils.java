@@ -52,28 +52,29 @@ public class ClassUtils {
     }
   }
 
-  public static int cont = 0;
   public static void filter(CompilationUnit unit, CompilationUnit templateClass) {
     String name = ClassUtils.getTypeDeclaration(templateClass).getName().toString();
-    if (name.contains("SamplePruner") && !templateClass.toString().contains("NoFile")){
-      if (cont++ == 2)
-      throw new RuntimeException();
-    }
     SimpleName simpleName = unit.getAST().newSimpleName(name);
     if (name.contains("Exception")){
       processException(unit, templateClass, simpleName);
     }
+    filterTypeDeclaration(ClassUtils.getTypeDeclaration(templateClass));
+  }
+
+  private static void filterTypeDeclaration(TypeDeclaration classDecl) {
     Map<String, ASTNode> map = new HashMap<>();
-    List<ASTNode> declarations = ClassUtils.getTypeDeclaration(templateClass).bodyDeclarations();
+    List<ASTNode> declarations = classDecl.bodyDeclarations();
     for (ASTNode node : declarations) {
       ASTNode declaration = node;
       if (!map.containsKey(declaration.toString())) {
         map.put(declaration.toString(), declaration);
       }
     }
-    TypeDeclaration classDecl = ClassUtils.getTypeDeclaration(templateClass);
     classDecl.bodyDeclarations().clear();
     for (Map.Entry<String, ASTNode> entry : map.entrySet()) {
+      if (entry.getValue() instanceof TypeDeclaration) {
+        filterTypeDeclaration((TypeDeclaration) entry.getValue());
+      }
       classDecl.bodyDeclarations().add(entry.getValue());
     }
   }

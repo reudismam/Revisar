@@ -1,17 +1,14 @@
 package br.ufcg.spg.refaster;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import br.ufcg.spg.bean.Tuple;
-import br.ufcg.spg.parser.JParser;
 import br.ufcg.spg.stub.StubUtils;
 import br.ufcg.spg.transformation.*;
 import br.ufcg.spg.type.TypeUtils;
 import org.eclipse.jdt.core.dom.*;
-import org.eclipse.persistence.tools.workbench.utility.classfile.ClassDeclaration;
 
 /**
  * Configure parameters.
@@ -67,11 +64,15 @@ public final class ParameterUtils {
       }
       if (arg instanceof MethodInvocation) {
         try {
-        if (argType.toString().equals("void")) {
-          argType = SyntheticClassUtils.getSyntheticType(unit.getAST());
-          CompilationUnit synthetic = SyntheticClassUtils.createSyntheticClass(unit);
-          JDTElementUtils.saveClass(unit, synthetic);
-        }
+          if (((MethodInvocation) arg).getExpression() instanceof QualifiedName) {
+            Type classType = TypeUtils.getTypeFromQualifiedName(unit, ((MethodInvocation) arg).getExpression());
+            ClassUtils.getTemplateClass(unit, classType);
+          }
+          if (argType.toString().equals("void")) {
+            argType = SyntheticClassUtils.getSyntheticType(unit.getAST());
+            CompilationUnit synthetic = SyntheticClassUtils.createSyntheticClass(unit);
+            JDTElementUtils.saveClass(unit, synthetic);
+          }
           StubUtils.processMethodInvocation(unit, argType, arg);
         } catch (IOException e) {
           e.printStackTrace();
@@ -128,4 +129,5 @@ public final class ParameterUtils {
     mDecl = addParameter(argTypes, varNames, templateClass, mDecl);
     return mDecl;
   }
+
 }
