@@ -47,7 +47,8 @@ public class StubUtils {
     List<ASTNode> invocations = getNodes(unit, ASTNode.INFIX_EXPRESSION);
     for(ASTNode ast : invocations) {
       InfixExpression infixExpression = (InfixExpression) ast;
-      InfixExpression.Operator operator = infixExpression.getOperator();
+      ExpressionUtils.processExpression(unit, infixExpression, null);
+      /*InfixExpression.Operator operator = infixExpression.getOperator();
       if (operator.equals(InfixExpression.Operator.EQUALS)
         || (operator.equals(InfixExpression.Operator.NOT_EQUALS))) {
         Type type = SyntheticClassUtils.getSyntheticType(unit.getAST());
@@ -56,7 +57,7 @@ public class StubUtils {
         || (operator.equals(InfixExpression.Operator.CONDITIONAL_OR))) {
         Type type = unit.getAST().newPrimitiveType(PrimitiveType.BOOLEAN);
         processLeftAndRight(unit, infixExpression, type);
-      }
+      }*/
     }
     return unit;
   }
@@ -113,28 +114,12 @@ public class StubUtils {
       ExpressionStatement invocation = (ExpressionStatement) ast;
       if (invocation.getExpression() instanceof Assignment) {
         Assignment assignment = (Assignment) invocation.getExpression();
-        if (assignment.getRightHandSide() instanceof MethodInvocation) {
-          Type type = TypeUtils.extractType(assignment.getLeftHandSide(), invocation.getAST());
-          if (type.isPrimitiveType()) {
-            processMethodInvocation(unit, type, assignment.getRightHandSide());
-          }
-          else if (type.isArrayType()) {
-            ArrayType arrayType = (ArrayType) type;
-            String simpleName = JDTElementUtils.extractSimpleName(type);
-            if (simpleName.contains("[")) {
-              simpleName = simpleName.substring(0, simpleName.indexOf("["));
-            }
-            type = ImportUtils.getTypeBasedOnImports(unit, simpleName);
-            arrayType.setElementType(type);
-            processMethodInvocation(unit, arrayType, assignment.getRightHandSide());
-          }
-          else {
-            String importedName = JDTElementUtils.extractSimpleName(type);
-            Type fromImport = ImportUtils.getTypeBasedOnImports(unit, importedName);
-            processMethodInvocation(unit, fromImport, assignment.getRightHandSide());
-          }
+        Type returnType = getApropriatedType(unit, invocation, assignment);
+        ExpressionUtils.processExpression(unit, assignment.getRightHandSide(), returnType);
+        /*if (assignment.getRightHandSide() instanceof MethodInvocation) {
+          getApropriatedType(unit, invocation, assignment);
         }
-        else if (assignment.getRightHandSide() instanceof ClassInstanceCreation) {
+        else*/ if (assignment.getRightHandSide() instanceof ClassInstanceCreation) {
           Type type = TypeUtils.extractType(assignment.getLeftHandSide(), assignment.getAST());
           if (!type.toString().equals(SyntheticClassUtils.getSyntheticType(unit.getAST()).toString())) {
             String className = JDTElementUtils.extractSimpleName(type);
@@ -142,11 +127,38 @@ public class StubUtils {
           }
           processClassCreation(unit, type, assignment.getRightHandSide());
         }
+        //ExpressionUtils.processExpression(unit, assignment.getRightHandSide(), );
       }
       Type type = TypeUtils.extractType(invocation, invocation.getAST());
       ExpressionUtils.processExpressionBase(unit, type, invocation.getExpression());
     }
     return unit;
+  }
+
+  private static Type getApropriatedType(CompilationUnit unit, ExpressionStatement invocation, Assignment assignment) throws IOException {
+    Type type = TypeUtils.extractType(assignment.getLeftHandSide(), invocation.getAST());
+    if (type.isPrimitiveType()) {
+      return type;
+      //processMethodInvocation(unit, type, assignment.getRightHandSide());
+    }
+    else
+    if (type.isArrayType()) {
+      ArrayType arrayType = (ArrayType) type;
+      String simpleName = JDTElementUtils.extractSimpleName(type);
+      if (simpleName.contains("[")) {
+        simpleName = simpleName.substring(0, simpleName.indexOf("["));
+      }
+      type = ImportUtils.getTypeBasedOnImports(unit, simpleName);
+      arrayType.setElementType(type);
+      return arrayType;
+      //processMethodInvocation(unit, arrayType, assignment.getRightHandSide());
+    }
+    else {
+      String importedName = JDTElementUtils.extractSimpleName(type);
+      type = ImportUtils.getTypeBasedOnImports(unit, importedName);
+      //processMethodInvocation(unit, fromImport, assignment.getRightHandSide());
+    }
+    return type;
   }
 
   public static void stubsForVariableDeclaration(String classFile) {
