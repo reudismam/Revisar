@@ -1,6 +1,7 @@
 package br.ufcg.spg.refaster;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,7 +50,7 @@ public final class ParameterUtils {
     return method;
   }
 
-  public static MethodDeclaration addParameters(CompilationUnit unit,
+  public static MethodDeclaration addParameters(CompilationUnit unit, MethodInvocation invocation,
                                                 List<ASTNode> arguments, CompilationUnit templateClass, MethodDeclaration mDecl) throws IOException {
     List<Type> argTypes = new ArrayList<>();
     List<String> varNames = new ArrayList<>();
@@ -69,9 +70,9 @@ public final class ParameterUtils {
             ClassUtils.getTemplateClass(unit, classType);
           }
           if (argType.toString().equals("void")) {
-            argType = SyntheticClassUtils.getSyntheticType(unit.getAST());
-            CompilationUnit synthetic = SyntheticClassUtils.createSyntheticClass(unit);
-            JDTElementUtils.saveClass(unit, synthetic);
+            argType = getArgType(unit, invocation);
+            //CompilationUnit synthetic = SyntheticClassUtils.createSyntheticClass(unit);
+            //JDTElementUtils.saveClass(unit, synthetic);
           }
           StubUtils.processMethodInvocation(unit, argType, arg);
         } catch (IOException e) {
@@ -128,6 +129,33 @@ public final class ParameterUtils {
     }
     mDecl = addParameter(argTypes, varNames, templateClass, mDecl);
     return mDecl;
+  }
+
+  private static Type getArgType(CompilationUnit unit, MethodInvocation invocation) {
+    /*if (!(invocation != null && invocation.toString().contains("partDesc.add"))) {
+      return SyntheticClassUtils.getSyntheticType(unit.getAST());
+    }*/
+    Type argType;
+    Type newParamType = null;
+    if (invocation != null) {
+      Type classType = TypeUtils.extractType((invocation).getExpression(), invocation.getAST());
+      if (classType.isParameterizedType()) {
+        ParameterizedType parameterizedType = (ParameterizedType) classType;
+        Type paramType = (Type) parameterizedType.typeArguments().get(0);
+        String simpleName = JDTElementUtils.extractSimpleName(paramType);
+        newParamType = ImportUtils.getTypeBasedOnImports(unit, simpleName);
+      }
+      if (invocation != null && invocation.toString().contains("partDesc.add")) {
+        //throw new RuntimeException();
+      }
+    }
+    if (newParamType != null) {
+      argType = newParamType;
+    }
+    else {
+      argType = SyntheticClassUtils.getSyntheticType(unit.getAST());
+    }
+    return argType;
   }
 
 }

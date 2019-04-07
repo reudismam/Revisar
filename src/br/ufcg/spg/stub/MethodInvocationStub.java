@@ -11,17 +11,17 @@ import java.io.IOException;
 import java.util.List;
 
 public class MethodInvocationStub {
-  public static void stub(CompilationUnit unit, CompilationUnit templateClass,
+  public static void stub(CompilationUnit unit, MethodInvocation invocation, CompilationUnit templateClass,
                           SimpleName methodName, Type returnType,
                           List<ASTNode> arguments, boolean isStatic, boolean isConstructor) throws IOException {
     TypeDeclaration classDecl = ClassUtils.getTypeDeclaration(templateClass);
     if (classDecl.getName().toString().contains("Exception")) {
       return;
     }
-   createMethod(unit, templateClass, methodName, returnType, arguments, isStatic, isConstructor);
+   createMethod(unit, invocation, templateClass, methodName, returnType, arguments, isStatic, isConstructor);
   }
 
-  public static void createMethod(CompilationUnit unit, CompilationUnit templateClass,
+  public static void createMethod(CompilationUnit unit, MethodInvocation invocation, CompilationUnit templateClass,
                           SimpleName methodName, Type returnType,
                           List<ASTNode> arguments, boolean isStatic, boolean isConstructor) throws IOException {
     TypeDeclaration classDecl = ClassUtils.getTypeDeclaration(templateClass);
@@ -37,7 +37,7 @@ public class MethodInvocationStub {
     if (isStatic) {
       MethodDeclarationUtils.addModifier(mDecl, Modifier.ModifierKeyword.STATIC_KEYWORD);
     }
-    mDecl = ParameterUtils.addParameters(unit, arguments, templateClass, mDecl);
+    mDecl = ParameterUtils.addParameters(unit, invocation, arguments, templateClass, mDecl);
     classDecl.bodyDeclarations().add(mDecl);
   }
 
@@ -47,7 +47,7 @@ public class MethodInvocationStub {
     if (methodInvocation.getExpression() instanceof MethodInvocation) {
       MethodInvocation chain = (MethodInvocation) methodInvocation.getExpression();
       while (chain.getExpression() instanceof  MethodInvocation) {
-        stub(unit, templateChain, chain.getName(), returnType, chain.arguments(), false, false);
+        stub(unit, chain, templateChain, chain.getName(), returnType, chain.arguments(), false, false);
         chain = (MethodInvocation) chain.getExpression();
       }
       if (chain.getExpression() == null) {

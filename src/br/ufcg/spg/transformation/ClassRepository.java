@@ -28,8 +28,11 @@ public class ClassRepository {
   }
 
   public void add(CompilationUnit templateClass) {
+    if (ClassUtils.isJavaLang(templateClass)) {
+      return;
+    }
     TypeDeclaration classDecl = ClassUtils.getTypeDeclaration(templateClass);
-    if (templateClass.getPackage().toString().contains("java.lang") && classDecl.getName().toString().contains("Class1")) {
+    if (ClassUtils.isJavaLang(templateClass) && classDecl.getName().toString().contains("Class1")) {
       throw new RuntimeException();
     }
     for (CompilationUnit cunit : generated) {
@@ -48,25 +51,17 @@ public class ClassRepository {
     generated.remove(templateClass);
   }
 
-  static int cont = 0;
   public CompilationUnit getClassInRepository(String fullName) {
     CompilationUnit match = null;
     for (CompilationUnit cunit : generated) {
       TypeDeclaration typeDeclaration = ClassUtils.getTypeDeclaration(cunit);
       String search = cunit.getPackage().getName().toString().trim() + "." + typeDeclaration.getName();
-      if (search.contains("SamplePruner")) {
-        System.out.println("search: " + search);
-        System.out.println("full name: " + fullName);
-        System.out.println("Is full name equals to search: " + search.equals(fullName));
-      }
+      //  System.out.println("search: " + search);
+      //  System.out.println("full name: " + fullName);
+      //  System.out.println("Is full name equals to search: " + search.equals(fullName));
       if (search.equals(fullName)) {
         match = cunit;
         break;
-      }
-    }
-    if (fullName.contains("SamplePruner") && match == null) {
-      if (cont++ == 1) {
-        throw new RuntimeException();
       }
     }
     return match;

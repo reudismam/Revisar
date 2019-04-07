@@ -17,7 +17,7 @@ public class ClassInstanceCreationStub {
     Type classType = TypeUtils.extractType(invocation, ast);
     String typeStr = JDTElementUtils.extractSimpleName(classType);
     SimpleName name = ast.newSimpleName(typeStr);
-    MethodInvocationStub.stub(unit, templateClass, name, null, invocation.arguments(), false, true);
+    MethodInvocationStub.stub(unit, null, templateClass, name, null, invocation.arguments(), false, true);
     processSuperClass(unit, ast, classType, templateClass, statementType);
   }
 

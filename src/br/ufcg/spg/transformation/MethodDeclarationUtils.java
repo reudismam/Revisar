@@ -60,6 +60,6 @@ public class MethodDeclarationUtils {
     Type classType = TypeUtils.extractType(invocation.getExpression(), invocation.getAST());
     boolean isStatic = classType.toString().equals("void");
     List<ASTNode> arguments = (List<ASTNode>) invocation.arguments();
-    MethodInvocationStub.stub(unit, templateClass, invocation.getName(), type, arguments, isStatic, false);
+    MethodInvocationStub.stub(unit, invocation, templateClass, invocation.getName(), type, arguments, isStatic, false);
   }
 }

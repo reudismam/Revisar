@@ -1,6 +1,7 @@
 package br.ufcg.spg.transformation;
 
 import br.ufcg.spg.stub.StubUtils;
+import br.ufcg.spg.type.TypeUtils;
 import org.eclipse.jdt.core.dom.*;
 
 import java.io.IOException;

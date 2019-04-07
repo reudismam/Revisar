@@ -20,7 +20,6 @@ public class ImportUtils {
     }
     else {
       name = ast.newName("java.lang");
-      System.out.println("imported type: " + classname);
     }
     return getTypeNotOnImport(ast, ast.newNameQualifiedType(name, sname));
   }

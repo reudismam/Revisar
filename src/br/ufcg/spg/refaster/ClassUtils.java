@@ -53,6 +53,9 @@ public class ClassUtils {
   }
 
   public static void filter(CompilationUnit unit, CompilationUnit templateClass) {
+    if (ClassUtils.isJavaLang(templateClass) || ClassUtils.isJavaUtil(templateClass)) {
+      return;
+    }
     String name = ClassUtils.getTypeDeclaration(templateClass).getName().toString();
     SimpleName simpleName = unit.getAST().newSimpleName(name);
     if (name.contains("Exception")){
@@ -77,6 +80,38 @@ public class ClassUtils {
       }
       classDecl.bodyDeclarations().add(entry.getValue());
     }
+    Map<String, List<MethodDeclaration>> methodInvocationMap = new HashMap<>();
+    declarations = (List<ASTNode>) classDecl.bodyDeclarations();
+    for (ASTNode node : declarations) {
+      if (node instanceof MethodDeclaration) {
+        MethodDeclaration declaration = (MethodDeclaration) node;
+        String methodName = declaration.getName().toString() + declaration.parameters();
+        if (!methodInvocationMap.containsKey(methodName)) {
+          methodInvocationMap.put(methodName, new ArrayList<>());
+        }
+        methodInvocationMap.get(methodName).add(declaration);
+      }
+    }
+    for (Map.Entry<String, List<MethodDeclaration>> entry : methodInvocationMap.entrySet()) {
+      if (entry.getValue().size() > 1) {
+        List<MethodDeclaration> toRemove = new ArrayList<>();
+        for (int i = 0; i < entry.getValue().size(); i++) {
+          MethodDeclaration astNode = entry.getValue().get(i);
+          System.out.println("Return type:\n" + astNode);
+          if (astNode.getReturnType2().toString().contains("syntethic")) {
+            toRemove.add(astNode);
+          }
+        }
+        if (!toRemove.isEmpty()) {
+          System.out.println("Before: \n" + classDecl);
+          for (MethodDeclaration astNode : toRemove) {
+            //declarations.remove(astNode);
+          }
+          System.out.println("After: \n" + classDecl);
+          //if (true) throw new RuntimeException();
+        }
+      }
+    }
   }
 
   private static void processException(CompilationUnit unit, CompilationUnit templateClass, SimpleName simpleName) {
@@ -86,7 +121,6 @@ public class ClassUtils {
       for (Constructor<?> constructor : list) {
         List<ASTNode> arguments = new ArrayList<>();
         for (Class<?> parameter : constructor.getParameterTypes()) {
-          System.out.println(parameter.toString());
           String parameterStr = parameter.toString().trim();
           Type type = null;
           if (parameterStr.contains("class")) {
@@ -107,7 +141,7 @@ public class ClassUtils {
           }
           arguments.add(type);
         }
-        MethodInvocationStub.createMethod(unit, templateClass, simpleName, null, arguments, false, true);
+        MethodInvocationStub.createMethod(unit, null, templateClass, simpleName, null, arguments, false, true);
       }
     } catch (Exception e) {
       e.printStackTrace();
@@ -230,5 +264,13 @@ public class ClassUtils {
     if (!containModifers) {
       classDecl.modifiers().add(ast.newModifier(modifier));
     }
+  }
+
+  public static boolean isJavaLang(CompilationUnit templateClass) {
+    return templateClass.getPackage().toString().contains("java.lang");
+  }
+
+  public static boolean isJavaUtil(CompilationUnit templateClass) {
+    return templateClass.getPackage().toString().contains("java.util");
   }
 }
