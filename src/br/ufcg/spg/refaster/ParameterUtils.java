@@ -71,8 +71,6 @@ public final class ParameterUtils {
           }
           if (argType.toString().equals("void")) {
             argType = getArgType(unit, invocation);
-            //CompilationUnit synthetic = SyntheticClassUtils.createSyntheticClass(unit);
-            //JDTElementUtils.saveClass(unit, synthetic);
           }
           StubUtils.processMethodInvocation(unit, argType, arg);
         } catch (IOException e) {
@@ -132,9 +130,6 @@ public final class ParameterUtils {
   }
 
   private static Type getArgType(CompilationUnit unit, MethodInvocation invocation) {
-    /*if (!(invocation != null && invocation.toString().contains("partDesc.add"))) {
-      return SyntheticClassUtils.getSyntheticType(unit.getAST());
-    }*/
     Type argType;
     Type newParamType = null;
     if (invocation != null) {
@@ -144,9 +139,6 @@ public final class ParameterUtils {
         Type paramType = (Type) parameterizedType.typeArguments().get(0);
         String simpleName = JDTElementUtils.extractSimpleName(paramType);
         newParamType = ImportUtils.getTypeBasedOnImports(unit, simpleName);
-      }
-      if (invocation != null && invocation.toString().contains("partDesc.add")) {
-        //throw new RuntimeException();
       }
     }
     if (newParamType != null) {

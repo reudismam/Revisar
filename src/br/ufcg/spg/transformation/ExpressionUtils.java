@@ -1,5 +1,6 @@
 package br.ufcg.spg.transformation;
 
+import br.ufcg.spg.refaster.ClassUtils;
 import br.ufcg.spg.stub.StubUtils;
 import br.ufcg.spg.type.TypeUtils;
 import org.eclipse.jdt.core.dom.*;
@@ -13,6 +14,25 @@ public class ExpressionUtils {
       ConditionalExpression conditionalExpression  = (ConditionalExpression) initializer;
       processExpressionBase(unit, type, conditionalExpression.getThenExpression());
       processExpressionBase(unit, type, conditionalExpression.getElseExpression());
+    }
+    else if(initializer instanceof CastExpression) {
+      CastExpression castExpression = (CastExpression) initializer;
+      Type typeObject = TypeUtils.extractType(castExpression.getExpression(), initializer.getAST());
+      processExpressionBase(unit, typeObject, castExpression.getExpression());
+      Type typeCast = TypeUtils.extractType(initializer, initializer.getAST());
+      String nameObject = JDTElementUtils.extractSimpleName(typeObject);
+      typeObject = ImportUtils.getTypeBasedOnImports(unit, nameObject);
+      String castName = JDTElementUtils.extractSimpleName(typeCast);
+      typeCast = ImportUtils.getTypeBasedOnImports(unit, castName);
+      CompilationUnit templateClass = ClassUtils.getTemplateClass(unit, typeObject);
+      TypeDeclaration typeDeclaration = ClassUtils.getTypeDeclaration(templateClass);
+      typeCast = (Type) ASTNode.copySubtree(typeDeclaration.getAST(), typeCast);
+      typeDeclaration.setSuperclassType(typeCast);
+      System.out.println(typeDeclaration);
+      System.out.println("Object: " + typeObject);
+      System.out.println("Cast: " + typeCast);
+      System.out.println(castExpression);
+      //throw  new RuntimeException();
     }
     else if (initializer instanceof InfixExpression) {
       InfixExpression infixExpression = (InfixExpression) initializer;
