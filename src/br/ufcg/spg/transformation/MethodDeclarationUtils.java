@@ -3,7 +3,6 @@ package br.ufcg.spg.transformation;
 import br.ufcg.spg.stub.MethodInvocationStub;
 import br.ufcg.spg.type.TypeUtils;
 import org.eclipse.jdt.core.dom.*;
-import sun.java2d.pipe.SpanShapeRenderer;
 
 import java.io.IOException;
 import java.util.List;
@@ -58,8 +57,12 @@ public class MethodDeclarationUtils {
 
   public static void addMethodBasedOnMethodInvocation(CompilationUnit unit, Type type, MethodInvocation invocation, CompilationUnit templateClass) throws IOException {
     Type classType = TypeUtils.extractType(invocation.getExpression(), invocation.getAST());
-    boolean isStatic = classType.toString().equals("void");
+    boolean isStatic = classType.toString().equals("void") && !(invocation.getExpression() instanceof MethodInvocation);
     List<ASTNode> arguments = (List<ASTNode>) invocation.arguments();
+    System.out.println(invocation.toString());
+    System.out.println(type);
+    System.out.println(isStatic);
+    //if (invocation.toString().contains("parseCtx.getOpToSamplePruner().get(topOp)")) throw new RuntimeException();
     MethodInvocationStub.stub(unit, invocation, templateClass, invocation.getName(), type, arguments, isStatic, false);
   }
 }

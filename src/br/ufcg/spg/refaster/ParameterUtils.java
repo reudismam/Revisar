@@ -1,7 +1,6 @@
 package br.ufcg.spg.refaster;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +17,16 @@ public final class ParameterUtils {
   
   private ParameterUtils() {
   }
-  
+
+  public static MethodDeclaration addParameters(CompilationUnit unit, MethodInvocation invocation,
+                                                List<ASTNode> arguments, CompilationUnit templateClass, MethodDeclaration mDecl) throws IOException {
+    List<Type> argTypes = getArgTypes(unit, invocation, arguments);
+    List<String> varNames = getVarNames(arguments);
+    mDecl = addParameter(argTypes, varNames, templateClass, mDecl);
+    //if (true) throw new RuntimeException();
+    return mDecl;
+  }
+
   /**
    * Adds parameter to method.
    * @param types types to be analyzed
@@ -50,13 +58,32 @@ public final class ParameterUtils {
     return method;
   }
 
-  public static MethodDeclaration addParameters(CompilationUnit unit, MethodInvocation invocation,
-                                                List<ASTNode> arguments, CompilationUnit templateClass, MethodDeclaration mDecl) throws IOException {
+  public static MethodDeclaration findMethod(CompilationUnit templateClass, List<Type> argTypes, String name) {
+    TypeDeclaration typeDeclaration = ClassUtils.getTypeDeclaration(templateClass);
+    MethodDeclaration duplicate = null;
+    List<ASTNode> nodes = (List<ASTNode>) typeDeclaration.bodyDeclarations();
+    for (ASTNode node : nodes) {
+      if (node instanceof MethodDeclaration) {
+        MethodDeclaration methodDeclaration = (MethodDeclaration) node;
+        if (methodDeclaration.getName().toString().equals(name)) {
+          List<Type> parameters = new ArrayList<>();
+          List<ASTNode> parametersList = (List<ASTNode>) methodDeclaration.parameters();
+          for (ASTNode param : parametersList) {
+            SingleVariableDeclaration parameter = (SingleVariableDeclaration) param;
+            parameters.add(parameter.getType());
+          }
+          if (parameters.toString().equals(argTypes.toString())) {
+            duplicate = methodDeclaration;
+          }
+        }
+      }
+    }
+    return duplicate;
+  }
+
+  public static List<Type> getArgTypes(CompilationUnit unit, MethodInvocation invocation, List<ASTNode> arguments) throws IOException {
     List<Type> argTypes = new ArrayList<>();
-    List<String> varNames = new ArrayList<>();
-    int i = 0;
     for(ASTNode arg : arguments) {
-      varNames.add("v_" + i++);
       Type argType;
       if (arg.toString().equals("null")) {
         argType = TypeUtils.createType(unit.getAST(), "java.lang", "Object");
@@ -64,9 +91,10 @@ public final class ParameterUtils {
         argType = TypeUtils.extractType(arg, arg.getAST());
       }
       if (arg instanceof MethodInvocation) {
+        MethodInvocation methodInvocationArg = (MethodInvocation) arg;
         try {
           if (((MethodInvocation) arg).getExpression() instanceof QualifiedName) {
-            Type classType = TypeUtils.getTypeFromQualifiedName(unit, ((MethodInvocation) arg).getExpression());
+            Type classType = TypeUtils.getTypeFromQualifiedName(unit, methodInvocationArg.getExpression());
             ClassUtils.getTemplateClass(unit, classType);
           }
           if (argType.toString().equals("void")) {
@@ -80,11 +108,8 @@ public final class ParameterUtils {
       else if (arg instanceof ClassInstanceCreation) {
         ClassInstanceCreation initializer = (ClassInstanceCreation) arg;
         Type type = TypeUtils.extractType(arg, arg.getAST());
-        try {
-          StubUtils.processClassCreation(unit, type, initializer);
-        } catch (IOException e) {
-          e.printStackTrace();
-        }
+        argType = type;
+        ExpressionUtils.processExpressionBase(unit, type, initializer);
       }
       else if (arg instanceof QualifiedName) {
         QualifiedName qualifiedName = (QualifiedName) arg;
@@ -112,11 +137,10 @@ public final class ParameterUtils {
         fieldDeclaration = (FieldDeclaration) ASTNode.copySubtree(declaration.getAST(), fieldDeclaration);
         declaration.bodyDeclarations().add(fieldDeclaration);
         ClassUtils.addModifier(declaration, Modifier.ModifierKeyword.STATIC_KEYWORD);
-        System.out.println(arguments);
-        System.out.println(arg.getClass());
-        System.out.println(outer);
-        if (outerTypeDeclaration.getName().toString().contains("SamplePruner") && !outerTypeDeclaration.toString().contains("NoFile")) throw new RuntimeException();
         argType = type;
+      }
+      else if (arg instanceof CastExpression) {
+        throw new RuntimeException();
       }
       //Needed to resolve a bug in eclipse JDT.
       if (argType.toString().contains(".") && !argType.toString().contains("syntethic")) {
@@ -125,8 +149,16 @@ public final class ParameterUtils {
       }
       argTypes.add(argType);
     }
-    mDecl = addParameter(argTypes, varNames, templateClass, mDecl);
-    return mDecl;
+    return argTypes;
+  }
+
+  public static List<String> getVarNames(List<ASTNode> arguments) {
+    List<String> varNames = new ArrayList<>();
+    int i = 0;
+    for(ASTNode arg : arguments) {
+      varNames.add("v_" + i++);
+    }
+    return varNames;
   }
 
   private static Type getArgType(CompilationUnit unit, MethodInvocation invocation) {

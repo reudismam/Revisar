@@ -28,11 +28,6 @@ public class ExpressionUtils {
       TypeDeclaration typeDeclaration = ClassUtils.getTypeDeclaration(templateClass);
       typeCast = (Type) ASTNode.copySubtree(typeDeclaration.getAST(), typeCast);
       typeDeclaration.setSuperclassType(typeCast);
-      System.out.println(typeDeclaration);
-      System.out.println("Object: " + typeObject);
-      System.out.println("Cast: " + typeCast);
-      System.out.println(castExpression);
-      //throw  new RuntimeException();
     }
     else if (initializer instanceof InfixExpression) {
       InfixExpression infixExpression = (InfixExpression) initializer;
