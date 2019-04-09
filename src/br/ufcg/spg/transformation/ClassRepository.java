@@ -1,6 +1,5 @@
 package br.ufcg.spg.transformation;
 
-import br.ufcg.spg.refaster.ClassUtils;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 

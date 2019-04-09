@@ -1,30 +1,29 @@
-package br.ufcg.spg.stub;
+package br.ufcg.spg.transformation;
 
-import br.ufcg.spg.refaster.ClassUtils;
-import br.ufcg.spg.transformation.JDTElementUtils;
 import br.ufcg.spg.type.TypeUtils;
 import org.eclipse.jdt.core.dom.*;
 
 import java.io.IOException;
 import java.util.List;
 
-public class ClassInstanceCreationStub {
-  public static void stub(CompilationUnit unit, CompilationUnit templateClass,
-                          Expression initializer, Type statementType) throws IOException {
+public class ClassInstanceCreationUtils {
+
+  public static void processInstanceCreation(CompilationUnit unit, CompilationUnit templateClass,
+                                             Expression initializer, Type statementType) throws IOException {
     ClassInstanceCreation instanceCreation = (ClassInstanceCreation) initializer;
     AST ast = templateClass.getAST();
     Type classType = TypeUtils.extractType(instanceCreation, ast);
-    String typeStr = JDTElementUtils.extractSimpleName(classType);
+    String typeStr = NameUtils.extractSimpleName(classType);
     SimpleName name = ast.newSimpleName(typeStr);
-    Type type = MethodInvocationStub.stub(unit, null, templateClass, name, null, instanceCreation.arguments(), false, true);
+    MethodInvocationUtils.processMethodInvocation(unit, null, templateClass, name, null, instanceCreation.arguments(), false, true);
     processSuperClass(unit, ast, classType, templateClass, statementType);
   }
 
   private static void processSuperClass(CompilationUnit unit,
                                         AST ast, Type classType, CompilationUnit classUnit, Type leftHandSideClass) throws IOException {
     TypeDeclaration classDecl = ClassUtils.getTypeDeclaration(classUnit);
-    String rightHandSideName = JDTElementUtils.extractSimpleName(classType);
-    String leftHandSideName = JDTElementUtils.extractSimpleName(leftHandSideClass);
+    String rightHandSideName = NameUtils.extractSimpleName(classType);
+    String leftHandSideName = NameUtils.extractSimpleName(leftHandSideClass);
     CompilationUnit baseClass = ClassUtils.getTemplateClass(unit, leftHandSideClass);
     if (baseClass == null) {
       return;

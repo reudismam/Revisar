@@ -1,6 +1,5 @@
 package br.ufcg.spg.transformation;
 
-import br.ufcg.spg.refaster.ClassUtils;
 import br.ufcg.spg.stub.StubUtils;
 import org.eclipse.jdt.core.dom.*;
 

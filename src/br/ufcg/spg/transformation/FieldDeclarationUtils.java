@@ -1,7 +1,5 @@
 package br.ufcg.spg.transformation;
 
-import br.ufcg.spg.refaster.ClassUtils;
-import br.ufcg.spg.stub.MethodInvocationStub;
 import br.ufcg.spg.type.TypeUtils;
 import org.eclipse.jdt.core.dom.*;
 
@@ -28,9 +26,8 @@ public class FieldDeclarationUtils {
         fieldDeclaration = (FieldDeclaration) ASTNode.copySubtree(typeDeclaration.getAST(), fieldDeclaration);
         typeDeclaration.bodyDeclarations().add(fieldDeclaration);
         Type returnType = SyntheticClassUtils.getSyntheticType(unit.getAST(), typeDeclaration.getName());
-        MethodInvocationStub.stub(unit, methodInvocation, templateChain, methodInvocation.getName(), returnType, methodInvocation.arguments(), false, false);
-        MethodInvocationStub.processMethodInvocationChain(unit, methodInvocation, templateChain);
-        JDTElementUtils.saveClass(unit, templateChain);
+        MethodInvocationUtils.processMethodInvocation(unit, methodInvocation, templateChain, methodInvocation.getName(), returnType, methodInvocation.arguments(), false, false);
+        MethodInvocationUtils.processMethodInvocationChain(unit, methodInvocation, templateChain);
       }
     }
   }
@@ -42,7 +39,6 @@ public class FieldDeclarationUtils {
     vfrag.setName(fieldName);
     FieldDeclaration fieldDeclaration = unit.getAST().newFieldDeclaration(vfrag);
     addModifier(fieldDeclaration, Modifier.ModifierKeyword.PUBLIC_KEYWORD);
-    //Type type = TypeUtils.extractType(inv, inv.getAST());
     type = (Type) ASTNode.copySubtree(type.getAST(), type);
     fieldDeclaration.setType(type);
     return fieldDeclaration;

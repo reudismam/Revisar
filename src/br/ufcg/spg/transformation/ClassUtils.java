@@ -1,11 +1,12 @@
-package br.ufcg.spg.refaster;
+package br.ufcg.spg.transformation;
 
 import br.ufcg.spg.parser.JParser;
-import br.ufcg.spg.stub.MethodInvocationStub;
-import br.ufcg.spg.transformation.*;
+import br.ufcg.spg.refaster.TemplateConstants;
 import br.ufcg.spg.type.TypeUtils;
+import org.apache.commons.io.FileUtils;
 import org.eclipse.jdt.core.dom.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ public class ClassUtils {
     TypeDeclaration classDecl = ClassUtils.getTypeDeclaration(unit);
     AST ast = classDecl.getAST();
     SimpleName simpleName = ast.newSimpleName(baseName);
-    JDTElementUtils.setName(classDecl, simpleName);
+    setName(classDecl, simpleName);
     PackageDeclaration declaration = ast.newPackageDeclaration();
     declaration.setName(ast.newName(packageType.toString().substring(0, packageType.toString().lastIndexOf("."))));
     unit.setPackage(declaration);
@@ -45,7 +46,6 @@ public class ClassUtils {
           CompilationUnit paramTemplateClass = ClassUtils.getTemplateClass(unit, type);
           List<Type> genericParamTypes = TypeUtils.createGenericParamTypes(type);
           addTypeParameterToClass(genericParamTypes, unit, paramTemplateClass);
-          JDTElementUtils.saveClass(unit, paramTemplateClass);
           throw new RuntimeException();
         }
       }
@@ -141,7 +141,7 @@ public class ClassUtils {
           }
           arguments.add(type);
         }
-        MethodInvocationStub.createMethod(unit, null, templateClass, simpleName, null, arguments, false, true);
+        MethodDeclarationUtils.createMethod(unit, null, templateClass, simpleName, null, arguments, false, true);
       }
     } catch (Exception e) {
       e.printStackTrace();
@@ -195,7 +195,7 @@ public class ClassUtils {
       WildcardType wildcardType = (WildcardType) classType;
       classType = wildcardType.getBound();
     }
-    String baseName = JDTElementUtils.extractSimpleName(classType);
+    String baseName = NameUtils.extractSimpleName(classType);
     if (baseName == null) {
       throw new RuntimeException("Could not find a type for " + baseName);
     }
@@ -241,8 +241,7 @@ public class ClassUtils {
   }
 
   public static CompilationUnit getTemplateClassBasedOnInvocation(CompilationUnit unit, ASTNode expression) throws IOException {
-    Type invExpressionType = TypeUtils.getClassType(unit, expression);
-    invExpressionType = ImportUtils.getTypeNotOnImport(unit.getAST(), invExpressionType);
+    Type invExpressionType = TypeUtils.extractTypeGlobalAnalysis(unit, expression);
     CompilationUnit templateClass = getTemplateClass(unit, invExpressionType);
     if (templateClass == null) {
       return null;
@@ -272,5 +271,22 @@ public class ClassUtils {
 
   public static boolean isJavaUtil(CompilationUnit templateClass) {
     return templateClass.getPackage().toString().contains("java.util");
+  }
+
+  public static void setName(TypeDeclaration mDecl, SimpleName name) {
+    AST ast = mDecl.getAST();
+    name = (SimpleName) ASTNode.copySubtree(ast, name);
+    mDecl.setName(name);
+  }
+
+  public static void writeClass(CompilationUnit unit, CompilationUnit templateClass) throws IOException {
+    filter(unit, templateClass);
+    TypeDeclaration classDecl = getTypeDeclaration(templateClass);
+    if (!templateClass.getPackage().toString().contains("java.util")) {
+      String pkg = templateClass.getPackage().getName().toString().replaceAll("\\.", "/");
+      FileUtils.write(new File("temp/" + pkg + "/" + classDecl.getName() + ".java"), templateClass.toString());
+    } else {
+      System.out.println("From java.util, we do not need to create a class.");
+    }
   }
 }

@@ -1,13 +1,11 @@
-package br.ufcg.spg.refaster;
+package br.ufcg.spg.transformation;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import br.ufcg.spg.bean.Tuple;
-import br.ufcg.spg.stub.MethodInvocationStub;
 import br.ufcg.spg.stub.StubUtils;
-import br.ufcg.spg.transformation.*;
 import br.ufcg.spg.type.TypeUtils;
 import org.eclipse.jdt.core.dom.*;
 
@@ -17,15 +15,6 @@ import org.eclipse.jdt.core.dom.*;
 public final class ParameterUtils {
   
   private ParameterUtils() {
-  }
-
-  public static MethodDeclaration addParameters(CompilationUnit unit, MethodInvocation invocation,
-                                                List<ASTNode> arguments, CompilationUnit templateClass, MethodDeclaration mDecl) throws IOException {
-    List<Type> argTypes = getArgTypes(unit, invocation, arguments);
-    List<String> varNames = getVarNames(arguments);
-    mDecl = addParameter(argTypes, varNames, templateClass, mDecl);
-    //if (true) throw new RuntimeException();
-    return mDecl;
   }
 
   /**
@@ -104,7 +93,7 @@ public final class ParameterUtils {
           argType = StubUtils.processMethodInvocation(unit, argType, arg);
           if (!methodInvocationArg.getExpression().toString().contains(".")) {
             Type newType = ImportUtils.getTypeBasedOnImports(unit, methodInvocationArg.getExpression().toString());
-            List<Type> types = MethodInvocationStub.returnType(unit, newType, methodInvocationArg.getName().toString());
+            List<Type> types = MethodInvocationUtils.returnType(unit, newType, methodInvocationArg.getName().toString());
             if (argType != null && argType.toString().contains("syntethic") && !types.isEmpty()) {
               argType = types.get(0);
             }
@@ -152,7 +141,7 @@ public final class ParameterUtils {
       }
       //Needed to resolve a bug in eclipse JDT.
       if (argType.toString().contains(".") && !argType.toString().contains("syntethic")) {
-        String typeName = JDTElementUtils.extractSimpleName(argType);
+        String typeName = NameUtils.extractSimpleName(argType);
         argType = ImportUtils.getTypeBasedOnImports(unit, typeName);
       }
       argTypes.add(argType);
@@ -177,7 +166,7 @@ public final class ParameterUtils {
       if (classType.isParameterizedType()) {
         ParameterizedType parameterizedType = (ParameterizedType) classType;
         Type paramType = (Type) parameterizedType.typeArguments().get(0);
-        String simpleName = JDTElementUtils.extractSimpleName(paramType);
+        String simpleName = NameUtils.extractSimpleName(paramType);
         newParamType = ImportUtils.getTypeBasedOnImports(unit, simpleName);
       }
     }

@@ -11,6 +11,7 @@ import br.ufcg.spg.refaster.config.TransformationConfigObject;
 import br.ufcg.spg.replacement.Replacement;
 import br.ufcg.spg.replacement.ReplacementUtils;
 import br.ufcg.spg.rewrite.RewriterUtils;
+import br.ufcg.spg.transformation.ParameterUtils;
 import br.ufcg.spg.type.TypeUtils;
 
 import com.github.gumtreediff.tree.ITree;
@@ -30,7 +31,6 @@ import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.api.errors.NoFilepatternException;
 
 public class ReturnStmTranslator {
   

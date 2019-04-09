@@ -41,7 +41,7 @@ public class ImportUtils {
         Class.forName(invExpressionType.toString());
       }
     } catch (ClassNotFoundException e) {
-      String name = JDTElementUtils.extractSimpleName(invExpressionType);
+      String name = NameUtils.extractSimpleName(invExpressionType);
       if (name.contains("Class1")) {
         invExpressionType = SyntheticClassUtils.getSyntheticType(ast);
       }

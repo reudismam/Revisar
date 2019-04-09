@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.ufcg.spg.transformation.ImportUtils;
-import br.ufcg.spg.transformation.JDTElementUtils;
+import br.ufcg.spg.transformation.NameUtils;
 import org.eclipse.jdt.core.dom.*;
 
 public class TypeUtils {
@@ -242,7 +242,7 @@ public class TypeUtils {
       if (node instanceof QualifiedName) {
         classType = TypeUtils.getTypeFromQualifiedName(unit, node);
       } else {
-        String typeName = JDTElementUtils.extractSimpleName(node.toString());
+        String typeName = NameUtils.extractSimpleName(node.toString());
         classType = ImportUtils.getTypeBasedOnImports(unit, typeName);
       }
     }
@@ -259,5 +259,34 @@ public class TypeUtils {
   public static Type getTypeFromQualifiedName(CompilationUnit unit, ASTNode arg) {
     QualifiedName qualifiedName = (QualifiedName) arg;
     return createType(unit.getAST(), qualifiedName.getQualifier().toString(), qualifiedName.getName().toString());
+  }
+
+  public static Type extractTypeGlobalAnalysis(CompilationUnit unit, ASTNode expression) {
+    Type invExpressionType = getClassType(unit, expression);
+    invExpressionType = ImportUtils.getTypeNotOnImport(unit.getAST(), invExpressionType);
+    return invExpressionType;
+  }
+
+  public static Type getAppropriateType(CompilationUnit unit, ExpressionStatement invocation, Assignment assignment) {
+    Type type = extractType(assignment.getLeftHandSide(), invocation.getAST());
+    if (type.isPrimitiveType()) {
+      return type;
+    }
+    else
+    if (type.isArrayType()) {
+      ArrayType arrayType = (ArrayType) type;
+      String simpleName = NameUtils.extractSimpleName(type);
+      if (simpleName.contains("[")) {
+        simpleName = simpleName.substring(0, simpleName.indexOf("["));
+      }
+      type = ImportUtils.getTypeBasedOnImports(unit, simpleName);
+      arrayType.setElementType(type);
+      return arrayType;
+    }
+    else {
+      String importedName = NameUtils.extractSimpleName(type);
+      type = ImportUtils.getTypeBasedOnImports(unit, importedName);
+    }
+    return type;
   }
 }

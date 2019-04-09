@@ -1,6 +1,5 @@
 package br.ufcg.spg.transformation;
 
-import br.ufcg.spg.refaster.ClassUtils;
 import br.ufcg.spg.stub.StubUtils;
 import br.ufcg.spg.type.TypeUtils;
 import org.eclipse.jdt.core.dom.*;
@@ -20,9 +19,9 @@ public class ExpressionUtils {
       Type typeObject = TypeUtils.extractType(castExpression.getExpression(), initializer.getAST());
       processExpressionBase(unit, typeObject, castExpression.getExpression());
       Type typeCast = TypeUtils.extractType(initializer, initializer.getAST());
-      String nameObject = JDTElementUtils.extractSimpleName(typeObject);
+      String nameObject = NameUtils.extractSimpleName(typeObject);
       typeObject = ImportUtils.getTypeBasedOnImports(unit, nameObject);
-      String castName = JDTElementUtils.extractSimpleName(typeCast);
+      String castName = NameUtils.extractSimpleName(typeCast);
       typeCast = ImportUtils.getTypeBasedOnImports(unit, castName);
       CompilationUnit templateClass = ClassUtils.getTemplateClass(unit, typeObject);
       TypeDeclaration typeDeclaration = ClassUtils.getTypeDeclaration(templateClass);

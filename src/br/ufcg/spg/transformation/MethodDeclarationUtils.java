@@ -1,6 +1,5 @@
 package br.ufcg.spg.transformation;
 
-import br.ufcg.spg.stub.MethodInvocationStub;
 import br.ufcg.spg.type.TypeUtils;
 import org.eclipse.jdt.core.dom.*;
 
@@ -59,6 +58,36 @@ public class MethodDeclarationUtils {
     Type classType = TypeUtils.extractType(invocation.getExpression(), invocation.getAST());
     boolean isStatic = classType.toString().equals("void") && !(invocation.getExpression() instanceof MethodInvocation);
     List<ASTNode> arguments = (List<ASTNode>) invocation.arguments();
-    return MethodInvocationStub.stub(unit, invocation, templateClass, invocation.getName(), type, arguments, isStatic, false);
+    return MethodInvocationUtils.processMethodInvocation(unit, invocation, templateClass, invocation.getName(), type, arguments, isStatic, false);
+  }
+
+  public static MethodDeclaration createMethod(CompilationUnit templateClass,
+                                               SimpleName methodName, Type returnType,
+                                               boolean isStatic, boolean isConstructor,
+                                               List<Type> argTypes, List<String> varNames) {
+    TypeDeclaration classDecl = ClassUtils.getTypeDeclaration(templateClass);
+    MethodDeclaration mDecl = templateClass.getAST().newMethodDeclaration();
+    if (!isConstructor) {
+      mDecl = setReturnType(returnType, templateClass, mDecl);
+    }
+    mDecl.setConstructor(isConstructor);
+    addBody(templateClass, mDecl);
+    addThrowStatement(mDecl);
+    setName(mDecl, methodName);
+    addModifier(mDecl, Modifier.ModifierKeyword.PUBLIC_KEYWORD);
+    if (isStatic) {
+      addModifier(mDecl, Modifier.ModifierKeyword.STATIC_KEYWORD);
+    }
+    mDecl = ParameterUtils.addParameter(argTypes, varNames, templateClass, mDecl);
+    classDecl.bodyDeclarations().add(mDecl);
+    return mDecl;
+  }
+
+  public static MethodDeclaration createMethod(CompilationUnit unit, MethodInvocation invocation, CompilationUnit templateClass,
+                                               SimpleName methodName, Type returnType,
+                                               List<ASTNode> arguments, boolean isStatic, boolean isConstructor) throws IOException {
+    List<Type> argTypes = ParameterUtils.getArgTypes(unit, invocation, arguments);
+    List<String> varNames = ParameterUtils.getVarNames(arguments);
+    return createMethod(templateClass, methodName, returnType, isStatic, isConstructor, argTypes, varNames);
   }
 }

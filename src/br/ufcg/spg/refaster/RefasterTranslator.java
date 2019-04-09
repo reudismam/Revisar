@@ -22,6 +22,7 @@ import br.ufcg.spg.replacement.ReplacementUtils;
 import java.io.IOException;
 import java.util.List;
 
+import br.ufcg.spg.transformation.ClassUtils;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
