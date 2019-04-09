@@ -266,17 +266,15 @@ public class StubUtils {
           JDTElementUtils.saveClass(unit, classT1);
         }
       }
-      System.out.println("The method execution: " + type);
       return MethodDeclarationUtils.addMethodBasedOnMethodInvocation(unit, type, invocation, templateClass);
     }
     else {
       if (!type.isPrimitiveType()) {
         CompilationUnit templateSuper = ClassUtils.getTemplateClass(unit, type);
-        if (templateSuper == null) {
-          return type;
+        if (templateSuper != null) {
+          createClassForType(unit, templateSuper, type);
+          JDTElementUtils.saveClass(unit, templateSuper);
         }
-        createClassForType(unit, templateSuper, type);
-        JDTElementUtils.saveClass(unit, templateSuper);
       }
       CompilationUnit templateClass = SyntheticClassUtils.createSyntheticClass(unit);
       type = MethodDeclarationUtils.addMethodBasedOnMethodInvocation(unit, type, invocation, templateClass);
