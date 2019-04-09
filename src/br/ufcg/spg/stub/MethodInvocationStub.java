@@ -10,7 +10,6 @@ import br.ufcg.spg.type.TypeUtils;
 import org.eclipse.jdt.core.dom.*;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,8 +25,6 @@ public class MethodInvocationStub {
     List<String> varNames = ParameterUtils.getVarNames(arguments);
     List<Type> argTypes = ParameterUtils.getArgTypes(unit, invocation, arguments);
     MethodDeclaration duplicate = ParameterUtils.findMethod(templateClass, argTypes, methodName.toString());
-    System.out.println(templateClass);
-    System.out.println("Entered here: " + returnType + " : duplicate: " + duplicate + " : method " + methodName);
     if (duplicate != null && returnType != null) {
       if (duplicate.getReturnType2().toString().contains("syntethic") && !returnType.toString().contains("syntethic")) {
         classDecl.bodyDeclarations().remove(duplicate);
@@ -37,7 +34,6 @@ public class MethodInvocationStub {
       }
     }
     createMethod(templateClass, methodName, returnType, isStatic, isConstructor, argTypes, varNames);
-    System.out.println("Types: " + argTypes);
     return returnType;
   }
 

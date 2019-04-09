@@ -9,7 +9,7 @@ import java.util.List;
 
 public class SyntheticClassUtils {
 
-  public static int classNumber = 1;
+  private static int classNumber = 1;
 
   public static CompilationUnit createSyntheticClass(CompilationUnit unit) throws IOException {
     String className = "Class" + classNumber;
@@ -35,5 +35,9 @@ public class SyntheticClassUtils {
   public static Type getSyntheticType(AST ast) {
     SimpleName name = ast.newSimpleName("Class" + classNumber);
     return getSyntheticType(ast, name);
+  }
+
+  public static int getClassNumber() {
+    return classNumber;
   }
 }

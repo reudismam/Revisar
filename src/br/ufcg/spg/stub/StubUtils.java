@@ -6,6 +6,7 @@ import br.ufcg.spg.matcher.KindNodeMatcher;
 import br.ufcg.spg.matcher.calculator.NodeMatchCalculator;
 import br.ufcg.spg.parser.JParser;
 import br.ufcg.spg.refaster.ClassUtils;
+import br.ufcg.spg.refaster.ParameterUtils;
 import br.ufcg.spg.transformation.*;
 import br.ufcg.spg.type.TypeUtils;
 import org.apache.commons.io.FileUtils;
@@ -30,7 +31,6 @@ public class StubUtils {
         MethodInvocation invocation = (MethodInvocation) expression;
       }*/
     }
-    //if (true) throw new RuntimeException();
     FileUtils.cleanDirectory(new File("temp/"));
     stubsForVariableDeclaration(classFile);
     stubForExpressionStatement(classFile);
@@ -99,7 +99,6 @@ public class StubUtils {
       if (statement.getExpression() instanceof Assignment) {
         Assignment assignment = (Assignment) statement.getExpression();
         Type returnType = getAppropriateType(unit, statement, assignment);
-        System.out.println("Expression:: " + assignment.getRightHandSide());
         ExpressionUtils.processExpression(unit, assignment.getRightHandSide(), returnType);
       }
       Type type = TypeUtils.extractType(statement, statement.getAST());
@@ -277,6 +276,14 @@ public class StubUtils {
         }
       }
       CompilationUnit templateClass = SyntheticClassUtils.createSyntheticClass(unit);
+      List<Type> argTypes = ParameterUtils.getArgTypes(unit, invocation, invocation.arguments());
+      MethodDeclaration duplicate = ParameterUtils.findMethod(templateClass, argTypes, invocation.getName().toString());
+      if (duplicate != null && !type.toString().equals(duplicate.getReturnType2().toString())) {
+        TypeDeclaration typeDeclaration = ClassUtils.getTypeDeclaration(templateClass);
+        SimpleName simpleName = unit.getAST().newSimpleName(typeDeclaration.getName().toString() + 1);
+        Type syntheticType = SyntheticClassUtils.getSyntheticType(unit.getAST(), simpleName);
+        templateClass = ClassUtils.getTemplateClass(unit, syntheticType);
+      }
       type = MethodDeclarationUtils.addMethodBasedOnMethodInvocation(unit, type, invocation, templateClass);
       MethodInvocationStub.processMethodInvocationChain(unit, invocation, templateClass);
       JDTElementUtils.saveClass(unit, templateClass);
