@@ -2,67 +2,77 @@ package br.ufcg.spg.stub;
 
 import br.ufcg.spg.refaster.ParameterUtils;
 import br.ufcg.spg.refaster.ClassUtils;
+import br.ufcg.spg.transformation.ImportUtils;
 import br.ufcg.spg.transformation.JDTElementUtils;
 import br.ufcg.spg.transformation.MethodDeclarationUtils;
 import br.ufcg.spg.transformation.SyntheticClassUtils;
+import br.ufcg.spg.type.TypeUtils;
 import org.eclipse.jdt.core.dom.*;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MethodInvocationStub {
 
-  public static void stub(CompilationUnit unit, MethodInvocation invocation, CompilationUnit templateClass,
+  public static Type stub(CompilationUnit unit, MethodInvocation invocation, CompilationUnit templateClass,
                           SimpleName methodName, Type returnType,
                           List<ASTNode> arguments, boolean isStatic, boolean isConstructor) throws IOException {
     TypeDeclaration classDecl = ClassUtils.getTypeDeclaration(templateClass);
     if (classDecl.getName().toString().contains("Exception")) {
-      return;
+      return null;
     }
     List<String> varNames = ParameterUtils.getVarNames(arguments);
     List<Type> argTypes = ParameterUtils.getArgTypes(unit, invocation, arguments);
     MethodDeclaration duplicate = ParameterUtils.findMethod(templateClass, argTypes, methodName.toString());
-    System.out.println(duplicate);
+    System.out.println(templateClass);
+    System.out.println("Entered here: " + returnType + " : duplicate: " + duplicate + " : method " + methodName);
     if (duplicate != null && returnType != null) {
       if (duplicate.getReturnType2().toString().contains("syntethic") && !returnType.toString().contains("syntethic")) {
         classDecl.bodyDeclarations().remove(duplicate);
       }
       else if (!duplicate.getReturnType2().toString().contains("syntethic") && returnType.toString().contains("syntethic")) {
-        return;
+        return duplicate.getReturnType2();
       }
     }
     createMethod(templateClass, methodName, returnType, isStatic, isConstructor, argTypes, varNames);
+    System.out.println("Types: " + argTypes);
+    return returnType;
   }
 
-  /*public static MethodDeclaration createMethod(CompilationUnit unit, MethodInvocation invocation, CompilationUnit templateClass,
-                          SimpleName methodName, Type returnType,
-                          List<ASTNode> arguments, boolean isStatic, boolean isConstructor) throws IOException {
-    TypeDeclaration classDecl = ClassUtils.getTypeDeclaration(templateClass);
-    MethodDeclaration mDecl = templateClass.getAST().newMethodDeclaration();
-    if (!isConstructor) {
-      mDecl = MethodDeclarationUtils.setReturnType(returnType, templateClass, mDecl);
+  public static List<Type> returnType(CompilationUnit unit, Type classTpe, String methodName) throws IOException {
+    List<ASTNode> invocations = StubUtils.getNodes(unit, ASTNode.ASSIGNMENT);
+    List<Type> types = new ArrayList<>();
+    for (ASTNode node : invocations) {
+      Assignment assignment = (Assignment) node;
+      if (assignment.getRightHandSide() instanceof  MethodInvocation) {
+        MethodInvocation invocation = (MethodInvocation) assignment.getRightHandSide();
+        CompilationUnit templateClass = ClassUtils.getTemplateClassBasedOnInvocation(unit, invocation.getExpression());
+        TypeDeclaration declaration = ClassUtils.getTypeDeclaration(templateClass);
+        String typeName = JDTElementUtils.extractSimpleName(classTpe);
+        String className = declaration.getName().toString();
+        Type leftType = TypeUtils.extractType(assignment.getLeftHandSide(), invocation.getAST());
+        if (invocation.getName().toString().equals(methodName) && typeName.equals(className)) {
+          String simpleName = JDTElementUtils.extractSimpleName(leftType);
+          leftType = ImportUtils.getTypeBasedOnImports(unit, simpleName);
+          types.add(leftType);
+        }
+      }
     }
-    mDecl.setConstructor(isConstructor);
-    MethodDeclarationUtils.addBody(templateClass, mDecl);
-    MethodDeclarationUtils.addThrowStatement(mDecl);
-    MethodDeclarationUtils.setName(mDecl, methodName);
-    MethodDeclarationUtils.addModifier(mDecl, Modifier.ModifierKeyword.PUBLIC_KEYWORD);
-    if (isStatic) {
-      MethodDeclarationUtils.addModifier(mDecl, Modifier.ModifierKeyword.STATIC_KEYWORD);
+    List<ASTNode> variableDeclaration = StubUtils.getNodes(unit, ASTNode.VARIABLE_DECLARATION_STATEMENT);
+    for (ASTNode node : variableDeclaration) {
+      VariableDeclarationStatement statement = (VariableDeclarationStatement) node;
+      Type leftType = TypeUtils.extractType(statement, statement.getAST());
+      if (statement.fragments().get(0) instanceof  MethodInvocation) {
+        MethodInvocation invocation = (MethodInvocation) statement.fragments().get(0);
+        if (invocation.getName().toString().equals(methodName)) {
+          System.out.println(leftType);
+        }
+      }
     }
-    mDecl = ParameterUtils.addParameters(unit, invocation, arguments, templateClass, mDecl);
-    return mDecl;
-  }*/
-
-  /*public static void stub(CompilationUnit unit, MethodInvocation invocation, CompilationUnit templateClass,
-                          SimpleName methodName, Type returnType,
-                          List<ASTNode> arguments, boolean isStatic, boolean isConstructor) throws IOException {
-    TypeDeclaration classDecl = ClassUtils.getTypeDeclaration(templateClass);
-    if (classDecl.getName().toString().contains("Exception")) {
-      return;
-    }
-    createMethod(unit, invocation, templateClass, methodName, returnType, arguments, isStatic, isConstructor);
-  }*/
+    return types;
+  }
 
   private static MethodDeclaration createMethod(CompilationUnit templateClass,
                                                SimpleName methodName, Type returnType,

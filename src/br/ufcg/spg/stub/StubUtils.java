@@ -99,6 +99,7 @@ public class StubUtils {
       if (statement.getExpression() instanceof Assignment) {
         Assignment assignment = (Assignment) statement.getExpression();
         Type returnType = getAppropriateType(unit, statement, assignment);
+        System.out.println("Expression:: " + assignment.getRightHandSide());
         ExpressionUtils.processExpression(unit, assignment.getRightHandSide(), returnType);
       }
       Type type = TypeUtils.extractType(statement, statement.getAST());
@@ -240,15 +241,15 @@ public class StubUtils {
     System.out.println(classes.size());
   }
 
-  public static void processMethodInvocation(CompilationUnit unit, Type type, ASTNode initializer) throws IOException {
+  public static Type processMethodInvocation(CompilationUnit unit, Type type, ASTNode initializer) throws IOException {
     MethodInvocation invocation = (MethodInvocation) initializer;
     if (!(invocation.getExpression() instanceof MethodInvocation)) {
       if (invocation.getExpression() == null) {
-        return;
+        return type;
       }
       CompilationUnit templateClass = ClassUtils.getTemplateClassBasedOnInvocation(unit, invocation.getExpression());
       if (templateClass == null) {
-        return;
+        return type;
       }
       Tuple<String, String> tuple = InnerClassUtils.getInnerClassImport(type.toString());
       if (tuple != null) {
@@ -265,21 +266,23 @@ public class StubUtils {
           JDTElementUtils.saveClass(unit, classT1);
         }
       }
-      MethodDeclarationUtils.addMethodBasedOnMethodInvocation(unit, type, invocation, templateClass);
+      System.out.println("The method execution: " + type);
+      return MethodDeclarationUtils.addMethodBasedOnMethodInvocation(unit, type, invocation, templateClass);
     }
     else {
       if (!type.isPrimitiveType()) {
         CompilationUnit templateSuper = ClassUtils.getTemplateClass(unit, type);
         if (templateSuper == null) {
-          return;
+          return type;
         }
         createClassForType(unit, templateSuper, type);
         JDTElementUtils.saveClass(unit, templateSuper);
       }
       CompilationUnit templateClass = SyntheticClassUtils.createSyntheticClass(unit);
-      MethodDeclarationUtils.addMethodBasedOnMethodInvocation(unit, type, invocation, templateClass);
+      type = MethodDeclarationUtils.addMethodBasedOnMethodInvocation(unit, type, invocation, templateClass);
       MethodInvocationStub.processMethodInvocationChain(unit, invocation, templateClass);
       JDTElementUtils.saveClass(unit, templateClass);
+      return type;
     }
   }
 

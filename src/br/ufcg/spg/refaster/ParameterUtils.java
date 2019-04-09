@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.ufcg.spg.bean.Tuple;
+import br.ufcg.spg.stub.MethodInvocationStub;
 import br.ufcg.spg.stub.StubUtils;
 import br.ufcg.spg.transformation.*;
 import br.ufcg.spg.type.TypeUtils;
@@ -100,7 +101,14 @@ public final class ParameterUtils {
           if (argType.toString().equals("void")) {
             argType = getArgType(unit, invocation);
           }
-          StubUtils.processMethodInvocation(unit, argType, arg);
+          argType = StubUtils.processMethodInvocation(unit, argType, arg);
+          if (!methodInvocationArg.getExpression().toString().contains(".")) {
+            Type newType = ImportUtils.getTypeBasedOnImports(unit, methodInvocationArg.getExpression().toString());
+            List<Type> types = MethodInvocationStub.returnType(unit, newType, methodInvocationArg.getName().toString());
+            if (argType != null && argType.toString().contains("syntethic") && !types.isEmpty()) {
+              argType = types.get(0);
+            }
+          }
         } catch (IOException e) {
           e.printStackTrace();
         }

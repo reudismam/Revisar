@@ -1,7 +1,6 @@
 package br.ufcg.spg.stub;
 
 import br.ufcg.spg.refaster.ClassUtils;
-import br.ufcg.spg.transformation.ImportUtils;
 import br.ufcg.spg.transformation.JDTElementUtils;
 import br.ufcg.spg.type.TypeUtils;
 import org.eclipse.jdt.core.dom.*;
@@ -12,12 +11,12 @@ import java.util.List;
 public class ClassInstanceCreationStub {
   public static void stub(CompilationUnit unit, CompilationUnit templateClass,
                           Expression initializer, Type statementType) throws IOException {
-    ClassInstanceCreation invocation = (ClassInstanceCreation) initializer;
+    ClassInstanceCreation instanceCreation = (ClassInstanceCreation) initializer;
     AST ast = templateClass.getAST();
-    Type classType = TypeUtils.extractType(invocation, ast);
+    Type classType = TypeUtils.extractType(instanceCreation, ast);
     String typeStr = JDTElementUtils.extractSimpleName(classType);
     SimpleName name = ast.newSimpleName(typeStr);
-    MethodInvocationStub.stub(unit, null, templateClass, name, null, invocation.arguments(), false, true);
+    Type type = MethodInvocationStub.stub(unit, null, templateClass, name, null, instanceCreation.arguments(), false, true);
     processSuperClass(unit, ast, classType, templateClass, statementType);
   }
 
@@ -31,9 +30,6 @@ public class ClassInstanceCreationStub {
       return;
     }
     List<Type> genericParamTypes = TypeUtils.createGenericParamTypes(leftHandSideClass);
-    String baseName = JDTElementUtils.extractSimpleName(leftHandSideClass);
-    ASTNode imp = ImportUtils.findImport(unit, baseName);
-    Type packageType = ImportUtils.getTypeFromImport(baseName, ast, imp);
     ClassUtils.addTypeParameterToClass(genericParamTypes, unit, baseClass);
     leftHandSideClass = (Type) ASTNode.copySubtree(ast, leftHandSideClass);
     if (!leftHandSideName.equals(rightHandSideName)) {

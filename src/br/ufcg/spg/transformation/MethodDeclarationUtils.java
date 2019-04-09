@@ -55,14 +55,10 @@ public class MethodDeclarationUtils {
     return statement;
   }
 
-  public static void addMethodBasedOnMethodInvocation(CompilationUnit unit, Type type, MethodInvocation invocation, CompilationUnit templateClass) throws IOException {
+  public static Type addMethodBasedOnMethodInvocation(CompilationUnit unit, Type type, MethodInvocation invocation, CompilationUnit templateClass) throws IOException {
     Type classType = TypeUtils.extractType(invocation.getExpression(), invocation.getAST());
     boolean isStatic = classType.toString().equals("void") && !(invocation.getExpression() instanceof MethodInvocation);
     List<ASTNode> arguments = (List<ASTNode>) invocation.arguments();
-    System.out.println(invocation.toString());
-    System.out.println(type);
-    System.out.println(isStatic);
-    //if (invocation.toString().contains("parseCtx.getOpToSamplePruner().get(topOp)")) throw new RuntimeException();
-    MethodInvocationStub.stub(unit, invocation, templateClass, invocation.getName(), type, arguments, isStatic, false);
+    return MethodInvocationStub.stub(unit, invocation, templateClass, invocation.getName(), type, arguments, isStatic, false);
   }
 }
