@@ -10,6 +10,9 @@ import java.util.List;
 
 public class MethodInvocationUtils {
 
+  private MethodInvocationUtils() {
+  }
+
   public static Type processMethodInvocation(CompilationUnit unit, MethodInvocation invocation, CompilationUnit templateClass,
                                              SimpleName methodName, Type returnType,
                                              List<ASTNode> arguments, boolean isStatic, boolean isConstructor) throws IOException {
@@ -21,15 +24,19 @@ public class MethodInvocationUtils {
     List<Type> argTypes = ParameterUtils.getArgTypes(unit, invocation, arguments);
     MethodDeclaration duplicate = ParameterUtils.findMethod(templateClass, argTypes, methodName.toString());
     if (duplicate != null && returnType != null) {
-      if (duplicate.getReturnType2().toString().contains("syntethic") && !returnType.toString().contains("syntethic")) {
+      if (isSynthetic(duplicate.getReturnType2()) && !isSynthetic(returnType)) {
         classDecl.bodyDeclarations().remove(duplicate);
       }
-      else if (!duplicate.getReturnType2().toString().contains("syntethic") && returnType.toString().contains("syntethic")) {
+      else if (!isSynthetic(duplicate.getReturnType2()) && isSynthetic(returnType)) {
         return duplicate.getReturnType2();
       }
     }
     MethodDeclarationUtils.createMethod(templateClass, methodName, returnType, isStatic, isConstructor, argTypes, varNames);
     return returnType;
+  }
+
+  private static boolean isSynthetic(Type type) {
+    return type.toString().contains("syntethic");
   }
 
   public static List<Type> returnType(CompilationUnit unit, Type classTpe, String methodName) throws IOException {
@@ -39,7 +46,7 @@ public class MethodInvocationUtils {
       Assignment assignment = (Assignment) node;
       if (assignment.getRightHandSide() instanceof  MethodInvocation) {
         MethodInvocation invocation = (MethodInvocation) assignment.getRightHandSide();
-        CompilationUnit templateClass = ClassUtils.getTemplateClassBasedOnInvocation(unit, invocation.getExpression());
+        CompilationUnit templateClass = ClassUtils.getTemplateClassFromExpression(unit, invocation.getExpression());
         TypeDeclaration declaration = ClassUtils.getTypeDeclaration(templateClass);
         String typeName = NameUtils.extractSimpleName(classTpe);
         String className = declaration.getName().toString();
@@ -58,7 +65,9 @@ public class MethodInvocationUtils {
       if (statement.fragments().get(0) instanceof  MethodInvocation) {
         MethodInvocation invocation = (MethodInvocation) statement.fragments().get(0);
         if (invocation.getName().toString().equals(methodName)) {
-          System.out.println(leftType);
+          String simpleName = NameUtils.extractSimpleName(leftType);
+          leftType = ImportUtils.getTypeBasedOnImports(unit, simpleName);
+          types.add(leftType);
         }
       }
     }
@@ -77,7 +86,7 @@ public class MethodInvocationUtils {
       if (chain.getExpression() == null) {
         return;
       }
-      CompilationUnit templateClass = ClassUtils.getTemplateClassBasedOnInvocation(unit, chain.getExpression());
+      CompilationUnit templateClass = ClassUtils.getTemplateClassFromExpression(unit, chain.getExpression());
       if (templateClass == null) {
         return;
       }

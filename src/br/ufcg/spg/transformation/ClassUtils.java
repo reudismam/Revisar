@@ -177,7 +177,6 @@ public class ClassUtils {
         for (ASTNode node : entry.getValue()) {
           System.out.println(node);
         }
-        if (true) throw new RuntimeException();
       }
       classDecl.bodyDeclarations().add(entry.getValue().get(entry.getValue().size() - 1));
     }
@@ -233,19 +232,15 @@ public class ClassUtils {
     return templateClass;
   }
 
+  public static CompilationUnit getTemplateClassFromExpression(CompilationUnit unit, ASTNode expression) throws IOException {
+    Type invExpressionType = TypeUtils.extractTypeGlobalAnalysis(unit, expression);
+    return getTemplateClass(unit, invExpressionType);
+  }
+
   private static CompilationUnit createNewClass(String baseName, Type imp) throws IOException {
     CompilationUnit templateClass;
     templateClass = JParser.parseFromFile(TemplateConstants.ClassPath);
     createClassDeclaration(templateClass, baseName, imp);
-    return templateClass;
-  }
-
-  public static CompilationUnit getTemplateClassBasedOnInvocation(CompilationUnit unit, ASTNode expression) throws IOException {
-    Type invExpressionType = TypeUtils.extractTypeGlobalAnalysis(unit, expression);
-    CompilationUnit templateClass = getTemplateClass(unit, invExpressionType);
-    if (templateClass == null) {
-      return null;
-    }
     return templateClass;
   }
 
@@ -269,8 +264,16 @@ public class ClassUtils {
     return templateClass.getPackage().toString().contains("java.lang");
   }
 
+  public static boolean isJavaLang(Type type) {
+    return type.toString().contains("java.lang");
+  }
+
   public static boolean isJavaUtil(CompilationUnit templateClass) {
     return templateClass.getPackage().toString().contains("java.util");
+  }
+
+  public static boolean isJavaUtil(ASTNode node) {
+    return node.toString().contains("java.util");
   }
 
   public static void setName(TypeDeclaration mDecl, SimpleName name) {

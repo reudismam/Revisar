@@ -7,15 +7,19 @@ import java.io.IOException;
 import java.util.List;
 
 public class MethodDeclarationUtils {
+
+  private MethodDeclarationUtils() {
+  }
+
   /**
-   * Sets the return type for Refaster Rules.
+   * Sets method declaration return type.
    *
    * @param type
    *          type to be returned
    * @param cUnit
-   *          Refaster template rule
+   *          Compilation unit
    * @param method
-   *          method that receives the return type
+   *          method to add return type
    */
   public static MethodDeclaration setReturnType(Type type, final CompilationUnit cUnit,
                                                 MethodDeclaration method) {
@@ -56,9 +60,13 @@ public class MethodDeclarationUtils {
 
   public static Type addMethodBasedOnMethodInvocation(CompilationUnit unit, Type type, MethodInvocation invocation, CompilationUnit templateClass) throws IOException {
     Type classType = TypeUtils.extractType(invocation.getExpression(), invocation.getAST());
-    boolean isStatic = classType.toString().equals("void") && !(invocation.getExpression() instanceof MethodInvocation);
+    boolean isStatic = isStatic(invocation, classType);
     List<ASTNode> arguments = (List<ASTNode>) invocation.arguments();
     return MethodInvocationUtils.processMethodInvocation(unit, invocation, templateClass, invocation.getName(), type, arguments, isStatic, false);
+  }
+
+  private static boolean isStatic(MethodInvocation invocation, Type classType) {
+    return classType.toString().equals("void") && !(invocation.getExpression() instanceof MethodInvocation);
   }
 
   public static MethodDeclaration createMethod(CompilationUnit templateClass,

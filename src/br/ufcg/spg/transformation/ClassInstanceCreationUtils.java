@@ -8,6 +8,9 @@ import java.util.List;
 
 public class ClassInstanceCreationUtils {
 
+  private ClassInstanceCreationUtils() {
+  }
+
   public static void processInstanceCreation(CompilationUnit unit, CompilationUnit templateClass,
                                              Expression initializer, Type statementType) throws IOException {
     ClassInstanceCreation instanceCreation = (ClassInstanceCreation) initializer;

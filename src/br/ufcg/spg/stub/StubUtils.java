@@ -104,7 +104,7 @@ public class StubUtils {
 
   public static void processClassCreation(CompilationUnit unit, Type type, Expression initializer) throws IOException {
     processTypeParameter(unit, type);
-    CompilationUnit templateClass = ClassUtils.getTemplateClassBasedOnInvocation(unit, initializer);
+    CompilationUnit templateClass = ClassUtils.getTemplateClassFromExpression(unit, initializer);
     if (templateClass == null) {
       return;
     }
@@ -134,21 +134,25 @@ public class StubUtils {
 
   private static void processImportStatement(CompilationUnit unit) throws IOException {
     for (ASTNode importStm : getNodes(unit, ASTNode.IMPORT_DECLARATION)) {
-      if (!importStm.toString().contains("java.util")){
-        String typeStr = importStm.toString().substring(7, importStm.toString().length() - 2);
+      if (!ClassUtils.isJavaUtil(importStm)){
+        String typeStr = getClassNameFromImport(importStm);
         String pkg = "temp/" + typeStr.replaceAll("\\.", "/") + ".java";
         if (!(new File(pkg).exists())) {
           Tuple<String, String> inner = InnerClassUtils.getInnerClassImport(importStm);
           if (inner == null) {
             String className = NameUtils.extractSimpleName(typeStr);
             Type type = ImportUtils.getTypeFromImport(className, importStm.getAST(), importStm);
-            ClassUtils.getTemplateClassBasedOnInvocation(unit, type);
+            ClassUtils.getTemplateClassFromExpression(unit, type);
           } else {
             processInnerClass(unit, inner, importStm);
           }
         }
       }
     }
+  }
+
+  private static String getClassNameFromImport(ASTNode importStm) {
+    return importStm.toString().substring(7, importStm.toString().length() - 2);
   }
 
   public static void processInnerClass(CompilationUnit unit, Tuple<String, String> inner, String pkgStr) throws IOException {
@@ -191,7 +195,7 @@ public class StubUtils {
       if (invocation.getExpression() == null) {
         return type;
       }
-      CompilationUnit templateClass = ClassUtils.getTemplateClassBasedOnInvocation(unit, invocation.getExpression());
+      CompilationUnit templateClass = ClassUtils.getTemplateClassFromExpression(unit, invocation.getExpression());
       if (templateClass == null) {
         return type;
       }
@@ -201,7 +205,7 @@ public class StubUtils {
         Type t2 = ImportUtils.getTypeBasedOnImports(unit, tuple.getItem2());
         Type actualT1 = ImportUtils.getTypeNotOnImport(unit.getAST(), t1);
         Type actualT2 = ImportUtils.getTypeNotOnImport(unit.getAST(), t2);
-        if (!actualT1.toString().contains("java.lang")) {
+        if (!ClassUtils.isJavaLang(actualT1)) {
           CompilationUnit classT1 = ClassUtils.getTemplateClass(unit, actualT1);
           CompilationUnit classT2 = ClassUtils.getTemplateClass(unit, actualT2);
           TypeDeclaration typeDeclaration1 = ClassUtils.getTypeDeclaration(classT1);

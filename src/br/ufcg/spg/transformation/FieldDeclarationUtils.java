@@ -6,6 +6,10 @@ import org.eclipse.jdt.core.dom.*;
 import java.io.IOException;
 
 public class FieldDeclarationUtils {
+
+  private FieldDeclarationUtils() {
+  }
+
   public static void addModifier(FieldDeclaration fDecl, Modifier.ModifierKeyword modifier) {
     AST ast = fDecl.getAST();
     fDecl.modifiers().add(ast.newModifier(modifier));

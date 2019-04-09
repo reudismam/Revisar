@@ -96,30 +96,13 @@ public class TypeUtils {
     if (typeBinding.isPrimitive()) {
       return ast.newPrimitiveType(PrimitiveType.toCode(typeBinding.getName()));
     }
-    if (typeBinding.isTypeVariable()) {
+    if (typeBinding.isTypeVariable() || typeBinding.isCapture()) {
       final WildcardType capType = ast.newWildcardType();
       final ITypeBinding bound = typeBinding.getBound();
       if (bound != null) {
         capType.setBound(typeFromBinding(ast, bound), typeBinding.isUpperbound());
       }
       return capType;
-    }
-    if (typeBinding.isCapture()) {
-      final ITypeBinding wildCard = typeBinding.getWildcard();
-      final WildcardType capType = ast.newWildcardType();
-      final ITypeBinding bound = wildCard.getBound();
-      if (bound != null) {
-        capType.setBound(typeFromBinding(ast, bound), wildCard.isUpperbound());
-      }
-      return capType;
-    }
-    if (typeBinding.isTypeVariable()) {
-      final WildcardType type = ast.newWildcardType();
-      final ITypeBinding bound = typeBinding.getBound();
-      if (bound != null) {
-        type.setBound(typeFromBinding(ast, bound), typeBinding.isUpperbound());
-      }
-      return type;
     }
     if (typeBinding.isArray()) {
       final Type elType = typeFromBinding(ast, typeBinding.getElementType());
