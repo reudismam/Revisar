@@ -77,3 +77,15 @@ local.properties
 .cache-main
 .scala_dependencies
 .worksheet
+
+#Intellij sonarlint
+.idea/sonarlint/*
+
+#Temp files
+temp/*
+
+#Marven
+target/*
+
+#Auto generated files
+clustering.txt

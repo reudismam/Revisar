@@ -4,7 +4,7 @@ import br.ufcg.spg.bean.EditFile;
 import br.ufcg.spg.bean.Tuple;
 import br.ufcg.spg.cli.CLI;
 import br.ufcg.spg.cli.CheckStyleReport;
-import br.ufcg.spg.cli.CheckStyleUtils;
+import br.ufcg.spg.cli.PMDUtils;
 import br.ufcg.spg.cluster.Cluster;
 import br.ufcg.spg.cluster.ClusterUnifier;
 import br.ufcg.spg.cluster.ClusterUtils;
@@ -106,13 +106,15 @@ public class TestSuite {
     } catch (Exception e) {
       e.printStackTrace();
     }
-    List<String> lines =  CLI.runCommandLine("javac -classpath . defaultpkg/temp.java");
+    List<String> lines =  CLI.runCommandLine("javac -classpath . -bootclasspath \"C://Program Files/Java/jre1.8.0_202/lib/rt.jar\" defaultpkg/temp.java");
+    if (!lines.isEmpty()) {
+      throw new RuntimeException();
+    }
     CLI.runCommandLine("jar cf myJar.jar defaultpkg/temp.class");
     for (String line : lines) {
       System.out.println(line);
     }
   }
-
 
   @Test
   public void translateMachineLearningClustersMoreProjects() {
@@ -439,7 +441,7 @@ public class TestSuite {
 
   @Test
   public void reports() {
-    List<CheckStyleReport> reports = CheckStyleUtils.getCheckyStyleReports("temp1.java");
+    List<CheckStyleReport> reports = PMDUtils.getPMDReports("temp1.java");
     for (CheckStyleReport report : reports) {
       System.out.println(report);
     }

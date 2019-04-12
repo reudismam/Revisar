@@ -1,15 +1,0 @@
-
-[
-squid:S106"9Replace this use of System.out or System.err by a logger.(§±¨¾üÿÿÿÿ8úð€ã˜-
-[
-squid:S106"9Replace this use of System.out or System.err by a logger.(ªÓ¼áþÿÿÿÿ8úð€ã˜-
-nsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(œ‡‘ˆùÿÿÿÿ8½­¥ä˜-
-Xsquid:S1118":Add a private constructor to hide the implicit public one.(·éŸË8ÍŒˆé˜-
-Fsquid:S1148#"#Use a logger to log this exception.(€ÉÔ…ýÿÿÿÿ8úð€ã˜-
-[
-squid:S106"9Replace this use of System.out or System.err by a logger.(šøúÖùÿÿÿÿ8úð€ã˜-
-[
-squid:S106"9Replace this use of System.out or System.err by a logger.(ªÓ¼áþÿÿÿÿ8úð€ã˜-
-[
-squid:S106"9Replace this use of System.out or System.err by a logger.(Ÿ¦Üùüÿÿÿÿ8úð€ã˜-
-esquid:S00112 "FDefine and throw a dedicated exception instead of using a generic one.(û©¥°8úð€ã˜-

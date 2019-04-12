@@ -1,8 +1,0 @@
-
-»%squid:RedundantThrowsDeclarationCheckS"„Remove the declaration of thrown exception 'org.eclipse.jface.text.BadLocationException', as it cannot be thrown from method's body.(öÂÞ°ýÿÿÿÿ
-¢%squid:RedundantThrowsDeclarationCheckS"lRemove the declaration of thrown exception 'java.io.IOException', as it cannot be thrown from method's body.(öÂÞ°ýÿÿÿÿ
-»%squid:RedundantThrowsDeclarationCheckS"„Remove the declaration of thrown exception 'org.eclipse.jgit.api.errors.GitAPIException', as it cannot be thrown from method's body.(öÂÞ°ýÿÿÿÿ
-csquid:UselessImportCheck":Remove this unused import 'br.ufcg.spg.cli.PatternStatus'.(×«‰øÿÿÿÿÿ
-]squid:UselessImportCheck"9Remove this unused import 'br.ufcg.spg.cli.PatternUtils'.(ùŸëÈ
-?squid:S1148("#Use a logger to log this exception.(€ÉÔ…ýÿÿÿÿ
-@squid:S1148¢"#Use a logger to log this exception.(€ÉÔ…ýÿÿÿÿ
