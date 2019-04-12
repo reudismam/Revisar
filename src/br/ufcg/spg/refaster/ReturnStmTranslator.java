@@ -64,7 +64,7 @@ public class ReturnStmTranslator {
    * Create a return statement configuration.
    * @param target target node
    * @param targetList nodes in target.
-   * @param m method in Refaster rul
+   * @param m method in Refaster rule
    * @param config configuration
    * @param nodes list of nodes.
    */
@@ -107,8 +107,7 @@ public class ReturnStmTranslator {
     for (ASTNode node : template.getHoles()) {
       varNames.add(node.toString());
     }
-    method = ParameterUtils.addParameter(types, varNames,
-        rconf.getRefasterRule(), method);
+    method = ParameterUtils.addParameter(types, varNames, method);
     method = body.configReturnType(returnType, rconf.getRefasterRule(), method);
     return method;
   }

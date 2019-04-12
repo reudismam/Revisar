@@ -22,7 +22,9 @@ public class TemplateValidatorStrategy implements ITransformationValidatorStrate
       ch = new MappingTemplateValidator(srcAu, dstAu, srcEdits);
       return ch.isValidUnification();
     } catch (final Exception e) {
-      throw new RuntimeException(e);
+      e.printStackTrace();
+      return false;
+      //throw new RuntimeException(e);
     }
   }
 }

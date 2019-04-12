@@ -86,7 +86,7 @@ public class MethodDeclarationUtils {
     if (isStatic) {
       addModifier(mDecl, Modifier.ModifierKeyword.STATIC_KEYWORD);
     }
-    mDecl = ParameterUtils.addParameter(argTypes, varNames, templateClass, mDecl);
+    mDecl = ParameterUtils.addParameter(argTypes, varNames, mDecl);
     classDecl.bodyDeclarations().add(mDecl);
     return mDecl;
   }

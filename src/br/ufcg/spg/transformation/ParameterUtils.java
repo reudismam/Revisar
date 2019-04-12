@@ -10,7 +10,7 @@ import br.ufcg.spg.type.TypeUtils;
 import org.eclipse.jdt.core.dom.*;
 
 /**
- * Configure parameters.
+ * Configures parameters.
  */
 public final class ParameterUtils {
   
@@ -20,32 +20,32 @@ public final class ParameterUtils {
   /**
    * Adds parameter to method.
    * @param types types to be analyzed
-   * @param cuUnit compilation unit
    * @param method method 
    * @return method with parameters added.
    */
   @SuppressWarnings("unchecked")
-  public static MethodDeclaration addParameter(final List<Type> types, List<String> varNames,
-      final CompilationUnit cuUnit, MethodDeclaration method) {
-    final AST ast = cuUnit.getAST();
-    final List<ASTNode> parameters = new ArrayList<>();
+  public static MethodDeclaration addParameter(final List<Type> types, List<String> varNames, MethodDeclaration method) {
+    final AST ast = method.getAST();
+    method.parameters().clear();
     for (int i = 0; i < types.size(); i++) {
-      // Create a new variable declaration to be added as parameter.
-      final SingleVariableDeclaration singleVariableDeclaration = 
-          ast.newSingleVariableDeclaration();
-      final SimpleName name = ast.newSimpleName(varNames.get(i));
-      singleVariableDeclaration.setName(name);
       Type type = types.get(i);
-      type = (Type) ASTNode.copySubtree(ast, type);
-      singleVariableDeclaration.setType(type);
-      singleVariableDeclaration.setVarargs(false);
-      final ASTNode singleVariableDeclarationCopy = ASTNode.copySubtree(
-          ast, singleVariableDeclaration);
-      parameters.add(singleVariableDeclarationCopy);
+      String name = varNames.get(i);
+      SingleVariableDeclaration singleVariableDeclaration = getSingleVariableDeclaration(type, name, ast);
+      singleVariableDeclaration = (SingleVariableDeclaration) ASTNode.copySubtree(ast, singleVariableDeclaration);
+      method.parameters().add(singleVariableDeclaration);
     }
-    method = (MethodDeclaration) ASTNode.copySubtree(ast, method);
-    method.parameters().addAll(parameters);
     return method;
+  }
+
+  private static SingleVariableDeclaration getSingleVariableDeclaration(Type type, String varName, AST ast) {
+    final SingleVariableDeclaration singleVariableDeclaration =
+        ast.newSingleVariableDeclaration();
+    final SimpleName name = ast.newSimpleName(varName);
+    singleVariableDeclaration.setName(name);
+    type = (Type) ASTNode.copySubtree(ast, type);
+    singleVariableDeclaration.setType(type);
+    singleVariableDeclaration.setVarargs(false);
+    return singleVariableDeclaration;
   }
 
   public static MethodDeclaration findMethod(CompilationUnit templateClass, List<Type> argTypes, String name) {
@@ -80,65 +80,7 @@ public final class ParameterUtils {
       } else {
         argType = TypeUtils.extractType(arg, arg.getAST());
       }
-      if (arg instanceof MethodInvocation) {
-        MethodInvocation methodInvocationArg = (MethodInvocation) arg;
-        try {
-          if (((MethodInvocation) arg).getExpression() instanceof QualifiedName) {
-            Type classType = TypeUtils.getTypeFromQualifiedName(unit, methodInvocationArg.getExpression());
-            ClassUtils.getTemplateClass(unit, classType);
-          }
-          if (argType.toString().equals("void")) {
-            argType = getArgType(unit, invocation);
-          }
-          argType = StubUtils.processMethodInvocation(unit, argType, arg);
-          if (!methodInvocationArg.getExpression().toString().contains(".")) {
-            Type newType = ImportUtils.getTypeBasedOnImports(unit, methodInvocationArg.getExpression().toString());
-            List<Type> types = MethodInvocationUtils.returnType(unit, newType, methodInvocationArg.getName().toString());
-            if (argType != null && argType.toString().contains("syntethic") && !types.isEmpty()) {
-              argType = types.get(0);
-            }
-          }
-        } catch (IOException e) {
-          e.printStackTrace();
-        }
-      }
-      else if (arg instanceof ClassInstanceCreation) {
-        ClassInstanceCreation initializer = (ClassInstanceCreation) arg;
-        Type type = TypeUtils.extractType(arg, arg.getAST());
-        argType = type;
-        ExpressionUtils.processExpressionBase(unit, type, initializer);
-      }
-      else if (arg instanceof QualifiedName) {
-        QualifiedName qualifiedName = (QualifiedName) arg;
-        System.out.println(qualifiedName.getName() + " : " + qualifiedName.getQualifier());
-        ASTNode imp = ImportUtils.findImport(unit, qualifiedName.getQualifier().toString());
-        Tuple<String, String> inner = InnerClassUtils.getInnerClassImport(qualifiedName.getQualifier().toString());
-        String fullName;
-        if (imp != null) {
-           fullName = imp.toString().substring(7, imp.toString().indexOf(inner.getItem1())-1);
-        }
-        else {
-          String qualifiedNameStr = "defaultpkg." + qualifiedName.getQualifier().toString();
-          fullName = qualifiedNameStr.substring(0, qualifiedNameStr.indexOf(inner.getItem1().trim())-1);
-        }
-        StubUtils.processInnerClass(unit, inner, fullName);
-        Type type = SyntheticClassUtils.getSyntheticType(unit.getAST());
-        FieldDeclaration fieldDeclaration = FieldDeclarationUtils.createFieldDeclaration(unit, qualifiedName.getName(), type);
-        FieldDeclarationUtils.addModifier(fieldDeclaration, Modifier.ModifierKeyword.STATIC_KEYWORD);
-        Type typeOuter = TypeUtils.createType(unit.getAST(), fullName, inner.getItem1());
-        Type typeInner = TypeUtils.createType(unit.getAST(), fullName, inner.getItem2());
-        CompilationUnit outer = ClassUtils.getTemplateClass(unit, typeOuter);
-        CompilationUnit innerClass = ClassUtils.getTemplateClass(unit, typeInner);
-        TypeDeclaration outerTypeDeclaration = ClassUtils.getTypeDeclaration(outer);
-        TypeDeclaration declaration = InnerClassUtils.getTypeDeclarationIfNeeded(inner.getItem2(), outerTypeDeclaration, innerClass);
-        fieldDeclaration = (FieldDeclaration) ASTNode.copySubtree(declaration.getAST(), fieldDeclaration);
-        declaration.bodyDeclarations().add(fieldDeclaration);
-        ClassUtils.addModifier(declaration, Modifier.ModifierKeyword.STATIC_KEYWORD);
-        argType = type;
-      }
-      else if (arg instanceof CastExpression) {
-        throw new RuntimeException();
-      }
+      argType = processArgument(unit, invocation, arg, argType);
       //Needed to resolve a bug in eclipse JDT.
       if (argType.toString().contains(".") && !argType.toString().contains("syntethic")) {
         String typeName = NameUtils.extractSimpleName(argType);
@@ -149,11 +91,87 @@ public final class ParameterUtils {
     return argTypes;
   }
 
+  private static Type processArgument(CompilationUnit unit, MethodInvocation invocation, ASTNode arg, Type argType) throws IOException {
+    if (arg instanceof MethodInvocation) {
+      argType = processMethodInvocationParameter(unit, invocation, arg, argType);
+    }
+    else if (arg instanceof ClassInstanceCreation) {
+      argType = processClassInstanceParameter(unit, arg);
+    }
+    else if (arg instanceof QualifiedName) {
+      argType = processQualifiedNameParameter(unit, (QualifiedName) arg);
+    }
+    else if (arg instanceof CastExpression) {
+      throw new RuntimeException();
+    }
+    return argType;
+  }
+
+  private static Type processQualifiedNameParameter(CompilationUnit unit, QualifiedName arg) throws IOException {
+    Type argType;
+    QualifiedName qualifiedName = arg;
+    ASTNode imp = ImportUtils.findImport(unit, qualifiedName.getQualifier().toString());
+    Tuple<String, String> inner = InnerClassUtils.getInnerClassImport(qualifiedName.getQualifier().toString());
+    String fullName;
+    if (imp != null) {
+       fullName = imp.toString().substring(7, imp.toString().indexOf(inner.getItem1())-1);
+    }
+    else {
+      String qualifiedNameStr = "defaultpkg." + qualifiedName.getQualifier().toString();
+      fullName = qualifiedNameStr.substring(0, qualifiedNameStr.indexOf(inner.getItem1().trim())-1);
+    }
+    StubUtils.processInnerClass(unit, inner, fullName);
+    Type type = SyntheticClassUtils.getSyntheticType(unit.getAST());
+    FieldDeclaration fieldDeclaration = FieldDeclarationUtils.createFieldDeclaration(unit, qualifiedName.getName(), type);
+    FieldDeclarationUtils.addModifier(fieldDeclaration, Modifier.ModifierKeyword.STATIC_KEYWORD);
+    Type typeOuter = TypeUtils.createType(unit.getAST(), fullName, inner.getItem1());
+    Type typeInner = TypeUtils.createType(unit.getAST(), fullName, inner.getItem2());
+    CompilationUnit outer = ClassUtils.getTemplateClass(unit, typeOuter);
+    CompilationUnit innerClass = ClassUtils.getTemplateClass(unit, typeInner);
+    TypeDeclaration outerTypeDeclaration = ClassUtils.getTypeDeclaration(outer);
+    TypeDeclaration declaration = InnerClassUtils.getTypeDeclarationIfNeeded(inner.getItem2(), outerTypeDeclaration, innerClass);
+    fieldDeclaration = (FieldDeclaration) ASTNode.copySubtree(declaration.getAST(), fieldDeclaration);
+    declaration.bodyDeclarations().add(fieldDeclaration);
+    ClassUtils.addModifier(declaration, Modifier.ModifierKeyword.STATIC_KEYWORD);
+    argType = type;
+    return argType;
+  }
+
+  private static Type processClassInstanceParameter(CompilationUnit unit, ASTNode arg) throws IOException {
+    ClassInstanceCreation initializer = (ClassInstanceCreation) arg;
+    Type argType = TypeUtils.extractTypeGlobalAnalysis(unit, arg);
+    ExpressionUtils.processExpressionBase(unit, argType, initializer);
+    return argType;
+  }
+
+  private static Type processMethodInvocationParameter(CompilationUnit unit, MethodInvocation invocation, ASTNode arg, Type argType) {
+    MethodInvocation methodInvocationArg = (MethodInvocation) arg;
+    try {
+      if (((MethodInvocation) arg).getExpression() instanceof QualifiedName) {
+        Type classType = TypeUtils.getTypeFromQualifiedName(unit, methodInvocationArg.getExpression());
+        ClassUtils.getTemplateClass(unit, classType);
+      }
+      if (argType.toString().equals("void")) {
+        argType = getArgType(unit, invocation);
+      }
+      argType = StubUtils.processMethodInvocation(unit, argType, arg);
+      if (!methodInvocationArg.getExpression().toString().contains(".")) {
+        Type newType = ImportUtils.getTypeBasedOnImports(unit, methodInvocationArg.getExpression().toString());
+        List<Type> types = MethodInvocationUtils.returnType(unit, newType, methodInvocationArg.getName().toString());
+        if (argType != null && argType.toString().contains("syntethic") && !types.isEmpty()) {
+          argType = types.get(0);
+        }
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return argType;
+  }
+
   public static List<String> getVarNames(List<ASTNode> arguments) {
     List<String> varNames = new ArrayList<>();
-    int i = 0;
-    for(ASTNode arg : arguments) {
-      varNames.add("v_" + i++);
+    for(int i = 0; i < arguments.size(); i++) {
+      varNames.add("v_" + i);
     }
     return varNames;
   }

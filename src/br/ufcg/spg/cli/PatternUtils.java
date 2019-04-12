@@ -1,10 +1,7 @@
 package br.ufcg.spg.cli;
 
-import br.ufcg.spg.bean.Tuple;
 import br.ufcg.spg.cluster.Cluster;
-import br.ufcg.spg.compile.CompilerUtils;
 import br.ufcg.spg.edit.Edit;
-import org.eclipse.jdt.core.dom.CompilationUnit;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -27,8 +24,8 @@ public class PatternUtils {
    * @return true if edit is new
    */
   private static PatternStatus getPatternStatus(Edit srcEdit) throws IOException {
-    Tuple<String, String> tu = CompilerUtils.getBeforeAfterFile(srcEdit, srcEdit.getDst());
     Map<Integer, List<CheckStyleReport>> reports = CheckStyleUtils.getCheckyStyleReportsByLine("temp1.java");
+    //Map<Integer, List<FindBug>>
     int offset = srcEdit.getStartPos();
     try (LineNumberReader r = new LineNumberReader(new FileReader("temp1.java"))) {
       int count = 0;
@@ -44,7 +41,6 @@ public class PatternUtils {
       }
 
     }
-
     return PatternStatus.NEW;
   }
 }
