@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="27c44893-f235-4200-b6a1-3330860caeda" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/bin/" />
@@ -36,8 +37,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="21" column="21" selection-start-line="21" selection-start-column="21" selection-end-line="21" selection-end-column="21" />
+            <state relative-caret-position="374">
+              <caret line="28" selection-start-line="28" selection-end-line="28" />
             </state>
           </provider>
         </entry>
@@ -341,7 +342,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1555246987279" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1555247653223" />
     <property name="extract.method.default.visibility" value="private" />
     <property name="last_directory_selection" value="$PROJECT_DIR$/src" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
@@ -520,12 +521,6 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="TestSuite_reports - 2019.04.13 at 18h 47m 11s.xml">
-      <configuration name="TestSuite.reports" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="TestSuite_reports - 2019.04.13 at 18h 55m 45s.xml">
-      <configuration name="TestSuite.reports" configurationId="JUnit" />
-    </history-entry>
     <history-entry file="TestSuite_reports - 2019.04.13 at 19h 23m 11s.xml">
       <configuration name="TestSuite.reports" configurationId="JUnit" />
     </history-entry>
@@ -550,9 +545,15 @@
     <history-entry file="TestSuite_translateMachineLearningClustersMoreProjects - 2019.04.14 at 09h 59m 50s.xml">
       <configuration name="TestSuite.translateMachineLearningClustersMoreProjects" configurationId="JUnit" />
     </history-entry>
+    <history-entry file="TestSuite_translateMachineLearningClustersMoreProjects - 2019.04.14 at 10h 03m 52s.xml">
+      <configuration name="TestSuite.translateMachineLearningClustersMoreProjects" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestSuite_translateMachineLearningClustersMoreProjects - 2019.04.14 at 10h 08m 55s.xml">
+      <configuration name="TestSuite.translateMachineLearningClustersMoreProjects" configurationId="JUnit" />
+    </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="539584000" />
+    <option name="totallyTimeSpent" value="540224000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -1038,8 +1039,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="21" column="21" selection-start-line="21" selection-start-column="21" selection-end-line="21" selection-end-column="21" />
+        <state relative-caret-position="374">
+          <caret line="28" selection-start-line="28" selection-end-line="28" />
         </state>
       </provider>
     </entry>
@@ -1119,6 +1120,7 @@
       </state>
       <state key="ProjectLibrariesConfigurable.UI">
         <settings>
+          <last-edited>Maven: antlr:antlr:2.7.7</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>

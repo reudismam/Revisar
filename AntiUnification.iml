@@ -1006,60 +1006,6 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="commons-math3-3.6.1-javadoc.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/commons-math3-3.6.1/commons-math3-3.6.1-javadoc.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="commons-math3-3.6.1-sources.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/commons-math3-3.6.1/commons-math3-3.6.1-sources.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="commons-math3-3.6.1-test-sources.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/commons-math3-3.6.1/commons-math3-3.6.1-test-sources.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="commons-math3-3.6.1-tests.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/commons-math3-3.6.1/commons-math3-3.6.1-tests.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="commons-math3-3.6.1-tools.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/commons-math3-3.6.1/commons-math3-3.6.1-tools.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="commons-math3-3.6.1.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/commons-math3-3.6.1/commons-math3-3.6.1.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
       <library name="postgresql-42.1.4.jar">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/lib/postgres/postgresql-42.1.4.jar!/" />
@@ -1242,6 +1188,7 @@
     <orderEntry type="library" name="Maven: org.eclipse.persistence:eclipselink:2.5.2-M1" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.persistence:javax.persistence:2.1.0" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.persistence:commonj.sdo:2.1.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-math3:3.6.1" level="project" />
     <orderEntry type="library" name="Maven: org.hibernate:hibernate-entitymanager:5.0.0.Final" level="project" />
     <orderEntry type="library" name="Maven: org.jboss.logging:jboss-logging:3.3.0.Final" level="project" />
     <orderEntry type="library" name="Maven: org.hibernate:hibernate-core:5.0.0.Final" level="project" />
