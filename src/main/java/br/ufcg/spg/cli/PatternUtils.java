@@ -1,5 +1,9 @@
 package br.ufcg.spg.cli;
 
+import br.ufcg.spg.checker.CheckerReport;
+import br.ufcg.spg.checker.CodeChecker;
+import br.ufcg.spg.checker.CompositeCodeChecker;
+import br.ufcg.spg.checker.PMDCodeChecker;
 import br.ufcg.spg.cluster.Cluster;
 import br.ufcg.spg.edit.Edit;
 
@@ -24,7 +28,8 @@ public class PatternUtils {
    * @return true if edit is new
    */
   private static PatternStatus getPatternStatus(Edit srcEdit) throws IOException {
-    Map<Integer, List<CheckStyleReport>> reports = CheckStyleUtils.getCheckyStyleReportsByLine("temp1.java");
+    CodeChecker checker = new CompositeCodeChecker();
+    Map<Integer, List<CheckerReport>> reports = checker.getCheckerReportsByLine("temp1.java");
     //Map<Integer, List<FindBug>>
     int offset = srcEdit.getStartPos();
     try (LineNumberReader r = new LineNumberReader(new FileReader("temp1.java"))) {

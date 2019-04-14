@@ -2,268 +2,31 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="27c44893-f235-4200-b6a1-3330860caeda" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/0/d/0dc0192d9a49b228e0aead1944accb30a2aa749d" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/0/e/0e20a659ed8cd649928dcb18d782ce54e88d0b44" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/1/0/10d4d0b3001c6ec48032e6690fa17bb3e2c863ae" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/1/9/1969547fbbf7795d20753aac35848a134055ea67" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/2/6/26a451f9b39f1ecefb875868d745700512e9b58a" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/2/e/2e42e4f7b8e07f8dda1962bc2bd2536152b903fa" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/3/9/39cbe314e98232e6b8c2c679dabd2da1c552f59f" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/4/5/45c4dc1161d4818ff5959c39a82d82202afc8596" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/4/8/48a37b4f6bc9df11ffbb74705a6e70aef65cae30" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/5/c/5c050120c3f3cda41a305792b29970cf80245b5a" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/5/c/5c050120c3f3cda41a305792b29970cf80245b5a" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/5/f/5f180a326ffe08635e897a9be75c007ac6b342c9" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/8/3/8395bf719ee210b96c59d09a951092af70118e77" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/a/6/a6ea5418eaf96cca2a0fad7bdf8b172cfca1ef29" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/b/2/b209cc42cac760f5c00b16bd1731300c25c60a59" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/b/4/b42be9fb8bbfee9ed9fd2752cc86e33e4014db26" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/b/5/b51a5f71ada226ec7ef05ef96d9d4c4508d57f1b" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/b/7/b7895e81670b57e74c2a4590b0c00b6d3de984c8" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/b/d/bd1998eafcd606f8aafffc1d277f128eb0fc451f" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/c/d/cd0fe1704cd9e6931e1e73a28b06899f1d9e9c22" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/d/2/d24b503b7d9dc94de49ae05bd1a5daa8c098e36e" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/e/5/e5a6e2d4414e3cb966ff03556b0c0a821701ceb0" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/e/7/e7424a6544dcb78c1d4d69ce45b1b8bbe48ba8f5" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/e/f/ef90e64098c759e84179ce8d0f0d6fcad4b12250" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/f/4/f43726ca8e472bc2477af7f3809b946fd647bd58" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__antlr_antlr_2_7_7.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__dom4j_dom4j_1_6_1.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_geronimo_specs_geronimo_jta_1_1_spec_1_1_1.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_hibernate_common_hibernate_commons_annotations_5_0_0_Final.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_hibernate_hibernate_core_5_0_0_Final.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_hibernate_hibernate_entitymanager_5_0_0_Final.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_hibernate_javax_persistence_hibernate_jpa_2_1_api_1_0_0_Final.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_javassist_javassist_3_18_1_GA.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_jboss_jandex_1_2_2_Final.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_jboss_logging_jboss_logging_3_3_0_Final.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__xml_apis_xml_apis_1_0_b2.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/br/ufcg/spg/checker/CheckStyleCodeChecker.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/br/ufcg/spg/checker/CompositeCodeChecker.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/br/ufcg/spg/checker/PMDCodeChecker.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/br/ufcg/spg/checker/SonarClientUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_googlecode_json_simple_json_simple_1_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_codehaus_sonar_sonar_ws_client_2_11.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AntiUnification.iml" beforeDir="false" afterPath="$PROJECT_DIR$/AntiUnification.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/clustering.txt" beforeDir="false" afterPath="$PROJECT_DIR$/clustering.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/META-INF/persistence.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/antiunification/AntiUnificationData.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/antiunification/AntiUnifier.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/antiunification/AntiUnifierUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/antiunification/algorithm/AntiUnifierHoleHoau.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/antiunification/algorithm/AntiUnifierHolesArau.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/antiunification/algorithm/AntiUnifierHolesArauc.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/antiunification/algorithm/Hoau.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/antiunification/algorithm/IAntiUnifyAlgoritm.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/antiunification/algorithm/Urau.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/antiunification/algorithm/Urauc.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/antiunification/cost/CostUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/antiunification/dist/AntiUnifierDistanceUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/antiunification/dist/DistUtil.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/antiunification/dist/DistanceCalculator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/antiunification/dist/LeftDistanceCalculator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/antiunification/dist/RightDistanceCalculator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/antiunification/substitution/HoleWithSubstutings.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/bean/CommitFile.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/bean/EditFile.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/bean/Error.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/bean/Template.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/bean/Tuple.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/binding/BindingLocator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/binding/BindingSolver.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/cache/CunitCallable.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/cache/DiffCallable.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/cli/CLI.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/cli/CheckStyleReport.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/cli/CheckStyleUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/cli/PMDUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/cli/PatternStatus.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/cli/PatternUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/cluster/Cluster.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/cluster/ClusterFormatter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/cluster/ClusterUnifier.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/cluster/ClusterUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/comparer/ActionComparer.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/comparer/TreeComparer.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/compile/CompilerUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/compile/EJCCompilationProgress.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/compile/JCompiler.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/component/ConnectedComponentManager.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/component/ConnectionStrategy.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/component/FullConnectedEditNode.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/component/FullConnectedGumTree.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/config/TechniqueConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/constraint/ConstraintFactory.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/constraint/ConstraintUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/constraint/IConstraintRule.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/constraint/rule/Rule1.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/constraint/rule/Rule11.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/constraint/rule/Rule12.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/constraint/rule/Rule13.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/constraint/rule/Rule14.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/constraint/rule/Rule15.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/constraint/rule/Rule16.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/constraint/rule/Rule17.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/constraint/rule/Rule18.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/constraint/rule/Rule19.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/constraint/rule/Rule2.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/constraint/rule/Rule3.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/constraint/rule/Rule4.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/constraint/rule/Rule5.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/constraint/rule/Rule6.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/constraint/rule/Rule7.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/constraint/rule/Rule8.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/constraint/rule/RuleBase.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/constraint/rule/RuleUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/converter/ConverterHelper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/database/ClusterDao.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/database/ConnectionFactory.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/database/DependenceDao.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/database/EditDao.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/database/GenericDao.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/database/TransformationDao.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/dcap/DcapCalculator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/dependence/Dependence.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/dependence/DependenceUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/diff/DiffCalculator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/diff/DiffMapping.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/diff/DiffPath.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/diff/DiffText.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/diff/DiffTreeContext.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/diff/DiffUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/edit/Edit.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/edit/EditScriptGenerator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/edit/EditStorage.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/edit/EditUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/editpair/EditExtractorStrategy.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/editpair/GumTreeDiffStrategy.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/editpair/LineDiffStrategy.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/emerging/EmergingPatternsUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/emerging/SortbyDate.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/equation/EquationUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/excel/PoiExcelWriter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/excel/QuickFix.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/excel/QuickFixManager.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/exp/ExpUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/expression/ExpressionManager.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/filter/FilterManager.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/filter/PatternFilter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/git/CommitUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/git/GitAPIUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/git/GitProject.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/git/GitUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/git/RepositoryStore.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/hash/MD5.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/imports/Import.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/imports/ImportUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/log/TimeLogger.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/lsh/ConvertScriptToVector.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/lsh/ScriptLSHMinHash.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/main/Main.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/main/MainArguments.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/main/command/ExtractConcreteEditsCommand.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/main/command/ICommand.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/mapper/AsciiMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/match/Match.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/matcher/ASTNodeMatcher.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/matcher/AllNodeMatcher.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/matcher/IMatcher.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/matcher/InstanceNodeMatcher.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/matcher/KindNodeMatcher.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/matcher/LargerThanMatcher.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/matcher/LineNodeMatcher.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/matcher/PositionNodeMatcher.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/matcher/PositionRevisarTreeMatcher.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/matcher/PositionTreeMatcher.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/matcher/ValueNodeMatcher.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/matcher/ValueTemplateMatcher.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/matcher/calculator/MatchCalculator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/matcher/calculator/NodeMatchCalculator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/matcher/calculator/RevisarTreeMatchCalculator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/matcher/calculator/TreeMatchCalculator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/ml/clustering/ClusteringTreeUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/ml/clustering/EditScriptUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/ml/clustering/StringTreeConverter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/ml/editoperation/DeleteNode.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/ml/editoperation/EditNode.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/ml/editoperation/InsertNode.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/ml/editoperation/MoveNode.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/ml/editoperation/Script.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/ml/editoperation/UpdateNode.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/ml/metric/Levenshtein.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/ml/metric/ScriptDistanceContextMetric.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/ml/metric/ScriptDistanceMetric.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/ml/metric/ScriptDistanceStringMetric.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/ml/traversal/PostOrderTraversal.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/node/NodeFinder.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/node/NodesExtractor.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/node/util/ASTNodeUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/os/OpSysUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/parser/JParser.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/path/PathUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/project/ProjectAnalyzer.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/project/ProjectInfo.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/project/Version.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/refaster/ConfigBodyFactory.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/refaster/ExpressionBodyConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/refaster/IConfigBody.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/refaster/NoneBodyConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/refaster/RefasterTemp.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/refaster/RefasterTemplate.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/refaster/RefasterTemplates.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/refaster/RefasterTranslator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/refaster/RefasterUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/refaster/ReturnStmTranslator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/refaster/ReturnTypeUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/refaster/SingleVariableDeclarationBodyConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/refaster/StatementBodyConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/refaster/TemplateConstants.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/refaster/TypeBodyConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/refaster/VariableDeclarationFragmentBodyConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/refaster/config/ReturnStatementConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/refaster/config/TransformationConfigObject.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/replacement/Replacement.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/replacement/ReplacementUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/rewrite/RewriterUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/source/SourceUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/string/StringUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/stub/StubUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/technique/Technique.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/technique/TechniqueUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/template/ClassTemplate.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/template/TemplateUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/tfidf/TFIDFCalculator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/transformation/ClassInstanceCreationUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/transformation/ClassRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/transformation/ClassUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/transformation/ExpressionUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/transformation/FieldDeclarationUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/transformation/ImportUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/transformation/InnerClassUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/transformation/MethodDeclarationUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/transformation/MethodInvocationUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/transformation/NameUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/transformation/ParameterUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/transformation/SyntheticClassUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/transformation/Transformation.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/transformation/TransformationUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/tree/BFSWalker.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/tree/ITreeParser.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/tree/RevisarTree.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/tree/RevisarTreeParser.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/tree/RevisarTreeUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/tree/TreeTraversal.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/type/TypeUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/util/PrintUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/validator/ClusterValidator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/validator/RenameChecker.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/validator/RuleCheckerFactory.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/validator/UnmappedDstChecker.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/validator/node/INodeChecker.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/validator/node/IValidationNodeRule.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/validator/node/MatchNodeChecker.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/validator/node/MethodInvocationNodeChecker.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/validator/node/NodeValidator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/validator/node/NodeValidatorStrategy.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/validator/node/RuleNodeChecker.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/validator/template/CompositeTemplateValidator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/validator/template/ITemplateValidator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/validator/template/ITransformationValidatorStrategy.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/validator/template/LabelTemplateValidator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/validator/template/MappingTemplateValidator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/validator/template/MethodInvocationNameValidator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/validator/template/MethodInvocationTemplateValidator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/br/ufcg/spg/validator/template/TemplateValidatorStrategy.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/temp/java/uti/ArrayList.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/temp/java/uti/List.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/temp/myJar.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/br/ufcg/spg/cli/CheckStyleReport.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/br/ufcg/spg/checker/CheckerReport.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/br/ufcg/spg/cli/CheckStyleUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/br/ufcg/spg/checker/CodeChecker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/br/ufcg/spg/cli/PMDUtils.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/br/ufcg/spg/cli/PatternUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/br/ufcg/spg/cli/PatternUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/br/ufcg/spg/refaster/TemplateConstants.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/br/ufcg/spg/refaster/TemplateConstants.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/br/ufcg/spg/analyzer/test/TestSuite.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/br/ufcg/spg/analyzer/test/TestSuite.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/bin/" />
@@ -295,29 +58,29 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/cli/PMDUtils.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="544">
-              <caret line="37" column="27" selection-start-line="37" selection-start-column="27" selection-end-line="37" selection-end-column="27" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="908">
-              <caret line="55" column="21" selection-start-line="55" selection-start-column="21" selection-end-line="55" selection-end-column="21" />
+            <state relative-caret-position="510">
+              <caret line="36" column="20" lean-forward="true" selection-start-line="36" selection-start-column="20" selection-end-line="36" selection-end-column="20" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/exp/ExpUtils.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/checker/CodeChecker.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="646">
-              <caret line="58" column="47" selection-start-line="58" selection-start-column="47" selection-end-line="58" selection-end-column="47" />
+            <state relative-caret-position="17">
+              <caret line="4" column="27" selection-start-line="4" selection-start-column="27" selection-end-line="4" selection-end-column="27" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/checker/CheckStyleCodeChecker.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="17">
+              <caret line="1" selection-start-line="1" selection-end-line="1" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -326,19 +89,29 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/tree/BFSWalker.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/checker/CompositeCodeChecker.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="204">
-              <caret line="17" column="48" selection-start-line="17" selection-start-column="48" selection-end-line="17" selection-end-column="48" />
+            <state relative-caret-position="379">
+              <caret line="28" column="84" selection-start-line="28" selection-start-column="84" selection-end-line="28" selection-end-column="84" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#457#458#0" expanded="true" />
+                <element signature="e#494#495#0" expanded="true" />
+                <element signature="e#509#510#0" expanded="true" />
+                <element signature="e#546#547#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/validator/template/LabelTemplateValidator.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/cli/PatternUtils.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="901">
-              <caret line="66" column="87" selection-start-line="66" selection-start-column="87" selection-end-line="66" selection-end-column="87" />
+            <state relative-caret-position="172">
+              <caret line="30" column="53" selection-start-line="30" selection-start-column="53" selection-end-line="30" selection-end-column="53" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -346,38 +119,51 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/database/ClusterDao.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2125">
-              <caret line="139" column="57" selection-start-line="139" selection-start-column="57" selection-end-line="139" selection-end-column="57" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/editpair/GumTreeDiffStrategy.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="187">
-              <caret line="51" column="46" selection-start-line="51" selection-start-column="46" selection-end-line="51" selection-end-column="46" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/transformation/MethodInvocationUtils.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="15" column="96" selection-start-line="15" selection-start-column="96" selection-end-line="15" selection-end-column="96" />
+            <state relative-caret-position="136">
+              <caret line="20" selection-start-line="20" selection-end-line="20" />
               <folding>
-                <element signature="imports" expanded="true" />
+                <element signature="e#607#608#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/transformation/MethodDeclarationUtils.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/database/ConnectionFactory.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1428">
-              <caret line="88" selection-start-line="88" selection-end-line="88" />
+            <state relative-caret-position="153">
+              <caret line="11" selection-start-line="11" selection-end-line="11" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/resources/META-INF/persistence.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="136">
+              <caret line="8" column="44" selection-start-line="8" selection-start-column="44" selection-end-line="8" selection-end-column="44" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/database/GenericDao.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="189">
+              <caret line="27" selection-start-line="27" selection-end-line="27" />
+              <folding>
+                <element signature="e#634#635#0" expanded="true" />
+                <element signature="e#696#697#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/test/br/ufcg/spg/analyzer/test/TestSuite.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="313">
+              <caret line="91" column="25" selection-start-line="91" selection-start-column="25" selection-end-line="91" selection-end-column="25" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -396,7 +182,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>creating a new</find>
       <find>Creating a new class of sampleP</find>
       <find>Creating a new</find>
       <find>SamplePruner</find>
@@ -426,6 +211,7 @@
       <find>bug</find>
       <find>JDT</find>
       <find>Needed to</find>
+      <find>/T.java</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -434,15 +220,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/br/ufcg/spg/cli/PatternStatus.java" />
-        <option value="$PROJECT_DIR$/src/br/ufcg/spg/excel/QuickFix.java" />
-        <option value="$PROJECT_DIR$/src/br/ufcg/spg/excel/PoiExcelWriter.java" />
-        <option value="$PROJECT_DIR$/src/br/ufcg/spg/cluster/ClusterUtils.java" />
-        <option value="$PROJECT_DIR$/src/br/ufcg/spg/transformation/TransformationUtils.java" />
-        <option value="$PROJECT_DIR$/src/br/ufcg/spg/compile/CompilerUtils.java" />
-        <option value="$PROJECT_DIR$/src/br/ufcg/spg/cluster/ClusterFormatter.java" />
-        <option value="$PROJECT_DIR$/src/br/ufcg/spg/refaster/RefasterConstants.java" />
-        <option value="$PROJECT_DIR$/src/br/ufcg/spg/refaster/TemplateConstants.java" />
         <option value="$PROJECT_DIR$/src/br/ufcg/spg/refaster/RefasterTranslator.java" />
         <option value="$PROJECT_DIR$/src/br/ufcg/spg/refaster/ReturnTypeTranslator.java" />
         <option value="$PROJECT_DIR$/src/br/ufcg/spg/refaster/ReturnTypeUtils.java" />
@@ -482,8 +259,17 @@
         <option value="$PROJECT_DIR$/src/br/ufcg/spg/validator/template/TemplateValidatorStrategy.java" />
         <option value="$PROJECT_DIR$/src/br/ufcg/spg/cli/CheckStyleUtils.java" />
         <option value="$PROJECT_DIR$/src/br/ufcg/spg/cli/CLI.java" />
-        <option value="$PROJECT_DIR$/test/br/ufcg/spg/analyzer/test/TestSuite.java" />
         <option value="$PROJECT_DIR$/src/br/ufcg/spg/cli/PMDUtils.java" />
+        <option value="$PROJECT_DIR$/src/main/java/br/ufcg/spg/cli/SonarClientUtils.java" />
+        <option value="$PROJECT_DIR$/src/main/java/br/ufcg/spg/refaster/TemplateConstants.java" />
+        <option value="$PROJECT_DIR$/src/main/java/br/ufcg/spg/checker/SonarClientUtils.java" />
+        <option value="$PROJECT_DIR$/src/main/java/br/ufcg/spg/checker/CheckStyleCodeChecker.java" />
+        <option value="$PROJECT_DIR$/src/main/java/br/ufcg/spg/checker/PMDUtils.java" />
+        <option value="$PROJECT_DIR$/src/main/java/br/ufcg/spg/cli/CLI.java" />
+        <option value="$PROJECT_DIR$/test/br/ufcg/spg/analyzer/test/TestSuite.java" />
+        <option value="$PROJECT_DIR$/src/main/java/br/ufcg/spg/cli/PatternUtils.java" />
+        <option value="$PROJECT_DIR$/src/main/java/br/ufcg/spg/checker/CodeChecker.java" />
+        <option value="$PROJECT_DIR$/src/main/java/br/ufcg/spg/checker/CompositeCodeChecker.java" />
         <option value="$PROJECT_DIR$/pom.xml" />
       </list>
     </option>
@@ -520,6 +306,64 @@
               <item name="Revisar" type="b2602c69:ProjectViewProjectNode" />
               <item name="Revisar" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="Revisar" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Revisar" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Revisar" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Revisar" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Revisar" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Revisar" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Revisar" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Revisar" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="META-INF" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Revisar" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Revisar" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="resources" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Revisar" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Revisar" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="resources" type="462c0819:PsiDirectoryNode" />
+              <item name="META-INF" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Revisar" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Revisar" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Revisar" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Revisar" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Revisar" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Revisar" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
@@ -529,7 +373,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1555092084494" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1555245100883" />
     <property name="extract.method.default.visibility" value="private" />
     <property name="last_directory_selection" value="$PROJECT_DIR$/src" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
@@ -547,11 +391,22 @@
       <recent name="br.ufcg.spg.refaster.ClassUtils" />
       <recent name="br.ufcg.spg.transformation.ExpressionUtils" />
     </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="br.ufcg.spg" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Usuario\workspace\Revisar\test\br\ufcg\spg\analyzer\test" />
+      <recent name="C:\Users\Usuario\workspace\Revisar\src\test" />
+    </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="br.ufcg.spg.checker" />
       <recent name="br.ufcg.spg.cli" />
       <recent name="br.ufcg.spg.matcher" />
       <recent name="br.ufcg.spg.stub" />
       <recent name="br.ufcg.spg.template" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Usuario\workspace\Revisar\src\main\resources" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -566,13 +421,26 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.TestSuite.reports">
-    <configuration name="CheckStyleUtils" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="br.ufcg.spg.cli.CheckStyleUtils" />
+  <component name="RunManager" selected="JUnit.TestSuite.translateMachineLearningClustersMoreProjects">
+    <configuration name="CodeChecker" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="br.ufcg.spg.checker.CodeChecker" />
       <module name="AntiUnification" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="br.ufcg.spg.cli.*" />
+          <option name="PATTERN" value="br.ufcg.spg.checker.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="SonarClientUtils" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="br.ufcg.spg.checker.SonarClientUtils" />
+      <module name="AntiUnification" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="br.ufcg.spg.checker.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -646,10 +514,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.TestSuite.reports" />
-        <item itemvalue="JUnit.TestSuite.clusterEdits" />
-        <item itemvalue="Application.CheckStyleUtils" />
         <item itemvalue="JUnit.TestSuite.translateMachineLearningClustersMoreProjects" />
+        <item itemvalue="JUnit.TestSuite.reports" />
+        <item itemvalue="Application.SonarClientUtils" />
+        <item itemvalue="JUnit.TestSuite.clusterEdits" />
+        <item itemvalue="Application.CodeChecker" />
       </list>
     </recent_temporary>
   </component>
@@ -678,49 +547,50 @@
       <workItem from="1555002641359" duration="517000" />
       <workItem from="1555004235677" duration="6362000" />
       <workItem from="1555067685928" duration="6253000" />
-      <workItem from="1555091583929" duration="528000" />
+      <workItem from="1555091583929" duration="21121000" />
     </task>
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="TestSuite_clusterEdits - 2019.04.11 at 12h 28m 24s.xml">
-      <configuration name="TestSuite.clusterEdits" configurationId="JUnit" />
+    <history-entry file="TestSuite_testFindBugs - 2019.04.12 at 17h 11m 19s.xml">
+      <configuration name="TestSuite.testFindBugs" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestSuite_reports - 2019.04.11 at 15h 32m 49s.xml">
+    <history-entry file="TestSuite_reports - 2019.04.13 at 18h 47m 11s.xml">
       <configuration name="TestSuite.reports" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestSuite_reports - 2019.04.11 at 15h 34m 02s.xml">
+    <history-entry file="TestSuite_reports - 2019.04.13 at 18h 55m 45s.xml">
       <configuration name="TestSuite.reports" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestSuite_reports - 2019.04.11 at 15h 43m 42s.xml">
+    <history-entry file="TestSuite_reports - 2019.04.13 at 19h 23m 11s.xml">
       <configuration name="TestSuite.reports" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestSuite_reports - 2019.04.11 at 15h 47m 07s.xml">
+    <history-entry file="TestSuite_reports - 2019.04.13 at 19h 29m 43s.xml">
       <configuration name="TestSuite.reports" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestSuite_reports - 2019.04.11 at 15h 48m 52s.xml">
+    <history-entry file="TestSuite_reports - 2019.04.13 at 20h 33m 06s.xml">
       <configuration name="TestSuite.reports" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestSuite_reports - 2019.04.11 at 15h 53m 33s.xml">
-      <configuration name="TestSuite.reports" configurationId="JUnit" />
+    <history-entry file="TestSuite_translateMachineLearningClustersMoreProjects - 2019.04.13 at 20h 42m 48s.xml">
+      <configuration name="TestSuite.translateMachineLearningClustersMoreProjects" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestSuite_reports - 2019.04.11 at 15h 59m 11s.xml">
-      <configuration name="TestSuite.reports" configurationId="JUnit" />
+    <history-entry file="TestSuite_translateMachineLearningClustersMoreProjects - 2019.04.13 at 21h 03m 05s.xml">
+      <configuration name="TestSuite.translateMachineLearningClustersMoreProjects" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestSuite_reports - 2019.04.11 at 16h 00m 50s.xml">
-      <configuration name="TestSuite.reports" configurationId="JUnit" />
+    <history-entry file="TestSuite_translateMachineLearningClustersMoreProjects - 2019.04.13 at 21h 06m 40s.xml">
+      <configuration name="TestSuite.translateMachineLearningClustersMoreProjects" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestSuite_clusterEdits - 2019.04.12 at 02h 40m 32s.xml">
-      <configuration name="TestSuite.clusterEdits" configurationId="JUnit" />
+    <history-entry file="TestSuite_translateMachineLearningClustersMoreProjects - 2019.04.13 at 22h 32m 05s.xml">
+      <configuration name="TestSuite.translateMachineLearningClustersMoreProjects" configurationId="JUnit" />
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="518771000" />
+    <option name="totallyTimeSpent" value="539364000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.29317698" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.29317698" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Designer" order="2" />
       <window_info id="Persistence" order="3" side_tool="true" />
@@ -730,7 +600,7 @@
       <window_info id="Image Layers" order="7" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32936078" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.48560768" visible="true" weight="0.32936078" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.48560768" visible="true" weight="0.32936078" />
       <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.49946696" weight="0.3997833" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -758,98 +628,11 @@
       <window_info anchor="right" id="Bean Validation" order="9" />
       <window_info anchor="right" id="Coverage" order="10" side_tool="true" visible="true" weight="0.32995737" />
     </layout>
-    <layout-to-restore>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.26332623" />
-      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info id="Designer" order="2" />
-      <window_info id="Persistence" order="3" side_tool="true" />
-      <window_info id="Capture Tool" order="4" />
-      <window_info id="UI Designer" order="5" />
-      <window_info id="Favorites" order="6" side_tool="true" />
-      <window_info id="Image Layers" order="7" />
-      <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.48560768" visible="true" weight="0.32936078" />
-      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.49946696" weight="0.3997833" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="FindBugs-IDEA" order="7" />
-      <window_info anchor="bottom" id="Terminal" order="8" />
-      <window_info anchor="bottom" id="Docker" order="9" show_stripe_button="false" />
-      <window_info anchor="bottom" id="CheckStyle" order="10" />
-      <window_info anchor="bottom" id="Event Log" order="11" sideWeight="0.5143923" side_tool="true" visible="true" weight="0.32936078" />
-      <window_info anchor="bottom" id="Messages" order="12" sideWeight="0.48773986" weight="0.32936078" />
-      <window_info anchor="bottom" id="SonarLint" order="13" />
-      <window_info anchor="bottom" id="Java Enterprise" order="14" />
-      <window_info anchor="bottom" id="Spring" order="15" />
-      <window_info anchor="bottom" id="Database Changes" order="16" />
-      <window_info anchor="bottom" id="Version Control" order="17" />
-      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
-      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="right" id="Maven" order="3" />
-      <window_info anchor="right" id="Palette" order="4" />
-      <window_info anchor="right" id="Capture Analysis" order="5" />
-      <window_info anchor="right" id="Database" order="6" />
-      <window_info anchor="right" id="Palette&#9;" order="7" />
-      <window_info anchor="right" id="Theme Preview" order="8" />
-      <window_info anchor="right" id="Bean Validation" order="9" />
-    </layout-to-restore>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/cluster/ClusterUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2516">
-          <caret line="168" column="68" selection-start-line="168" selection-start-column="68" selection-end-line="168" selection-end-column="68" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/cli/PatternStatus.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="7" column="1" selection-start-line="7" selection-start-column="1" selection-end-line="7" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/compile/CompilerUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="32" column="37" selection-start-line="32" selection-start-column="37" selection-end-line="32" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/cluster/ClusterFormatter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="415">
-          <caret line="166" column="19" selection-start-line="166" selection-start-column="19" selection-end-line="166" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/editpair/EditExtractorStrategy.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="32" column="22" selection-start-line="32" selection-start-column="22" selection-end-line="32" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/editpair/LineDiffStrategy.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-34">
-          <caret line="26" column="13" selection-start-line="26" selection-start-column="13" selection-end-line="26" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/equation/EquationUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="215">
-          <caret line="231" column="56" selection-start-line="231" selection-start-column="56" selection-end-line="231" selection-end-column="56" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/binding/BindingSolver.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="425">
@@ -868,13 +651,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="969">
           <caret line="64" column="2" selection-start-line="64" selection-start-column="2" selection-end-line="64" selection-end-column="2" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/refaster/TemplateConstants.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="8" column="67" selection-start-line="8" selection-start-column="42" selection-end-line="8" selection-end-column="67" />
         </state>
       </provider>
     </entry>
@@ -968,20 +744,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/parser/JParser.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="512">
-          <caret line="92" column="27" selection-start-line="92" selection-start-column="27" selection-end-line="92" selection-end-column="27" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#619#620#0" expanded="true" />
-            <element signature="e#644#645#0" expanded="true" />
-            <element signature="e#698#699#0" expanded="true" />
-            <element signature="e#732#733#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/br/ufcg/spg/transformation/MethodTable.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/transformation/ImportUtils.java">
       <provider selected="true" editor-type-id="text-editor">
@@ -1030,16 +792,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/transformation/ClassUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4352">
-          <caret line="270" column="67" selection-start-line="270" selection-start-column="67" selection-end-line="270" selection-end-column="67" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/transformation/SyntheticClassUtils.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="289">
@@ -1067,23 +819,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/stub/StubUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1955">
-          <caret line="130" column="7" selection-start-line="130" selection-start-column="7" selection-end-line="130" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/br/ufcg/spg/analyzer/test/TestSuite.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6681">
-          <caret line="443" column="56" selection-start-line="443" selection-start-column="56" selection-end-line="443" selection-end-column="56" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/validator/template/TemplateValidatorStrategy.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="340">
@@ -1095,36 +830,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2822">
           <caret line="208" column="53" selection-start-line="208" selection-start-column="53" selection-end-line="208" selection-end-column="53" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/cli/CheckStyleUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="578">
-          <caret line="39" column="59" selection-start-line="39" selection-start-column="59" selection-end-line="39" selection-end-column="59" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/cli/PatternUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="26" column="90" selection-start-line="26" selection-start-column="90" selection-end-line="26" selection-end-column="90" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/cli/CLI.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="510">
-          <caret line="34" selection-start-line="34" selection-end-line="34" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1158,13 +863,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/cli/PMDUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="544">
-          <caret line="37" column="27" selection-start-line="37" selection-start-column="27" selection-end-line="37" selection-end-column="27" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/exp/ExpUtils.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="646">
@@ -1186,13 +884,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="901">
           <caret line="66" column="87" selection-start-line="66" selection-start-column="87" selection-end-line="66" selection-end-column="87" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/database/ClusterDao.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2125">
-          <caret line="139" column="57" selection-start-line="139" selection-start-column="57" selection-end-line="139" selection-end-column="57" />
         </state>
       </provider>
     </entry>
@@ -1223,10 +914,163 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/stub/StubUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="21" column="21" selection-start-line="21" selection-start-column="21" selection-end-line="21" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/parser/JParser.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="189">
+          <caret line="129" selection-start-line="129" selection-end-line="129" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/transformation/ClassUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="197">
+          <caret line="241" column="65" selection-start-line="241" selection-start-column="65" selection-end-line="241" selection-end-column="65" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/refaster/TemplateConstants.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="11" selection-start-line="11" selection-end-line="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/checker/SonarClientUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="11" column="13" selection-start-line="11" selection-start-column="13" selection-end-line="11" selection-end-column="13" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/checker/CheckerReport.java">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/cli/CLI.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="221">
+          <caret line="13" column="53" selection-start-line="13" selection-start-column="53" selection-end-line="13" selection-end-column="53" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/checker/PMDCodeChecker.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="21" column="3" selection-start-line="21" selection-start-column="3" selection-end-line="21" selection-end-column="3" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/checker/CheckStyleCodeChecker.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="1" selection-start-line="1" selection-end-line="1" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/cli/PatternUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="172">
+          <caret line="30" column="53" selection-start-line="30" selection-start-column="53" selection-end-line="30" selection-end-column="53" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/checker/CodeChecker.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="4" column="27" selection-start-line="4" selection-start-column="27" selection-end-line="4" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/checker/CompositeCodeChecker.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="379">
+          <caret line="28" column="84" selection-start-line="28" selection-start-column="84" selection-end-line="28" selection-end-column="84" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#457#458#0" expanded="true" />
+            <element signature="e#494#495#0" expanded="true" />
+            <element signature="e#509#510#0" expanded="true" />
+            <element signature="e#546#547#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/database/ConnectionFactory.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="11" selection-start-line="11" selection-end-line="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/META-INF/persistence.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="8" column="44" selection-start-line="8" selection-start-column="44" selection-end-line="8" selection-end-column="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/database/GenericDao.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="189">
+          <caret line="27" selection-start-line="27" selection-end-line="27" />
+          <folding>
+            <element signature="e#634#635#0" expanded="true" />
+            <element signature="e#696#697#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/database/ClusterDao.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="20" selection-start-line="20" selection-end-line="20" />
+          <folding>
+            <element signature="e#607#608#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/br/ufcg/spg/analyzer/test/TestSuite.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="313">
+          <caret line="91" column="25" selection-start-line="91" selection-start-column="25" selection-end-line="91" selection-end-column="25" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="908">
-          <caret line="55" column="21" selection-start-line="55" selection-start-column="21" selection-end-line="55" selection-end-column="21" />
+        <state relative-caret-position="510">
+          <caret line="36" column="20" lean-forward="true" selection-start-line="36" selection-start-column="20" selection-end-line="36" selection-end-column="20" />
         </state>
       </provider>
     </entry>

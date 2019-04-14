@@ -2,9 +2,8 @@ package br.ufcg.spg.analyzer.test;
 
 import br.ufcg.spg.bean.EditFile;
 import br.ufcg.spg.bean.Tuple;
+import br.ufcg.spg.checker.*;
 import br.ufcg.spg.cli.CLI;
-import br.ufcg.spg.cli.CheckStyleReport;
-import br.ufcg.spg.cli.PMDUtils;
 import br.ufcg.spg.cluster.Cluster;
 import br.ufcg.spg.cluster.ClusterUnifier;
 import br.ufcg.spg.cluster.ClusterUtils;
@@ -441,8 +440,9 @@ public class TestSuite {
 
   @Test
   public void reports() {
-    List<CheckStyleReport> reports = PMDUtils.getPMDReports("temp1.java");
-    for (CheckStyleReport report : reports) {
+    CodeChecker checker = new CompositeCodeChecker();
+    List<CheckerReport> reports = checker.getCheckerReports("temp1.java");
+    for (CheckerReport report : reports) {
       System.out.println(report);
     }
   }
