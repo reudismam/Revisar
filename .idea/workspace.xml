@@ -2,32 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="27c44893-f235-4200-b6a1-3330860caeda" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__antlr_antlr_2_7_7.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__dom4j_dom4j_1_6_1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_geronimo_specs_geronimo_jta_1_1_spec_1_1_1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_hibernate_common_hibernate_commons_annotations_5_0_0_Final.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_hibernate_hibernate_core_5_0_0_Final.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_hibernate_hibernate_entitymanager_5_0_0_Final.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_hibernate_javax_persistence_hibernate_jpa_2_1_api_1_0_0_Final.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_javassist_javassist_3_18_1_GA.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_jboss_jandex_1_2_2_Final.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_jboss_logging_jboss_logging_3_3_0_Final.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__xml_apis_xml_apis_1_0_b2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/br/ufcg/spg/checker/CheckStyleCodeChecker.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/br/ufcg/spg/checker/CompositeCodeChecker.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/br/ufcg/spg/checker/PMDCodeChecker.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/br/ufcg/spg/checker/SonarClientUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_googlecode_json_simple_json_simple_1_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_codehaus_sonar_sonar_ws_client_2_11.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AntiUnification.iml" beforeDir="false" afterPath="$PROJECT_DIR$/AntiUnification.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/br/ufcg/spg/cli/CheckStyleReport.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/br/ufcg/spg/checker/CheckerReport.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/br/ufcg/spg/cli/CheckStyleUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/br/ufcg/spg/checker/CodeChecker.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/br/ufcg/spg/cli/PMDUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/br/ufcg/spg/cli/PatternUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/br/ufcg/spg/cli/PatternUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/br/ufcg/spg/refaster/TemplateConstants.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/br/ufcg/spg/refaster/TemplateConstants.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/br/ufcg/spg/analyzer/test/TestSuite.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/br/ufcg/spg/analyzer/test/TestSuite.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/bin/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -61,8 +36,17 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="510">
-              <caret line="36" column="20" lean-forward="true" selection-start-line="36" selection-start-column="20" selection-end-line="36" selection-end-column="20" />
+            <state relative-caret-position="255">
+              <caret line="21" column="21" selection-start-line="21" selection-start-column="21" selection-end-line="21" selection-end-column="21" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/resources/META-INF/persistence.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="442">
+              <caret line="26" selection-start-line="26" selection-end-line="26" />
             </state>
           </provider>
         </entry>
@@ -119,9 +103,10 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/database/ClusterDao.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
-              <caret line="20" selection-start-line="20" selection-end-line="20" />
+            <state relative-caret-position="223">
+              <caret line="31" column="20" selection-start-line="31" selection-start-column="20" selection-end-line="31" selection-end-column="20" />
               <folding>
+                <element signature="e#577#578#0" expanded="true" />
                 <element signature="e#607#608#0" expanded="true" />
               </folding>
             </state>
@@ -133,15 +118,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="153">
               <caret line="11" selection-start-line="11" selection-end-line="11" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/resources/META-INF/persistence.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
-              <caret line="8" column="44" selection-start-line="8" selection-start-column="44" selection-end-line="8" selection-end-column="44" />
             </state>
           </provider>
         </entry>
@@ -329,14 +305,6 @@
               <item name="Revisar" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="META-INF" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Revisar" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Revisar" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="resources" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -373,7 +341,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1555245100883" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1555246987279" />
     <property name="extract.method.default.visibility" value="private" />
     <property name="last_directory_selection" value="$PROJECT_DIR$/src" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
@@ -552,9 +520,6 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="TestSuite_testFindBugs - 2019.04.12 at 17h 11m 19s.xml">
-      <configuration name="TestSuite.testFindBugs" configurationId="JUnit" />
-    </history-entry>
     <history-entry file="TestSuite_reports - 2019.04.13 at 18h 47m 11s.xml">
       <configuration name="TestSuite.reports" configurationId="JUnit" />
     </history-entry>
@@ -582,9 +547,12 @@
     <history-entry file="TestSuite_translateMachineLearningClustersMoreProjects - 2019.04.13 at 22h 32m 05s.xml">
       <configuration name="TestSuite.translateMachineLearningClustersMoreProjects" configurationId="JUnit" />
     </history-entry>
+    <history-entry file="TestSuite_translateMachineLearningClustersMoreProjects - 2019.04.14 at 09h 59m 50s.xml">
+      <configuration name="TestSuite.translateMachineLearningClustersMoreProjects" configurationId="JUnit" />
+    </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="539364000" />
+    <option name="totallyTimeSpent" value="539584000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -1031,8 +999,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/META-INF/persistence.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="8" column="44" selection-start-line="8" selection-start-column="44" selection-end-line="8" selection-end-column="44" />
+        <state relative-caret-position="442">
+          <caret line="26" selection-start-line="26" selection-end-line="26" />
         </state>
       </provider>
     </entry>
@@ -1049,9 +1017,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/br/ufcg/spg/database/ClusterDao.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="20" selection-start-line="20" selection-end-line="20" />
+        <state relative-caret-position="223">
+          <caret line="31" column="20" selection-start-line="31" selection-start-column="20" selection-end-line="31" selection-end-column="20" />
           <folding>
+            <element signature="e#577#578#0" expanded="true" />
             <element signature="e#607#608#0" expanded="true" />
           </folding>
         </state>
@@ -1069,8 +1038,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="510">
-          <caret line="36" column="20" lean-forward="true" selection-start-line="36" selection-start-column="20" selection-end-line="36" selection-end-column="20" />
+        <state relative-caret-position="255">
+          <caret line="21" column="21" selection-start-line="21" selection-start-column="21" selection-end-line="21" selection-end-column="21" />
         </state>
       </provider>
     </entry>
