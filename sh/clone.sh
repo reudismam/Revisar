@@ -11,7 +11,7 @@ git clone https://github.com/bitcoinj/bitcoinj.git bitcoinj_old
 git clone https://github.com/checkstyle/checkstyle.git checkstyle
 git clone https://github.com/checkstyle/checkstyle.git checkstyle_old
 git clone https://github.com/google/closure-compiler.git closure-compiler
-git clone https://github.com/google/closure-compiler.github closure-compiler_old
+git clone https://github.com/google/closure-compiler.git closure-compiler_old
 git clone https://github.com/deeplearning4j/deeplearning4j.git deeplearning4j
 git clone https://github.com/deeplearning4j/deeplearning4j.git deeplearning4j_old
 git clone https://github.com/apache/drill.git drill
