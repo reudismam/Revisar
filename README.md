@@ -6,7 +6,6 @@ Code analyzers such as Error Prone and FindBugs detect code patterns symptomatic
 
 [Reudismam Rolim](http://www.dsc.ufcg.edu.br/~spg/reudismam/), [Gustavo Soares](https://gustavoasoares.github.io/), [Rohit Gheyi](http://www.dsc.ufcg.edu.br/~rohit/), [Titus Barik](https://www.barik.net/), [Loris D'Antoni](http://pages.cs.wisc.edu/~loris/)
 
-This paper is available on [here](https://arxiv.org/abs/1803.03806).
 
 ## Setting up ##
 To run Revisar, it is needed the following steps:
